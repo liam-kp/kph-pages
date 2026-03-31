@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Red Sunset KP — 3 וילות על הים | Beachfront Villas Koh Phangan</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --gold: #c9a227;
+            --gold-light: #f0d98a;
+            --navy: #0a1628;
+            --navy2: #112040;
+            --white: #ffffff;
+            --off: #f7f5f0;
+            --slate: #4a5568;
+            --green: #059669;
+        }
+
+        body {
+            font-family: 'Heebo', sans-serif;
+            background: var(--navy);
+            color: var(--white);
+            overflow-x: hidden;
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            min-height: 100svh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 40px 24px 60px;
+            position: relative;
+            background: linear-gradient(160deg, #0a1628 0%, #0d1f3c 60%, #081422 100%);
+            overflow: hidden;
+        }
+
+        /* Subtle background glow */
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -20%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(201,162,39,0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(201,162,39,0.15);
+            border: 1px solid rgba(201,162,39,0.4);
+            color: var(--gold-light);
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            margin-bottom: 28px;
+            animation: fadeUp 0.6s ease both;
+        }
+
+        .hero h1 {
+            font-size: clamp(28px, 7vw, 52px);
+            font-weight: 700;
+            line-height: 1.15;
+            margin-bottom: 16px;
+            animation: fadeUp 0.6s 0.1s ease both;
+        }
+
+        .hero h1 span { color: var(--gold); }
+
+        .hero-sub {
+            font-size: clamp(15px, 3.5vw, 18px);
+            color: rgba(255,255,255,0.7);
+            max-width: 500px;
+            line-height: 1.7;
+            margin-bottom: 36px;
+            animation: fadeUp 0.6s 0.2s ease both;
+        }
+
+        .hero-chips {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+            animation: fadeUp 0.6s 0.3s ease both;
+        }
+
+        .chip {
+            padding: 7px 14px;
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 6px;
+            font-size: 13px;
+            color: rgba(255,255,255,0.85);
+        }
+
+        .hero-cta {
+            animation: fadeUp 0.6s 0.4s ease both;
+        }
+
+        .btn-gold {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--gold);
+            color: #0a1628;
+            padding: 16px 36px;
+            border-radius: 10px;
+            font-size: 17px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.25s;
+            box-shadow: 0 4px 24px rgba(201,162,39,0.3);
+        }
+
+        .btn-gold:hover {
+            background: var(--gold-light);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(201,162,39,0.4);
+        }
+
+        /* ===== VILLAS SECTION ===== */
+        .villas {
+            background: var(--off);
+            padding: 64px 20px;
+        }
+
+        .villas-title {
+            text-align: center;
+            font-size: clamp(22px, 4vw, 30px);
+            font-weight: 300;
+            color: var(--navy);
+            margin-bottom: 8px;
+        }
+
+        .villas-title strong { font-weight: 700; }
+
+        .villas-sub {
+            text-align: center;
+            color: var(--slate);
+            font-size: 15px;
+            margin-bottom: 40px;
+        }
+
+        .villas-grid {
+            max-width: 860px;
+            margin: 0 auto;
+            display: grid;
+            gap: 20px;
+        }
+
+        .villa-card {
+            background: var(--white);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.07);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .villa-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+        }
+
+        .villa-top {
+            padding: 24px 24px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .villa-badge {
+            display: inline-block;
+            background: var(--navy);
+            color: var(--gold);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            padding: 5px 14px;
+            border-radius: 6px;
+            text-transform: uppercase;
+        }
+
+        .villa-badge.featured {
+            background: var(--gold);
+            color: var(--navy);
+        }
+
+        .villa-distance {
+            font-size: 12px;
+            color: var(--slate);
+            background: #f0f0f0;
+            padding: 5px 12px;
+            border-radius: 20px;
+        }
+
+        .villa-body {
+            padding: 16px 24px 24px;
+        }
+
+        .villa-name {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 6px;
+        }
+
+        .villa-desc {
+            font-size: 14px;
+            color: var(--slate);
+            line-height: 1.6;
+            margin-bottom: 18px;
+        }
+
+        .villa-specs {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .spec {
+            text-align: center;
+            background: var(--off);
+            border-radius: 8px;
+            padding: 10px 16px;
+            min-width: 70px;
+        }
+
+        .spec-val {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--navy);
+        }
+
+        .spec-lbl {
+            font-size: 11px;
+            color: var(--slate);
+            margin-top: 2px;
+        }
+
+        .villa-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 18px;
+            border-top: 1px solid #eee;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .villa-price {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--gold);
+            line-height: 1;
+        }
+
+        .villa-price-sub {
+            font-size: 12px;
+            color: var(--slate);
+            margin-top: 4px;
+        }
+
+        .roi-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(5,150,105,0.1);
+            border: 1px solid rgba(5,150,105,0.3);
+            color: var(--green);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .btn-wa-small {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #25D366;
+            color: white;
+            padding: 11px 22px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .btn-wa-small:hover { background: #1da851; transform: translateY(-1px); }
+
+        /* ===== ANCHOR STRIP ===== */
+        .anchor-strip {
+            background: var(--navy2);
+            padding: 32px 20px;
+            text-align: center;
+        }
+
+        .anchor-strip p {
+            color: rgba(255,255,255,0.7);
+            font-size: 15px;
+            margin-bottom: 6px;
+        }
+
+        .anchor-nums {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .anchor-num {
+            text-align: center;
+        }
+
+        .anchor-val {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--gold);
+            line-height: 1;
+        }
+
+        .anchor-lbl {
+            font-size: 12px;
+            color: rgba(255,255,255,0.5);
+            margin-top: 4px;
+        }
+
+        /* ===== FOOTER CTA ===== */
+        .footer-cta {
+            background: var(--navy);
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .footer-cta h2 {
+            font-size: clamp(20px, 4vw, 28px);
+            font-weight: 300;
+            margin-bottom: 10px;
+        }
+
+        .footer-cta h2 strong { font-weight: 700; color: var(--gold); }
+
+        .footer-cta p {
+            color: rgba(255,255,255,0.6);
+            font-size: 15px;
+            margin-bottom: 28px;
+        }
+
+        .footer-contact {
+            margin-top: 24px;
+            font-size: 14px;
+            color: rgba(255,255,255,0.4);
+        }
+
+        .footer-contact a { color: var(--gold); text-decoration: none; }
+
+        /* ===== STICKY WA ===== */
+        .sticky-wa {
+            position: fixed;
+            bottom: 22px;
+            left: 22px;
+            z-index: 999;
+            background: #25D366;
+            color: white;
+            padding: 13px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            font-size: 14px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            transition: all 0.2s;
+        }
+
+        .sticky-wa:hover { transform: scale(1.05); }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 600px) {
+            .villa-specs { gap: 10px; }
+            .spec { padding: 8px 12px; min-width: 60px; }
+            .villa-footer { flex-direction: column; align-items: flex-start; }
+        }
+
+        /* ===== GALLERY SLIDER ===== */
+        .gallery {
+            padding: 48px 20px;
+            background: var(--navy2);
+        }
+
+        .gallery-title {
+            text-align: center;
+            font-size: clamp(18px, 3.5vw, 24px);
+            font-weight: 300;
+            margin-bottom: 28px;
+            color: rgba(255,255,255,0.85);
+        }
+
+        .gallery-title strong { color: var(--gold); font-weight: 700; }
+
+        .slider-wrap {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .slider-track {
+            display: flex;
+            transition: transform 0.45s ease;
+        }
+
+        .slider-track img {
+            min-width: 100%;
+            width: 100%;
+            height: 320px;
+            object-fit: cover;
+            display: block;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 500px) {
+            .slider-track img { height: 220px; }
+        }
+
+        .slider-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.45);
+            border: none;
+            color: white;
+            font-size: 22px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+            z-index: 2;
+        }
+
+        .slider-btn:hover { background: rgba(0,0,0,0.7); }
+        .slider-btn.prev { right: 12px; }
+        .slider-btn.next { left: 12px; }
+
+        .slider-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 14px;
+        }
+
+        .slider-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .slider-dot.active { background: var(--gold); }
+    </style>
+</head>
+<body>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+    <div class="hero-badge">🔑 3 וילות בלעדיות | חוף פרטי | קופנגן</div>
+    <h1>וילת חוף <span>על הים</span><br>בקופנגן — זה קיים</h1>
+    <p class="hero-sub">גישה ישירה לים, בריכה פרטית, נוף לים מהבריכה.<br>הין קונג / סריטאנו — הלוקיישן הכי מבוקש באי.</p>
+    <div class="hero-chips">
+        <span class="chip">🏖️ חוף פרטי</span>
+        <span class="chip">🌅 נוף לים מהבריכה</span>
+        <span class="chip">🔑 Turn-Key</span>
+        <span class="chip">📈 תשואה 9%–14%</span>
+    </div>
+    <div class="hero-cta">
+        <a href="https://wa.me/66967907754?text=היי%2C%20אשמח%20לקבל%20פרטים%20על%20Red%20Sunset%20KP" class="btn-gold">
+            💬 דברו איתי בוואטסאפ
+        </a>
+    </div>
+</section>
+
+<!-- ===== GALLERY ===== -->
+<section class="gallery">
+    <h2 class="gallery-title">הפרויקט <strong>מהשטח</strong></h2>
+    <div class="slider-wrap">
+        <div class="slider-track" id="sliderTrack">
+            <img src="https://api.aiagentpro.online/media/11a3a8c9-d3db-4b32-8c08-35dd7868b959/KP-IMG-BCH-PING1-00" alt="Red Sunset KP">
+            <img src="https://api.aiagentpro.online/media/11a3a8c9-d3db-4b32-8c08-35dd7868b959/KP-IMG-BCH-PING1-01" alt="Red Sunset KP">
+            <img src="https://api.aiagentpro.online/media/11a3a8c9-d3db-4b32-8c08-35dd7868b959/KP-IMG-BCH-PING1-02" alt="Red Sunset KP">
+            <img src="https://api.aiagentpro.online/media/11a3a8c9-d3db-4b32-8c08-35dd7868b959/KP-IMG-BCH-PING1-03" alt="Red Sunset KP">
+        </div>
+        <button class="slider-btn prev" onclick="slideMove(1)">&#8249;</button>
+        <button class="slider-btn next" onclick="slideMove(-1)">&#8250;</button>
+    </div>
+    <div class="slider-dots" id="sliderDots">
+        <div class="slider-dot active" onclick="slideTo(0)"></div>
+        <div class="slider-dot" onclick="slideTo(1)"></div>
+        <div class="slider-dot" onclick="slideTo(2)"></div>
+        <div class="slider-dot" onclick="slideTo(3)"></div>
+    </div>
+</section>
+
+<script>
+    let current = 0;
+    const total = 4;
+    function slideTo(n) {
+        current = n;
+        document.getElementById('sliderTrack').style.transform = `translateX(${current * 100}%)`;
+        document.querySelectorAll('.slider-dot').forEach((d, i) => d.classList.toggle('active', i === current));
+    }
+    function slideMove(dir) {
+        current = (current - dir + total) % total;
+        slideTo(current);
+    }
+    setInterval(() => slideMove(-1), 4000);
+</script>
+
+<!-- ===== VILLAS ===== -->
+<section class="villas">
+    <h2 class="villas-title">בחר את <strong>הווילה שלך</strong></h2>
+    <p class="villas-sub">3 וילות — 3 מיקומים — טווח מחירים רחב</p>
+
+    <div class="villas-grid">
+
+        <!-- Villa 1 -->
+        <div class="villa-card">
+            <div class="villa-top">
+                <span class="villa-badge featured">וילה 1 — פרימיום</span>
+                <span class="villa-distance">🌊 12 מטר מהים</span>
+            </div>
+            <div class="villa-body">
+                <div class="villa-name">ראשון לים — Beachfront Signature</div>
+                <div class="villa-desc">4 חדרי מאסטר | קומה אחת | הבריכה הגדולה במתחם (31 מ"ר) ישירות מול הים. הנכס הפרימיום של הפרויקט.</div>
+                <div class="villa-specs">
+                    <div class="spec"><div class="spec-val">321</div><div class="spec-lbl">מ"ר סה"כ</div></div>
+                    <div class="spec"><div class="spec-val">150</div><div class="spec-lbl">מ"ר מקורה</div></div>
+                    <div class="spec"><div class="spec-val">31</div><div class="spec-lbl">מ"ר בריכה</div></div>
+                    <div class="spec"><div class="spec-val">4</div><div class="spec-lbl">חד׳ מאסטר</div></div>
+                </div>
+                <div class="villa-footer">
+                    <div>
+                        <div class="villa-price">฿33,000,000</div>
+                        <div class="villa-price-sub">₪3,135,000 | $1,006,500</div>
+                    </div>
+                    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+                        <span class="roi-badge">📈 9.6%–14.4% ROI</span>
+                        <a href="https://wa.me/66967907754?text=אני%20מעוניין%20בוילה%201%20%E2%80%94%20Beachfront%20Signature" class="btn-wa-small">💬 פרטים</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Villa 2 -->
+        <div class="villa-card">
+            <div class="villa-top">
+                <span class="villa-badge">וילה 2 — נוף לים</span>
+                <span class="villa-distance">🌊 50 מטר מהים</span>
+            </div>
+            <div class="villa-body">
+                <div class="villa-name">נוף לים — Elevated Sea View</div>
+                <div class="villa-desc">3 חדרי מאסטר | קומה אחת מוגבהת | בריכה פרטית עם נוף פתוח לים. מחיר הכניסה הכי אטרקטיבי במתחם.</div>
+                <div class="villa-specs">
+                    <div class="spec"><div class="spec-val">212</div><div class="spec-lbl">מ"ר סה"כ</div></div>
+                    <div class="spec"><div class="spec-val">140</div><div class="spec-lbl">מ"ר מקורה</div></div>
+                    <div class="spec"><div class="spec-val">22</div><div class="spec-lbl">מ"ר בריכה</div></div>
+                    <div class="spec"><div class="spec-val">3</div><div class="spec-lbl">חד׳ מאסטר</div></div>
+                </div>
+                <div class="villa-footer">
+                    <div>
+                        <div class="villa-price">฿26,000,000</div>
+                        <div class="villa-price-sub">₪2,470,000 | $793,000</div>
+                    </div>
+                    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+                        <span class="roi-badge">📈 8.6%–12.9% ROI</span>
+                        <a href="https://wa.me/66967907754?text=אני%20מעוניין%20בוילה%202%20%E2%80%94%20Elevated%20Sea%20View" class="btn-wa-small">💬 פרטים</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Villa 3 -->
+        <div class="villa-card">
+            <div class="villa-top">
+                <span class="villa-badge">וילה 3 — משפחתית</span>
+                <span class="villa-distance">🌊 80 מטר מהים</span>
+            </div>
+            <div class="villa-body">
+                <div class="villa-name">דו-קומתית — Grand Family Duplex</div>
+                <div class="villa-desc">4 חדרי מאסטר | 2 קומות | 313 מ"ר — השטח הכי גדול לפי מחיר. מגדל נוף לים מהמרפסת העליונה.</div>
+                <div class="villa-specs">
+                    <div class="spec"><div class="spec-val">313</div><div class="spec-lbl">מ"ר סה"כ</div></div>
+                    <div class="spec"><div class="spec-val">185</div><div class="spec-lbl">מ"ר מקורה</div></div>
+                    <div class="spec"><div class="spec-val">22</div><div class="spec-lbl">מ"ר בריכה</div></div>
+                    <div class="spec"><div class="spec-val">4</div><div class="spec-lbl">חד׳ מאסטר</div></div>
+                </div>
+                <div class="villa-footer">
+                    <div>
+                        <div class="villa-price">฿29,000,000</div>
+                        <div class="villa-price-sub">₪2,660,000 | $884,500</div>
+                    </div>
+                    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+                        <span class="roi-badge">📈 9.0%–13.5% ROI</span>
+                        <a href="https://wa.me/66967907754?text=אני%20מעוניין%20בוילה%203%20%E2%80%94%20Grand%20Family%20Duplex" class="btn-wa-small">💬 פרטים</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- ===== ANCHOR NUMBERS ===== -->
+<div class="anchor-strip">
+    <p>למה וילת חוף בקופנגן שווה את המחיר?</p>
+    <p style="color:rgba(255,255,255,0.45);font-size:13px;">השוואה עולמית — ערך ביחס לאלטרנטיבות</p>
+    <div class="anchor-nums">
+        <div class="anchor-num">
+            <div class="anchor-val">$1M</div>
+            <div class="anchor-lbl">וילת חוף בקופנגן</div>
+        </div>
+        <div class="anchor-num" style="color:rgba(255,255,255,0.3);font-size:24px;display:flex;align-items:center">vs</div>
+        <div class="anchor-num">
+            <div class="anchor-val" style="color:rgba(255,255,255,0.5);">$5M+</div>
+            <div class="anchor-lbl">אותו נכס באיביזה</div>
+        </div>
+        <div class="anchor-num" style="color:rgba(255,255,255,0.3);font-size:24px;display:flex;align-items:center">vs</div>
+        <div class="anchor-num">
+            <div class="anchor-val" style="color:rgba(255,255,255,0.5);">$8M+</div>
+            <div class="anchor-lbl">אותו נכס במיאמי</div>
+        </div>
+    </div>
+    <p style="margin-top:20px;font-size:13px;color:rgba(255,255,255,0.4);">+ תשואת שכירות של 9%–14% שנתי מחזירה את ההשקעה בפני עצמה</p>
+</div>
+
+<!-- ===== FOOTER CTA ===== -->
+<section class="footer-cta">
+    <h2>מוכן לדעת <strong>עוד?</strong></h2>
+    <p>שלחו הודעה ונשלח תקציר השקעה מלא עם נתוני ROI, תכניות ופרטי רישום</p>
+    <a href="https://wa.me/66967907754?text=היי%2C%20אשמח%20לקבל%20פרטים%20על%20Red%20Sunset%20KP" class="btn-gold">
+        💬 לתקציר המלא בוואטסאפ
+    </a>
+    <div class="footer-contact">
+        <p style="margin-top:16px"><a href="https://wa.me/66967907754">+66 96 790 7754</a> | Red Sunset KP • Koh Phangan</p>
+    </div>
+</section>
+
+<!-- Sticky WA -->
+<a href="https://wa.me/66967907754?text=היי%2C%20אשמח%20לקבל%20פרטים%20על%20Red%20Sunset%20KP" class="sticky-wa">
+    💬 וואטסאפ
+</a>
+
+</body>
+</html>
