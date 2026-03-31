@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Red Sunset KP — 3 Beachfront Villas | Koh Phangan</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --gold: #c9a227;
+            --gold-light: #f0d98a;
+            --navy: #0a1628;
+            --navy2: #112040;
+            --white: #ffffff;
+            --off: #f7f5f0;
+            --slate: #4a5568;
+            --green: #059669;
+        }
+
+        body {
+            font-family: 'Heebo', sans-serif;
+            background: var(--navy);
+            color: var(--white);
+            overflow-x: hidden;
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            min-height: 100svh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 40px 24px 60px;
+            position: relative;
+            background: linear-gradient(160deg, #0a1628 0%, #0d1f3c 60%, #081422 100%);
+            overflow: hidden;
+        }
+
+        /* Subtle background glow */
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -20%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(201,162,39,0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(201,162,39,0.15);
+            border: 1px solid rgba(201,162,39,0.4);
+            color: var(--gold-light);
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            margin-bottom: 28px;
+            animation: fadeUp 0.6s ease both;
+        }
+
+        .hero h1 {
+            font-size: clamp(28px, 7vw, 52px);
+            font-weight: 700;
+            line-height: 1.15;
+            margin-bottom: 16px;
+            animation: fadeUp 0.6s 0.1s ease both;
+        }
+
+        .hero h1 span { color: var(--gold); }
+
+        .hero-sub {
+            font-size: clamp(15px, 3.5vw, 18px);
+            color: rgba(255,255,255,0.7);
+            max-width: 500px;
+            line-height: 1.7;
+            margin-bottom: 36px;
+            animation: fadeUp 0.6s 0.2s ease both;
+        }
+
+        .hero-chips {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+            animation: fadeUp 0.6s 0.3s ease both;
+        }
+
+        .chip {
+            padding: 7px 14px;
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 6px;
+            font-size: 13px;
+            color: rgba(255,255,255,0.85);
+        }
+
+        .hero-cta {
+            animation: fadeUp 0.6s 0.4s ease both;
+        }
+
+        .btn-gold {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--gold);
+            color: #0a1628;
+            padding: 16px 36px;
+            border-radius: 10px;
+            font-size: 17px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.25s;
+            box-shadow: 0 4px 24px rgba(201,162,39,0.3);
+        }
+
+        .btn-gold:hover {
+            background: var(--gold-light);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(201,162,39,0.4);
+        }
+
+        /* ===== VILLAS SECTION ===== */
+        .villas {
+            background: var(--off);
+            padding: 64px 20px;
+        }
+
+        .villas-title {
+            text-align: center;
+            font-size: clamp(22px, 4vw, 30px);
+            font-weight: 300;
+            color: var(--navy);
+            margin-bottom: 8px;
+        }
+
+        .villas-title strong { font-weight: 700; }
+
+        .villas-sub {
+            text-align: center;
+            color: var(--slate);
+            font-size: 15px;
+            margin-bottom: 40px;
+        }
+
+        .villas-grid {
+            max-width: 860px;
+            margin: 0 auto;
+            display: grid;
+            gap: 20px;
+        }
+
+        .villa-card {
+            background: var(--white);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.07);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .villa-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+        }
+
+        .villa-top {
+            padding: 24px 24px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .villa-badge {
+            display: inline-block;
+            background: var(--navy);
+            color: var(--gold);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            padding: 5px 14px;
+            border-radius: 6px;
+            text-transform: uppercase;
+        }
+
+        .villa-badge.featured {
+            background: var(--gold);
+            color: var(--navy);
+        }
+
+        .villa-distance {
+            font-size: 12px;
+            color: var(--slate);
+            background: #f0f0f0;
+            padding: 5px 12px;
+            border-radius: 20px;
+        }
+
+        .villa-body {
+            padding: 16px 24px 24px;
+        }
+
+        .villa-name {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 6px;
+        }
+
+        .villa-desc {
+            font-size: 14px;
+            color: var(--slate);
+            line-height: 1.6;
+            margin-bottom: 18px;
+        }
+
+        .villa-specs {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .spec {
+            text-align: center;
+            background: var(--off);
+            border-radius: 8px;
+            padding: 10px 16px;
+            min-width: 70px;
+        }
+
+        .spec-val {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--navy);
+        }
+
+        .spec-lbl {
+            font-size: 11px;
+            color: var(--slate);
+            margin-top: 2px;
+        }
+
+        .villa-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 18px;
+            border-top: 1px solid #eee;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .villa-price {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--gold);
+            line-height: 1;
+        }
+
+        .villa-price-sub {
+            font-size: 12px;
+            color: var(--slate);
+            margin-top: 4px;
+        }
+
+        .roi-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(5,150,105,0.1);
+            border: 1px solid rgba(5,150,105,0.3);
+            color: var(--green);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .btn-wa-small {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #25D366;
+            color: white;
+            padding: 11px 22px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .btn-wa-small:hover { background: #1da851; transform: translateY(-1px); }
+
+        /* ===== ANCHOR STRIP ===== */
+        .anchor-strip {
+            background: var(--navy2);
+            padding: 32px 20px;
+            text-align: center;
+        }
+
+        .anchor-strip p {
+            color: rgba(255,255,255,0.7);
+            font-size: 15px;
+            margin-bottom: 6px;
+        }
+
+        .anchor-nums {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .anchor-num {
+            text-align: center;
+        }
+
+        .anchor-val {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--gold);
+            line-height: 1;
+        }
+
+        .anchor-lbl {
+            font-size: 12px;
+            color: rgba(255,255,255,0.5);
+            margin-top: 4px;
+        }
+
+        /* ===== FOOTER CTA ===== */
+        .footer-cta {
+            background: var(--navy);
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .footer-cta h2 {
+            font-size: clamp(20px, 4vw, 28px);
+            font-weight: 300;
+            margin-bottom: 10px;
+        }
+
+        .footer-cta h2 strong { font-weight: 700; color: var(--gold); }
+
+        .footer-cta p {
+            color: rgba(255,255,255,0.6);
+            font-size: 15px;
+            margin-bottom: 28px;
+        }
+
+        .footer-contact {
+            margin-top: 24px;
+            font-size: 14px;
+            color: rgba(255,255,255,0.4);
+        }
+
+        .footer-contact a { color: var(--gold); text-decoration: none; }
+
+        /* ===== STICKY WA ===== */
+        .sticky-wa {
+            position: fixed;
+            bottom: 22px;
+            left: 22px;
+            z-index: 999;
+            background: #25D366;
+            color: white;
+            padding: 13px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            font-size: 14px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            transition: all 0.2s;
+        }
+
+        .sticky-wa:hover { transform: scale(1.05); }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 600px) {
+            .villa-specs { gap: 10px; }
+            .spec { padding: 8px 12px; min-width: 60px; }
+            .villa-footer { flex-direction: column; align-items: flex-start; }
+        }
+
+        /* ===== GALLERY SLIDER ===== */
+        .gallery {
+            padding: 48px 20px;
+            background: var(--navy2);
+        }
+
+        .gallery-title {
+            text-align: center;
+            font-size: clamp(18px, 3.5vw, 24px);
+            font-weight: 300;
+            margin-bottom: 28px;
+            color: rgba(255,255,255,0.85);
+        }
+
+        .gallery-title strong { color: var(--gold); font-weight: 700; }
+
+        .slider-wrap {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .slider-track {
+            display: flex;
+            transition: transform 0.45s ease;
+        }
+
+        .slider-track img {
+            min-width: 100%;
+            width: 100%;
+            height: 320px;
+            object-fit: cover;
+            display: block;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 500px) {
+            .slider-track img { height: 220px; }
+        }
+
+        .slider-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.45);
+            border: none;
+            color: white;
+            font-size: 22px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+            z-index: 2;
+        }
+
+        .slider-btn:hover { background: rgba(0,0,0,0.7); }
+        .slider-btn.prev { right: 12px; }
+        .slider-btn.next { left: 12px; }
+
+        .slider-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 14px;
+        }
+
+        .slider-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .slider-dot.active { background: var(--gold); }
+    </style>
+</head>
+<body>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+    <div class="hero-badge">🔑 3 Exclusive Villas | Private Beach | Koh Phangan</div>
+    <h1>Beachfront Villa <span>On the Sea</span><br>in Koh Phangan — It Exists</h1>
+    <p class="hero-sub">Direct sea access, private pool, sea view from the pool.<br>Hin Kong / Srithanu — the most sought-after location on the island.</p>
+    <div class="hero-chips">
+        <span class="chip">🏖️ Private Beach</span>
+        <span class="chip">🌅 Sea View Pool</span>
+        <span class="chip">🔑 Turn-Key</span>
+        <span class="chip">📈 9%–14% ROI</span>
+    </div>
+    <div class="hero-cta">
+        <a href="https://wa.me/66967907754?text=Hi%2C%20I%27d%20love%20to%20get%20details%20on%20Red%20Sunset%20KP" class="btn-gold">
+            💬 Contact Us on WhatsApp
+        </a>
+    </div>
+</section>
+
+<!-- ===== GALLERY ===== -->
+<section class="gallery">
+    <h2 class="gallery-title">The Project <strong>on the Ground</strong></h2>
+    <div class="slider-wrap">
+        <div class="slider-track" id="sliderTrack">
+            <img src="https://api.aiagentpro.online/media/11a3a8c9-d3db-4b32-8c08-35dd7868b959/KP-IMG-BCH-PING1-00" alt="Red Sunset KP">
+            <img src="https://api.aiagentpro.online/media/11a3a8c9-d3db-4b32-8c08-35dd7868b959/KP-IMG-BCH-PING1-01" alt="Red Sunset KP">
+            <img src="https://api.aiagentpro.online/media/11a3a8c9-d3db-4b32-8c08-35dd7868b959/KP-IMG-BCH-PING1-02" alt="Red Sunset KP">
+            <img src="https://api.aiagentpro.online/media/11a3a8c9-d3db-4b32-8c08-35dd7868b959/KP-IMG-BCH-PING1-03" alt="Red Sunset KP">
+        </div>
+        <button class="slider-btn prev" onclick="slideMove(1)">&#8249;</button>
+        <button class="slider-btn next" onclick="slideMove(-1)">&#8250;</button>
+    </div>
+    <div class="slider-dots" id="sliderDots">
+        <div class="slider-dot active" onclick="slideTo(0)"></div>
+        <div class="slider-dot" onclick="slideTo(1)"></div>
+        <div class="slider-dot" onclick="slideTo(2)"></div>
+        <div class="slider-dot" onclick="slideTo(3)"></div>
+    </div>
+</section>
+
+<script>
+    let current = 0;
+    const total = 4;
+    function slideTo(n) {
+        current = n;
+        document.getElementById('sliderTrack').style.transform = `translateX(${current * 100}%)`;
+        document.querySelectorAll('.slider-dot').forEach((d, i) => d.classList.toggle('active', i === current));
+    }
+    function slideMove(dir) {
+        current = (current - dir + total) % total;
+        slideTo(current);
+    }
+    setInterval(() => slideMove(-1), 4000);
+</script>
+
+<!-- ===== VILLAS ===== -->
+<section class="villas">
+    <h2 class="villas-title">Choose Your <strong>Villa</strong></h2>
+    <p class="villas-sub">3 Villas — 3 Locations — Wide Price Range</p>
+
+    <div class="villas-grid">
+
+        <!-- Villa 1 -->
+        <div class="villa-card">
+            <div class="villa-top">
+                <span class="villa-badge featured">Villa 1 — Premium</span>
+                <span class="villa-distance">🌊 12m from the Sea</span>
+            </div>
+            <div class="villa-body">
+                <div class="villa-name">First on the Beach — Beachfront Signature</div>
+                <div class="villa-desc">4 Master Bedrooms | Single floor | Largest pool in the complex (31 sqm) directly facing the sea. The premium property of the project.</div>
+                <div class="villa-specs">
+                    <div class="spec"><div class="spec-val">321</div><div class="spec-lbl">sqm total</div></div>
+                    <div class="spec"><div class="spec-val">150</div><div class="spec-lbl">sqm covered</div></div>
+                    <div class="spec"><div class="spec-val">31</div><div class="spec-lbl">sqm pool</div></div>
+                    <div class="spec"><div class="spec-val">4</div><div class="spec-lbl">Master BR</div></div>
+                </div>
+                <div class="villa-footer">
+                    <div>
+                        <div class="villa-price">฿33,000,000</div>
+                        <div class="villa-price-sub">$1,006,500 | €930,000</div>
+                    </div>
+                    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+                        <span class="roi-badge">📈 9.6%–14.4% ROI</span>
+                        <a href="https://wa.me/66967907754?text=I%27m%20interested%20in%20Villa%201%20%E2%80%94%20Beachfront%20Signature" class="btn-wa-small">💬 Details</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Villa 2 -->
+        <div class="villa-card">
+            <div class="villa-top">
+                <span class="villa-badge">Villa 2 — Sea View</span>
+                <span class="villa-distance">🌊 50m from the Sea</span>
+            </div>
+            <div class="villa-body">
+                <div class="villa-name">Sea View — Elevated Sea View</div>
+                <div class="villa-desc">3 Master Bedrooms | Elevated single floor | Private pool with open sea view. The most attractive entry price in the complex.</div>
+                <div class="villa-specs">
+                    <div class="spec"><div class="spec-val">212</div><div class="spec-lbl">sqm total</div></div>
+                    <div class="spec"><div class="spec-val">140</div><div class="spec-lbl">sqm covered</div></div>
+                    <div class="spec"><div class="spec-val">22</div><div class="spec-lbl">sqm pool</div></div>
+                    <div class="spec"><div class="spec-val">3</div><div class="spec-lbl">Master BR</div></div>
+                </div>
+                <div class="villa-footer">
+                    <div>
+                        <div class="villa-price">฿26,000,000</div>
+                        <div class="villa-price-sub">$793,000 | €733,000</div>
+                    </div>
+                    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+                        <span class="roi-badge">📈 8.6%–12.9% ROI</span>
+                        <a href="https://wa.me/66967907754?text=I%27m%20interested%20in%20Villa%202%20%E2%80%94%20Elevated%20Sea%20View" class="btn-wa-small">💬 Details</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Villa 3 -->
+        <div class="villa-card">
+            <div class="villa-top">
+                <span class="villa-badge">Villa 3 — Family</span>
+                <span class="villa-distance">🌊 80m from the Sea</span>
+            </div>
+            <div class="villa-body">
+                <div class="villa-name">Two-Story — Grand Family Duplex</div>
+                <div class="villa-desc">4 Master Bedrooms | 2 floors | 313 sqm — largest space per price. Sea view tower from the upper terrace.</div>
+                <div class="villa-specs">
+                    <div class="spec"><div class="spec-val">313</div><div class="spec-lbl">sqm total</div></div>
+                    <div class="spec"><div class="spec-val">185</div><div class="spec-lbl">sqm covered</div></div>
+                    <div class="spec"><div class="spec-val">22</div><div class="spec-lbl">sqm pool</div></div>
+                    <div class="spec"><div class="spec-val">4</div><div class="spec-lbl">Master BR</div></div>
+                </div>
+                <div class="villa-footer">
+                    <div>
+                        <div class="villa-price">฿29,000,000</div>
+                        <div class="villa-price-sub">$884,500 | €817,000</div>
+                    </div>
+                    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+                        <span class="roi-badge">📈 9.0%–13.5% ROI</span>
+                        <a href="https://wa.me/66967907754?text=I%27m%20interested%20in%20Villa%203%20%E2%80%94%20Grand%20Family%20Duplex" class="btn-wa-small">💬 Details</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- ===== ANCHOR NUMBERS ===== -->
+<div class="anchor-strip">
+    <p>Why is a beachfront villa in Koh Phangan worth the price?</p>
+    <p style="color:rgba(255,255,255,0.45);font-size:13px;">Global comparison — value vs alternatives</p>
+    <div class="anchor-nums">
+        <div class="anchor-num">
+            <div class="anchor-val">$1M</div>
+            <div class="anchor-lbl">Beachfront in Koh Phangan</div>
+        </div>
+        <div class="anchor-num" style="color:rgba(255,255,255,0.3);font-size:24px;display:flex;align-items:center">vs</div>
+        <div class="anchor-num">
+            <div class="anchor-val" style="color:rgba(255,255,255,0.5);">$5M+</div>
+            <div class="anchor-lbl">Same property in Ibiza</div>
+        </div>
+        <div class="anchor-num" style="color:rgba(255,255,255,0.3);font-size:24px;display:flex;align-items:center">vs</div>
+        <div class="anchor-num">
+            <div class="anchor-val" style="color:rgba(255,255,255,0.5);">$8M+</div>
+            <div class="anchor-lbl">Same property in Miami</div>
+        </div>
+    </div>
+    <p style="margin-top:20px;font-size:13px;color:rgba(255,255,255,0.4);">+ 9%–14% annual rental yield pays for itself</p>
+</div>
+
+<!-- ===== FOOTER CTA ===== -->
+<section class="footer-cta">
+    <h2>Ready to Learn <strong>More?</strong></h2>
+    <p>Send us a message and we'll share a full investment summary with ROI data, floor plans and registration details</p>
+    <a href="https://wa.me/66967907754?text=Hi%2C%20I%27d%20love%20to%20get%20details%20on%20Red%20Sunset%20KP" class="btn-gold">
+        💬 Full Summary on WhatsApp
+    </a>
+    <div class="footer-contact">
+        <p style="margin-top:16px"><a href="https://wa.me/66967907754">+66 96 790 7754</a> | Red Sunset KP • Koh Phangan</p>
+    </div>
+</section>
+
+<!-- Sticky WA -->
+<a href="https://wa.me/66967907754?text=Hi%2C%20I%27d%20love%20to%20get%20details%20on%20Red%20Sunset%20KP" class="sticky-wa">
+    💬 WhatsApp
+</a>
+
+</body>
+</html>
