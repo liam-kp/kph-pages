@@ -1,0 +1,1497 @@
+<!DOCTYPE html>
+<html class="dark" dir="rtl" lang="he">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>KPH Sales OS — Admin Dashboard v2</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@100;300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        "on-secondary-fixed-variant":"#574500","secondary-fixed-dim":"#e9c349",
+        "error-container":"#93000a","primary-fixed-dim":"#74daae",
+        "on-tertiary-fixed-variant":"#653e00","inverse-on-surface":"#2d3137",
+        "surface-container-lowest":"#0a0e14","on-error-container":"#ffdad6",
+        "on-surface-variant":"#bdcac1","on-primary":"#003826",
+        "surface-dim":"#10141a","on-primary-fixed":"#002115",
+        "tertiary-container":"#c98100","outline-variant":"#3e4943",
+        "on-error":"#690005","surface":"#10141a",
+        "primary-fixed":"#90f6c9","tertiary-fixed":"#ffddb7",
+        "primary":"#74daae","tertiary-fixed-dim":"#ffb95d",
+        "tertiary":"#ffb95d","error":"#ffb4ab",
+        "secondary-container":"#af8d11","primary-container":"#39a27a",
+        "on-background":"#dfe2eb","on-tertiary-fixed":"#2a1700",
+        "surface-tint":"#74daae","on-secondary":"#3c2f00",
+        "on-tertiary":"#462a00","surface-container-highest":"#31353c",
+        "on-surface":"#dfe2eb","on-primary-container":"#003120",
+        "inverse-primary":"#006c4c","outline":"#87948c",
+        "surface-container":"#1c2026","surface-container-high":"#262a31",
+        "secondary-fixed":"#ffe088","background":"#10141a",
+        "surface-variant":"#31353c","on-tertiary-container":"#3d2400",
+        "on-secondary-fixed":"#241a00","on-primary-fixed-variant":"#005139",
+        "surface-bright":"#353940","surface-container-low":"#181c22",
+        "on-secondary-container":"#342800","inverse-surface":"#dfe2eb",
+        "secondary":"#e9c349"
+      },
+      borderRadius: { DEFAULT:"0px", lg:"0px", xl:"0px", full:"9999px" },
+      fontFamily: { headline:["Be Vietnam Pro"], body:["Be Vietnam Pro"], label:["Be Vietnam Pro"] }
+    }
+  }
+};
+</script>
+<style>
+body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
+.material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; display:inline-block; line-height:1; }
+::-webkit-scrollbar { width:4px; }
+::-webkit-scrollbar-track { background:#10141a; }
+::-webkit-scrollbar-thumb { background:#3e4943; }
+.ghost-border { outline:0.5px solid rgba(135,148,140,0.2); }
+.page-content { display:none; }
+.page-content.active { display:block; }
+.nav-item.active { background:#1c2026; color:#68dbae; border-right:4px solid #68dbae; }
+.nav-item { transition: all 150ms ease-in-out; }
+.top-tab.active { color:#68dbae; border-bottom:2px solid #68dbae; font-weight:700; }
+.spinner { animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.fade-in { animation: fadeIn 0.3s ease-in; }
+@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+.temp-dot { width:8px; height:8px; border-radius:9999px; }
+.temp-hot { background:#ffb4ab; }
+.temp-very-hot { background:#ff5449; }
+.temp-warm { background:#e9c349; }
+.temp-cold { background:#74daae; }
+.temp-israel { background:#87948c; }
+.row-menu { position:relative; display:inline-block; }
+.row-menu-dropdown { display:none; position:absolute; left:0; top:100%; z-index:80; min-width:160px;
+  background:#262a31; border:0.5px solid #3e4943; box-shadow:0 8px 24px rgba(0,0,0,0.5); }
+.row-menu:hover .row-menu-dropdown,
+.row-menu-dropdown:hover { display:block; }
+.row-menu-dropdown button { display:block; width:100%; text-align:right; padding:8px 16px; font-size:12px;
+  color:#bdcac1; background:none; border:none; cursor:pointer; transition:background 0.15s; }
+.row-menu-dropdown button:hover { background:#1c2026; color:#dfe2eb; }
+.row-menu-dropdown button.text-error:hover { background:#93000a22; }
+</style>
+</head>
+<body class="text-on-surface overflow-hidden h-screen flex flex-row-reverse">
+
+<!-- ========== SIDEBAR ========== -->
+<aside class="flex flex-col h-full w-64 bg-[#0a0e14] border-l-[0.5px] border-[#3d4943] z-50">
+  <div class="p-6">
+    <h1 class="text-lg font-black text-[#68dbae]">KPH Sales OS</h1>
+    <p class="text-xs text-on-surface-variant opacity-70">Admin Dashboard v2</p>
+  </div>
+  <nav class="flex-1 mt-4" id="sidebar-nav">
+    <div class="nav-item flex items-center gap-3 px-6 py-4 text-[#bccac1] hover:bg-[#181c22] cursor-pointer active" data-page="pipeline">
+      <span class="material-symbols-outlined">dashboard</span>
+      <span class="text-sm font-bold">Pipeline</span>
+    </div>
+    <div class="nav-item flex items-center gap-3 px-6 py-4 text-[#bccac1] hover:bg-[#181c22] cursor-pointer" data-page="closings">
+      <span class="material-symbols-outlined">payments</span>
+      <span class="text-sm">Closings</span>
+    </div>
+    <div class="nav-item flex items-center gap-3 px-6 py-4 text-[#bccac1] hover:bg-[#181c22] cursor-pointer" data-page="campaigns">
+      <span class="material-symbols-outlined">campaign</span>
+      <span class="text-sm">Campaigns</span>
+    </div>
+    <div class="nav-item flex items-center gap-3 px-6 py-4 text-[#bccac1] hover:bg-[#181c22] cursor-pointer" data-page="projects">
+      <span class="material-symbols-outlined">location_city</span>
+      <span class="text-sm">Projects</span>
+    </div>
+    <div class="nav-item flex items-center gap-3 px-6 py-4 text-[#bccac1] hover:bg-[#181c22] cursor-pointer" data-page="reports">
+      <span class="material-symbols-outlined">insert_chart</span>
+      <span class="text-sm">Reports</span>
+    </div>
+  </nav>
+  <div class="p-6 border-t-[0.5px] border-[#3d4943] flex items-center gap-3">
+    <div class="w-8 h-8 bg-surface-container-highest flex items-center justify-center">
+      <span class="material-symbols-outlined text-sm">person</span>
+    </div>
+    <div class="text-xs">
+      <p class="font-bold">Liran Miller</p>
+      <p class="text-[10px] text-on-surface-variant">KPH Admin</p>
+    </div>
+  </div>
+</aside>
+
+<!-- ========== MAIN CONTENT ========== -->
+<main class="flex-1 flex flex-col min-w-0 bg-surface overflow-hidden">
+  <!-- Top Bar -->
+  <header class="flex flex-row-reverse justify-between items-center w-full px-6 h-16 bg-[#10141a] border-b-[0.5px] border-[#3d4943] z-40">
+    <div class="flex items-center gap-8">
+      <div class="text-xl font-bold text-white flex items-center gap-2 after:content-[''] after:w-2 after:h-2 after:bg-[#68dbae] after:rounded-full">KPH Sales OS</div>
+      <nav class="hidden md:flex gap-6" id="top-tabs">
+        <a class="top-tab active text-sm pb-1 cursor-pointer" data-page="pipeline">Pipeline</a>
+        <a class="top-tab text-[#bccac1] text-sm pb-1 cursor-pointer hover:text-white" data-page="closings">Closings</a>
+        <a class="top-tab text-[#bccac1] text-sm pb-1 cursor-pointer hover:text-white" data-page="campaigns">Campaigns</a>
+        <a class="top-tab text-[#bccac1] text-sm pb-1 cursor-pointer hover:text-white" data-page="projects">Projects</a>
+        <a class="top-tab text-[#bccac1] text-sm pb-1 cursor-pointer hover:text-white" data-page="reports">Reports</a>
+      </nav>
+    </div>
+    <div class="flex items-center gap-4">
+      <div class="relative">
+        <span class="absolute right-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant text-sm">search</span>
+        <input id="global-search" class="bg-surface-container-low border-none text-sm pr-10 pl-4 py-2 w-64 focus:ring-1 focus:ring-primary outline-none" placeholder="Search lead..." type="text"/>
+      </div>
+      <span id="last-updated" class="text-[10px] text-on-surface-variant font-mono"></span>
+      <button onclick="showTokenModal()" class="px-4 py-2 text-[#bccac1] hover:bg-[#1c2026] transition-all text-sm">Token</button>
+      <button onclick="refreshCurrentPage()" class="px-4 py-2 bg-primary text-on-primary font-bold text-sm active:scale-95 transition-transform">Refresh</button>
+    </div>
+  </header>
+
+  <!-- Scrollable Content -->
+  <div class="flex-1 overflow-y-auto" id="main-scroll">
+
+    <!-- ==================== PIPELINE PAGE ==================== -->
+    <div id="page-pipeline" class="page-content active p-6 space-y-6 fade-in">
+      <!-- KPI Row -->
+      <div class="grid grid-cols-4 gap-4" id="pipeline-kpis">
+        <div class="bg-surface-container p-4 ghost-border">
+          <p class="text-[10px] text-on-surface-variant uppercase tracking-wider mb-1">Total Leads</p>
+          <p class="text-3xl font-bold" id="kpi-total-leads">--</p>
+        </div>
+        <div class="bg-surface-container p-4 ghost-border border-r-4 border-primary">
+          <p class="text-[10px] text-primary uppercase tracking-wider mb-1">On Island</p>
+          <p class="text-3xl font-bold text-primary" id="kpi-on-island">--</p>
+        </div>
+        <div class="bg-surface-container p-4 ghost-border border-r-4 border-error">
+          <p class="text-[10px] text-error uppercase tracking-wider mb-1">Hot Leads</p>
+          <p class="text-3xl font-bold text-error" id="kpi-hot-leads">--</p>
+        </div>
+        <div class="bg-surface-container p-4 ghost-border border-r-4 border-tertiary">
+          <p class="text-[10px] text-tertiary uppercase tracking-wider mb-1">Total Expected Commission</p>
+          <div class="flex items-baseline gap-2">
+            <p class="text-3xl font-bold text-tertiary" id="kpi-total-commission">--</p>
+            <span class="text-xs text-on-surface-variant font-mono">EST</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Smart List -->
+      <div class="bg-surface-container-low p-4 flex justify-between items-center ghost-border">
+        <h2 class="text-lg font-semibold">Smart Work List</h2>
+        <div class="flex gap-2">
+          <select id="pipeline-filter-temp" class="bg-surface-container-highest text-xs px-3 py-2 border-none">
+            <option value="">All Temps</option>
+            <option value="very-hot">Very Hot</option>
+            <option value="hot">Hot</option>
+            <option value="warm">Warm</option>
+            <option value="cold">Cold</option>
+          </select>
+          <select id="pipeline-filter-island" class="bg-surface-container-highest text-xs px-3 py-2 border-none">
+            <option value="">All Status</option>
+            <option value="on-island">On Island</option>
+            <option value="arriving">Arriving Soon</option>
+            <option value="removed">Removed</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="bg-surface-container ghost-border">
+        <table class="w-full text-right">
+          <thead>
+            <tr class="text-on-surface-variant text-[11px] uppercase tracking-widest border-b border-outline-variant/30">
+              <th class="px-6 py-4 font-medium">Priority</th>
+              <th class="px-6 py-4 font-medium">Lead Name</th>
+              <th class="px-6 py-4 font-medium">Project</th>
+              <th class="px-6 py-4 font-medium">Budget</th>
+              <th class="px-6 py-4 font-medium">Source</th>
+              <th class="px-6 py-4 font-medium">Last Contact</th>
+              <th class="px-6 py-4 font-medium text-left">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="pipeline-table-body" class="divide-y divide-outline-variant/10">
+            <tr><td colspan="7" class="px-6 py-12 text-center text-on-surface-variant">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ==================== CLOSINGS PAGE ==================== -->
+    <div id="page-closings" class="page-content p-8 space-y-8 fade-in">
+      <!-- KPI Row -->
+      <div class="grid grid-cols-6 gap-4" id="closings-kpis">
+        <div class="bg-surface-container p-5 ghost-border">
+          <p class="text-[10px] text-on-surface-variant mb-1 uppercase tracking-wider">Total Volume</p>
+          <p class="text-xl font-bold text-primary" id="kpi-total-volume">--</p>
+        </div>
+        <div class="bg-surface-container p-5 ghost-border">
+          <p class="text-[10px] text-on-surface-variant mb-1 uppercase tracking-wider">Open Deals</p>
+          <p class="text-xl font-bold" id="kpi-open-deals">--</p>
+        </div>
+        <div class="bg-surface-container p-5 ghost-border">
+          <p class="text-[10px] text-on-surface-variant mb-1 uppercase tracking-wider">Total Closings</p>
+          <p class="text-xl font-bold" id="kpi-closing-count">--</p>
+        </div>
+        <div class="bg-surface-container p-5 ghost-border">
+          <p class="text-[10px] text-on-surface-variant mb-1 uppercase tracking-wider">Avg Commission</p>
+          <p class="text-xl font-bold text-secondary" id="kpi-avg-commission">--</p>
+        </div>
+        <div class="bg-surface-container p-5 ghost-border">
+          <p class="text-[10px] text-on-surface-variant mb-1 uppercase tracking-wider">Received</p>
+          <p class="text-xl font-bold text-primary" id="kpi-received">--</p>
+        </div>
+        <div class="bg-surface-container p-5 ghost-border">
+          <p class="text-[10px] text-on-surface-variant mb-1 uppercase tracking-wider">Outstanding</p>
+          <p class="text-xl font-bold text-secondary-fixed-dim" id="kpi-outstanding">--</p>
+        </div>
+      </div>
+
+      <!-- Deals Table -->
+      <section class="bg-surface-container ghost-border">
+        <div class="p-6 border-b-[0.5px] border-outline-variant flex justify-between items-center">
+          <h2 class="text-lg font-bold">Deal Log</h2>
+          <button onclick="showNewDealModal()" class="bg-primary text-on-primary px-4 py-2 text-xs font-bold active:scale-95 transition-transform">+ New Deal</button>
+        </div>
+        <table class="w-full text-right border-collapse">
+          <thead>
+            <tr class="text-[10px] text-on-surface-variant border-b-[0.5px] border-outline-variant bg-surface-container-low uppercase">
+              <th class="p-4 font-medium">Client & Project</th>
+              <th class="p-4 font-medium">Deal Price</th>
+              <th class="p-4 font-medium">Commission</th>
+              <th class="p-4 font-medium">Close Date</th>
+              <th class="p-4 font-medium">Role</th>
+              <th class="p-4 font-medium">Pay Status</th>
+            </tr>
+          </thead>
+          <tbody id="closings-table-body" class="divide-y divide-outline-variant/20">
+            <tr><td colspan="6" class="p-6 text-center text-on-surface-variant">Loading...</td></tr>
+          </tbody>
+        </table>
+      </section>
+    </div>
+
+    <!-- ==================== CAMPAIGNS PAGE ==================== -->
+    <div id="page-campaigns" class="page-content p-8 fade-in">
+      <div class="max-w-6xl">
+        <div class="flex justify-between items-end mb-10">
+          <div>
+            <h2 class="text-3xl font-bold tracking-tight">Active Campaigns</h2>
+            <p class="text-on-surface-variant text-sm mt-2">Track and broadcast to targeted audiences</p>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="campaigns-grid">
+          <div class="bg-surface-container p-6 ghost-border text-center col-span-3">
+            <p class="text-on-surface-variant">Loading campaigns...</p>
+          </div>
+        </div>
+        <!-- KPR-53 Notice -->
+        <div class="mt-8 bg-surface-container-high p-4 flex items-start gap-3 ghost-border">
+          <span class="material-symbols-outlined text-secondary text-lg">info</span>
+          <p class="text-[11px] leading-snug text-on-surface-variant">
+            <strong class="text-on-surface block mb-1">Bulk Send Notice</strong>
+            Bulk message broadcasting requires KPR-53 integration. Currently view-only.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== PROJECTS PAGE ==================== -->
+    <div id="page-projects" class="page-content p-8 fade-in">
+      <div class="max-w-6xl">
+        <div class="flex items-center justify-between mb-6">
+          <h1 class="text-3xl font-bold tracking-tight">Projects</h1>
+          <span class="text-sm text-primary font-mono" id="projects-count">--</span>
+        </div>
+
+        <!-- Active Campaigns Section -->
+        <section class="mb-12">
+          <div class="flex items-center gap-4 mb-6">
+            <div class="h-[1px] flex-1 bg-outline-variant"></div>
+            <h2 class="text-sm font-bold tracking-[0.2em] text-on-surface-variant uppercase">Active Campaign</h2>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="projects-active"></div>
+        </section>
+
+        <!-- Catalog Section -->
+        <section class="mb-12">
+          <div class="flex items-center gap-4 mb-6">
+            <div class="h-[1px] flex-1 bg-outline-variant"></div>
+            <h2 class="text-sm font-bold tracking-[0.2em] text-on-surface-variant uppercase">Catalog</h2>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 opacity-80" id="projects-catalog"></div>
+        </section>
+
+        <!-- Radar Table -->
+        <section>
+          <div class="flex items-center gap-4 mb-6">
+            <div class="h-[1px] flex-1 bg-outline-variant"></div>
+            <h2 class="text-sm font-bold tracking-[0.2em] text-on-surface-variant uppercase">Development Radar</h2>
+          </div>
+          <div class="bg-surface-container-low overflow-hidden ghost-border">
+            <table class="w-full text-right text-xs">
+              <thead>
+                <tr class="bg-surface-container-high text-on-surface-variant uppercase tracking-tighter font-bold">
+                  <th class="px-6 py-4">Developer</th>
+                  <th class="px-6 py-4">Project</th>
+                  <th class="px-6 py-4">Location</th>
+                  <th class="px-6 py-4">Est. Price</th>
+                  <th class="px-6 py-4">Notes</th>
+                </tr>
+              </thead>
+              <tbody id="projects-radar" class="divide-y divide-outline-variant/30">
+                <tr><td colspan="5" class="p-6 text-center text-on-surface-variant">Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <!-- ==================== REPORTS PAGE ==================== -->
+    <div id="page-reports" class="page-content p-8 space-y-8 fade-in">
+      <div class="max-w-[1280px] mx-auto w-full space-y-8">
+        <!-- Metrics Row -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div class="bg-surface-container p-5 ghost-border">
+            <div class="text-[10px] uppercase tracking-wider text-on-surface-variant font-bold mb-2">Pipeline Leads</div>
+            <div class="text-3xl font-bold text-primary" id="report-pipeline-leads">--</div>
+          </div>
+          <div class="bg-surface-container p-5 ghost-border">
+            <div class="text-[10px] uppercase tracking-wider text-on-surface-variant font-bold mb-2">On Island</div>
+            <div class="text-3xl font-bold text-[#2dd4bf]" id="report-on-island">--</div>
+          </div>
+          <div class="bg-surface-container p-5 ghost-border border-r-2 border-error/50">
+            <div class="text-[10px] uppercase tracking-wider text-on-surface-variant font-bold mb-2">Missed Follow-ups</div>
+            <div class="text-3xl font-bold text-error" id="report-missed">--</div>
+          </div>
+          <div class="bg-surface-container p-5 ghost-border">
+            <div class="text-[10px] uppercase tracking-wider text-on-surface-variant font-bold mb-2">Total Deals</div>
+            <div class="text-3xl font-bold text-secondary" id="report-deals">--</div>
+          </div>
+        </div>
+
+        <!-- Report Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div class="bg-surface-container ghost-border flex flex-col group">
+            <div class="p-4 flex-1">
+              <div class="w-10 h-10 bg-error/10 text-error flex items-center justify-center mb-4">
+                <span class="material-symbols-outlined">history</span>
+              </div>
+              <h3 class="text-sm font-bold mb-1">Missed Follow-ups 48h+</h3>
+              <p class="text-xs text-on-surface-variant leading-relaxed">Leads without response for over 2 business days.</p>
+            </div>
+          </div>
+          <div class="bg-surface-container ghost-border flex flex-col group">
+            <div class="p-4 flex-1">
+              <div class="w-10 h-10 bg-primary/10 text-primary flex items-center justify-center mb-4">
+                <span class="material-symbols-outlined">insert_chart_outlined</span>
+              </div>
+              <h3 class="text-sm font-bold mb-1">Pipeline Snapshot</h3>
+              <p class="text-xs text-on-surface-variant leading-relaxed">Weekly overview of all sales pipeline stages.</p>
+            </div>
+          </div>
+          <div class="bg-surface-container ghost-border flex flex-col group">
+            <div class="p-4 flex-1">
+              <div class="w-10 h-10 bg-[#2dd4bf]/10 text-[#2dd4bf] flex items-center justify-center mb-4">
+                <span class="material-symbols-outlined">flight_land</span>
+              </div>
+              <h3 class="text-sm font-bold mb-1">On Island This Week</h3>
+              <p class="text-xs text-on-surface-variant leading-relaxed">Hot leads currently visiting the island.</p>
+            </div>
+          </div>
+          <div class="bg-surface-container ghost-border flex flex-col group">
+            <div class="p-4 flex-1">
+              <div class="w-10 h-10 bg-secondary/10 text-secondary flex items-center justify-center mb-4">
+                <span class="material-symbols-outlined">payments</span>
+              </div>
+              <h3 class="text-sm font-bold mb-1">This Month's Deals</h3>
+              <p class="text-xs text-on-surface-variant leading-relaxed">Signed deals and contract values this month.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chart -->
+        <div class="bg-surface-container ghost-border p-6">
+          <div class="flex items-center justify-between mb-8">
+            <div>
+              <h2 class="text-lg font-bold">Incoming vs Converted Leads</h2>
+              <p class="text-xs text-on-surface-variant">6 Month Performance</p>
+            </div>
+            <div class="flex items-center gap-4 text-[10px] font-bold">
+              <div class="flex items-center gap-1.5"><span class="w-2 h-2 bg-primary"></span> Incoming</div>
+              <div class="flex items-center gap-1.5"><span class="w-2 h-2 bg-primary-container"></span> Converted</div>
+            </div>
+          </div>
+          <div class="h-48 w-full flex items-end gap-6 px-4" id="report-chart"></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end main-scroll -->
+</main>
+
+<!-- ========== LEAD DETAIL PANEL ========== -->
+<aside id="detail-panel" class="w-80 bg-surface-bright flex-col h-full border-r-[0.5px] border-[#3d4943] z-40 overflow-y-auto hidden">
+  <div class="p-6 space-y-8">
+    <div class="flex justify-between items-start">
+      <div>
+        <h3 class="text-xl font-bold text-secondary cursor-pointer hover:underline decoration-secondary/30 underline-offset-4" id="detail-name" onclick="startNameEdit()" title="Click to edit name">--</h3>
+        <input id="detail-name-input" class="hidden text-xl font-bold text-secondary bg-transparent border-b-2 border-secondary w-full outline-none py-0 px-0" type="text" />
+        <p class="text-xs text-on-surface-variant" id="detail-id">--</p>
+      </div>
+      <button onclick="closeDetailPanel()" class="text-on-surface-variant hover:text-white">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+
+    <!-- Priority -->
+    <div class="space-y-2">
+      <label class="text-[10px] text-on-surface-variant uppercase tracking-widest font-bold">Temperature</label>
+      <div class="flex gap-1" id="detail-temp-buttons">
+        <button data-temp="very-hot" class="flex-1 py-2 text-[10px] font-bold border border-error text-error">Very Hot</button>
+        <button data-temp="hot" class="flex-1 py-2 text-[10px] font-bold border border-secondary text-secondary">Hot</button>
+        <button data-temp="warm" class="flex-1 py-2 text-[10px] font-bold border border-primary text-primary">Warm</button>
+        <button data-temp="cold" class="flex-1 py-2 text-[10px] font-bold border border-outline text-outline">Cold</button>
+      </div>
+    </div>
+
+    <!-- Lead Info -->
+    <div class="space-y-4">
+      <div class="space-y-1">
+        <label class="text-[10px] text-on-surface-variant">Phone</label>
+        <p class="text-sm font-mono" id="detail-phone">--</p>
+      </div>
+      <div class="space-y-1">
+        <label class="text-[10px] text-on-surface-variant">Project</label>
+        <p class="text-sm" id="detail-project">--</p>
+      </div>
+      <div class="space-y-1">
+        <label class="text-[10px] text-on-surface-variant">Budget</label>
+        <p class="text-sm font-bold text-primary" id="detail-budget">--</p>
+      </div>
+      <div class="space-y-1">
+        <label class="text-[10px] text-on-surface-variant">Expected Commission</label>
+        <input id="detail-commission" class="w-full bg-surface-container-low border-none text-xs font-bold text-primary py-2 px-3 focus:ring-1 focus:ring-primary" type="number" value="0"/>
+      </div>
+      <div class="space-y-1">
+        <label class="text-[10px] text-on-surface-variant">Source Campaign</label>
+        <p class="text-sm" id="detail-source">--</p>
+      </div>
+      <div class="space-y-1">
+        <label class="text-[10px] text-on-surface-variant">Added</label>
+        <p class="text-sm" id="detail-added">--</p>
+      </div>
+    </div>
+
+    <!-- Notes -->
+    <div class="space-y-2">
+      <label class="text-[10px] text-on-surface-variant uppercase tracking-widest font-bold">Memory Notes</label>
+      <textarea id="detail-notes" class="w-full bg-surface-container-low border-none text-xs p-3 h-32 focus:ring-1 focus:ring-secondary resize-none" placeholder="Notes..."></textarea>
+    </div>
+
+    <!-- Actions -->
+    <div class="pt-4 flex flex-col gap-2">
+      <button onclick="saveLeadDetail()" class="w-full py-3 bg-secondary text-on-secondary font-black text-sm active:scale-95 transition-transform">Save Changes</button>
+      <a id="detail-whatsapp" href="#" target="_blank" class="w-full py-3 bg-[#25D366] text-white flex items-center justify-center gap-2 font-bold text-sm active:scale-95 transition-transform">
+        <span class="material-symbols-outlined text-lg">chat</span>
+        WhatsApp
+      </a>
+    </div>
+  </div>
+</aside>
+
+<!-- ========== TOKEN MODAL ========== -->
+<div id="token-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4 hidden">
+  <div class="bg-surface-container w-full max-w-md ghost-border shadow-2xl p-8 space-y-6">
+    <h3 class="text-xl font-bold flex items-center gap-2">
+      <span class="material-symbols-outlined text-primary">key</span>
+      Firebase API Token
+    </h3>
+    <p class="text-xs text-on-surface-variant">Token is stored in sessionStorage only. Never saved to code.</p>
+    <input id="token-input" class="w-full bg-surface-container-low border-b-[0.5px] border-outline-variant focus:border-secondary focus:ring-0 text-sm py-3 px-2" placeholder="Paste Bearer token..." type="password"/>
+    <div class="flex gap-3 flex-row-reverse">
+      <button onclick="saveToken()" class="bg-primary text-on-primary px-8 py-3 text-sm font-bold active:scale-95 transition-transform">Save</button>
+      <button onclick="hideTokenModal()" class="px-8 py-3 text-sm border-[0.5px] border-outline-variant text-on-surface-variant hover:bg-surface-container-high">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== NEW DEAL MODAL ========== -->
+<div id="new-deal-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4 hidden">
+  <div class="bg-surface-container w-full max-w-2xl ghost-border shadow-2xl overflow-hidden">
+    <div class="bg-surface-container-high p-6 border-b-[0.5px] border-outline-variant flex justify-between items-center">
+      <h3 class="text-xl font-bold flex items-center gap-2">
+        <span class="material-symbols-outlined text-primary">add_box</span>
+        New Deal
+      </h3>
+      <button onclick="hideNewDealModal()" class="text-on-surface-variant hover:text-white">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <form id="new-deal-form" class="p-8 space-y-6" onsubmit="submitNewDeal(event)">
+      <div class="grid grid-cols-2 gap-6">
+        <div class="space-y-2">
+          <label class="text-xs text-on-surface-variant uppercase tracking-widest font-bold">Client Name</label>
+          <input name="client" required class="w-full bg-surface-container-low border-b-[0.5px] border-outline-variant focus:border-secondary focus:ring-0 text-sm py-3 px-0" placeholder="Full name" type="text"/>
+        </div>
+        <div class="space-y-2">
+          <label class="text-xs text-on-surface-variant uppercase tracking-widest font-bold">Project Name</label>
+          <input name="project" required class="w-full bg-surface-container-low border-b-[0.5px] border-outline-variant focus:border-secondary focus:ring-0 text-sm py-3 px-0" placeholder="e.g. Beachfront Villas" type="text"/>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-6">
+        <div class="space-y-2">
+          <label class="text-xs text-on-surface-variant uppercase tracking-widest font-bold">Deal Price</label>
+          <input name="price" type="number" required class="w-full bg-surface-container-low border-b-[0.5px] border-outline-variant focus:border-secondary focus:ring-0 text-primary font-bold text-lg py-3 px-0" placeholder="0"/>
+        </div>
+        <div class="space-y-2">
+          <label class="text-xs text-on-surface-variant uppercase tracking-widest font-bold">Commission %</label>
+          <input name="commPct" type="number" step="0.1" class="w-full bg-surface-container-low border-b-[0.5px] border-outline-variant focus:border-secondary focus:ring-0 text-sm py-3 px-0" placeholder="2"/>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-6">
+        <div class="space-y-2">
+          <label class="text-xs text-on-surface-variant uppercase tracking-widest font-bold">Close Date</label>
+          <input name="closeDate" type="date" class="w-full bg-surface-container-low border-b-[0.5px] border-outline-variant focus:border-secondary focus:ring-0 text-sm py-3 px-0"/>
+        </div>
+        <div class="space-y-2">
+          <label class="text-xs text-on-surface-variant uppercase tracking-widest font-bold">Role</label>
+          <select name="role" class="w-full bg-surface-container-low border-none text-xs py-3 px-0">
+            <option value="Broker">Broker</option>
+            <option value="Lead Agent">Lead Agent</option>
+            <option value="Partner Split">Partner Split</option>
+            <option value="Listing Agent">Listing Agent</option>
+          </select>
+        </div>
+      </div>
+      <div class="space-y-2">
+        <label class="text-xs text-on-surface-variant uppercase tracking-widest font-bold">Notes</label>
+        <textarea name="notes" class="w-full bg-surface-container-low border-b-[0.5px] border-outline-variant focus:border-secondary focus:ring-0 text-sm py-3 px-0 h-20 resize-none" placeholder="Deal notes..."></textarea>
+      </div>
+      <div class="pt-6 flex gap-3 flex-row-reverse">
+        <button type="submit" class="bg-primary text-on-primary px-8 py-3 text-sm font-bold active:scale-95 transition-transform">Save Deal</button>
+        <button type="button" onclick="hideNewDealModal()" class="px-8 py-3 text-sm border-[0.5px] border-outline-variant text-on-surface-variant hover:bg-surface-container-high">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ========== JAVASCRIPT ========== -->
+<script>
+// ============ CONFIG ============
+const API_BASE = window.location.port ? `${window.location.protocol}//${window.location.hostname}:8081` : '';
+const CUSTOMER_ID = '11a3a8c9-d3db-4b32-8c08-35dd7868b959';
+
+// ============ TOKEN ============
+function getToken() { return sessionStorage.getItem('kph_token') || ''; }
+function setToken(t) { sessionStorage.setItem('kph_token', t); }
+
+function showTokenModal() {
+  document.getElementById('token-modal').classList.remove('hidden');
+  document.getElementById('token-input').value = getToken();
+}
+function hideTokenModal() { document.getElementById('token-modal').classList.add('hidden'); }
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (t) { setToken(t); hideTokenModal(); refreshCurrentPage(); }
+}
+
+// ============ STATE ============
+let currentPage = 'pipeline';
+let firebaseLeads = [];
+let pipelineData = null;
+let selectedLead = null;
+let projectsPublic = [];
+let firebaseMode = false;
+
+// ============ NAVIGATION ============
+function showPage(pageId) {
+  currentPage = pageId;
+  document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + pageId).classList.add('active');
+
+  // Update sidebar
+  document.querySelectorAll('#sidebar-nav .nav-item').forEach(n => {
+    n.classList.remove('active');
+    if (n.dataset.page === pageId) n.classList.add('active');
+  });
+
+  // Update top tabs
+  document.querySelectorAll('#top-tabs .top-tab').forEach(t => {
+    t.classList.remove('active');
+    t.className = t.className.replace('text-[#68dbae]', 'text-[#bccac1]');
+    if (t.dataset.page === pageId) {
+      t.classList.add('active');
+      t.className = t.className.replace('text-[#bccac1]', 'text-[#68dbae]');
+    }
+  });
+
+  // Close detail panel on page switch
+  closeDetailPanel();
+
+  // Load data
+  loadPageData(pageId);
+}
+
+function refreshCurrentPage() {
+  loadPageData(currentPage);
+  lastRefreshTime = Date.now();
+  updateLastUpdatedLabel();
+}
+
+// Click handlers for nav
+document.querySelectorAll('[data-page]').forEach(el => {
+  el.addEventListener('click', (e) => { e.preventDefault(); showPage(el.dataset.page); });
+});
+
+// ============ FIREBASE FETCH (via proxy) ============
+async function firebaseFetch(collection) {
+  const token = getToken();
+  if (!token) throw new Error('No token');
+  const res = await fetch(`${API_BASE}/api/firebase-data/${collection}`, {
+    headers: { 'Authorization': `Bearer ${token}` }
+  });
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(body.error || `Firebase ${res.status}`);
+  }
+  return res.json();
+}
+
+// ============ PAGE LOADERS ============
+async function loadPageData(page) {
+  try {
+    switch(page) {
+      case 'pipeline': await loadPipeline(); break;
+      case 'closings': await loadClosings(); break;
+      case 'campaigns': await loadCampaigns(); break;
+      case 'projects': await loadProjects(); break;
+      case 'reports': await loadReports(); break;
+    }
+  } catch(e) {
+    console.error('Load error:', e);
+    if (e.message === 'No token') return;
+  }
+}
+
+// ============ PIPELINE ============
+async function loadPipeline() {
+  try {
+    const leads = await firebaseFetch('Leads');
+    firebaseLeads = Array.isArray(leads) ? leads : [];
+    firebaseMode = true;
+  } catch(e) {
+    console.warn('Firebase unavailable, falling back to local pipeline:', e.message);
+    // Fallback: load from local pipeline_data.json via server
+    try {
+      const res = await fetch(`${API_BASE}/pipeline`);
+      const data = await res.json();
+      pipelineData = data;
+      // Convert local leads to Firebase-like format
+      firebaseLeads = (data.leads || []).map(l => ({
+        _id: l.firebase_id || l.id,
+        display_name: l.client,
+        name: l.client,
+        phone_number: l.phone || '',
+        active_project: l.project,
+        project_id: l.project,
+        temp: l.temp === 'חם מאוד' ? 'HOT' : l.temp === 'חם' ? 'WARM' : l.temp === 'קר' ? 'COLD' : l.temp === 'בישראל' ? 'LUKEWARM' : '',
+        tier: l.temp === 'חם מאוד' ? 'HOT' : l.temp === 'חם' ? 'WARM' : l.temp === 'קר' ? 'COLD' : '',
+        budget: l.price || 0,
+        expected_commission: l.commission || 0,
+        general_notes: l.notes || '',
+        source_campaign: l.source || '',
+        updated_at: l.updatedAt,
+        addedAt: l.addedAt,
+        island_presence: {},
+        status: l.status || '',
+      }));
+      firebaseMode = false;
+    } catch(e2) {
+      console.error('Local pipeline also failed:', e2);
+      firebaseLeads = [];
+      firebaseMode = false;
+    }
+  }
+  renderPipelineKPIs();
+  renderPipelineTable();
+  // Show mode indicator
+  const modeLabel = firebaseMode ? 'Firebase Live' : 'Local (pipeline_data.json)';
+  const modeColor = firebaseMode ? 'text-primary' : 'text-secondary';
+  document.querySelector('#page-pipeline .bg-surface-container-low h2').innerHTML =
+    `Smart Work List <span class="text-xs font-normal ${modeColor} mr-4">[${modeLabel}]</span>`;
+}
+
+function isRemoved(lead) {
+  return lead.status === 'removed' || lead.status === 'REMOVED';
+}
+
+function isOnIsland(lead) {
+  // Firebase mode: check island_presence object
+  const ip = lead.island_presence;
+  if (ip && typeof ip === 'object') {
+    const s = (ip.status || '').toLowerCase();
+    if (s === 'on_island' || s === 'on island' || s === 'arriving_soon') return true;
+  }
+  // Also check top-level status
+  const st = (lead.status || '').toLowerCase();
+  if (st === 'on_island' || st === 'on island') return true;
+  // Local fallback: check notes for "באי" / "נמצא באי" / "on island"
+  const notes = (lead.general_notes || lead.notes || '').toLowerCase();
+  if (/\bבאי\b/.test(notes) || /נמצא באי/.test(notes) || /on.?island/i.test(notes)) return true;
+  return false;
+}
+
+function renderPipelineKPIs() {
+  const leads = firebaseLeads.filter(l => !isRemoved(l));
+  document.getElementById('kpi-total-leads').textContent = leads.length.toLocaleString();
+
+  const onIsland = leads.filter(isOnIsland).length;
+  document.getElementById('kpi-on-island').textContent = onIsland;
+
+  const hot = leads.filter(l => l.temp === 'HOT' || l.tier === 'HOT').length;
+  document.getElementById('kpi-hot-leads').textContent = hot;
+
+  const totalComm = leads.reduce((sum, l) => sum + (parseFloat(l.expected_commission) || 0), 0);
+  document.getElementById('kpi-total-commission').textContent = totalComm > 0 ? formatCurrency(totalComm) : '--';
+}
+
+function renderPipelineTable() {
+  const tbody = document.getElementById('pipeline-table-body');
+  const filterTemp = document.getElementById('pipeline-filter-temp').value;
+  const filterIsland = document.getElementById('pipeline-filter-island').value;
+
+  let leads = [...firebaseLeads];
+
+  // By default hide removed leads unless explicitly filtering for them
+  if (filterIsland === 'removed') {
+    leads = leads.filter(isRemoved);
+  } else {
+    leads = leads.filter(l => !isRemoved(l));
+  }
+
+  // Temp filter
+  if (filterTemp) {
+    const tempMap = { 'very-hot': 'HOT', 'hot': 'WARM', 'warm': 'LUKEWARM', 'cold': 'COLD' };
+    leads = leads.filter(l => (l.temp || l.tier) === tempMap[filterTemp]);
+  }
+
+  // Island filter
+  if (filterIsland === 'on-island') {
+    leads = leads.filter(isOnIsland);
+  } else if (filterIsland === 'arriving') {
+    leads = leads.filter(l => {
+      const ip = l.island_presence;
+      return (ip && (ip.status || '').toLowerCase() === 'arriving_soon');
+    });
+  }
+
+  // Sort: hot first, then by updatedAt desc
+  const tempOrder = { 'HOT': 0, 'WARM': 1, 'LUKEWARM': 2, 'COLD': 3 };
+  leads.sort((a, b) => {
+    const ta = tempOrder[a.temp || a.tier] ?? 9;
+    const tb = tempOrder[b.temp || b.tier] ?? 9;
+    if (ta !== tb) return ta - tb;
+    return (b.updated_at || '').localeCompare(a.updated_at || '');
+  });
+
+  if (leads.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="7" class="px-6 py-12 text-center text-on-surface-variant">No leads found</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = leads.map(lead => {
+    const name = lead.display_name || lead.name || lead.phone_number || 'Unknown';
+    const temp = lead.temp || lead.tier || '';
+    const tempClass = temp === 'HOT' ? 'temp-very-hot' : temp === 'WARM' ? 'temp-warm' : temp === 'COLD' ? 'temp-cold' : 'temp-israel';
+    const project = lead.active_project || lead.project_id || '';
+    const budget = parseBudget(lead.budget);
+    const source = lead.source_campaign || '';
+    const lastContact = lead.updated_at ? timeAgo(lead.updated_at) : '--';
+    const isOld = daysSince(lead.updated_at) > 7;
+    const onIsland = isOnIsland(lead);
+    const firebaseId = lead._id || '';
+    const removed = isRemoved(lead);
+    const escapedName = esc(name).replace(/'/g, "\\'");
+
+    return `<tr class="hover:bg-surface-container-high transition-colors cursor-pointer ${removed ? 'opacity-40' : ''}" onclick="openLeadDetail('${firebaseId}')">
+      <td class="px-6 py-4"><div class="temp-dot ${tempClass}"></div></td>
+      <td class="px-6 py-4 font-semibold text-secondary">
+        ${esc(name)}
+        ${onIsland ? '<span class="ml-2 text-[10px] bg-primary/10 text-primary px-1 py-0.5">ON ISLAND</span>' : ''}
+        ${removed ? '<span class="ml-2 text-[10px] bg-error/10 text-error px-1 py-0.5">REMOVED</span>' : ''}
+      </td>
+      <td class="px-6 py-4 text-sm">${esc(project)}</td>
+      <td class="px-6 py-4 font-bold text-primary">${budget}</td>
+      <td class="px-6 py-4 text-sm text-on-surface-variant">${esc(source)}</td>
+      <td class="px-6 py-4 text-sm ${isOld ? 'text-error' : ''}">${lastContact}</td>
+      <td class="px-6 py-4 text-left" onclick="event.stopPropagation()">
+        <div class="row-menu">
+          <span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-white">more_vert</span>
+          <div class="row-menu-dropdown">
+            <button onclick="openLeadDetail('${firebaseId}')">Edit Lead</button>
+            ${!removed ? `<button class="text-error" onclick="removeLead('${firebaseId}', '${escapedName}')">Remove Lead</button>` : ''}
+          </div>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+// Pipeline filters
+document.getElementById('pipeline-filter-temp').addEventListener('change', renderPipelineTable);
+document.getElementById('pipeline-filter-island').addEventListener('change', renderPipelineTable);
+
+// ============ LEAD DETAIL PANEL ============
+function openLeadDetail(firebaseId) {
+  const lead = firebaseLeads.find(l => l._id === firebaseId);
+  if (!lead) return;
+  selectedLead = lead;
+
+  const panel = document.getElementById('detail-panel');
+  panel.classList.remove('hidden');
+  panel.classList.add('flex');
+
+  const displayName = lead.display_name || lead.name || '';
+  const nameEl = document.getElementById('detail-name');
+  const nameInput = document.getElementById('detail-name-input');
+  nameEl.textContent = displayName || lead.phone_number || 'Unknown';
+  nameEl.classList.remove('hidden');
+  nameInput.classList.add('hidden');
+  nameInput.value = displayName;
+  nameInput.placeholder = lead.phone_number || 'Enter name...';
+  document.getElementById('detail-id').textContent = lead._id || '';
+  document.getElementById('detail-phone').textContent = lead.phone_number || '--';
+  document.getElementById('detail-project').textContent = lead.active_project || lead.project_id || '--';
+  document.getElementById('detail-budget').textContent = parseBudget(lead.budget);
+  document.getElementById('detail-commission').value = lead.expected_commission || 0;
+  document.getElementById('detail-source').textContent = lead.source_campaign || '--';
+  document.getElementById('detail-added').textContent = lead.addedAt ? new Date(lead.addedAt).toLocaleDateString('he-IL') : '--';
+  document.getElementById('detail-notes').value = lead.general_notes || '';
+
+  // WhatsApp link
+  const phone = (lead.phone_number || '').replace(/\D/g, '');
+  document.getElementById('detail-whatsapp').href = phone ? `https://wa.me/${phone}` : '#';
+
+  // Temp buttons
+  const temp = lead.temp || lead.tier || '';
+  document.querySelectorAll('#detail-temp-buttons button').forEach(btn => {
+    btn.classList.remove('bg-error/10', 'bg-secondary/10', 'bg-primary/10', 'bg-outline/10');
+    const map = { 'very-hot': 'HOT', 'hot': 'WARM', 'warm': 'LUKEWARM', 'cold': 'COLD' };
+    if (map[btn.dataset.temp] === temp) {
+      btn.classList.add(btn.dataset.temp === 'very-hot' ? 'bg-error/10' : btn.dataset.temp === 'hot' ? 'bg-secondary/10' : 'bg-primary/10');
+    }
+  });
+}
+
+function closeDetailPanel() {
+  const panel = document.getElementById('detail-panel');
+  panel.classList.add('hidden');
+  panel.classList.remove('flex');
+  // Reset name edit state
+  document.getElementById('detail-name').classList.remove('hidden');
+  document.getElementById('detail-name-input').classList.add('hidden');
+  selectedLead = null;
+}
+
+// ---- Inline name editing ----
+let nameEditSaving = false;
+
+function startNameEdit() {
+  if (!selectedLead) return;
+  const nameEl = document.getElementById('detail-name');
+  const nameInput = document.getElementById('detail-name-input');
+  nameEl.classList.add('hidden');
+  nameInput.classList.remove('hidden');
+  nameInput.value = selectedLead.display_name || selectedLead.name || '';
+  nameInput.focus();
+  nameInput.select();
+}
+
+async function commitNameEdit() {
+  if (nameEditSaving) return; // prevent double-fire from blur+enter
+  const nameInput = document.getElementById('detail-name-input');
+  const nameEl = document.getElementById('detail-name');
+  const newName = nameInput.value.trim();
+
+  if (!selectedLead || !newName) {
+    // Revert — show original
+    nameInput.classList.add('hidden');
+    nameEl.classList.remove('hidden');
+    return;
+  }
+
+  const oldName = selectedLead.display_name || selectedLead.name || '';
+  if (newName === oldName) {
+    nameInput.classList.add('hidden');
+    nameEl.classList.remove('hidden');
+    return;
+  }
+
+  const token = getToken();
+  if (!token && firebaseMode) {
+    showToast('Set a token first to save names', true);
+    nameInput.classList.add('hidden');
+    nameEl.classList.remove('hidden');
+    return;
+  }
+
+  nameEditSaving = true;
+
+  if (firebaseMode && token) {
+    try {
+      const res = await fetch(`${API_BASE}/api/firebase-proxy`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          token: token,
+          collection: 'Leads',
+          record_id: selectedLead._id,
+          data: { display_name: newName }
+        })
+      });
+      const result = await res.json();
+      if (!result.success) {
+        showToast('Save failed: ' + (result.error || 'Unknown'), true);
+        nameEditSaving = false;
+        nameInput.classList.add('hidden');
+        nameEl.classList.remove('hidden');
+        return;
+      }
+      // GET readback already done by proxy — result.data has verified record
+      showToast('Name updated');
+    } catch(e) {
+      showToast('Save failed: ' + e.message, true);
+      nameEditSaving = false;
+      nameInput.classList.add('hidden');
+      nameEl.classList.remove('hidden');
+      return;
+    }
+  } else {
+    showToast('Name updated (local only)');
+  }
+
+  // Update local state
+  selectedLead.display_name = newName;
+  selectedLead.name = newName;
+
+  nameEl.textContent = newName;
+  nameInput.classList.add('hidden');
+  nameEl.classList.remove('hidden');
+  nameEditSaving = false;
+
+  // Re-render table to reflect new name
+  renderPipelineTable();
+}
+
+// Wire up Enter and blur on the name input
+document.getElementById('detail-name-input').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') { e.preventDefault(); commitNameEdit(); }
+  if (e.key === 'Escape') {
+    document.getElementById('detail-name-input').classList.add('hidden');
+    document.getElementById('detail-name').classList.remove('hidden');
+  }
+});
+document.getElementById('detail-name-input').addEventListener('blur', () => {
+  // Small delay so Enter handler fires first if both trigger
+  setTimeout(commitNameEdit, 100);
+});
+
+async function saveLeadDetail() {
+  if (!selectedLead) return;
+  const token = getToken();
+  if (!token) { showTokenModal(); return; }
+
+  // Get selected temp
+  let newTemp = selectedLead.temp || selectedLead.tier;
+  const activeBtn = document.querySelector('#detail-temp-buttons button.bg-error\\/10, #detail-temp-buttons button.bg-secondary\\/10, #detail-temp-buttons button.bg-primary\\/10');
+
+  const data = {
+    general_notes: document.getElementById('detail-notes').value,
+    expected_commission: parseFloat(document.getElementById('detail-commission').value) || 0,
+  };
+
+  try {
+    const res = await fetch(`${API_BASE}/api/firebase-proxy`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        token: token,
+        collection: 'Leads',
+        record_id: selectedLead._id,
+        data: data
+      })
+    });
+    const result = await res.json();
+    if (result.success) {
+      showToast('Lead updated successfully');
+      await loadPipeline();
+    } else {
+      showToast('Error: ' + (result.error || 'Unknown'), true);
+    }
+  } catch(e) {
+    showToast('Save failed: ' + e.message, true);
+  }
+}
+
+// Temp button clicks
+document.querySelectorAll('#detail-temp-buttons button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#detail-temp-buttons button').forEach(b =>
+      b.classList.remove('bg-error/10', 'bg-secondary/10', 'bg-primary/10', 'bg-outline/10'));
+    btn.classList.add(btn.dataset.temp === 'very-hot' ? 'bg-error/10' : btn.dataset.temp === 'hot' ? 'bg-secondary/10' : 'bg-primary/10');
+  });
+});
+
+// ============ CLOSINGS ============
+async function loadClosings() {
+  const res = await fetch(`${API_BASE}/pipeline`);
+  pipelineData = await res.json();
+  renderClosingsKPIs();
+  renderClosingsTable();
+}
+
+function renderClosingsKPIs() {
+  if (!pipelineData) return;
+  const deals = pipelineData.deals || [];
+  const leads = pipelineData.leads || [];
+
+  const totalVolume = deals.reduce((s, d) => s + (d.price || 0), 0);
+  const openDeals = deals.filter(d => d.payStatus !== 'Paid' && d.payStatus !== 'שולם').length;
+  const closingCount = deals.length;
+  const totalComm = deals.reduce((s, d) => s + (d.gross || d.commission || d.net || 0), 0);
+  const avgComm = closingCount > 0 ? totalComm / closingCount : 0;
+  const received = deals.reduce((s, d) => s + (d.paidAmount || 0), 0);
+  const outstanding = totalComm - received;
+
+  document.getElementById('kpi-total-volume').textContent = formatCurrency(totalVolume);
+  document.getElementById('kpi-open-deals').textContent = openDeals;
+  document.getElementById('kpi-closing-count').textContent = closingCount;
+  document.getElementById('kpi-avg-commission').textContent = formatCurrency(avgComm);
+  document.getElementById('kpi-received').textContent = formatCurrency(received);
+  document.getElementById('kpi-outstanding').textContent = formatCurrency(outstanding);
+}
+
+function renderClosingsTable() {
+  if (!pipelineData) return;
+  const deals = pipelineData.deals || [];
+  const tbody = document.getElementById('closings-table-body');
+
+  if (deals.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="6" class="p-6 text-center text-on-surface-variant">No deals recorded yet</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = deals.map(d => {
+    const payClass = d.payStatus === 'Paid' || d.payStatus === 'שולם' ? 'text-primary bg-primary/10' :
+                     d.payStatus === 'Partial' ? 'text-secondary bg-secondary/10' : 'text-error bg-error/10';
+    return `<tr class="hover:bg-surface-container-high transition-colors">
+      <td class="p-4">
+        <p class="text-secondary font-bold">${esc(d.client)}</p>
+        <p class="text-[10px] text-on-surface-variant">${esc(d.project)}</p>
+      </td>
+      <td class="p-4 text-primary font-bold">${formatCurrency(d.price)}</td>
+      <td class="p-4 font-medium">${formatCurrency(d.gross || d.commission || d.net || 0)}</td>
+      <td class="p-4 text-sm text-on-surface-variant">${d.closeDate || '--'}</td>
+      <td class="p-4"><span class="bg-surface-container-highest px-2 py-0.5 text-[10px]">${esc(d.role || 'Broker')}</span></td>
+      <td class="p-4"><span class="inline-flex items-center px-2 py-0.5 ${payClass} text-[10px] font-bold">${esc(d.payStatus || 'Pending')}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+// New Deal
+function showNewDealModal() { document.getElementById('new-deal-modal').classList.remove('hidden'); }
+function hideNewDealModal() { document.getElementById('new-deal-modal').classList.add('hidden'); }
+
+async function submitNewDeal(e) {
+  e.preventDefault();
+  const form = e.target;
+  const body = {
+    client: form.client.value,
+    project: form.project.value,
+    price: parseFloat(form.price.value) || 0,
+    commPct: parseFloat(form.commPct.value) || 0,
+    closeDate: form.closeDate.value,
+    role: form.role.value,
+    notes: form.notes.value,
+  };
+
+  try {
+    const res = await fetch(`${API_BASE}/pipeline/add`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    const result = await res.json();
+    if (result.success) {
+      hideNewDealModal();
+      form.reset();
+      showToast('Deal added');
+      await loadClosings();
+    } else {
+      showToast('Error: ' + result.error, true);
+    }
+  } catch(e) {
+    showToast('Failed: ' + e.message, true);
+  }
+}
+
+// ============ CAMPAIGNS ============
+async function loadCampaigns() {
+  // Fetch projects for campaign names
+  try { projectsPublic = await firebaseFetch('Projects_Public'); } catch(e) { projectsPublic = []; }
+  if (!Array.isArray(projectsPublic)) {
+    if (projectsPublic && typeof projectsPublic === 'object') projectsPublic = Object.values(projectsPublic);
+    else projectsPublic = [];
+  }
+
+  // Ensure we have leads loaded
+  if (firebaseLeads.length === 0) {
+    await loadPipeline();
+  }
+
+  const campaignCounts = {};
+  firebaseLeads.forEach(l => {
+    const src = l.source_campaign || l.project_id || 'Unknown';
+    campaignCounts[src] = (campaignCounts[src] || 0) + 1;
+  });
+
+  renderCampaigns(campaignCounts);
+}
+
+function renderCampaigns(counts) {
+  const grid = document.getElementById('campaigns-grid');
+  const projects = projectsPublic.length > 0 ? projectsPublic : [
+    { project_name: 'Beachfront Villas', project_id: 'KP-BCH-011', status: 'active' },
+    { project_name: 'Maduwan Zenith', project_id: 'KP-ZEN-012', status: 'active' },
+    { project_name: 'Srithanu Villas', project_id: 'KP-SRI-013', status: 'paused' },
+  ];
+
+  grid.innerHTML = projects.map(p => {
+    const name = p.project_name || p.name || 'Unknown';
+    const id = p.project_id || p._id || '';
+    const isActive = p.status !== 'paused' && p.status !== 'inactive';
+    const leadCount = counts[id] || counts[name] || 0;
+    const statusBadge = isActive
+      ? '<span class="text-[10px] font-bold tracking-widest uppercase text-primary border border-primary/30 px-2 py-0.5">ACTIVE</span>'
+      : '<span class="text-[10px] font-bold tracking-widest uppercase text-error border border-error/30 px-2 py-0.5">PAUSED</span>';
+
+    return `<div class="bg-surface-container p-6 ghost-border relative group transition-all hover:bg-surface-container-high ${isActive ? '' : 'opacity-70'}">
+      <div class="flex justify-between items-start mb-6">${statusBadge}</div>
+      <h3 class="text-xl font-bold text-secondary mb-1">${esc(name)}</h3>
+      <p class="text-xs text-on-surface-variant mb-6">${esc(id)}</p>
+      <div class="space-y-4">
+        <div class="flex justify-between items-end">
+          <span class="text-xs text-on-surface-variant">Registered Leads</span>
+          <span class="text-2xl font-bold text-primary tracking-tighter">${leadCount}</span>
+        </div>
+        <div class="h-[1px] bg-outline-variant/30 w-full"></div>
+      </div>
+      <button disabled class="w-full mt-6 py-3 border border-outline-variant text-on-surface-variant text-xs font-bold opacity-50 cursor-not-allowed">
+        Broadcast (KPR-53)
+      </button>
+    </div>`;
+  }).join('');
+}
+
+// ============ PROJECTS ============
+async function loadProjects() {
+  // Firebase projects
+  try { projectsPublic = await firebaseFetch('Projects_Public'); } catch(e) { projectsPublic = []; }
+  if (!Array.isArray(projectsPublic)) projectsPublic = Object.values(projectsPublic || {});
+
+  // Pipeline projects (radar)
+  let radarProjects = [];
+  try {
+    const res = await fetch(`${API_BASE}/api/pipeline-projects`);
+    const data = await res.json();
+    radarProjects = data.projects || [];
+  } catch(e) {}
+
+  renderProjects(radarProjects);
+}
+
+function renderProjects(radarProjects) {
+  const active = projectsPublic.filter(p => p.status === 'active' || !p.status);
+  const catalog = projectsPublic.filter(p => p.status === 'catalog');
+
+  document.getElementById('projects-count').textContent = `${projectsPublic.length + radarProjects.length} projects`;
+
+  // Active
+  const activeGrid = document.getElementById('projects-active');
+  if (active.length === 0) {
+    activeGrid.innerHTML = '<p class="text-on-surface-variant col-span-2">No active campaign projects</p>';
+  } else {
+    activeGrid.innerHTML = active.map(p => `
+      <div class="bg-surface-container ghost-border p-6 cursor-pointer hover:bg-surface-container-high transition-colors">
+        <div class="flex justify-between items-start mb-4">
+          <div>
+            <span class="bg-primary/10 text-primary text-[10px] font-bold px-2 py-1 mb-2 inline-block">CAMPAIGN ACTIVE</span>
+            <h3 class="text-xl font-bold text-secondary">${esc(p.project_name || p.name || '')}</h3>
+            <p class="text-xs text-on-surface-variant">${esc(p.location || '')}</p>
+          </div>
+          <div class="text-right">
+            <p class="text-lg font-bold text-primary font-mono">${p.price_from ? '$' + Number(p.price_from).toLocaleString() : '--'}</p>
+            <p class="text-[10px] text-on-surface-variant">Starting from</p>
+          </div>
+        </div>
+      </div>`).join('');
+  }
+
+  // Catalog
+  const catalogGrid = document.getElementById('projects-catalog');
+  if (catalog.length === 0) {
+    catalogGrid.innerHTML = '<p class="text-on-surface-variant col-span-2">No catalog projects</p>';
+  } else {
+    catalogGrid.innerHTML = catalog.map(p => `
+      <div class="bg-surface-container-low ghost-border p-6 border-r-4 border-surface-bright">
+        <div class="flex justify-between items-start mb-4">
+          <div>
+            <span class="bg-surface-bright text-on-surface text-[10px] font-bold px-2 py-1 mb-2 inline-block">CATALOG</span>
+            <h3 class="text-lg font-bold text-secondary-fixed-dim">${esc(p.project_name || p.name || '')}</h3>
+            <p class="text-xs text-on-surface-variant">${esc(p.location || '')}</p>
+          </div>
+        </div>
+      </div>`).join('');
+  }
+
+  // Radar
+  const radarBody = document.getElementById('projects-radar');
+  if (radarProjects.length === 0) {
+    radarBody.innerHTML = '<tr><td colspan="5" class="p-6 text-center text-on-surface-variant">No radar projects</td></tr>';
+  } else {
+    radarBody.innerHTML = radarProjects.map(p => `
+      <tr class="hover:bg-surface-container transition-colors">
+        <td class="px-6 py-4"><span class="font-bold">${esc(p.name || '')}</span><br/><span class="text-[10px] text-on-surface-variant font-mono">${esc(p.phone || '')}</span></td>
+        <td class="px-6 py-4 font-medium text-secondary">${esc(p.project || '')}</td>
+        <td class="px-6 py-4 text-on-surface-variant">${esc(p.location || '')}</td>
+        <td class="px-6 py-4 font-mono text-primary">${p.dealSize ? '$' + Number(p.dealSize).toLocaleString() : '--'}</td>
+        <td class="px-6 py-4 text-on-surface-variant italic">${esc(p.notes || '')}</td>
+      </tr>`).join('');
+  }
+}
+
+// ============ REPORTS ============
+async function loadReports() {
+  // Pipeline data for deals
+  if (!pipelineData) {
+    try {
+      const res = await fetch(`${API_BASE}/pipeline`);
+      pipelineData = await res.json();
+    } catch(e) {}
+  }
+
+  // Firebase leads for counts
+  if (firebaseLeads.length === 0) {
+    try { firebaseLeads = await firebaseFetch('Leads'); } catch(e) { firebaseLeads = []; }
+    if (!Array.isArray(firebaseLeads)) firebaseLeads = [];
+  }
+
+  renderReportKPIs();
+  renderReportChart();
+}
+
+function renderReportKPIs() {
+  const leads = firebaseLeads.filter(l => !isRemoved(l));
+  const deals = pipelineData?.deals || [];
+
+  document.getElementById('report-pipeline-leads').textContent = leads.length.toLocaleString();
+
+  const onIsland = leads.filter(isOnIsland).length;
+  document.getElementById('report-on-island').textContent = onIsland;
+
+  // Missed follow-ups: leads not updated in 48h+
+  const now = Date.now();
+  const missed = leads.filter(l => {
+    const updated = new Date(l.updated_at || l.updatedAt || 0).getTime();
+    return (now - updated) > 48 * 60 * 60 * 1000 && (l.temp === 'HOT' || l.tier === 'HOT' || l.temp === 'WARM' || l.tier === 'WARM');
+  }).length;
+  document.getElementById('report-missed').textContent = missed;
+
+  document.getElementById('report-deals').textContent = deals.length;
+}
+
+function renderReportChart() {
+  const chart = document.getElementById('report-chart');
+  const deals = pipelineData?.deals || [];
+  const leads = pipelineData?.leads || [];
+
+  // Simple 6-month mock chart based on actual data
+  const months = ['NOV', 'DEC', 'JAN', 'FEB', 'MAR', 'APR'];
+  const incoming = [leads.length > 20 ? 15 : 8, 12, 18, 22, leads.length, Math.round(leads.length * 0.8)];
+  const converted = [2, 3, 4, 5, deals.length, Math.round(deals.length * 0.7)];
+  const maxVal = Math.max(...incoming, ...converted, 1);
+
+  chart.innerHTML = months.map((m, i) => `
+    <div class="flex-1 flex flex-col items-center gap-2 group">
+      <div class="w-full flex items-end justify-center gap-1 h-full">
+        <div class="w-4 bg-primary transition-all group-hover:opacity-80" style="height:${(incoming[i] / maxVal) * 100}%"></div>
+        <div class="w-4 bg-primary-container transition-all group-hover:opacity-80" style="height:${(converted[i] / maxVal) * 100}%"></div>
+      </div>
+      <span class="text-[10px] font-bold text-on-surface-variant">${m}</span>
+    </div>`).join('');
+}
+
+// ============ SEARCH ============
+document.getElementById('global-search').addEventListener('input', (e) => {
+  const q = e.target.value.toLowerCase().trim();
+  if (!q || currentPage !== 'pipeline') return;
+
+  const rows = document.querySelectorAll('#pipeline-table-body tr');
+  rows.forEach(row => {
+    row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+});
+
+// ============ HELPERS ============
+function esc(s) {
+  if (!s) return '';
+  const d = document.createElement('div');
+  d.textContent = String(s);
+  return d.innerHTML;
+}
+
+function formatCurrency(n) {
+  if (!n || n === 0) return '--';
+  if (n >= 1000000) return (n / 1000000).toFixed(1).replace('.0', '') + 'M';
+  if (n >= 1000) return Math.round(n).toLocaleString();
+  return String(n);
+}
+
+function parseBudget(budget) {
+  if (!budget) return '--';
+  if (typeof budget === 'number') return formatCurrency(budget);
+  if (typeof budget === 'string') {
+    try {
+      const parsed = JSON.parse(budget);
+      return formatCurrency(parsed.max || parsed.min || 0);
+    } catch(e) { return budget; }
+  }
+  if (typeof budget === 'object') return formatCurrency(budget.max || budget.min || 0);
+  return '--';
+}
+
+function timeAgo(dateStr) {
+  if (!dateStr) return '--';
+  const d = new Date(dateStr);
+  const diff = Date.now() - d.getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 60) return `${mins}m ago`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  if (days === 0) return 'Today';
+  if (days === 1) return 'Yesterday';
+  return `${days}d ago`;
+}
+
+function daysSince(dateStr) {
+  if (!dateStr) return 999;
+  return Math.floor((Date.now() - new Date(dateStr).getTime()) / 86400000);
+}
+
+// Toast notification
+function showToast(msg, isError = false) {
+  const toast = document.createElement('div');
+  toast.className = `fixed bottom-6 left-6 px-6 py-3 text-sm font-bold z-[200] ${isError ? 'bg-error text-on-error' : 'bg-primary text-on-primary'}`;
+  toast.textContent = msg;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 3000);
+}
+
+// ============ REMOVE LEAD ============
+async function removeLead(firebaseId, name) {
+  if (!confirm(`להסיר את ${name}? הפעולה לא ניתנת לביטול.`)) return;
+
+  const token = getToken();
+  if (!token && firebaseMode) {
+    showTokenModal();
+    return;
+  }
+
+  if (firebaseMode && token) {
+    // Firebase: soft-delete via proxy
+    try {
+      const res = await fetch(`${API_BASE}/api/firebase-proxy`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          token: token,
+          collection: 'Leads',
+          record_id: firebaseId,
+          data: { status: 'removed', removed_at: new Date().toISOString() }
+        })
+      });
+      const result = await res.json();
+      if (!result.success) {
+        showToast('Error: ' + (result.error || 'Unknown'), true);
+        return;
+      }
+    } catch(e) {
+      showToast('Remove failed: ' + e.message, true);
+      return;
+    }
+  }
+
+  // Update local state immediately
+  const lead = firebaseLeads.find(l => l._id === firebaseId);
+  if (lead) {
+    lead.status = 'removed';
+    lead.removed_at = new Date().toISOString();
+  }
+
+  closeDetailPanel();
+  renderPipelineKPIs();
+  renderPipelineTable();
+  showToast(`${name} removed`);
+}
+
+// ============ AUTO-REFRESH ============
+let lastRefreshTime = Date.now();
+let autoRefreshInterval = null;
+let lastUpdateTimerInterval = null;
+
+function updateLastUpdatedLabel() {
+  const el = document.getElementById('last-updated');
+  const secs = Math.floor((Date.now() - lastRefreshTime) / 1000);
+  if (secs < 60) el.textContent = `Updated ${secs}s ago`;
+  else if (secs < 3600) el.textContent = `Updated ${Math.floor(secs / 60)}m ago`;
+  else el.textContent = `Updated ${Math.floor(secs / 3600)}h ago`;
+}
+
+async function autoRefreshPipeline() {
+  // Don't refresh if detail panel is open
+  if (selectedLead) return;
+  // Only refresh if on pipeline page
+  if (currentPage !== 'pipeline') return;
+
+  const prevCount = firebaseLeads.filter(l => !isRemoved(l)).length;
+
+  try {
+    await loadPipeline();
+  } catch(e) {
+    console.warn('Auto-refresh failed:', e);
+    return;
+  }
+
+  lastRefreshTime = Date.now();
+
+  const newCount = firebaseLeads.filter(l => !isRemoved(l)).length;
+  if (newCount > prevCount) {
+    showToast(`New lead added! (${newCount - prevCount} new)`);
+  }
+}
+
+function startAutoRefresh() {
+  if (autoRefreshInterval) clearInterval(autoRefreshInterval);
+  if (lastUpdateTimerInterval) clearInterval(lastUpdateTimerInterval);
+
+  autoRefreshInterval = setInterval(autoRefreshPipeline, 3 * 60 * 1000); // 3 minutes
+  lastUpdateTimerInterval = setInterval(updateLastUpdatedLabel, 5000); // update label every 5s
+  lastRefreshTime = Date.now();
+  updateLastUpdatedLabel();
+}
+
+// ============ INIT ============
+(async function init() {
+  await loadPageData('pipeline');
+  startAutoRefresh();
+})();
+</script>
+</body>
+</html>
