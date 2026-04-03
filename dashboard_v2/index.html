@@ -478,6 +478,29 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
       </div>
     </div>
 
+    <!-- Island Presence -->
+    <div class="space-y-3" id="detail-island-section">
+      <label class="text-[10px] text-on-surface-variant uppercase tracking-widest font-bold">Island Presence</label>
+      <div class="flex gap-1">
+        <button id="island-btn-on" onclick="setIslandStatus('on_island')" class="flex-1 py-2 text-[10px] font-bold border border-primary text-primary transition-colors">On Island</button>
+        <button id="island-btn-off" onclick="setIslandStatus('off_island')" class="flex-1 py-2 text-[10px] font-bold border border-outline-variant text-on-surface-variant transition-colors">Off Island</button>
+      </div>
+      <div id="island-type-row" class="hidden flex gap-1">
+        <button id="island-type-perm" onclick="setIslandType('permanent')" class="flex-1 py-2 text-[10px] font-bold border border-outline-variant text-on-surface-variant transition-colors">Permanent</button>
+        <button id="island-type-temp" onclick="setIslandType('temporary')" class="flex-1 py-2 text-[10px] font-bold border border-outline-variant text-on-surface-variant transition-colors">Temporary</button>
+      </div>
+      <div id="island-dates-row" class="hidden grid grid-cols-2 gap-2">
+        <div class="space-y-1">
+          <label class="text-[9px] text-on-surface-variant">From</label>
+          <input id="island-date-from" type="date" class="w-full bg-surface-container-low border-none text-xs py-2 px-2 focus:ring-1 focus:ring-primary"/>
+        </div>
+        <div class="space-y-1">
+          <label class="text-[9px] text-on-surface-variant">Until</label>
+          <input id="island-date-until" type="date" class="w-full bg-surface-container-low border-none text-xs py-2 px-2 focus:ring-1 focus:ring-primary"/>
+        </div>
+      </div>
+    </div>
+
     <!-- Notes -->
     <div class="space-y-2">
       <label class="text-[10px] text-on-surface-variant uppercase tracking-widest font-bold">Memory Notes</label>
@@ -722,11 +745,18 @@ function isRemoved(lead) {
 }
 
 function isOnIsland(lead) {
-  // Firebase mode: check island_presence object
+  // Structured island_presence (set via side panel or Firebase)
   const ip = lead.island_presence;
   if (ip && typeof ip === 'object') {
-    const s = (ip.status || '').toLowerCase();
-    if (s === 'on_island' || s === 'on island' || s === 'arriving_soon') return true;
+    const s = (ip.status || '').toLowerCase().replace(/ /g, '_');
+    if (s === 'on_island' || s === 'arriving_soon') {
+      // If temporary, check dates
+      if (ip.type === 'temporary' && ip.until) {
+        return new Date(ip.until) >= new Date(new Date().toISOString().slice(0, 10));
+      }
+      return true;
+    }
+    if (s === 'off_island') return false;
   }
   // Also check top-level status
   const st = (lead.status || '').toLowerCase();
@@ -864,6 +894,9 @@ function openLeadDetail(firebaseId) {
   document.getElementById('detail-added').textContent = lead.addedAt ? new Date(lead.addedAt).toLocaleDateString('he-IL') : '--';
   document.getElementById('detail-notes').value = lead.general_notes || '';
 
+  // Island presence
+  populateIslandUI();
+
   // WhatsApp link
   const phone = (lead.phone_number || '').replace(/\D/g, '');
   document.getElementById('detail-whatsapp').href = phone ? `https://wa.me/${phone}` : '#';
@@ -992,6 +1025,86 @@ document.getElementById('detail-name-input').addEventListener('blur', () => {
   setTimeout(commitNameEdit, 100);
 });
 
+// ---- Island Presence editing ----
+let islandState = { status: 'off_island', type: '', from: '', until: '' };
+
+function populateIslandUI() {
+  const ip = selectedLead?.island_presence;
+  if (ip && typeof ip === 'object') {
+    islandState.status = (ip.status || 'off_island').toLowerCase().replace(/ /g, '_');
+    islandState.type = ip.type || '';
+    islandState.from = ip.from || '';
+    islandState.until = ip.until || '';
+  } else {
+    // Detect from notes as hint
+    const onIslandDetected = selectedLead ? isOnIsland(selectedLead) : false;
+    islandState = { status: onIslandDetected ? 'on_island' : 'off_island', type: '', from: '', until: '' };
+  }
+  renderIslandUI();
+}
+
+function renderIslandUI() {
+  const onBtn = document.getElementById('island-btn-on');
+  const offBtn = document.getElementById('island-btn-off');
+  const typeRow = document.getElementById('island-type-row');
+  const datesRow = document.getElementById('island-dates-row');
+  const permBtn = document.getElementById('island-type-perm');
+  const tempBtn = document.getElementById('island-type-temp');
+
+  // Toggle buttons
+  if (islandState.status === 'on_island') {
+    onBtn.className = 'flex-1 py-2 text-[10px] font-bold border border-primary text-on-primary bg-primary transition-colors';
+    offBtn.className = 'flex-1 py-2 text-[10px] font-bold border border-outline-variant text-on-surface-variant transition-colors';
+    typeRow.classList.remove('hidden');
+  } else {
+    offBtn.className = 'flex-1 py-2 text-[10px] font-bold border border-outline-variant text-on-primary bg-outline-variant transition-colors';
+    onBtn.className = 'flex-1 py-2 text-[10px] font-bold border border-primary text-primary transition-colors';
+    typeRow.classList.add('hidden');
+    datesRow.classList.add('hidden');
+  }
+
+  // Type buttons
+  if (islandState.type === 'permanent') {
+    permBtn.className = 'flex-1 py-2 text-[10px] font-bold border border-secondary text-on-secondary bg-secondary transition-colors';
+    tempBtn.className = 'flex-1 py-2 text-[10px] font-bold border border-outline-variant text-on-surface-variant transition-colors';
+    datesRow.classList.add('hidden');
+  } else if (islandState.type === 'temporary') {
+    tempBtn.className = 'flex-1 py-2 text-[10px] font-bold border border-secondary text-on-secondary bg-secondary transition-colors';
+    permBtn.className = 'flex-1 py-2 text-[10px] font-bold border border-outline-variant text-on-surface-variant transition-colors';
+    datesRow.classList.remove('hidden');
+    document.getElementById('island-date-from').value = islandState.from;
+    document.getElementById('island-date-until').value = islandState.until;
+  } else {
+    permBtn.className = 'flex-1 py-2 text-[10px] font-bold border border-outline-variant text-on-surface-variant transition-colors';
+    tempBtn.className = 'flex-1 py-2 text-[10px] font-bold border border-outline-variant text-on-surface-variant transition-colors';
+    datesRow.classList.add('hidden');
+  }
+}
+
+function setIslandStatus(status) {
+  islandState.status = status;
+  if (status === 'off_island') { islandState.type = ''; islandState.from = ''; islandState.until = ''; }
+  renderIslandUI();
+}
+
+function setIslandType(type) {
+  islandState.type = type;
+  if (type === 'permanent') { islandState.from = ''; islandState.until = ''; }
+  renderIslandUI();
+}
+
+function getIslandPayload() {
+  const payload = { status: islandState.status };
+  if (islandState.status === 'on_island') {
+    payload.type = islandState.type || 'temporary';
+    if (islandState.type === 'temporary') {
+      payload.from = document.getElementById('island-date-from').value || '';
+      payload.until = document.getElementById('island-date-until').value || '';
+    }
+  }
+  return payload;
+}
+
 async function saveLeadDetail() {
   if (!selectedLead) return;
   const token = getToken();
@@ -1004,6 +1117,7 @@ async function saveLeadDetail() {
   const data = {
     general_notes: document.getElementById('detail-notes').value,
     expected_commission: parseFloat(document.getElementById('detail-commission').value) || 0,
+    island_presence: getIslandPayload(),
   };
 
   try {
@@ -1019,8 +1133,15 @@ async function saveLeadDetail() {
     });
     const result = await res.json();
     if (result.success) {
+      // Update local state so table re-renders immediately
+      if (selectedLead) {
+        selectedLead.island_presence = getIslandPayload();
+        selectedLead.general_notes = data.general_notes;
+        selectedLead.expected_commission = data.expected_commission;
+      }
       showToast('Lead updated successfully');
-      await loadPipeline();
+      renderPipelineKPIs();
+      renderPipelineTable();
     } else {
       showToast('Error: ' + (result.error || 'Unknown'), true);
     }
