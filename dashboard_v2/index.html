@@ -87,9 +87,9 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
 .cb-orange { background:rgba(251,146,60,0.15); color:#FB923C; }
 .cf-select { background:#31353c; color:#E2E8F0; border:1px solid #3e4943; border-radius:6px; padding:6px 10px; font-size:12px; cursor:pointer; appearance:none; -webkit-appearance:none; direction:rtl; }
 .cf-select:focus { outline:none; border-color:#4A90D9; }
-.pill-btn { padding:5px 10px; font-size:11px; font-weight:600; border:1px solid #3e4943; border-radius:9999px; color:#94A3B8; background:transparent; cursor:pointer; transition:all 0.15s; white-space:nowrap; }
-.pill-btn:hover { border-color:#6DD5FA; color:#E2E8F0; }
-.pill-btn.active { background:#4A90D9; border-color:#4A90D9; color:#fff; }
+.pill-btn { padding:6px 14px; font-size:11px; font-weight:700; border:1.5px solid #3e4943; border-radius:9999px !important; color:#94A3B8; background:transparent; cursor:pointer; transition:all 0.15s; white-space:nowrap; letter-spacing:0.3px; }
+.pill-btn:hover { border-color:#6DD5FA; color:#E2E8F0; background:rgba(74,144,217,0.08); }
+.pill-btn.active { background:#4A90D9; border-color:#4A90D9; color:#fff; box-shadow:0 0 8px rgba(74,144,217,0.3); }
 </style>
 </head>
 <body class="text-on-surface overflow-hidden h-screen flex flex-row-reverse">
@@ -242,14 +242,18 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
         <select id="cf-source" class="cf-select" onchange="renderClosings()">
           <option value="">כל המקורות &#9660;</option><option value="קמפיין">קמפיין</option><option value="פה לאוזן">פה לאוזן</option>
         </select>
-        <div class="flex gap-1 items-center" id="cf-status-pills">
-          <button class="pill-btn active" data-val="" onclick="togglePill(this,'status')">כל הסטטוסים</button>
+        <div style="width:1px;height:24px;background:#3e4943"></div>
+        <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap" id="cf-status-pills">
+          <span style="font-size:10px;color:#94A3B8;font-weight:700">STATUS:</span>
+          <button class="pill-btn active" data-val="" onclick="togglePill(this,'status')">הכל</button>
           <button class="pill-btn" data-val="Closed Won" onclick="togglePill(this,'status')">נסגר</button>
           <button class="pill-btn" data-val="Contract" onclick="togglePill(this,'status')">לקראת סגירה</button>
           <button class="pill-btn" data-val="cancelled" onclick="togglePill(this,'status')">מבוטל</button>
         </div>
-        <div class="flex gap-1 items-center" id="cf-pay-pills">
-          <button class="pill-btn active" data-val="" onclick="togglePill(this,'pay')">כל התשלומים</button>
+        <div style="width:1px;height:24px;background:#3e4943"></div>
+        <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap" id="cf-pay-pills">
+          <span style="font-size:10px;color:#94A3B8;font-weight:700">PAYMENT:</span>
+          <button class="pill-btn active" data-val="" onclick="togglePill(this,'pay')">הכל</button>
           <button class="pill-btn" data-val="שולם" onclick="togglePill(this,'pay')">שולם</button>
           <button class="pill-btn" data-val="שולם חלקי" onclick="togglePill(this,'pay')">שולם חלקי</button>
           <button class="pill-btn" data-val="לא שולם" onclick="togglePill(this,'pay')">לא שולם</button>
