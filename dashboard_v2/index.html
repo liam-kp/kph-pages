@@ -1283,20 +1283,20 @@ let closingSortDir = 1;
 
 // Payment schedule (from old dashboard)
 const PAYMENTS = [
-  {dealId:4,client:"Anat & Mia",amount:50000,due:"2026-07-01",dueLabel:"Jul 2026"},
-  {dealId:8,client:"Yael & Ofer",amount:400000,due:"2026-05-01",dueLabel:"May 2026"},
-  {dealId:8,client:"Yael & Ofer",amount:200000,due:"2026-08-01",dueLabel:"Aug 2026"},
-  {dealId:8,client:"Yael & Ofer",amount:200000,due:"2026-12-01",dueLabel:"Dec 2026"},
-  {dealId:9,client:"Ben & Shir",amount:500000,due:"2026-03-31",dueLabel:"Mar 2026"},
-  {dealId:10,client:"Adam Laviya",amount:100000,due:"2026-05-01",dueLabel:"May 2026"},
-  {dealId:10,client:"Adam Laviya",amount:50000,due:"2026-12-01",dueLabel:"Dec 2026"},
-  {dealId:11,client:"Nadav",amount:340000,due:"2026-03-15",dueLabel:"Mar 2026"},
-  {dealId:12,client:"Amir",amount:500000,due:"2026-04-15",dueLabel:"Apr 2026"},
-  {dealId:13,client:"Orly",amount:350000,due:"2026-03-01",dueLabel:"Mar 2026"},
-  {dealId:13,client:"Orly",amount:100000,due:"2026-05-01",dueLabel:"May 2026"},
-  {dealId:13,client:"Orly",amount:50000,due:"2026-12-01",dueLabel:"Dec 2026"},
-  {dealId:14,client:"Ilan",amount:200000,due:"2026-03-01",dueLabel:"Mar 2026"},
-  {dealId:19,client:"Bar",amount:1000000,due:"2026-08-01",dueLabel:"Aug 2026"},
+  {dealId:4,  client:"Anat & Mia",  amount:50000,   due:"2026-07-01", dueLabel:"Jul 2026", desc:"Accompaniment — final"},
+  {dealId:8,  client:"Yael & Ofer", amount:400000,  due:"2026-05-01", dueLabel:"May 2026", desc:"Accompaniment — payment 2"},
+  {dealId:8,  client:"Yael & Ofer", amount:200000,  due:"2026-08-01", dueLabel:"Aug 2026", desc:"Accompaniment — payment 3"},
+  {dealId:8,  client:"Yael & Ofer", amount:200000,  due:"2026-12-01", dueLabel:"Dec 2026", desc:"Accompaniment — payment 4"},
+  {dealId:9,  client:"Ben & Shir",  amount:500000,  due:"2026-03-31", dueLabel:"Mar 2026", desc:"Commission + accomp balance"},
+  {dealId:10, client:"Adam Laviya", amount:100000,  due:"2026-05-01", dueLabel:"May 2026", desc:"Commission — payment 2"},
+  {dealId:10, client:"Adam Laviya", amount:50000,   due:"2026-12-01", dueLabel:"Dec 2026", desc:"Accompaniment — payment 3"},
+  {dealId:11, client:"Nadav",       amount:340000,  due:"2026-04-08", dueLabel:"Apr 2026", desc:"Full commission"},
+  {dealId:12, client:"Amir",        amount:500000,  due:"2026-04-15", dueLabel:"Apr 2026", desc:"Net commission (after Sirin)"},
+  {dealId:13, client:"Orly",        amount:350000,  due:"2026-03-01", dueLabel:"Mar 2026", desc:"Commission + accomp — payment 1"},
+  {dealId:13, client:"Orly",        amount:100000,  due:"2026-05-01", dueLabel:"May 2026", desc:"Commission — payment 2"},
+  {dealId:13, client:"Orly",        amount:50000,   due:"2026-12-01", dueLabel:"Dec 2026", desc:"Accompaniment — payment 3"},
+  {dealId:14, client:"Ilan",        amount:200000,  due:"2026-03-01", dueLabel:"Mar 2026", desc:"Full commission"},
+  {dealId:19, client:"Bar",         amount:1000000, due:"2026-08-01", dueLabel:"Aug 2026", desc:"Developer profit — remaining"},
 ];
 
 async function loadClosings() {
@@ -1360,30 +1360,21 @@ function renderClosings() {
 function renderNextPaymentCard() {
   const today = new Date();
   const deals = pipelineData?.deals || [];
-  const seenDealIds = new Set();
+  const overriddenDealIds = new Set(); // deals that have custom next_payment_date
   let items = [];
 
-  // Source 1: deals with upcoming:true + next_payment_date (highest priority)
+  // Source 1+2: deals with next_payment_date (upcoming:true first, then others)
   deals.forEach(d => {
-    if (d.upcoming && d.next_payment_date && d.status !== 'cancelled' && d.status !== 'pipeline') {
-      items.push({ client: d.client, due: d.next_payment_date, amount: d.next_payment_amount || 0, dealId: d.id });
-      seenDealIds.add(d.id);
+    if (d.next_payment_date && d.status !== 'cancelled' && d.status !== 'pipeline') {
+      items.push({ client: d.client, due: d.next_payment_date, amount: d.next_payment_amount || 0, dealId: d.id, desc: d.upcoming ? 'Upcoming' : '' });
+      overriddenDealIds.add(d.id);
     }
   });
 
-  // Source 2: deals with next_payment_date (even without upcoming flag)
-  deals.forEach(d => {
-    if (!seenDealIds.has(d.id) && d.next_payment_date && d.status !== 'cancelled' && d.status !== 'pipeline') {
-      items.push({ client: d.client, due: d.next_payment_date, amount: d.next_payment_amount || 0, dealId: d.id });
-      seenDealIds.add(d.id);
-    }
-  });
-
-  // Source 3: PAYMENTS array fallback for deals not yet covered
+  // Source 3: PAYMENTS fallback — add ALL entries for deals NOT overridden
   PAYMENTS.forEach(p => {
-    if (!seenDealIds.has(p.dealId) && new Date(p.due) >= today) {
-      items.push({ client: p.client, due: p.due, amount: p.amount, dealId: p.dealId });
-      seenDealIds.add(p.dealId);
+    if (!overriddenDealIds.has(p.dealId) && new Date(p.due) >= today) {
+      items.push({ client: p.client, due: p.due, amount: p.amount, dealId: p.dealId, desc: p.desc || '' });
     }
   });
 
