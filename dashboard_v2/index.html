@@ -673,6 +673,21 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
   </div>
 </div>
 
+<!-- ========== DUPLICATE LEAD MODAL ========== -->
+<div id="dup-lead-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[120] flex items-center justify-center p-4 hidden">
+  <div class="bg-surface-container w-full max-w-sm ghost-border shadow-2xl p-6 space-y-4">
+    <h3 class="text-sm font-bold text-[#FB923C]">Lead already exists</h3>
+    <p class="text-xs text-on-surface-variant" id="dup-lead-msg"></p>
+    <input type="hidden" id="dup-lead-existing-id"/>
+    <input type="hidden" id="dup-lead-temp"/>
+    <div class="flex gap-3">
+      <button onclick="dupLeadUpdate()" class="flex-1 py-3 text-xs font-bold border border-[#34D399] text-[#34D399] hover:bg-[#34D399]/10">Update Existing</button>
+      <button onclick="dupLeadCreateNew()" class="flex-1 py-3 text-xs font-bold border border-[#6DD5FA] text-[#6DD5FA] hover:bg-[#6DD5FA]/10">Create New</button>
+    </div>
+    <button onclick="document.getElementById('dup-lead-modal').classList.add('hidden')" class="w-full py-2 text-xs text-on-surface-variant border border-outline-variant">Cancel</button>
+  </div>
+</div>
+
 <!-- ========== JAVASCRIPT ========== -->
 <script>
 // ============ CONFIG ============
@@ -1600,68 +1615,119 @@ function returnToPipeline() {
   document.getElementById('priority-modal').classList.remove('hidden');
 }
 
+// Stash for duplicate flow
+let _returnDeal = null;
+let _returnTemp = '';
+
+function findDuplicateLead(deal) {
+  const leads = pipelineData?.leads || [];
+  const name = (deal.client || '').trim().toLowerCase();
+  const phone = (deal.phone || '').replace(/\D/g, '');
+  for (const l of leads) {
+    if (l.status === 'removed') continue;
+    if (phone && (l.phone || '').replace(/\D/g, '') === phone) return l;
+    if (name && (l.client || '').trim().toLowerCase() === name) return l;
+  }
+  return null;
+}
+
 async function confirmReturnToPipeline(temp) {
   const dealId = parseInt(document.getElementById('priority-deal-id').value);
   const deal = (pipelineData?.deals || []).find(d => d.id === dealId);
   document.getElementById('priority-modal').classList.add('hidden');
   if (!deal) return;
 
+  _returnDeal = deal;
+  _returnTemp = temp;
+
+  // Check for existing lead
+  const dup = findDuplicateLead(deal);
+  if (dup) {
+    document.getElementById('dup-lead-msg').textContent = `ליד "${dup.client}" כבר קיים בפייפליין (${dup.id}). לעדכן את הרשומה הקיימת או ליצור חדשה?`;
+    document.getElementById('dup-lead-existing-id').value = dup.id;
+    document.getElementById('dup-lead-temp').value = temp;
+    document.getElementById('dup-lead-modal').classList.remove('hidden');
+    return;
+  }
+
+  // No duplicate — create new
+  await executeReturnToPipeline(deal, temp, null);
+}
+
+function dupLeadUpdate() {
+  const existingId = document.getElementById('dup-lead-existing-id').value;
+  document.getElementById('dup-lead-modal').classList.add('hidden');
+  executeReturnToPipeline(_returnDeal, _returnTemp, existingId);
+}
+
+function dupLeadCreateNew() {
+  document.getElementById('dup-lead-modal').classList.add('hidden');
+  executeReturnToPipeline(_returnDeal, _returnTemp, null);
+}
+
+async function executeReturnToPipeline(deal, temp, updateExistingId) {
   // Mark deal as pipeline-returned
   deal.status = 'pipeline';
   deal.returned_at = new Date().toISOString().slice(0, 10);
-  persistDealUpdate(dealId, { status: 'pipeline', returned_at: deal.returned_at });
+  persistDealUpdate(deal.id, { status: 'pipeline', returned_at: deal.returned_at });
 
-  // Add as lead to pipeline_data.json leads array
   const leads = pipelineData.leads || [];
-  const newId = 'lead_' + String(Math.max(0, ...leads.map(l => parseInt((l.id || '').replace('lead_', '')) || 0)) + 1).padStart(3, '0');
-  const newLead = {
-    id: newId,
-    client: deal.client,
-    project: deal.project,
-    price: deal.price || 0,
-    commission: deal.net || 0,
-    commPct: '',
-    temp: temp,
-    notes: `Returned from deal #${deal.id}. ${deal.notes || ''}`.trim(),
-    addedAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    phone: deal.phone || '',
-    status: 'ENGAGED',
-  };
-  leads.push(newLead);
-  pipelineData.leads = leads;
+  const tierVal = temp === 'חם מאוד' ? 'HOT' : temp === 'חם' ? 'WARM' : 'LUKEWARM';
+  const returnNote = `Returned from deal #${deal.id}. ${deal.notes || ''}`.trim();
 
-  // Also add to firebaseLeads for pipeline tab
-  firebaseLeads.push({
-    _id: newId,
-    display_name: deal.client,
-    name: deal.client,
-    phone_number: deal.phone || '',
-    active_project: deal.project,
-    temp: temp === 'חם מאוד' ? 'HOT' : temp === 'חם' ? 'WARM' : 'LUKEWARM',
-    tier: temp === 'חם מאוד' ? 'HOT' : temp === 'חם' ? 'WARM' : 'LUKEWARM',
-    budget: deal.price || 0,
-    expected_commission: deal.net || 0,
-    general_notes: newLead.notes,
-    updated_at: new Date().toISOString(),
-    island_presence: {},
-    status: 'ENGAGED',
-  });
+  if (updateExistingId) {
+    // Update existing lead
+    const existing = leads.find(l => l.id === updateExistingId);
+    if (existing) {
+      existing.temp = temp;
+      existing.notes = returnNote;
+      existing.updatedAt = new Date().toISOString();
+      existing.status = 'ENGAGED';
+    }
+    // Update in firebaseLeads too
+    const fbLead = firebaseLeads.find(l => l._id === updateExistingId);
+    if (fbLead) {
+      fbLead.temp = tierVal;
+      fbLead.tier = tierVal;
+      fbLead.general_notes = returnNote;
+      fbLead.updated_at = new Date().toISOString();
+      fbLead.status = 'ENGAGED';
+    }
+    showToast(`${deal.client} — updated existing lead (${updateExistingId})`);
+  } else {
+    // Create new lead
+    const newId = 'lead_' + String(Math.max(0, ...leads.map(l => parseInt((l.id || '').replace('lead_', '')) || 0)) + 1).padStart(3, '0');
+    const newLead = {
+      id: newId, client: deal.client, project: deal.project,
+      price: deal.price || 0, commission: deal.net || 0, commPct: '',
+      temp: temp, notes: returnNote,
+      addedAt: new Date().toISOString(), updatedAt: new Date().toISOString(),
+      phone: deal.phone || '', status: 'ENGAGED',
+    };
+    leads.push(newLead);
+    pipelineData.leads = leads;
 
-  // Persist lead addition via server
-  if (LOCAL_API) {
-    try {
-      await fetch(`${LOCAL_API}/pipeline/add`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ client: deal.client, project: deal.project, price: deal.price, commPct: 0, notes: newLead.notes })
-      });
-    } catch(e) {}
+    firebaseLeads.push({
+      _id: newId, display_name: deal.client, name: deal.client,
+      phone_number: deal.phone || '', active_project: deal.project,
+      temp: tierVal, tier: tierVal, budget: deal.price || 0,
+      expected_commission: deal.net || 0, general_notes: returnNote,
+      updated_at: new Date().toISOString(), island_presence: {}, status: 'ENGAGED',
+    });
+
+    if (LOCAL_API) {
+      try {
+        await fetch(`${LOCAL_API}/pipeline/add`, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ client: deal.client, project: deal.project, price: deal.price, commPct: 0, notes: returnNote })
+        });
+      } catch(e) {}
+    }
+    showToast(`${deal.client} returned to pipeline as "${temp}"`);
   }
 
   hideEditDealModal();
   renderClosings();
-  showToast(`${deal.client} returned to pipeline as "${temp}"`);
 }
 
 async function persistDealUpdate(dealId, updates) {
