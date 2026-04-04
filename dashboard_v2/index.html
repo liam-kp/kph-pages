@@ -81,10 +81,12 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
 .closings-badge { display:inline-block; padding:2px 8px; border-radius:10px; font-size:10px; font-weight:600; }
 .cb-green { background:rgba(52,211,153,0.15); color:#34D399; }
 .cb-yellow { background:rgba(251,191,36,0.15); color:#FBBF24; }
-.cb-red { background:rgba(248,113,113,0.15); color:#F87171; }
+.cb-red { background:rgba(255,45,45,0.15); color:#FF2D2D; }
 .cb-blue { background:rgba(74,144,217,0.15); color:#4A90D9; }
 .cb-purple { background:rgba(167,139,250,0.15); color:#A78BFA; }
 .cb-orange { background:rgba(251,146,60,0.15); color:#FB923C; }
+.cf-select { background:#31353c; color:#E2E8F0; border:1px solid #3e4943; border-radius:6px; padding:6px 10px; font-size:12px; cursor:pointer; appearance:none; -webkit-appearance:none; direction:rtl; }
+.cf-select:focus { outline:none; border-color:#4A90D9; }
 </style>
 </head>
 <body class="text-on-surface overflow-hidden h-screen flex flex-row-reverse">
@@ -228,23 +230,25 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
 
       <!-- Filters -->
       <div class="bg-surface-container-low p-4 ghost-border flex flex-wrap gap-3 items-center">
-        <select id="cf-year" class="bg-surface-container-highest text-xs px-3 py-2 border-none" onchange="renderClosings()">
-          <option value="">All Years</option><option value="2023">2023</option><option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option>
+        <select id="cf-year" class="cf-select" onchange="renderClosings()">
+          <option value="">כל השנים &#9660;</option><option value="2023">2023</option><option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option>
         </select>
-        <select id="cf-role" class="bg-surface-container-highest text-xs px-3 py-2 border-none" onchange="renderClosings()">
-          <option value="">All Roles</option><option value="ברוקר">Broker</option><option value="יזם">Developer</option>
+        <select id="cf-role" class="cf-select" onchange="renderClosings()">
+          <option value="">כל התפקידים &#9660;</option><option value="ברוקר">ברוקר</option><option value="יזם">יזם</option>
         </select>
-        <select id="cf-source" class="bg-surface-container-highest text-xs px-3 py-2 border-none" onchange="renderClosings()">
-          <option value="">All Sources</option><option value="קמפיין">Campaign</option><option value="פה לאוזן">Referral</option>
+        <select id="cf-source" class="cf-select" onchange="renderClosings()">
+          <option value="">כל המקורות &#9660;</option><option value="קמפיין">קמפיין</option><option value="פה לאוזן">פה לאוזן</option>
         </select>
-        <select id="cf-status" class="bg-surface-container-highest text-xs px-3 py-2 border-none" onchange="renderClosings()">
-          <option value="">All Status</option><option value="Closed Won">Closed Won</option><option value="Contract">Contract</option>
+        <select id="cf-status" class="cf-select" onchange="renderClosings()">
+          <option value="">כל הסטטוסים &#9660;</option><option value="Closed Won">נסגר</option><option value="Contract">לקראת סגירה</option>
         </select>
-        <select id="cf-pay" class="bg-surface-container-highest text-xs px-3 py-2 border-none" onchange="renderClosings()">
-          <option value="">All Payment</option><option value="שולם">Paid</option><option value="שולם חלקי">Partial</option><option value="לא שולם">Unpaid</option>
+        <select id="cf-pay" class="cf-select" onchange="renderClosings()">
+          <option value="">כל התשלומים &#9660;</option><option value="שולם">שולם</option><option value="שולם חלקי">שולם חלקי</option><option value="לא שולם">לא שולם</option>
         </select>
-        <button onclick="resetClosingFilters()" class="text-[10px] text-error font-bold px-3 py-2 hover:underline mr-auto">Reset Filters</button>
-        <button onclick="showNewDealModal()" class="bg-primary text-on-primary px-4 py-2 text-xs font-bold active:scale-95 transition-transform">+ New Deal</button>
+        <select id="cf-partner" class="cf-select" onchange="renderClosings()"></select>
+        <select id="cf-project" class="cf-select" onchange="renderClosings()"></select>
+        <button onclick="resetClosingFilters()" class="text-[10px] text-error font-bold px-3 py-2 hover:underline mr-auto">איפוס פילטרים</button>
+        <button onclick="showNewDealModal()" class="bg-primary text-on-primary px-4 py-2 text-xs font-bold active:scale-95 transition-transform">+ עסקה חדשה</button>
       </div>
 
       <!-- Deals Table -->
@@ -632,7 +636,7 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
         </div>
         <div class="space-y-2">
           <label class="text-xs text-on-surface-variant uppercase tracking-widest font-bold">Remaining ฿</label>
-          <input id="edit-remaining" type="text" readonly class="w-full bg-surface-container-low border-none text-sm py-3 px-3 font-bold opacity-60" style="color:#F87171"/>
+          <input id="edit-remaining" type="text" readonly class="w-full bg-surface-container-low border-none text-sm py-3 px-3 font-bold opacity-60" style="color:#FF2D2D"/>
         </div>
       </div>
       <div class="space-y-2">
@@ -1228,10 +1232,42 @@ document.querySelectorAll('#detail-temp-buttons button').forEach(btn => {
 let closingSortCol = 'id';
 let closingSortDir = 1;
 
+// Payment schedule (from old dashboard)
+const PAYMENTS = [
+  {dealId:4,client:"Anat & Mia",amount:50000,due:"2026-07-01",dueLabel:"Jul 2026"},
+  {dealId:8,client:"Yael & Ofer",amount:400000,due:"2026-05-01",dueLabel:"May 2026"},
+  {dealId:8,client:"Yael & Ofer",amount:200000,due:"2026-08-01",dueLabel:"Aug 2026"},
+  {dealId:8,client:"Yael & Ofer",amount:200000,due:"2026-12-01",dueLabel:"Dec 2026"},
+  {dealId:9,client:"Ben & Shir",amount:500000,due:"2026-03-31",dueLabel:"Mar 2026"},
+  {dealId:10,client:"Adam Laviya",amount:100000,due:"2026-05-01",dueLabel:"May 2026"},
+  {dealId:10,client:"Adam Laviya",amount:50000,due:"2026-12-01",dueLabel:"Dec 2026"},
+  {dealId:11,client:"Nadav",amount:340000,due:"2026-03-15",dueLabel:"Mar 2026"},
+  {dealId:12,client:"Amir",amount:500000,due:"2026-04-15",dueLabel:"Apr 2026"},
+  {dealId:13,client:"Orly",amount:350000,due:"2026-03-01",dueLabel:"Mar 2026"},
+  {dealId:13,client:"Orly",amount:100000,due:"2026-05-01",dueLabel:"May 2026"},
+  {dealId:13,client:"Orly",amount:50000,due:"2026-12-01",dueLabel:"Dec 2026"},
+  {dealId:14,client:"Ilan",amount:200000,due:"2026-03-01",dueLabel:"Mar 2026"},
+  {dealId:19,client:"Bar",amount:1000000,due:"2026-08-01",dueLabel:"Aug 2026"},
+];
+
 async function loadClosings() {
   const res = await fetch(PIPELINE_URL);
   pipelineData = await res.json();
   renderClosings();
+}
+
+function populateClosingDynamicFilters() {
+  const deals = pipelineData?.deals || [];
+  // Partners
+  const partners = [...new Set(deals.map(d => d.partner).filter(Boolean))].sort();
+  const partnerEl = document.getElementById('cf-partner');
+  partnerEl.innerHTML = '<option value="">כל השותפים &#9660;</option>' +
+    partners.map(p => `<option value="${esc(p)}">${esc(p)}</option>`).join('');
+  // Projects
+  const projects = [...new Set(deals.map(d => d.project).filter(Boolean))].sort();
+  const projectEl = document.getElementById('cf-project');
+  projectEl.innerHTML = '<option value="">כל הפרויקטים &#9660;</option>' +
+    projects.map(p => `<option value="${esc(p)}">${esc(p)}</option>`).join('');
 }
 
 function getFilteredDeals() {
@@ -1241,11 +1277,15 @@ function getFilteredDeals() {
   const fs = document.getElementById('cf-source')?.value || '';
   const fst = document.getElementById('cf-status')?.value || '';
   const fp = document.getElementById('cf-pay')?.value || '';
+  const fpart = document.getElementById('cf-partner')?.value || '';
+  const fproj = document.getElementById('cf-project')?.value || '';
   if (fy) deals = deals.filter(d => (d.closeSort || '').startsWith(fy));
   if (fr) deals = deals.filter(d => d.role === fr);
   if (fs) deals = deals.filter(d => (d.source || '').includes(fs));
   if (fst) deals = deals.filter(d => d.status === fst);
   if (fp) deals = deals.filter(d => d.payStatus === fp);
+  if (fpart) deals = deals.filter(d => d.partner === fpart);
+  if (fproj) deals = deals.filter(d => d.project === fproj);
   deals.sort((a, b) => {
     let va = a[closingSortCol] ?? '', vb = b[closingSortCol] ?? '';
     if (typeof va === 'string') return va.localeCompare(vb) * closingSortDir;
@@ -1255,9 +1295,28 @@ function getFilteredDeals() {
 }
 
 function renderClosings() {
+  populateClosingDynamicFilters();
   const deals = getFilteredDeals();
   renderClosingsKPIs(deals);
   renderClosingsTable(deals);
+}
+
+function renderNextPaymentCard() {
+  const today = new Date();
+  const upcoming = PAYMENTS.filter(p => new Date(p.due) >= today).sort((a, b) => new Date(a.due) - new Date(b.due));
+  const next = upcoming[0];
+  if (!next) return '<div class="bg-surface-container p-4 ghost-border"><p class="text-[10px]" style="color:#94A3B8">NEXT PAYMENT</p><p class="text-lg font-bold text-white">None</p></div>';
+  const dueDate = new Date(next.due);
+  const diffMs = dueDate - today;
+  const diffDays = Math.ceil(diffMs / 86400000);
+  const countdownText = diffDays === 0 ? 'Today!' : diffDays === 1 ? 'Tomorrow' : diffDays < 0 ? `${Math.abs(diffDays)}d overdue` : `in ${diffDays} days`;
+  const countdownColor = diffDays <= 0 ? '#FF2D2D' : diffDays <= 7 ? '#FB923C' : '#6DD5FA';
+  return `<div class="bg-surface-container p-4 ghost-border" style="border-right:4px solid ${countdownColor}">
+    <p class="text-[10px]" style="color:#94A3B8">NEXT PAYMENT</p>
+    <p class="text-lg font-bold text-white">${esc(next.client)}</p>
+    <p class="text-sm font-bold" style="color:${countdownColor}">${next.dueLabel} — ฿${next.amount.toLocaleString()}</p>
+    <p class="text-[10px] font-bold" style="color:${countdownColor}">${countdownText}</p>
+  </div>`;
 }
 
 function renderClosingsKPIs(deals) {
@@ -1304,6 +1363,7 @@ function renderClosingsKPIs(deals) {
     <div class="bg-surface-container p-4 ghost-border"><p class="text-[10px]" style="color:#94A3B8">CASH COLLECTED</p><p class="text-2xl font-bold" style="color:#34D399">${fmtB(totalPaid)}</p><p class="text-[10px]" style="color:#FB923C">Outstanding: ${fmtFull(outstanding)}<br>Rate: ${collectionRate}%</p></div>
     <div class="bg-surface-container p-4 ghost-border"><p class="text-[10px]" style="color:#94A3B8">AVG SALES CYCLE</p><p class="text-2xl font-bold text-white">${avgCycle}<span class="text-sm" style="color:#94A3B8"> days</span></p></div>
     <div class="bg-surface-container p-4 ghost-border"><p class="text-[10px]" style="color:#94A3B8">OUTSTANDING</p><p class="text-2xl font-bold" style="color:#FB923C">${fmtB(outstanding)}</p><p class="text-[10px]" style="color:#94A3B8">${fmtFull(outstanding)}</p></div>
+    ${renderNextPaymentCard()}
   `;
 }
 
@@ -1315,8 +1375,8 @@ function renderClosingsTable(deals) {
   const statusBadge = s => s === 'Closed Won' ? 'cb-green' : s === 'Contract' ? 'cb-yellow' : s === 'Negotiation' ? 'cb-orange' : 'cb-blue';
   const roleBadge = r => r === 'יזם' ? 'cb-purple' : 'cb-blue';
   const fmtB = n => n > 0 ? '฿' + n.toLocaleString() : n === 0 ? '-' : '฿' + n.toLocaleString();
-  const paidColor = d => d.paidAmount >= d.net ? '#34D399' : d.paidAmount > 0 ? '#FBBF24' : '#F87171';
-  const remColor = d => d.remaining > 0 ? '#F87171' : '#34D399';
+  const paidColor = d => d.paidAmount >= d.net ? '#34D399' : d.paidAmount > 0 ? '#FBBF24' : '#FF2D2D';
+  const remColor = d => d.remaining > 0 ? '#FF2D2D' : '#34D399';
 
   let totPrice = 0, totNet = 0, totPaid = 0, totRem = 0;
   let html = '';
@@ -1360,7 +1420,7 @@ function renderClosingsTable(deals) {
     <td class="p-3" style="color:#6DD5FA">฿${totPrice.toLocaleString()}</td>
     <td class="p-3" style="color:#34D399">฿${totNet.toLocaleString()}</td>
     <td class="p-3" style="color:#34D399">฿${totPaid.toLocaleString()}</td>
-    <td class="p-3" style="color:${totRem > 0 ? '#F87171' : '#34D399'}">฿${totRem.toLocaleString()}</td>
+    <td class="p-3" style="color:${totRem > 0 ? '#FF2D2D' : '#34D399'}">฿${totRem.toLocaleString()}</td>
     <td class="p-3" colspan="7"></td>
   </tr>`;
 
@@ -1379,7 +1439,7 @@ function sortClosings(col) {
 }
 
 function resetClosingFilters() {
-  ['cf-year','cf-role','cf-source','cf-status','cf-pay'].forEach(id => {
+  ['cf-year','cf-role','cf-source','cf-status','cf-pay','cf-partner','cf-project'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
@@ -1449,7 +1509,7 @@ function updateEditRemaining() {
   const paid = parseFloat(document.getElementById('edit-paid-amount').value) || 0;
   const rem = editDealNet - paid;
   document.getElementById('edit-remaining').value = '฿' + rem.toLocaleString();
-  document.getElementById('edit-remaining').style.color = rem > 0 ? '#F87171' : '#34D399';
+  document.getElementById('edit-remaining').style.color = rem > 0 ? '#FF2D2D' : '#34D399';
 }
 
 async function submitDealEdit(e) {
