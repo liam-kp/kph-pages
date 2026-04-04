@@ -608,8 +608,8 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
 </div>
 
 <!-- ========== EDIT DEAL MODAL ========== -->
-<div id="edit-deal-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4 hidden">
-  <div class="bg-surface-container w-full max-w-lg ghost-border shadow-2xl overflow-hidden">
+<div id="edit-deal-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4 hidden overflow-y-auto">
+  <div class="bg-surface-container w-full max-w-lg ghost-border shadow-2xl my-auto">
     <div class="bg-surface-container-high p-6 border-b-[0.5px] border-outline-variant flex justify-between items-center">
       <h3 class="text-lg font-bold flex items-center gap-2">
         <span class="material-symbols-outlined text-secondary">edit</span>
@@ -647,13 +647,13 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
         <label class="text-xs text-on-surface-variant uppercase tracking-widest font-bold">Notes</label>
         <textarea id="edit-notes" class="w-full bg-surface-container-low border-none text-sm p-3 h-24 resize-none"></textarea>
       </div>
-      <div class="pt-4 flex gap-3 flex-row-reverse">
+      <div class="flex gap-3 pt-3">
+        <button type="button" onclick="cancelDeal()" class="flex-1 py-3 text-xs font-bold border-2 border-[#FF2D2D] text-[#FF2D2D] hover:bg-[#FF2D2D]/10 active:scale-95 transition-all">&#128465; בטל עסקה</button>
+        <button type="button" onclick="returnToPipeline()" class="flex-1 py-3 text-xs font-bold border-2 border-[#FB923C] text-[#FB923C] hover:bg-[#FB923C]/10 active:scale-95 transition-all">&#8617; החזר לפייפליין</button>
+      </div>
+      <div class="pt-4 border-t border-outline-variant/30 flex gap-3 flex-row-reverse">
         <button type="submit" class="bg-secondary text-on-secondary px-8 py-3 text-sm font-bold active:scale-95 transition-transform">Save</button>
         <button type="button" onclick="hideEditDealModal()" class="px-8 py-3 text-sm border-[0.5px] border-outline-variant text-on-surface-variant">Cancel</button>
-      </div>
-      <div class="pt-2 border-t border-outline-variant/30 mt-4 flex gap-3">
-        <button type="button" onclick="cancelDeal()" class="flex-1 py-2 text-xs font-bold border border-[#FF2D2D] text-[#FF2D2D] hover:bg-[#FF2D2D]/10 active:scale-95 transition-all">&#128465; Cancel Deal</button>
-        <button type="button" onclick="returnToPipeline()" class="flex-1 py-2 text-xs font-bold border border-[#FB923C] text-[#FB923C] hover:bg-[#FB923C]/10 active:scale-95 transition-all">&#8617; Return to Pipeline</button>
       </div>
     </form>
   </div>
