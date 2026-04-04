@@ -704,8 +704,18 @@ async function loadPipeline() {
     firebaseMode = true;
   } catch(e) {
     console.warn('Firebase unavailable, falling back to local pipeline:', e.message);
-    // Fallback: load from local pipeline_data.json via server
-    if (!LOCAL_API) { firebaseLeads = []; firebaseMode = false; renderPipelineKPIs(); renderPipelineTable(); return; }
+    // Show error toast on remote so user knows the token is bad
+    if (!LOCAL_API) {
+      firebaseLeads = []; firebaseMode = false;
+      const isAuthErr = /401|unauthorized|invalid.*token|expired/i.test(e.message);
+      if (isAuthErr) {
+        showToast('Token expired or invalid — click Token to update', true);
+        showTokenModal();
+      } else {
+        showToast('Firebase error: ' + e.message, true);
+      }
+      renderPipelineKPIs(); renderPipelineTable(); return;
+    }
     try {
       const res = await fetch(`${LOCAL_API}/pipeline`);
       const data = await res.json();
@@ -826,7 +836,10 @@ function renderPipelineTable() {
   });
 
   if (leads.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="7" class="px-6 py-12 text-center text-on-surface-variant">No leads found</td></tr>';
+    const msg = !getToken() ? 'No token set — click <b>Token</b> in the top bar'
+      : !firebaseMode && !LOCAL_API ? 'Token may be expired — click <b>Token</b> to update'
+      : 'No leads match current filters';
+    tbody.innerHTML = `<tr><td colspan="7" class="px-6 py-12 text-center text-on-surface-variant">${msg}</td></tr>`;
     return;
   }
 
