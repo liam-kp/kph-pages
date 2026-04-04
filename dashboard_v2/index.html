@@ -87,6 +87,9 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
 .cb-orange { background:rgba(251,146,60,0.15); color:#FB923C; }
 .cf-select { background:#31353c; color:#E2E8F0; border:1px solid #3e4943; border-radius:6px; padding:6px 10px; font-size:12px; cursor:pointer; appearance:none; -webkit-appearance:none; direction:rtl; }
 .cf-select:focus { outline:none; border-color:#4A90D9; }
+.pill-btn { padding:5px 10px; font-size:11px; font-weight:600; border:1px solid #3e4943; border-radius:9999px; color:#94A3B8; background:transparent; cursor:pointer; transition:all 0.15s; white-space:nowrap; }
+.pill-btn:hover { border-color:#6DD5FA; color:#E2E8F0; }
+.pill-btn.active { background:#4A90D9; border-color:#4A90D9; color:#fff; }
 </style>
 </head>
 <body class="text-on-surface overflow-hidden h-screen flex flex-row-reverse">
@@ -239,12 +242,18 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
         <select id="cf-source" class="cf-select" onchange="renderClosings()">
           <option value="">כל המקורות &#9660;</option><option value="קמפיין">קמפיין</option><option value="פה לאוזן">פה לאוזן</option>
         </select>
-        <select id="cf-status" class="cf-select" onchange="renderClosings()">
-          <option value="">כל הסטטוסים &#9660;</option><option value="Closed Won">נסגר</option><option value="Contract">לקראת סגירה</option><option value="cancelled">מבוטל</option>
-        </select>
-        <select id="cf-pay" class="cf-select" onchange="renderClosings()">
-          <option value="">כל התשלומים &#9660;</option><option value="שולם">שולם</option><option value="שולם חלקי">שולם חלקי</option><option value="לא שולם">לא שולם</option>
-        </select>
+        <div class="flex gap-1 items-center" id="cf-status-pills">
+          <button class="pill-btn active" data-val="" onclick="togglePill(this,'status')">כל הסטטוסים</button>
+          <button class="pill-btn" data-val="Closed Won" onclick="togglePill(this,'status')">נסגר</button>
+          <button class="pill-btn" data-val="Contract" onclick="togglePill(this,'status')">לקראת סגירה</button>
+          <button class="pill-btn" data-val="cancelled" onclick="togglePill(this,'status')">מבוטל</button>
+        </div>
+        <div class="flex gap-1 items-center" id="cf-pay-pills">
+          <button class="pill-btn active" data-val="" onclick="togglePill(this,'pay')">כל התשלומים</button>
+          <button class="pill-btn" data-val="שולם" onclick="togglePill(this,'pay')">שולם</button>
+          <button class="pill-btn" data-val="שולם חלקי" onclick="togglePill(this,'pay')">שולם חלקי</button>
+          <button class="pill-btn" data-val="לא שולם" onclick="togglePill(this,'pay')">לא שולם</button>
+        </div>
         <select id="cf-partner" class="cf-select" onchange="renderClosings()"></select>
         <select id="cf-project" class="cf-select" onchange="renderClosings()"></select>
         <button onclick="resetClosingFilters()" class="text-[10px] text-error font-bold px-3 py-2 hover:underline mr-auto">איפוס פילטרים</button>
@@ -1319,27 +1328,62 @@ function populateClosingDynamicFilters() {
     projects.map(p => `<option value="${esc(p)}">${esc(p)}</option>`).join('');
 }
 
+// ---- Pill multi-select logic ----
+function togglePill(btn, group) {
+  const container = document.getElementById(`cf-${group}-pills`);
+  const allBtn = container.querySelector('[data-val=""]');
+  const isAll = btn.dataset.val === '';
+
+  if (isAll) {
+    // Click "all" → deactivate others, activate all
+    container.querySelectorAll('.pill-btn').forEach(b => b.classList.remove('active'));
+    allBtn.classList.add('active');
+  } else {
+    // Toggle this pill
+    btn.classList.toggle('active');
+    // If nothing is active → reactivate "all"
+    const anyActive = [...container.querySelectorAll('.pill-btn:not([data-val=""])')].some(b => b.classList.contains('active'));
+    if (anyActive) {
+      allBtn.classList.remove('active');
+    } else {
+      allBtn.classList.add('active');
+    }
+  }
+  renderClosings();
+}
+
+function getActivePills(group) {
+  const container = document.getElementById(`cf-${group}-pills`);
+  if (!container) return [];
+  const allActive = container.querySelector('[data-val=""].active');
+  if (allActive) return []; // "all" selected → no filter
+  return [...container.querySelectorAll('.pill-btn.active')].map(b => b.dataset.val);
+}
+
 function getFilteredDeals() {
   let deals = (pipelineData?.deals || []).map(d => ({ ...d, remaining: (d.net || 0) - (d.paidAmount || 0) }));
   const fy = document.getElementById('cf-year')?.value || '';
   const fr = document.getElementById('cf-role')?.value || '';
   const fs = document.getElementById('cf-source')?.value || '';
-  const fst = document.getElementById('cf-status')?.value || '';
-  const fp = document.getElementById('cf-pay')?.value || '';
+  const statusPills = getActivePills('status');
+  const payPills = getActivePills('pay');
   const fpart = document.getElementById('cf-partner')?.value || '';
   const fproj = document.getElementById('cf-project')?.value || '';
   if (fy) deals = deals.filter(d => (d.closeSort || '').startsWith(fy));
   if (fr) deals = deals.filter(d => d.role === fr);
   if (fs) deals = deals.filter(d => (d.source || '').includes(fs));
-  if (fst === 'cancelled') {
-    deals = deals.filter(d => d.status === 'cancelled');
-  } else if (fst) {
-    deals = deals.filter(d => d.status === fst);
+  // Status pills (OR logic)
+  if (statusPills.length > 0) {
+    const showCancelled = statusPills.includes('cancelled');
+    deals = deals.filter(d => statusPills.includes(d.status));
   } else {
-    // Default: hide cancelled and pipeline-returned deals
+    // Default: hide cancelled and pipeline-returned
     deals = deals.filter(d => d.status !== 'cancelled' && d.status !== 'pipeline');
   }
-  if (fp) deals = deals.filter(d => d.payStatus === fp);
+  // Payment pills (OR logic)
+  if (payPills.length > 0) {
+    deals = deals.filter(d => payPills.includes(d.payStatus));
+  }
   if (fpart) deals = deals.filter(d => d.partner === fpart);
   if (fproj) deals = deals.filter(d => d.project === fproj);
   deals.sort((a, b) => {
@@ -1541,9 +1585,16 @@ function sortClosings(col) {
 }
 
 function resetClosingFilters() {
-  ['cf-year','cf-role','cf-source','cf-status','cf-pay','cf-partner','cf-project'].forEach(id => {
+  ['cf-year','cf-role','cf-source','cf-partner','cf-project'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
+  });
+  // Reset pills to "all"
+  ['status','pay'].forEach(group => {
+    const container = document.getElementById(`cf-${group}-pills`);
+    if (!container) return;
+    container.querySelectorAll('.pill-btn').forEach(b => b.classList.remove('active'));
+    container.querySelector('[data-val=""]').classList.add('active');
   });
   renderClosings();
 }
