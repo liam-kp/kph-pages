@@ -643,9 +643,25 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
         <label class="text-xs text-on-surface-variant uppercase tracking-widest font-bold">Last Payment Date</label>
         <input id="edit-pay-date" type="date" class="w-full bg-surface-container-low border-none text-sm py-3 px-3"/>
       </div>
+      <div class="p-3 bg-surface-container-low ghost-border space-y-3">
+        <label class="flex items-center gap-2 cursor-pointer">
+          <input id="edit-upcoming" type="checkbox" class="accent-[#FB923C] w-4 h-4"/>
+          <span class="text-xs font-bold" style="color:#FB923C">Upcoming Payment</span>
+        </label>
+        <div class="grid grid-cols-2 gap-3">
+          <div class="space-y-1">
+            <label class="text-[10px] text-on-surface-variant">Expected Date</label>
+            <input id="edit-next-pay-date" type="date" class="w-full bg-surface-container border-none text-sm py-2 px-2 focus:ring-1 focus:ring-[#FB923C]"/>
+          </div>
+          <div class="space-y-1">
+            <label class="text-[10px] text-on-surface-variant">Expected Amount ฿</label>
+            <input id="edit-next-pay-amount" type="number" class="w-full bg-surface-container border-none text-sm py-2 px-2 font-bold focus:ring-1 focus:ring-[#FB923C]" style="color:#FB923C"/>
+          </div>
+        </div>
+      </div>
       <div class="space-y-2">
         <label class="text-xs text-on-surface-variant uppercase tracking-widest font-bold">Notes</label>
-        <textarea id="edit-notes" class="w-full bg-surface-container-low border-none text-sm p-3 h-24 resize-none"></textarea>
+        <textarea id="edit-notes" class="w-full bg-surface-container-low border-none text-sm p-3 h-20 resize-none"></textarea>
       </div>
       <div class="flex gap-3 pt-3">
         <button type="button" onclick="cancelDeal()" class="flex-1 py-3 text-xs font-bold border-2 border-[#FF2D2D] text-[#FF2D2D] hover:bg-[#FF2D2D]/10 active:scale-95 transition-all">&#128465; בטל עסקה</button>
@@ -1343,19 +1359,68 @@ function renderClosings() {
 
 function renderNextPaymentCard() {
   const today = new Date();
-  const upcoming = PAYMENTS.filter(p => new Date(p.due) >= today).sort((a, b) => new Date(a.due) - new Date(b.due));
-  const next = upcoming[0];
-  if (!next) return '<div class="bg-surface-container p-4 ghost-border"><p class="text-[10px]" style="color:#94A3B8">NEXT PAYMENT</p><p class="text-lg font-bold text-white">None</p></div>';
-  const dueDate = new Date(next.due);
-  const diffMs = dueDate - today;
-  const diffDays = Math.ceil(diffMs / 86400000);
-  const countdownText = diffDays === 0 ? 'Today!' : diffDays === 1 ? 'Tomorrow' : diffDays < 0 ? `${Math.abs(diffDays)}d overdue` : `in ${diffDays} days`;
-  const countdownColor = diffDays <= 0 ? '#FF2D2D' : diffDays <= 7 ? '#FB923C' : '#6DD5FA';
-  return `<div class="bg-surface-container p-4 ghost-border" style="border-right:4px solid ${countdownColor}">
-    <p class="text-[10px]" style="color:#94A3B8">NEXT PAYMENT</p>
-    <p class="text-lg font-bold text-white">${esc(next.client)}</p>
-    <p class="text-sm font-bold" style="color:${countdownColor}">${next.dueLabel} — ฿${next.amount.toLocaleString()}</p>
-    <p class="text-[10px] font-bold" style="color:${countdownColor}">${countdownText}</p>
+  const todayStr = today.toISOString().slice(0, 10);
+
+  // Collect upcoming payments from deals with upcoming flag
+  const deals = pipelineData?.deals || [];
+  let items = [];
+
+  // Primary: deals with upcoming: true and next_payment_date
+  deals.forEach(d => {
+    if (d.upcoming && d.next_payment_date && d.status !== 'cancelled' && d.status !== 'pipeline') {
+      items.push({ client: d.client, due: d.next_payment_date, amount: d.next_payment_amount || 0, dealId: d.id });
+    }
+  });
+
+  // Fallback: if no upcoming deals, use PAYMENTS array
+  if (items.length === 0) {
+    PAYMENTS.forEach(p => {
+      if (new Date(p.due) >= today) {
+        items.push({ client: p.client, due: p.due, amount: p.amount, dealId: p.dealId });
+      }
+    });
+  }
+
+  // Sort by date
+  items.sort((a, b) => a.due.localeCompare(b.due));
+
+  if (items.length === 0) {
+    return '<div class="bg-surface-container p-4 ghost-border col-span-2 md:col-span-3"><p class="text-[10px]" style="color:#94A3B8">UPCOMING PAYMENTS</p><p class="text-sm text-white">No upcoming payments</p></div>';
+  }
+
+  const fmtDate = d => {
+    const dt = new Date(d + 'T00:00:00');
+    return dt.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+  };
+  const urgencyColor = days => days <= 0 ? '#FF2D2D' : days <= 7 ? '#FF2D2D' : days <= 14 ? '#FB923C' : '#34D399';
+  const fmtAmt = n => n >= 1000000 ? '฿' + (n/1000000).toFixed(1) + 'M' : n >= 1000 ? '฿' + Math.round(n/1000) + 'K' : '฿' + n;
+
+  const rows = items.slice(0, 6).map(p => {
+    const diffDays = Math.ceil((new Date(p.due) - today) / 86400000);
+    const color = urgencyColor(diffDays);
+    const countdown = diffDays <= 0 ? `${Math.abs(diffDays)}d overdue` : diffDays === 1 ? 'Tomorrow' : `in ${diffDays}d`;
+    return `<div class="flex items-center justify-between py-1.5 border-b border-outline-variant/20 last:border-0">
+      <div class="flex items-center gap-2">
+        <span class="w-1.5 h-1.5 rounded-full" style="background:${color}"></span>
+        <span class="text-xs font-bold text-white">${esc(p.client)}</span>
+        <span class="text-[10px]" style="color:#94A3B8">${fmtDate(p.due)}</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="text-xs font-bold" style="color:${color}">${fmtAmt(p.amount)}</span>
+        <span class="text-[10px] font-bold" style="color:${color}">${countdown}</span>
+      </div>
+    </div>`;
+  }).join('');
+
+  const totalUpcoming = items.reduce((s, p) => s + p.amount, 0);
+  const borderColor = urgencyColor(Math.ceil((new Date(items[0].due) - today) / 86400000));
+
+  return `<div class="bg-surface-container p-4 ghost-border col-span-2 md:col-span-3" style="border-right:4px solid ${borderColor}">
+    <div class="flex justify-between items-center mb-2">
+      <p class="text-[10px] font-bold" style="color:#94A3B8">UPCOMING PAYMENTS (${items.length})</p>
+      <p class="text-xs font-bold" style="color:#FB923C">Total: ${fmtAmt(totalUpcoming)}</p>
+    </div>
+    ${rows}
   </div>`;
 }
 
@@ -1538,6 +1603,9 @@ function openDealEdit(dealId) {
   document.getElementById('edit-paid-amount').value = deal.paidAmount || 0;
   document.getElementById('edit-notes').value = deal.notes || '';
   document.getElementById('edit-pay-date').value = deal.lastPayDate || '';
+  document.getElementById('edit-upcoming').checked = !!deal.upcoming;
+  document.getElementById('edit-next-pay-date').value = deal.next_payment_date || '';
+  document.getElementById('edit-next-pay-amount').value = deal.next_payment_amount || '';
   editDealNet = deal.net || 0;
   updateEditRemaining();
   document.getElementById('edit-deal-modal').classList.remove('hidden');
@@ -1560,6 +1628,9 @@ async function submitDealEdit(e) {
     paidAmount: parseFloat(document.getElementById('edit-paid-amount').value) || 0,
     notes: document.getElementById('edit-notes').value,
     lastPayDate: document.getElementById('edit-pay-date').value,
+    upcoming: document.getElementById('edit-upcoming').checked,
+    next_payment_date: document.getElementById('edit-next-pay-date').value,
+    next_payment_amount: parseFloat(document.getElementById('edit-next-pay-amount').value) || 0,
   };
 
   // Update local state immediately
