@@ -75,6 +75,15 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
   color:#bdcac1; background:none; border:none; cursor:pointer; transition:background 0.15s; }
 .row-menu-dropdown button:hover { background:#1c2026; color:#dfe2eb; }
 .row-menu-dropdown button.text-error:hover { background:#93000a22; }
+.expand-row { display:none; }
+.expand-row.visible { display:table-row; }
+.expand-row td { background:rgba(10,14,20,0.6); line-height:1.9; }
+.closings-badge { display:inline-block; padding:2px 8px; font-size:10px; font-weight:600; }
+.cb-green { background:rgba(116,218,174,0.12); color:#74daae; }
+.cb-yellow { background:rgba(233,195,73,0.12); color:#e9c349; }
+.cb-red { background:rgba(255,180,171,0.12); color:#ffb4ab; }
+.cb-blue { background:rgba(116,218,174,0.12); color:#74daae; }
+.cb-purple { background:rgba(167,139,250,0.12); color:#a78bfa; }
 </style>
 </head>
 <body class="text-on-surface overflow-hidden h-screen flex flex-row-reverse">
@@ -212,55 +221,53 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
     </div>
 
     <!-- ==================== CLOSINGS PAGE ==================== -->
-    <div id="page-closings" class="page-content p-8 space-y-8 fade-in">
-      <!-- KPI Row -->
-      <div class="grid grid-cols-6 gap-4" id="closings-kpis">
-        <div class="bg-surface-container p-5 ghost-border">
-          <p class="text-[10px] text-on-surface-variant mb-1 uppercase tracking-wider">Total Volume</p>
-          <p class="text-xl font-bold text-primary" id="kpi-total-volume">--</p>
-        </div>
-        <div class="bg-surface-container p-5 ghost-border">
-          <p class="text-[10px] text-on-surface-variant mb-1 uppercase tracking-wider">Open Deals</p>
-          <p class="text-xl font-bold" id="kpi-open-deals">--</p>
-        </div>
-        <div class="bg-surface-container p-5 ghost-border">
-          <p class="text-[10px] text-on-surface-variant mb-1 uppercase tracking-wider">Total Closings</p>
-          <p class="text-xl font-bold" id="kpi-closing-count">--</p>
-        </div>
-        <div class="bg-surface-container p-5 ghost-border">
-          <p class="text-[10px] text-on-surface-variant mb-1 uppercase tracking-wider">Avg Commission</p>
-          <p class="text-xl font-bold text-secondary" id="kpi-avg-commission">--</p>
-        </div>
-        <div class="bg-surface-container p-5 ghost-border">
-          <p class="text-[10px] text-on-surface-variant mb-1 uppercase tracking-wider">Received</p>
-          <p class="text-xl font-bold text-primary" id="kpi-received">--</p>
-        </div>
-        <div class="bg-surface-container p-5 ghost-border">
-          <p class="text-[10px] text-on-surface-variant mb-1 uppercase tracking-wider">Outstanding</p>
-          <p class="text-xl font-bold text-secondary-fixed-dim" id="kpi-outstanding">--</p>
-        </div>
+    <div id="page-closings" class="page-content p-8 space-y-6 fade-in">
+      <!-- KPI Bar -->
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-3" id="closings-kpis"></div>
+
+      <!-- Filters -->
+      <div class="bg-surface-container-low p-4 ghost-border flex flex-wrap gap-3 items-center">
+        <select id="cf-year" class="bg-surface-container-highest text-xs px-3 py-2 border-none" onchange="renderClosings()">
+          <option value="">All Years</option><option value="2023">2023</option><option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option>
+        </select>
+        <select id="cf-role" class="bg-surface-container-highest text-xs px-3 py-2 border-none" onchange="renderClosings()">
+          <option value="">All Roles</option><option value="ברוקר">Broker</option><option value="יזם">Developer</option>
+        </select>
+        <select id="cf-source" class="bg-surface-container-highest text-xs px-3 py-2 border-none" onchange="renderClosings()">
+          <option value="">All Sources</option><option value="קמפיין">Campaign</option><option value="פה לאוזן">Referral</option>
+        </select>
+        <select id="cf-status" class="bg-surface-container-highest text-xs px-3 py-2 border-none" onchange="renderClosings()">
+          <option value="">All Status</option><option value="Closed Won">Closed Won</option><option value="Contract">Contract</option>
+        </select>
+        <select id="cf-pay" class="bg-surface-container-highest text-xs px-3 py-2 border-none" onchange="renderClosings()">
+          <option value="">All Payment</option><option value="שולם">Paid</option><option value="שולם חלקי">Partial</option><option value="לא שולם">Unpaid</option>
+        </select>
+        <button onclick="resetClosingFilters()" class="text-[10px] text-error font-bold px-3 py-2 hover:underline mr-auto">Reset Filters</button>
+        <button onclick="showNewDealModal()" class="bg-primary text-on-primary px-4 py-2 text-xs font-bold active:scale-95 transition-transform">+ New Deal</button>
       </div>
 
       <!-- Deals Table -->
-      <section class="bg-surface-container ghost-border">
-        <div class="p-6 border-b-[0.5px] border-outline-variant flex justify-between items-center">
-          <h2 class="text-lg font-bold">Deal Log</h2>
-          <button onclick="showNewDealModal()" class="bg-primary text-on-primary px-4 py-2 text-xs font-bold active:scale-95 transition-transform">+ New Deal</button>
-        </div>
-        <table class="w-full text-right border-collapse">
+      <section class="bg-surface-container ghost-border overflow-x-auto">
+        <table class="w-full text-left text-[12px] border-collapse" style="min-width:1100px">
           <thead>
-            <tr class="text-[10px] text-on-surface-variant border-b-[0.5px] border-outline-variant bg-surface-container-low uppercase">
-              <th class="p-4 font-medium">Client & Project</th>
-              <th class="p-4 font-medium">Deal Price</th>
-              <th class="p-4 font-medium">Commission</th>
-              <th class="p-4 font-medium">Close Date</th>
-              <th class="p-4 font-medium">Role</th>
-              <th class="p-4 font-medium">Pay Status</th>
+            <tr class="text-[10px] text-on-surface-variant border-b-[0.5px] border-outline-variant bg-surface-container-low uppercase tracking-wider">
+              <th class="p-3 font-medium w-6"></th>
+              <th class="p-3 font-medium cursor-pointer" onclick="sortClosings('client')">Client</th>
+              <th class="p-3 font-medium cursor-pointer" onclick="sortClosings('project')">Project</th>
+              <th class="p-3 font-medium cursor-pointer" onclick="sortClosings('role')">Role</th>
+              <th class="p-3 font-medium cursor-pointer" onclick="sortClosings('price')">Deal Price</th>
+              <th class="p-3 font-medium cursor-pointer" onclick="sortClosings('net')">Net to Liran</th>
+              <th class="p-3 font-medium cursor-pointer" onclick="sortClosings('paidAmount')">Paid</th>
+              <th class="p-3 font-medium">Remaining</th>
+              <th class="p-3 font-medium">Partner</th>
+              <th class="p-3 font-medium cursor-pointer" onclick="sortClosings('closeSort')">Close Date</th>
+              <th class="p-3 font-medium cursor-pointer" onclick="sortClosings('cycle')">Cycle</th>
+              <th class="p-3 font-medium">Source</th>
+              <th class="p-3 font-medium">Status</th>
+              <th class="p-3 font-medium">Payment</th>
             </tr>
           </thead>
-          <tbody id="closings-table-body" class="divide-y divide-outline-variant/20">
-            <tr><td colspan="6" class="p-6 text-center text-on-surface-variant">Loading...</td></tr>
-          </tbody>
+          <tbody id="closings-table-body"></tbody>
         </table>
       </section>
     </div>
@@ -1168,59 +1175,154 @@ document.querySelectorAll('#detail-temp-buttons button').forEach(btn => {
 });
 
 // ============ CLOSINGS ============
+let closingSortCol = 'id';
+let closingSortDir = 1;
+
 async function loadClosings() {
   const res = await fetch(PIPELINE_URL);
   pipelineData = await res.json();
-  renderClosingsKPIs();
-  renderClosingsTable();
+  renderClosings();
 }
 
-function renderClosingsKPIs() {
-  if (!pipelineData) return;
-  const deals = pipelineData.deals || [];
-  const leads = pipelineData.leads || [];
+function getFilteredDeals() {
+  let deals = (pipelineData?.deals || []).map(d => ({ ...d, remaining: (d.net || 0) - (d.paidAmount || 0) }));
+  const fy = document.getElementById('cf-year')?.value || '';
+  const fr = document.getElementById('cf-role')?.value || '';
+  const fs = document.getElementById('cf-source')?.value || '';
+  const fst = document.getElementById('cf-status')?.value || '';
+  const fp = document.getElementById('cf-pay')?.value || '';
+  if (fy) deals = deals.filter(d => (d.closeSort || '').startsWith(fy));
+  if (fr) deals = deals.filter(d => d.role === fr);
+  if (fs) deals = deals.filter(d => (d.source || '').includes(fs));
+  if (fst) deals = deals.filter(d => d.status === fst);
+  if (fp) deals = deals.filter(d => d.payStatus === fp);
+  deals.sort((a, b) => {
+    let va = a[closingSortCol] ?? '', vb = b[closingSortCol] ?? '';
+    if (typeof va === 'string') return va.localeCompare(vb) * closingSortDir;
+    return ((va || 0) - (vb || 0)) * closingSortDir;
+  });
+  return deals;
+}
 
+function renderClosings() {
+  const deals = getFilteredDeals();
+  renderClosingsKPIs(deals);
+  renderClosingsTable(deals);
+}
+
+function renderClosingsKPIs(deals) {
+  const el = document.getElementById('closings-kpis');
   const totalVolume = deals.reduce((s, d) => s + (d.price || 0), 0);
-  const openDeals = deals.filter(d => d.payStatus !== 'Paid' && d.payStatus !== 'שולם').length;
-  const closingCount = deals.length;
-  const totalComm = deals.reduce((s, d) => s + (d.gross || d.commission || d.net || 0), 0);
-  const avgComm = closingCount > 0 ? totalComm / closingCount : 0;
-  const received = deals.reduce((s, d) => s + (d.paidAmount || 0), 0);
-  const outstanding = totalComm - received;
+  const totalNet = deals.reduce((s, d) => s + (d.net || 0), 0);
+  const totalDevProfit = deals.reduce((s, d) => s + (d.devProfit || 0), 0);
+  const totalPaid = deals.reduce((s, d) => s + (d.paidAmount || 0), 0);
+  const outstanding = totalNet - totalPaid;
+  const cycles = deals.filter(d => d.cycle > 0);
+  const avgCycle = cycles.length ? Math.round(cycles.reduce((s, d) => s + d.cycle, 0) / cycles.length) : 0;
 
-  document.getElementById('kpi-total-volume').textContent = formatCurrency(totalVolume);
-  document.getElementById('kpi-open-deals').textContent = openDeals;
-  document.getElementById('kpi-closing-count').textContent = closingCount;
-  document.getElementById('kpi-avg-commission').textContent = formatCurrency(avgComm);
-  document.getElementById('kpi-received').textContent = formatCurrency(received);
-  document.getElementById('kpi-outstanding').textContent = formatCurrency(outstanding);
+  // Active months for avg
+  let activeMonths = 1;
+  const sorted = deals.map(d => d.closeSort).filter(Boolean).sort();
+  if (sorted.length >= 2) {
+    const [fy, fm] = sorted[0].split('-').map(Number);
+    const [ly, lm] = sorted[sorted.length - 1].split('-').map(Number);
+    activeMonths = Math.max(1, (ly - fy) * 12 + (lm - fm) + 1);
+  }
+  const avgMonthly = Math.round(totalNet / activeMonths);
+  const brokerN = deals.filter(d => d.role === 'ברוקר').length;
+  const devN = deals.filter(d => d.role === 'יזם').length;
+  const collectionRate = totalNet > 0 ? Math.round((totalPaid / totalNet) * 100) : 0;
+
+  const fmtB = n => n >= 1000000 ? '฿' + (n / 1000000).toFixed(1) + 'M' : n >= 1000 ? '฿' + Math.round(n / 1000) + 'K' : '฿' + n;
+  const fmtFull = n => '฿' + n.toLocaleString();
+
+  el.innerHTML = `
+    <div class="bg-surface-container p-4 ghost-border"><p class="text-[10px] text-on-surface-variant uppercase mb-1">Total Deals</p><p class="text-2xl font-bold">${deals.length}</p><p class="text-[10px] text-on-surface-variant">${brokerN} broker + ${devN} dev</p></div>
+    <div class="bg-surface-container p-4 ghost-border"><p class="text-[10px] text-on-surface-variant uppercase mb-1">Deal Volume</p><p class="text-2xl font-bold text-primary">${fmtB(totalVolume)}</p><p class="text-[10px] text-on-surface-variant">${fmtFull(totalVolume)}</p></div>
+    <div class="bg-surface-container p-4 ghost-border border-r-4 border-primary"><p class="text-[10px] text-primary uppercase mb-1">Net to Liran</p><p class="text-2xl font-bold text-primary">${fmtB(totalNet)}</p><p class="text-[10px] text-on-surface-variant">Dev profit: ${fmtFull(totalDevProfit)}</p></div>
+    <div class="bg-surface-container p-4 ghost-border"><p class="text-[10px] text-on-surface-variant uppercase mb-1">Avg Monthly</p><p class="text-2xl font-bold text-primary">${fmtB(avgMonthly)}</p><p class="text-[10px] text-on-surface-variant">${activeMonths} months</p></div>
+    <div class="bg-surface-container p-4 ghost-border"><p class="text-[10px] text-on-surface-variant uppercase mb-1">Avg Cycle</p><p class="text-2xl font-bold">${avgCycle}<span class="text-sm text-on-surface-variant"> days</span></p></div>
+    <div class="bg-surface-container p-4 ghost-border border-r-4 border-primary"><p class="text-[10px] text-primary uppercase mb-1">Cash Collected</p><p class="text-2xl font-bold text-primary">${fmtB(totalPaid)}</p><p class="text-[10px] text-on-surface-variant">Rate: ${collectionRate}%</p></div>
+    <div class="bg-surface-container p-4 ghost-border border-r-4 border-tertiary"><p class="text-[10px] text-tertiary uppercase mb-1">Outstanding</p><p class="text-2xl font-bold text-tertiary">${fmtB(outstanding)}</p><p class="text-[10px] text-on-surface-variant">${fmtFull(outstanding)}</p></div>
+  `;
 }
 
-function renderClosingsTable() {
-  if (!pipelineData) return;
-  const deals = pipelineData.deals || [];
+function renderClosingsTable(deals) {
   const tbody = document.getElementById('closings-table-body');
+  if (!deals.length) { tbody.innerHTML = '<tr><td colspan="14" class="p-8 text-center text-on-surface-variant">No deals match filters</td></tr>'; return; }
 
-  if (deals.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="6" class="p-6 text-center text-on-surface-variant">No deals recorded yet</td></tr>';
-    return;
-  }
+  const payBadge = s => s === 'שולם' ? 'cb-green' : s === 'שולם חלקי' ? 'cb-yellow' : 'cb-red';
+  const statusBadge = s => s === 'Closed Won' ? 'cb-green' : s === 'Contract' ? 'cb-yellow' : 'cb-blue';
+  const roleBadge = r => r === 'יזם' ? 'cb-purple' : 'cb-blue';
+  const fmtB = n => n > 0 ? '฿' + n.toLocaleString() : n === 0 ? '-' : '฿' + n.toLocaleString();
+  const paidColor = d => d.paidAmount >= d.net ? '#74daae' : d.paidAmount > 0 ? '#e9c349' : '#ffb4ab';
+  const remColor = d => d.remaining > 0 ? '#ffb4ab' : '#74daae';
 
-  tbody.innerHTML = deals.map(d => {
-    const payClass = d.payStatus === 'Paid' || d.payStatus === 'שולם' ? 'text-primary bg-primary/10' :
-                     d.payStatus === 'Partial' ? 'text-secondary bg-secondary/10' : 'text-error bg-error/10';
-    return `<tr class="hover:bg-surface-container-high transition-colors">
-      <td class="p-4">
-        <p class="text-secondary font-bold">${esc(d.client)}</p>
-        <p class="text-[10px] text-on-surface-variant">${esc(d.project)}</p>
-      </td>
-      <td class="p-4 text-primary font-bold">${formatCurrency(d.price)}</td>
-      <td class="p-4 font-medium">${formatCurrency(d.gross || d.commission || d.net || 0)}</td>
-      <td class="p-4 text-sm text-on-surface-variant">${d.closeDate || '--'}</td>
-      <td class="p-4"><span class="bg-surface-container-highest px-2 py-0.5 text-[10px]">${esc(d.role || 'Broker')}</span></td>
-      <td class="p-4"><span class="inline-flex items-center px-2 py-0.5 ${payClass} text-[10px] font-bold">${esc(d.payStatus || 'Pending')}</span></td>
+  let totPrice = 0, totNet = 0, totPaid = 0, totRem = 0;
+  let html = '';
+
+  deals.forEach(d => {
+    totPrice += d.price || 0; totNet += d.net || 0; totPaid += d.paidAmount || 0; totRem += d.remaining || 0;
+    html += `<tr class="hover:bg-surface-container-high transition-colors cursor-pointer" onclick="toggleDealExpand(${d.id})">
+      <td class="p-3 text-primary text-[11px]">&#9660;</td>
+      <td class="p-3 font-semibold text-secondary">${esc(d.client)}</td>
+      <td class="p-3">${esc(d.project)}</td>
+      <td class="p-3"><span class="closings-badge ${roleBadge(d.role)}">${esc(d.role)}</span></td>
+      <td class="p-3 text-primary font-bold">${d.price > 0 ? fmtB(d.price) : '-'}</td>
+      <td class="p-3 font-bold" style="color:#74daae">${d.net > 0 ? fmtB(d.net) : '-'}</td>
+      <td class="p-3 font-bold" style="color:${paidColor(d)}">${fmtB(d.paidAmount || 0)}</td>
+      <td class="p-3 font-bold" style="color:${remColor(d)}">${fmtB(d.remaining)}</td>
+      <td class="p-3 text-on-surface-variant">${esc(d.partner || '-')}</td>
+      <td class="p-3">${esc(d.closeDate || '--')}</td>
+      <td class="p-3">${d.cycle > 0 ? d.cycle + 'd' : '-'}</td>
+      <td class="p-3"><span class="closings-badge cb-blue">${esc(d.source || '-')}</span></td>
+      <td class="p-3"><span class="closings-badge ${statusBadge(d.status)}">${esc(d.status || '-')}</span></td>
+      <td class="p-3"><span class="closings-badge ${payBadge(d.payStatus)}">${esc(d.payStatus || '-')}</span></td>
     </tr>`;
-  }).join('');
+
+    // Expand row with full details
+    const partnerInfo = d.partner ? `Partner: ${d.partner} (${d.partnerRole || ''}${d.partnerPct > 0 ? ', ' + d.partnerPct + '% = ฿' + (d.partnerAmt || 0).toLocaleString() : ''})` : '';
+    html += `<tr class="expand-row" id="deal-expand-${d.id}"><td colspan="14" class="p-4 text-[11px] text-on-surface-variant">
+      <strong class="text-secondary">Deal #${d.id} — ${esc(d.client)}</strong> <span class="closings-badge ${roleBadge(d.role)}">${esc(d.role)}</span><br>
+      Project: ${esc(d.project)} &nbsp;|&nbsp; Price: ${d.price > 0 ? fmtB(d.price) : 'Unknown'} &nbsp;|&nbsp;
+      ${d.role === 'יזם' ? 'Dev Profit: ฿' + (d.devProfit || 0).toLocaleString() : 'Gross: ฿' + (d.totalGross || 0).toLocaleString()} &nbsp;|&nbsp; Net: ฿${(d.net || 0).toLocaleString()}<br>
+      ${partnerInfo ? partnerInfo + '<br>' : ''}
+      ${d.accomp > 0 ? 'Accompaniment: ฿' + d.accomp.toLocaleString() + '<br>' : ''}
+      First Contact: ${d.firstContact || '-'} &nbsp;|&nbsp; Arrival: ${d.arrival || '-'} &nbsp;|&nbsp; Cycle: ${d.cycle || 0}d<br>
+      ${d.notes ? '<span style="color:#bdcac1">Notes: ' + esc(d.notes) + '</span>' : ''}
+    </td></tr>`;
+  });
+
+  // Total row
+  html += `<tr class="bg-surface-container-low font-bold text-[11px]" style="position:sticky;bottom:0">
+    <td class="p-3" colspan="4" style="text-align:right">TOTAL</td>
+    <td class="p-3 text-primary">฿${totPrice.toLocaleString()}</td>
+    <td class="p-3" style="color:#74daae">฿${totNet.toLocaleString()}</td>
+    <td class="p-3" style="color:#74daae">฿${totPaid.toLocaleString()}</td>
+    <td class="p-3" style="color:${totRem > 0 ? '#ffb4ab' : '#74daae'}">฿${totRem.toLocaleString()}</td>
+    <td class="p-3" colspan="6"></td>
+  </tr>`;
+
+  tbody.innerHTML = html;
+}
+
+function toggleDealExpand(id) {
+  const row = document.getElementById('deal-expand-' + id);
+  if (row) row.classList.toggle('visible');
+}
+
+function sortClosings(col) {
+  if (closingSortCol === col) closingSortDir *= -1;
+  else { closingSortCol = col; closingSortDir = 1; }
+  renderClosings();
+}
+
+function resetClosingFilters() {
+  ['cf-year','cf-role','cf-source','cf-status','cf-pay'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  renderClosings();
 }
 
 // New Deal
