@@ -597,7 +597,11 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
 <!-- ========== JAVASCRIPT ========== -->
 <script>
 // ============ CONFIG ============
-const API_BASE = window.location.port ? `${window.location.protocol}//${window.location.hostname}:8081` : '';
+// Auto-detect: localhost → local server, GitHub Pages → Netlify proxy
+const NETLIFY_PROXY = 'https://kph-proxy.netlify.app';
+const IS_LOCAL = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+const API_BASE = IS_LOCAL ? `${window.location.protocol}//${window.location.hostname}:8081` : NETLIFY_PROXY;
+const LOCAL_API = IS_LOCAL ? API_BASE : null; // local-only endpoints (pipeline, deals)
 const CUSTOMER_ID = '11a3a8c9-d3db-4b32-8c08-35dd7868b959';
 
 // ============ TOKEN ============
@@ -701,8 +705,9 @@ async function loadPipeline() {
   } catch(e) {
     console.warn('Firebase unavailable, falling back to local pipeline:', e.message);
     // Fallback: load from local pipeline_data.json via server
+    if (!LOCAL_API) { firebaseLeads = []; firebaseMode = false; renderPipelineKPIs(); renderPipelineTable(); return; }
     try {
-      const res = await fetch(`${API_BASE}/pipeline`);
+      const res = await fetch(`${LOCAL_API}/pipeline`);
       const data = await res.json();
       pipelineData = data;
       // Convert local leads to Firebase-like format
@@ -1161,7 +1166,14 @@ document.querySelectorAll('#detail-temp-buttons button').forEach(btn => {
 
 // ============ CLOSINGS ============
 async function loadClosings() {
-  const res = await fetch(`${API_BASE}/pipeline`);
+  if (!LOCAL_API) {
+    // Remote mode: no local pipeline server. Show notice.
+    if (!pipelineData) pipelineData = { leads: [], deals: [] };
+    renderClosingsKPIs();
+    renderClosingsTable();
+    return;
+  }
+  const res = await fetch(`${LOCAL_API}/pipeline`);
   pipelineData = await res.json();
   renderClosingsKPIs();
   renderClosingsTable();
@@ -1233,7 +1245,8 @@ async function submitNewDeal(e) {
   };
 
   try {
-    const res = await fetch(`${API_BASE}/pipeline/add`, {
+    if (!LOCAL_API) { showToast('Deals require local server', true); return; }
+    const res = await fetch(`${LOCAL_API}/pipeline/add`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
@@ -1316,13 +1329,15 @@ async function loadProjects() {
   try { projectsPublic = await firebaseFetch('Projects_Public'); } catch(e) { projectsPublic = []; }
   if (!Array.isArray(projectsPublic)) projectsPublic = Object.values(projectsPublic || {});
 
-  // Pipeline projects (radar)
+  // Pipeline projects (radar) — local server only
   let radarProjects = [];
-  try {
-    const res = await fetch(`${API_BASE}/api/pipeline-projects`);
-    const data = await res.json();
-    radarProjects = data.projects || [];
-  } catch(e) {}
+  if (LOCAL_API) {
+    try {
+      const res = await fetch(`${LOCAL_API}/api/pipeline-projects`);
+      const data = await res.json();
+      radarProjects = data.projects || [];
+    } catch(e) {}
+  }
 
   renderProjects(radarProjects);
 }
@@ -1389,13 +1404,14 @@ function renderProjects(radarProjects) {
 
 // ============ REPORTS ============
 async function loadReports() {
-  // Pipeline data for deals
-  if (!pipelineData) {
+  // Pipeline data for deals (local server only)
+  if (!pipelineData && LOCAL_API) {
     try {
-      const res = await fetch(`${API_BASE}/pipeline`);
+      const res = await fetch(`${LOCAL_API}/pipeline`);
       pipelineData = await res.json();
     } catch(e) {}
   }
+  if (!pipelineData) pipelineData = { leads: [], deals: [] };
 
   // Firebase leads for counts
   if (firebaseLeads.length === 0) {
