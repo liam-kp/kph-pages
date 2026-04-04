@@ -78,12 +78,13 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
 .expand-row { display:none; }
 .expand-row.visible { display:table-row; }
 .expand-row td { background:rgba(10,14,20,0.6); line-height:1.9; }
-.closings-badge { display:inline-block; padding:2px 8px; font-size:10px; font-weight:600; }
-.cb-green { background:rgba(116,218,174,0.12); color:#74daae; }
-.cb-yellow { background:rgba(233,195,73,0.12); color:#e9c349; }
-.cb-red { background:rgba(255,180,171,0.12); color:#ffb4ab; }
-.cb-blue { background:rgba(116,218,174,0.12); color:#74daae; }
-.cb-purple { background:rgba(167,139,250,0.12); color:#a78bfa; }
+.closings-badge { display:inline-block; padding:2px 8px; border-radius:10px; font-size:10px; font-weight:600; }
+.cb-green { background:rgba(52,211,153,0.15); color:#34D399; }
+.cb-yellow { background:rgba(251,191,36,0.15); color:#FBBF24; }
+.cb-red { background:rgba(248,113,113,0.15); color:#F87171; }
+.cb-blue { background:rgba(74,144,217,0.15); color:#4A90D9; }
+.cb-purple { background:rgba(167,139,250,0.15); color:#A78BFA; }
+.cb-orange { background:rgba(251,146,60,0.15); color:#FB923C; }
 </style>
 </head>
 <body class="text-on-surface overflow-hidden h-screen flex flex-row-reverse">
@@ -265,6 +266,7 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
               <th class="p-3 font-medium">Source</th>
               <th class="p-3 font-medium">Status</th>
               <th class="p-3 font-medium">Payment</th>
+              <th class="p-3 font-medium w-8"></th>
             </tr>
           </thead>
           <tbody id="closings-table-body"></tbody>
@@ -596,6 +598,54 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
       <div class="pt-6 flex gap-3 flex-row-reverse">
         <button type="submit" class="bg-primary text-on-primary px-8 py-3 text-sm font-bold active:scale-95 transition-transform">Save Deal</button>
         <button type="button" onclick="hideNewDealModal()" class="px-8 py-3 text-sm border-[0.5px] border-outline-variant text-on-surface-variant hover:bg-surface-container-high">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ========== EDIT DEAL MODAL ========== -->
+<div id="edit-deal-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4 hidden">
+  <div class="bg-surface-container w-full max-w-lg ghost-border shadow-2xl overflow-hidden">
+    <div class="bg-surface-container-high p-6 border-b-[0.5px] border-outline-variant flex justify-between items-center">
+      <h3 class="text-lg font-bold flex items-center gap-2">
+        <span class="material-symbols-outlined text-secondary">edit</span>
+        <span id="edit-deal-title">Edit Deal</span>
+      </h3>
+      <button onclick="hideEditDealModal()" class="text-on-surface-variant hover:text-white">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <form id="edit-deal-form" class="p-6 space-y-5" onsubmit="submitDealEdit(event)">
+      <input type="hidden" id="edit-deal-id"/>
+      <div class="space-y-2">
+        <label class="text-xs text-on-surface-variant uppercase tracking-widest font-bold">Payment Status</label>
+        <select id="edit-pay-status" class="w-full bg-surface-container-low border-none text-sm py-3 px-3">
+          <option value="שולם">שולם (Paid)</option>
+          <option value="שולם חלקי">שולם ח��קי (Partial)</option>
+          <option value="לא שולם">לא שולם (Unpaid)</option>
+        </select>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="space-y-2">
+          <label class="text-xs text-on-surface-variant uppercase tracking-widest font-bold">Paid Amount ฿</label>
+          <input id="edit-paid-amount" type="number" class="w-full bg-surface-container-low border-none text-sm py-3 px-3 font-bold" style="color:#34D399" oninput="updateEditRemaining()"/>
+        </div>
+        <div class="space-y-2">
+          <label class="text-xs text-on-surface-variant uppercase tracking-widest font-bold">Remaining ฿</label>
+          <input id="edit-remaining" type="text" readonly class="w-full bg-surface-container-low border-none text-sm py-3 px-3 font-bold opacity-60" style="color:#F87171"/>
+        </div>
+      </div>
+      <div class="space-y-2">
+        <label class="text-xs text-on-surface-variant uppercase tracking-widest font-bold">Last Payment Date</label>
+        <input id="edit-pay-date" type="date" class="w-full bg-surface-container-low border-none text-sm py-3 px-3"/>
+      </div>
+      <div class="space-y-2">
+        <label class="text-xs text-on-surface-variant uppercase tracking-widest font-bold">Notes</label>
+        <textarea id="edit-notes" class="w-full bg-surface-container-low border-none text-sm p-3 h-24 resize-none"></textarea>
+      </div>
+      <div class="pt-4 flex gap-3 flex-row-reverse">
+        <button type="submit" class="bg-secondary text-on-secondary px-8 py-3 text-sm font-bold active:scale-95 transition-transform">Save</button>
+        <button type="button" onclick="hideEditDealModal()" class="px-8 py-3 text-sm border-[0.5px] border-outline-variant text-on-surface-variant">Cancel</button>
       </div>
     </form>
   </div>
@@ -1236,27 +1286,37 @@ function renderClosingsKPIs(deals) {
   const fmtB = n => n >= 1000000 ? '฿' + (n / 1000000).toFixed(1) + 'M' : n >= 1000 ? '฿' + Math.round(n / 1000) + 'K' : '฿' + n;
   const fmtFull = n => '฿' + n.toLocaleString();
 
+  // Avg deals/month
+  const avgDealsMonth = (deals.length / activeMonths).toFixed(1);
+  // Broker vs dev monthly breakdown
+  const brokerNet = deals.filter(d => d.role === 'ברוקר').reduce((s, d) => s + (d.net || 0), 0);
+  const devNet = deals.filter(d => d.role === 'יזם').reduce((s, d) => s + (d.net || 0), 0);
+  const avgBrokerMonthly = Math.round(brokerNet / activeMonths);
+  const avgDevMonthly = Math.round(devNet / activeMonths);
+
   el.innerHTML = `
-    <div class="bg-surface-container p-4 ghost-border"><p class="text-[10px] text-on-surface-variant uppercase mb-1">Total Deals</p><p class="text-2xl font-bold">${deals.length}</p><p class="text-[10px] text-on-surface-variant">${brokerN} broker + ${devN} dev</p></div>
-    <div class="bg-surface-container p-4 ghost-border"><p class="text-[10px] text-on-surface-variant uppercase mb-1">Deal Volume</p><p class="text-2xl font-bold text-primary">${fmtB(totalVolume)}</p><p class="text-[10px] text-on-surface-variant">${fmtFull(totalVolume)}</p></div>
-    <div class="bg-surface-container p-4 ghost-border border-r-4 border-primary"><p class="text-[10px] text-primary uppercase mb-1">Net to Liran</p><p class="text-2xl font-bold text-primary">${fmtB(totalNet)}</p><p class="text-[10px] text-on-surface-variant">Dev profit: ${fmtFull(totalDevProfit)}</p></div>
-    <div class="bg-surface-container p-4 ghost-border"><p class="text-[10px] text-on-surface-variant uppercase mb-1">Avg Monthly</p><p class="text-2xl font-bold text-primary">${fmtB(avgMonthly)}</p><p class="text-[10px] text-on-surface-variant">${activeMonths} months</p></div>
-    <div class="bg-surface-container p-4 ghost-border"><p class="text-[10px] text-on-surface-variant uppercase mb-1">Avg Cycle</p><p class="text-2xl font-bold">${avgCycle}<span class="text-sm text-on-surface-variant"> days</span></p></div>
-    <div class="bg-surface-container p-4 ghost-border border-r-4 border-primary"><p class="text-[10px] text-primary uppercase mb-1">Cash Collected</p><p class="text-2xl font-bold text-primary">${fmtB(totalPaid)}</p><p class="text-[10px] text-on-surface-variant">Rate: ${collectionRate}%</p></div>
-    <div class="bg-surface-container p-4 ghost-border border-r-4 border-tertiary"><p class="text-[10px] text-tertiary uppercase mb-1">Outstanding</p><p class="text-2xl font-bold text-tertiary">${fmtB(outstanding)}</p><p class="text-[10px] text-on-surface-variant">${fmtFull(outstanding)}</p></div>
+    <div class="bg-surface-container p-4 ghost-border"><p class="text-[10px]" style="color:#94A3B8">TOTAL DEALS</p><p class="text-2xl font-bold text-white">${deals.length}</p><p class="text-[10px]" style="color:#94A3B8">${brokerN} broker + ${devN} developer</p></div>
+    <div class="bg-surface-container p-4 ghost-border"><p class="text-[10px]" style="color:#94A3B8">DEAL VOLUME</p><p class="text-2xl font-bold" style="color:#6DD5FA">${fmtB(totalVolume)}</p><p class="text-[10px]" style="color:#94A3B8">${fmtFull(totalVolume)}</p></div>
+    <div class="bg-surface-container p-4 ghost-border"><p class="text-[10px]" style="color:#94A3B8">NET TO LIRAN</p><p class="text-2xl font-bold" style="color:#34D399">${fmtB(totalNet)}</p><p class="text-[10px]" style="color:#94A3B8">${fmtFull(totalNet)}</p></div>
+    <div class="bg-surface-container p-4 ghost-border"><p class="text-[10px]" style="color:#94A3B8">DEVELOPER PROFIT</p><p class="text-2xl font-bold" style="color:#A78BFA">${fmtB(totalDevProfit)}</p><p class="text-[10px]" style="color:#94A3B8">${fmtFull(totalDevProfit)}</p></div>
+    <div class="bg-surface-container p-4 ghost-border"><p class="text-[10px]" style="color:#94A3B8">AVG DEALS/MONTH</p><p class="text-2xl font-bold text-white">${avgDealsMonth}</p><p class="text-[10px]" style="color:#94A3B8">${activeMonths} active months</p></div>
+    <div class="bg-surface-container p-4 ghost-border"><p class="text-[10px]" style="color:#94A3B8">AVG MONTHLY INCOME</p><p class="text-2xl font-bold" style="color:#34D399">${fmtB(avgMonthly)}/mo</p><p class="text-[10px]" style="color:#94A3B8">Broker: ${fmtFull(avgBrokerMonthly)}/mo<br>Dev: ${fmtFull(avgDevMonthly)}/mo</p></div>
+    <div class="bg-surface-container p-4 ghost-border"><p class="text-[10px]" style="color:#94A3B8">CASH COLLECTED</p><p class="text-2xl font-bold" style="color:#34D399">${fmtB(totalPaid)}</p><p class="text-[10px]" style="color:#FB923C">Outstanding: ${fmtFull(outstanding)}<br>Rate: ${collectionRate}%</p></div>
+    <div class="bg-surface-container p-4 ghost-border"><p class="text-[10px]" style="color:#94A3B8">AVG SALES CYCLE</p><p class="text-2xl font-bold text-white">${avgCycle}<span class="text-sm" style="color:#94A3B8"> days</span></p></div>
+    <div class="bg-surface-container p-4 ghost-border"><p class="text-[10px]" style="color:#94A3B8">OUTSTANDING</p><p class="text-2xl font-bold" style="color:#FB923C">${fmtB(outstanding)}</p><p class="text-[10px]" style="color:#94A3B8">${fmtFull(outstanding)}</p></div>
   `;
 }
 
 function renderClosingsTable(deals) {
   const tbody = document.getElementById('closings-table-body');
-  if (!deals.length) { tbody.innerHTML = '<tr><td colspan="14" class="p-8 text-center text-on-surface-variant">No deals match filters</td></tr>'; return; }
+  if (!deals.length) { tbody.innerHTML = '<tr><td colspan="15" class="p-8 text-center text-on-surface-variant">No deals match filters</td></tr>'; return; }
 
   const payBadge = s => s === 'שולם' ? 'cb-green' : s === 'שולם חלקי' ? 'cb-yellow' : 'cb-red';
-  const statusBadge = s => s === 'Closed Won' ? 'cb-green' : s === 'Contract' ? 'cb-yellow' : 'cb-blue';
+  const statusBadge = s => s === 'Closed Won' ? 'cb-green' : s === 'Contract' ? 'cb-yellow' : s === 'Negotiation' ? 'cb-orange' : 'cb-blue';
   const roleBadge = r => r === 'יזם' ? 'cb-purple' : 'cb-blue';
   const fmtB = n => n > 0 ? '฿' + n.toLocaleString() : n === 0 ? '-' : '฿' + n.toLocaleString();
-  const paidColor = d => d.paidAmount >= d.net ? '#74daae' : d.paidAmount > 0 ? '#e9c349' : '#ffb4ab';
-  const remColor = d => d.remaining > 0 ? '#ffb4ab' : '#74daae';
+  const paidColor = d => d.paidAmount >= d.net ? '#34D399' : d.paidAmount > 0 ? '#FBBF24' : '#F87171';
+  const remColor = d => d.remaining > 0 ? '#F87171' : '#34D399';
 
   let totPrice = 0, totNet = 0, totPaid = 0, totRem = 0;
   let html = '';
@@ -1268,8 +1328,8 @@ function renderClosingsTable(deals) {
       <td class="p-3 font-semibold text-secondary">${esc(d.client)}</td>
       <td class="p-3">${esc(d.project)}</td>
       <td class="p-3"><span class="closings-badge ${roleBadge(d.role)}">${esc(d.role)}</span></td>
-      <td class="p-3 text-primary font-bold">${d.price > 0 ? fmtB(d.price) : '-'}</td>
-      <td class="p-3 font-bold" style="color:#74daae">${d.net > 0 ? fmtB(d.net) : '-'}</td>
+      <td class="p-3 font-bold" style="color:#6DD5FA">${d.price > 0 ? fmtB(d.price) : '-'}</td>
+      <td class="p-3 font-bold" style="color:#34D399">${d.net > 0 ? fmtB(d.net) : '-'}</td>
       <td class="p-3 font-bold" style="color:${paidColor(d)}">${fmtB(d.paidAmount || 0)}</td>
       <td class="p-3 font-bold" style="color:${remColor(d)}">${fmtB(d.remaining)}</td>
       <td class="p-3 text-on-surface-variant">${esc(d.partner || '-')}</td>
@@ -1278,11 +1338,12 @@ function renderClosingsTable(deals) {
       <td class="p-3"><span class="closings-badge cb-blue">${esc(d.source || '-')}</span></td>
       <td class="p-3"><span class="closings-badge ${statusBadge(d.status)}">${esc(d.status || '-')}</span></td>
       <td class="p-3"><span class="closings-badge ${payBadge(d.payStatus)}">${esc(d.payStatus || '-')}</span></td>
+      <td class="p-3" onclick="event.stopPropagation()"><span class="material-symbols-outlined text-on-surface-variant text-sm cursor-pointer hover:text-white" onclick="openDealEdit(${d.id})">edit</span></td>
     </tr>`;
 
     // Expand row with full details
     const partnerInfo = d.partner ? `Partner: ${d.partner} (${d.partnerRole || ''}${d.partnerPct > 0 ? ', ' + d.partnerPct + '% = ฿' + (d.partnerAmt || 0).toLocaleString() : ''})` : '';
-    html += `<tr class="expand-row" id="deal-expand-${d.id}"><td colspan="14" class="p-4 text-[11px] text-on-surface-variant">
+    html += `<tr class="expand-row" id="deal-expand-${d.id}"><td colspan="15" class="p-4 text-[11px] text-on-surface-variant">
       <strong class="text-secondary">Deal #${d.id} — ${esc(d.client)}</strong> <span class="closings-badge ${roleBadge(d.role)}">${esc(d.role)}</span><br>
       Project: ${esc(d.project)} &nbsp;|&nbsp; Price: ${d.price > 0 ? fmtB(d.price) : 'Unknown'} &nbsp;|&nbsp;
       ${d.role === 'יזם' ? 'Dev Profit: ฿' + (d.devProfit || 0).toLocaleString() : 'Gross: ฿' + (d.totalGross || 0).toLocaleString()} &nbsp;|&nbsp; Net: ฿${(d.net || 0).toLocaleString()}<br>
@@ -1296,11 +1357,11 @@ function renderClosingsTable(deals) {
   // Total row
   html += `<tr class="bg-surface-container-low font-bold text-[11px]" style="position:sticky;bottom:0">
     <td class="p-3" colspan="4" style="text-align:right">TOTAL</td>
-    <td class="p-3 text-primary">฿${totPrice.toLocaleString()}</td>
-    <td class="p-3" style="color:#74daae">฿${totNet.toLocaleString()}</td>
-    <td class="p-3" style="color:#74daae">฿${totPaid.toLocaleString()}</td>
-    <td class="p-3" style="color:${totRem > 0 ? '#ffb4ab' : '#74daae'}">฿${totRem.toLocaleString()}</td>
-    <td class="p-3" colspan="6"></td>
+    <td class="p-3" style="color:#6DD5FA">฿${totPrice.toLocaleString()}</td>
+    <td class="p-3" style="color:#34D399">฿${totNet.toLocaleString()}</td>
+    <td class="p-3" style="color:#34D399">฿${totPaid.toLocaleString()}</td>
+    <td class="p-3" style="color:${totRem > 0 ? '#F87171' : '#34D399'}">฿${totRem.toLocaleString()}</td>
+    <td class="p-3" colspan="7"></td>
   </tr>`;
 
   tbody.innerHTML = html;
@@ -1361,6 +1422,72 @@ async function submitNewDeal(e) {
   } catch(e) {
     showToast('Failed: ' + e.message, true);
   }
+}
+
+// ============ EDIT DEAL ============
+let editDealNet = 0;
+
+function openDealEdit(dealId) {
+  const deals = pipelineData?.deals || [];
+  const deal = deals.find(d => d.id === dealId);
+  if (!deal) return;
+
+  document.getElementById('edit-deal-id').value = dealId;
+  document.getElementById('edit-deal-title').textContent = `Edit — ${deal.client}`;
+  document.getElementById('edit-pay-status').value = deal.payStatus || 'לא שולם';
+  document.getElementById('edit-paid-amount').value = deal.paidAmount || 0;
+  document.getElementById('edit-notes').value = deal.notes || '';
+  document.getElementById('edit-pay-date').value = deal.lastPayDate || '';
+  editDealNet = deal.net || 0;
+  updateEditRemaining();
+  document.getElementById('edit-deal-modal').classList.remove('hidden');
+}
+
+function hideEditDealModal() { document.getElementById('edit-deal-modal').classList.add('hidden'); }
+
+function updateEditRemaining() {
+  const paid = parseFloat(document.getElementById('edit-paid-amount').value) || 0;
+  const rem = editDealNet - paid;
+  document.getElementById('edit-remaining').value = '฿' + rem.toLocaleString();
+  document.getElementById('edit-remaining').style.color = rem > 0 ? '#F87171' : '#34D399';
+}
+
+async function submitDealEdit(e) {
+  e.preventDefault();
+  const dealId = parseInt(document.getElementById('edit-deal-id').value);
+  const updates = {
+    payStatus: document.getElementById('edit-pay-status').value,
+    paidAmount: parseFloat(document.getElementById('edit-paid-amount').value) || 0,
+    notes: document.getElementById('edit-notes').value,
+    lastPayDate: document.getElementById('edit-pay-date').value,
+  };
+
+  // Update local state immediately
+  const deal = (pipelineData?.deals || []).find(d => d.id === dealId);
+  if (deal) {
+    Object.assign(deal, updates);
+  }
+
+  // Try to persist via server
+  if (LOCAL_API) {
+    try {
+      const res = await fetch(`${LOCAL_API}/pipeline/update`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ deal_id: dealId, ...updates })
+      });
+      const result = await res.json();
+      if (!result.success) {
+        showToast('Server save failed: ' + result.error, true);
+      }
+    } catch(err) {
+      showToast('Server unreachable — saved locally only', true);
+    }
+  }
+
+  hideEditDealModal();
+  renderClosings();
+  showToast('Deal updated');
 }
 
 // ============ CAMPAIGNS ============
