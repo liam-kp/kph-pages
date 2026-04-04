@@ -1359,27 +1359,33 @@ function renderClosings() {
 
 function renderNextPaymentCard() {
   const today = new Date();
-  const todayStr = today.toISOString().slice(0, 10);
-
-  // Collect upcoming payments from deals with upcoming flag
   const deals = pipelineData?.deals || [];
+  const seenDealIds = new Set();
   let items = [];
 
-  // Primary: deals with upcoming: true and next_payment_date
+  // Source 1: deals with upcoming:true + next_payment_date (highest priority)
   deals.forEach(d => {
     if (d.upcoming && d.next_payment_date && d.status !== 'cancelled' && d.status !== 'pipeline') {
       items.push({ client: d.client, due: d.next_payment_date, amount: d.next_payment_amount || 0, dealId: d.id });
+      seenDealIds.add(d.id);
     }
   });
 
-  // Fallback: if no upcoming deals, use PAYMENTS array
-  if (items.length === 0) {
-    PAYMENTS.forEach(p => {
-      if (new Date(p.due) >= today) {
-        items.push({ client: p.client, due: p.due, amount: p.amount, dealId: p.dealId });
-      }
-    });
-  }
+  // Source 2: deals with next_payment_date (even without upcoming flag)
+  deals.forEach(d => {
+    if (!seenDealIds.has(d.id) && d.next_payment_date && d.status !== 'cancelled' && d.status !== 'pipeline') {
+      items.push({ client: d.client, due: d.next_payment_date, amount: d.next_payment_amount || 0, dealId: d.id });
+      seenDealIds.add(d.id);
+    }
+  });
+
+  // Source 3: PAYMENTS array fallback for deals not yet covered
+  PAYMENTS.forEach(p => {
+    if (!seenDealIds.has(p.dealId) && new Date(p.due) >= today) {
+      items.push({ client: p.client, due: p.due, amount: p.amount, dealId: p.dealId });
+      seenDealIds.add(p.dealId);
+    }
+  });
 
   // Sort by date
   items.sort((a, b) => a.due.localeCompare(b.due));
