@@ -240,7 +240,7 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
           <option value="">כל המקורות &#9660;</option><option value="קמפיין">קמפיין</option><option value="פה לאוזן">פה לאוזן</option>
         </select>
         <select id="cf-status" class="cf-select" onchange="renderClosings()">
-          <option value="">כל הסטטוסים &#9660;</option><option value="Closed Won">נסגר</option><option value="Contract">לקראת סגירה</option>
+          <option value="">כל הסטטוסים &#9660;</option><option value="Closed Won">נסגר</option><option value="Contract">לקראת סגירה</option><option value="cancelled">מבוטל</option>
         </select>
         <select id="cf-pay" class="cf-select" onchange="renderClosings()">
           <option value="">כל התשלומים &#9660;</option><option value="שולם">שולם</option><option value="שולם חלקי">שולם חלקי</option><option value="לא שולם">לא שולם</option>
@@ -651,7 +651,25 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
         <button type="submit" class="bg-secondary text-on-secondary px-8 py-3 text-sm font-bold active:scale-95 transition-transform">Save</button>
         <button type="button" onclick="hideEditDealModal()" class="px-8 py-3 text-sm border-[0.5px] border-outline-variant text-on-surface-variant">Cancel</button>
       </div>
+      <div class="pt-2 border-t border-outline-variant/30 mt-4 flex gap-3">
+        <button type="button" onclick="cancelDeal()" class="flex-1 py-2 text-xs font-bold border border-[#FF2D2D] text-[#FF2D2D] hover:bg-[#FF2D2D]/10 active:scale-95 transition-all">&#128465; Cancel Deal</button>
+        <button type="button" onclick="returnToPipeline()" class="flex-1 py-2 text-xs font-bold border border-[#FB923C] text-[#FB923C] hover:bg-[#FB923C]/10 active:scale-95 transition-all">&#8617; Return to Pipeline</button>
+      </div>
     </form>
+  </div>
+</div>
+
+<!-- ========== PRIORITY PICKER MODAL ========== -->
+<div id="priority-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[110] flex items-center justify-center p-4 hidden">
+  <div class="bg-surface-container w-full max-w-xs ghost-border shadow-2xl p-6 space-y-4">
+    <h3 class="text-sm font-bold text-white">Select Priority</h3>
+    <input type="hidden" id="priority-deal-id"/>
+    <div class="flex flex-col gap-2">
+      <button onclick="confirmReturnToPipeline('חם מאוד')" class="py-3 text-sm font-bold border border-[#FF2D2D] text-[#FF2D2D] hover:bg-[#FF2D2D]/10">Hot</button>
+      <button onclick="confirmReturnToPipeline('חם')" class="py-3 text-sm font-bold border border-[#FBBF24] text-[#FBBF24] hover:bg-[#FBBF24]/10">Warm</button>
+      <button onclick="confirmReturnToPipeline('פושר')" class="py-3 text-sm font-bold border border-[#94A3B8] text-[#94A3B8] hover:bg-[#94A3B8]/10">Lukewarm</button>
+    </div>
+    <button onclick="document.getElementById('priority-modal').classList.add('hidden')" class="w-full py-2 text-xs text-on-surface-variant border border-outline-variant">Cancel</button>
   </div>
 </div>
 
@@ -1282,7 +1300,14 @@ function getFilteredDeals() {
   if (fy) deals = deals.filter(d => (d.closeSort || '').startsWith(fy));
   if (fr) deals = deals.filter(d => d.role === fr);
   if (fs) deals = deals.filter(d => (d.source || '').includes(fs));
-  if (fst) deals = deals.filter(d => d.status === fst);
+  if (fst === 'cancelled') {
+    deals = deals.filter(d => d.status === 'cancelled');
+  } else if (fst) {
+    deals = deals.filter(d => d.status === fst);
+  } else {
+    // Default: hide cancelled and pipeline-returned deals
+    deals = deals.filter(d => d.status !== 'cancelled' && d.status !== 'pipeline');
+  }
   if (fp) deals = deals.filter(d => d.payStatus === fp);
   if (fpart) deals = deals.filter(d => d.partner === fpart);
   if (fproj) deals = deals.filter(d => d.project === fproj);
@@ -1548,6 +1573,108 @@ async function submitDealEdit(e) {
   hideEditDealModal();
   renderClosings();
   showToast('Deal updated');
+}
+
+// ============ CANCEL / RETURN TO PIPELINE ============
+function cancelDeal() {
+  const dealId = parseInt(document.getElementById('edit-deal-id').value);
+  const deal = (pipelineData?.deals || []).find(d => d.id === dealId);
+  if (!deal) return;
+  if (!confirm(`לבטל את עסקת ${deal.client}?`)) return;
+
+  deal.status = 'cancelled';
+  deal.cancelled_at = new Date().toISOString().slice(0, 10);
+  persistDealUpdate(dealId, { status: 'cancelled', cancelled_at: deal.cancelled_at });
+  hideEditDealModal();
+  renderClosings();
+  showToast(`${deal.client} — deal cancelled`);
+}
+
+function returnToPipeline() {
+  const dealId = parseInt(document.getElementById('edit-deal-id').value);
+  const deal = (pipelineData?.deals || []).find(d => d.id === dealId);
+  if (!deal) return;
+  if (!confirm(`להחזיר את ${deal.client} לפייפליין?`)) return;
+
+  document.getElementById('priority-deal-id').value = dealId;
+  document.getElementById('priority-modal').classList.remove('hidden');
+}
+
+async function confirmReturnToPipeline(temp) {
+  const dealId = parseInt(document.getElementById('priority-deal-id').value);
+  const deal = (pipelineData?.deals || []).find(d => d.id === dealId);
+  document.getElementById('priority-modal').classList.add('hidden');
+  if (!deal) return;
+
+  // Mark deal as pipeline-returned
+  deal.status = 'pipeline';
+  deal.returned_at = new Date().toISOString().slice(0, 10);
+  persistDealUpdate(dealId, { status: 'pipeline', returned_at: deal.returned_at });
+
+  // Add as lead to pipeline_data.json leads array
+  const leads = pipelineData.leads || [];
+  const newId = 'lead_' + String(Math.max(0, ...leads.map(l => parseInt((l.id || '').replace('lead_', '')) || 0)) + 1).padStart(3, '0');
+  const newLead = {
+    id: newId,
+    client: deal.client,
+    project: deal.project,
+    price: deal.price || 0,
+    commission: deal.net || 0,
+    commPct: '',
+    temp: temp,
+    notes: `Returned from deal #${deal.id}. ${deal.notes || ''}`.trim(),
+    addedAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    phone: deal.phone || '',
+    status: 'ENGAGED',
+  };
+  leads.push(newLead);
+  pipelineData.leads = leads;
+
+  // Also add to firebaseLeads for pipeline tab
+  firebaseLeads.push({
+    _id: newId,
+    display_name: deal.client,
+    name: deal.client,
+    phone_number: deal.phone || '',
+    active_project: deal.project,
+    temp: temp === 'חם מאוד' ? 'HOT' : temp === 'חם' ? 'WARM' : 'LUKEWARM',
+    tier: temp === 'חם מאוד' ? 'HOT' : temp === 'חם' ? 'WARM' : 'LUKEWARM',
+    budget: deal.price || 0,
+    expected_commission: deal.net || 0,
+    general_notes: newLead.notes,
+    updated_at: new Date().toISOString(),
+    island_presence: {},
+    status: 'ENGAGED',
+  });
+
+  // Persist lead addition via server
+  if (LOCAL_API) {
+    try {
+      await fetch(`${LOCAL_API}/pipeline/add`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ client: deal.client, project: deal.project, price: deal.price, commPct: 0, notes: newLead.notes })
+      });
+    } catch(e) {}
+  }
+
+  hideEditDealModal();
+  renderClosings();
+  showToast(`${deal.client} returned to pipeline as "${temp}"`);
+}
+
+async function persistDealUpdate(dealId, updates) {
+  if (!LOCAL_API) return;
+  try {
+    await fetch(`${LOCAL_API}/pipeline/update`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ deal_id: dealId, ...updates })
+    });
+  } catch(e) {
+    console.warn('Server persist failed:', e);
+  }
 }
 
 // ============ CAMPAIGNS ============
