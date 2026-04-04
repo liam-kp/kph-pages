@@ -602,6 +602,7 @@ const NETLIFY_PROXY = 'https://kph-proxy.netlify.app';
 const IS_LOCAL = ['localhost', '127.0.0.1'].includes(window.location.hostname);
 const API_BASE = IS_LOCAL ? `${window.location.protocol}//${window.location.hostname}:8081` : NETLIFY_PROXY;
 const LOCAL_API = IS_LOCAL ? API_BASE : null; // local-only endpoints (pipeline, deals)
+const PIPELINE_URL = IS_LOCAL ? `${API_BASE}/pipeline` : `${NETLIFY_PROXY}/pipeline_data.json`;
 const CUSTOMER_ID = '11a3a8c9-d3db-4b32-8c08-35dd7868b959';
 
 // ============ TOKEN ============
@@ -704,20 +705,9 @@ async function loadPipeline() {
     firebaseMode = true;
   } catch(e) {
     console.warn('Firebase unavailable, falling back to local pipeline:', e.message);
-    // Show error toast on remote so user knows the token is bad
-    if (!LOCAL_API) {
-      firebaseLeads = []; firebaseMode = false;
-      const isAuthErr = /401|unauthorized|invalid.*token|expired/i.test(e.message);
-      if (isAuthErr) {
-        showToast('Token expired or invalid — click Token to update', true);
-        showTokenModal();
-      } else {
-        showToast('Firebase error: ' + e.message, true);
-      }
-      renderPipelineKPIs(); renderPipelineTable(); return;
-    }
+    // Fallback: load pipeline_data.json (local server or Netlify static)
     try {
-      const res = await fetch(`${LOCAL_API}/pipeline`);
+      const res = await fetch(PIPELINE_URL);
       const data = await res.json();
       pipelineData = data;
       // Convert local leads to Firebase-like format
@@ -1179,14 +1169,7 @@ document.querySelectorAll('#detail-temp-buttons button').forEach(btn => {
 
 // ============ CLOSINGS ============
 async function loadClosings() {
-  if (!LOCAL_API) {
-    // Remote mode: no local pipeline server. Show notice.
-    if (!pipelineData) pipelineData = { leads: [], deals: [] };
-    renderClosingsKPIs();
-    renderClosingsTable();
-    return;
-  }
-  const res = await fetch(`${LOCAL_API}/pipeline`);
+  const res = await fetch(PIPELINE_URL);
   pipelineData = await res.json();
   renderClosingsKPIs();
   renderClosingsTable();
@@ -1417,10 +1400,10 @@ function renderProjects(radarProjects) {
 
 // ============ REPORTS ============
 async function loadReports() {
-  // Pipeline data for deals (local server only)
-  if (!pipelineData && LOCAL_API) {
+  // Pipeline data for deals
+  if (!pipelineData) {
     try {
-      const res = await fetch(`${LOCAL_API}/pipeline`);
+      const res = await fetch(PIPELINE_URL);
       pipelineData = await res.json();
     } catch(e) {}
   }
