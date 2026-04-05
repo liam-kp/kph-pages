@@ -103,6 +103,58 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
 .gantt-cell-paid { background:rgba(52,211,153,0.2); color:#34D399; }
 .gantt-cell-empty { color:#334155; }
 .gantt-total td { background:#10141a !important; color:#FBBF24 !important; font-weight:800; border-top:2px solid #334155; }
+
+/* Pipeline v2 — Tier Badges */
+.tier-badge { display:inline-flex; align-items:center; gap:3px; padding:2px 8px; border-radius:10px; font-size:10px; font-weight:700; white-space:nowrap; }
+.tier-very-hot { background:rgba(255,68,68,0.15); color:#ff4444; }
+.tier-hot { background:rgba(255,140,0,0.15); color:#ff8c00; }
+.tier-warm { background:rgba(255,215,0,0.15); color:#ffd700; }
+.tier-cold { background:rgba(136,136,136,0.15); color:#888; }
+.tier-unknown { background:rgba(136,136,136,0.1); color:#666; }
+.source-badge { display:inline-block; padding:2px 8px; border-radius:10px; font-size:10px; font-weight:600; }
+.src-bot { background:rgba(52,211,153,0.15); color:#34D399; }
+.src-old { background:rgba(251,146,60,0.15); color:#FB923C; }
+
+/* Pipeline Filter Chips */
+.chip-bar { display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
+.chip { padding:5px 12px; border-radius:16px; font-size:11px; font-weight:600; cursor:pointer; border:1px solid #3e4943; color:#bdcac1; background:transparent; transition:all 0.15s; white-space:nowrap; }
+.chip:hover { border-color:#68dbae; color:#dfe2eb; }
+.chip.active { background:#68dbae; color:#003826; border-color:#68dbae; }
+.chip.active-red { background:#ff4444; color:#fff; border-color:#ff4444; }
+.chip.active-orange { background:#ff8c00; color:#fff; border-color:#ff8c00; }
+
+/* Daily Focus Widget */
+.focus-widget { background:linear-gradient(135deg, #1c2026 0%, #10141a 100%); border:1px solid #3e4943; border-right:4px solid #ffd700; }
+.focus-header { display:flex; justify-content:space-between; align-items:center; cursor:pointer; padding:12px 16px; }
+.focus-body { padding:0 16px 12px; }
+.focus-row { display:flex; align-items:center; justify-content:space-between; padding:8px 0; border-bottom:1px solid rgba(62,73,67,0.3); }
+.focus-row:last-child { border-bottom:none; }
+
+/* WA Button */
+.wa-btn { display:inline-flex; align-items:center; justify-content:center; width:32px; height:32px; background:#25D366; color:#fff; border-radius:6px; font-size:14px; cursor:pointer; border:none; transition:transform 0.1s; text-decoration:none; }
+.wa-btn:hover { transform:scale(1.1); }
+.arrow-btn { display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; background:transparent; color:#bdcac1; border:1px solid #3e4943; border-radius:6px; font-size:14px; cursor:pointer; transition:all 0.15s; }
+.arrow-btn:hover { background:#1c2026; color:#68dbae; border-color:#68dbae; }
+
+/* Side Panel Extras */
+.sp-action-btn { width:100%; padding:10px; font-size:12px; font-weight:700; border:none; cursor:pointer; transition:all 0.15s; display:flex; align-items:center; justify-content:center; gap:6px; }
+.sp-action-btn:active { transform:scale(0.97); }
+
+/* Schedule Modal */
+.sched-modal-body { background:#1c2026; border:1px solid #3e4943; padding:20px; max-width:380px; width:100%; }
+.sched-modal-body select, .sched-modal-body input[type="date"] { width:100%; background:#10141a; color:#dfe2eb; border:1px solid #3e4943; border-radius:6px; padding:8px 10px; font-size:13px; }
+.sched-modal-body label { display:block; font-size:11px; color:#bdcac1; margin-bottom:4px; text-transform:uppercase; letter-spacing:0.5px; font-weight:700; }
+
+/* Bottom Sheet (mobile side panel) */
+@media (max-width: 767px) {
+  #detail-panel { position:fixed!important; bottom:0; left:0; right:0; top:auto!important; width:100%!important; max-height:80vh; border-radius:16px 16px 0 0; border-right:none!important; border-top:2px solid #3e4943; z-index:60!important; }
+  #detail-panel .p-6 { padding:16px!important; }
+  .wa-btn { width:44px; height:44px; font-size:18px; }
+  .hide-mobile { display:none!important; }
+  .pipeline-table-wrap { overflow-x:auto; }
+  .pipeline-table-wrap table { min-width:600px; }
+  #page-pipeline .grid-cols-4 { grid-template-columns:repeat(2,1fr)!important; }
+}
 </style>
 </head>
 <body class="text-on-surface overflow-hidden h-screen flex flex-row-reverse">
@@ -175,7 +227,7 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
   <div class="flex-1 overflow-y-auto" id="main-scroll">
 
     <!-- ==================== PIPELINE PAGE ==================== -->
-    <div id="page-pipeline" class="page-content active p-6 space-y-6 fade-in">
+    <div id="page-pipeline" class="page-content active p-6 space-y-5 fade-in">
       <!-- KPI Row -->
       <div class="grid grid-cols-4 gap-4" id="pipeline-kpis">
         <div class="bg-surface-container p-4 ghost-border">
@@ -199,41 +251,61 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
         </div>
       </div>
 
-      <!-- Smart List -->
-      <div class="bg-surface-container-low p-4 flex justify-between items-center ghost-border">
-        <h2 class="text-lg font-semibold">Smart Work List</h2>
-        <div class="flex gap-2">
-          <select id="pipeline-filter-temp" class="bg-surface-container-highest text-xs px-3 py-2 border-none">
-            <option value="">All Temps</option>
-            <option value="very-hot">Very Hot</option>
-            <option value="hot">Hot</option>
-            <option value="warm">Warm</option>
-            <option value="cold">Cold</option>
-          </select>
-          <select id="pipeline-filter-island" class="bg-surface-container-highest text-xs px-3 py-2 border-none">
-            <option value="">All Status</option>
-            <option value="on-island">On Island</option>
-            <option value="arriving">Arriving Soon</option>
-            <option value="removed">Removed</option>
-          </select>
+      <!-- Daily Focus Widget -->
+      <div class="focus-widget" id="focus-widget">
+        <div class="focus-header" onclick="toggleFocusWidget()">
+          <h3 class="text-sm font-bold text-white flex items-center gap-2">
+            <span style="font-size:16px">🎯</span> פוקוס היום
+            <span class="text-[10px] font-normal text-on-surface-variant" id="focus-count"></span>
+          </h3>
+          <span class="material-symbols-outlined text-on-surface-variant text-sm" id="focus-chevron">expand_more</span>
+        </div>
+        <div class="focus-body hidden" id="focus-body"></div>
+      </div>
+
+      <!-- Filter Bar -->
+      <div class="bg-surface-container-low p-4 ghost-border space-y-3">
+        <div class="flex justify-between items-center">
+          <h2 class="text-lg font-semibold" id="pipeline-list-title">Smart Work List</h2>
+          <div class="flex items-center gap-3">
+            <div class="relative">
+              <span class="absolute right-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant text-sm">search</span>
+              <input id="pipeline-search" class="bg-surface-container-highest border-none text-xs pr-10 pl-4 py-2 w-56 focus:ring-1 focus:ring-primary outline-none" placeholder="חיפוש שם / טלפון / פרויקט..." type="text"/>
+            </div>
+            <select id="pipeline-sort" class="bg-surface-container-highest text-xs px-3 py-2 border-none">
+              <option value="updated">תאריך עדכון</option>
+              <option value="created">תאריך יצירה</option>
+              <option value="score">ציון</option>
+            </select>
+          </div>
+        </div>
+        <div class="chip-bar" id="pipeline-chips">
+          <button class="chip active" data-filter="all">הכל</button>
+          <button class="chip" data-filter="very-hot">🔴 חם מאוד</button>
+          <button class="chip" data-filter="hot">🟠 חם</button>
+          <button class="chip" data-filter="old">ישנים</button>
+          <button class="chip" data-filter="bot">בוט</button>
+          <button class="chip" data-filter="on-island">באי</button>
         </div>
       </div>
 
-      <div class="bg-surface-container ghost-border">
+      <!-- Lead Table -->
+      <div class="bg-surface-container ghost-border pipeline-table-wrap">
         <table class="w-full text-right">
           <thead>
             <tr class="text-on-surface-variant text-[11px] uppercase tracking-widest border-b border-outline-variant/30">
-              <th class="px-6 py-4 font-medium">Priority</th>
-              <th class="px-6 py-4 font-medium">Lead Name</th>
-              <th class="px-6 py-4 font-medium">Project</th>
-              <th class="px-6 py-4 font-medium">Budget</th>
-              <th class="px-6 py-4 font-medium">Source</th>
-              <th class="px-6 py-4 font-medium">Last Contact</th>
-              <th class="px-6 py-4 font-medium text-left">Actions</th>
+              <th class="px-4 py-4 font-medium">Tier</th>
+              <th class="px-4 py-4 font-medium">Lead Name</th>
+              <th class="px-4 py-4 font-medium">Project</th>
+              <th class="px-4 py-4 font-medium hide-mobile">Commission</th>
+              <th class="px-4 py-4 font-medium">Source</th>
+              <th class="px-4 py-4 font-medium">Last Contact</th>
+              <th class="px-4 py-4 font-medium hide-mobile">Score</th>
+              <th class="px-4 py-4 font-medium text-left" style="width:100px">Actions</th>
             </tr>
           </thead>
           <tbody id="pipeline-table-body" class="divide-y divide-outline-variant/10">
-            <tr><td colspan="7" class="px-6 py-12 text-center text-on-surface-variant">Loading...</td></tr>
+            <tr><td colspan="8" class="px-6 py-12 text-center text-on-surface-variant">Loading...</td></tr>
           </tbody>
         </table>
       </div>
@@ -571,6 +643,14 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
         <span class="material-symbols-outlined text-lg">chat</span>
         WhatsApp
       </a>
+      <button id="btn-move-to-closings" onclick="moveToClosings()" class="sp-action-btn hidden" style="background:#4A90D9;color:#fff;border-radius:4px">
+        <span class="material-symbols-outlined text-sm">payments</span>
+        העבר לסגירות
+      </button>
+      <button onclick="showScheduleModal()" class="sp-action-btn" style="background:transparent;color:#bdcac1;border:1px solid #3e4943;border-radius:4px">
+        <span style="font-size:14px">🕐</span>
+        תזמן הודעה
+      </button>
     </div>
   </div>
 </aside>
@@ -748,6 +828,34 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
   </div>
 </div>
 
+<!-- ========== SCHEDULE MESSAGE MODAL ========== -->
+<div id="schedule-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[120] flex items-center justify-center p-4 hidden">
+  <div class="sched-modal-body">
+    <h3 class="text-sm font-bold text-white mb-4 flex items-center gap-2">
+      <span>🕐</span> תזמן הודעה
+      <span class="text-[10px] text-on-surface-variant font-normal" id="sched-lead-name"></span>
+    </h3>
+    <div class="space-y-4">
+      <div>
+        <label>תאריך</label>
+        <input type="date" id="sched-date"/>
+      </div>
+      <div>
+        <label>תבנית הודעה</label>
+        <select id="sched-template">
+          <option value="followup_day2">פולואפ יום 2</option>
+          <option value="followup_week">פולואפ שבוע</option>
+          <option value="wakeup">התעוררות</option>
+        </select>
+      </div>
+      <div class="flex gap-3 pt-2">
+        <button onclick="confirmSchedule()" class="flex-1 py-2.5 text-xs font-bold bg-[#68dbae] text-[#003826]">אישור</button>
+        <button onclick="hideScheduleModal()" class="flex-1 py-2.5 text-xs font-bold border border-[#3e4943] text-[#bdcac1]">ביטול</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ========== JAVASCRIPT ========== -->
 <script>
 // ============ CONFIG ============
@@ -784,6 +892,9 @@ let firebaseMode = false;
 // ============ NAVIGATION ============
 function showPage(pageId) {
   currentPage = pageId;
+  // Update URL hash without triggering hashchange
+  history.replaceState(null, '', '#' + pageId);
+
   document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + pageId).classList.add('active');
 
@@ -852,51 +963,123 @@ async function loadPageData(page) {
 }
 
 // ============ PIPELINE ============
+// Unified merge state
+let localLeadsRaw = [];
+let firebaseLeadsRaw = [];
+
+function normalizePhone(p) {
+  return (p || '').replace(/\D/g, '').replace(/^0+/, '');
+}
+
+function hebrewTempToTier(t) {
+  if (t === 'חם מאוד') return 'VERY_HOT';
+  if (t === 'חם') return 'HOT';
+  if (t === 'פושר') return 'WARM';
+  if (t === 'קר') return 'COLD';
+  return '';
+}
+
+function firebaseTierToUnified(t) {
+  const v = (t || '').toUpperCase();
+  if (v === 'HOT') return 'VERY_HOT'; // Firebase HOT = חם מאוד
+  if (v === 'WARM') return 'HOT';      // Firebase WARM = חם
+  if (v === 'LUKEWARM') return 'WARM';
+  if (v === 'COLD') return 'COLD';
+  return '';
+}
+
+function mergeLeadSources(fbLeads, localLeads) {
+  const merged = [];
+  const fbPhoneMap = new Map();
+
+  // Index Firebase leads by phone
+  fbLeads.forEach(l => {
+    const phone = normalizePhone(l.phone_number);
+    if (phone) fbPhoneMap.set(phone, l);
+  });
+
+  // Add all Firebase leads with source=bot
+  fbLeads.forEach(l => {
+    merged.push({
+      ...l,
+      _source: 'bot',
+      _unified_tier: firebaseTierToUnified(l.temp || l.tier),
+    });
+  });
+
+  // Add local leads that are NOT already in Firebase
+  localLeads.forEach(l => {
+    // If local lead has firebase_id, it's already matched — skip
+    if (l.firebase_id) return;
+    // Check phone match
+    const phone = normalizePhone(l.phone);
+    if (phone && fbPhoneMap.has(phone)) return; // duplicate
+    // This is a local-only lead — add with source=old
+    merged.push({
+      _id: l.id,
+      display_name: l.client,
+      name: l.client,
+      phone_number: l.phone || '',
+      active_project: l.project,
+      project_id: l.project,
+      _unified_tier: hebrewTempToTier(l.temp),
+      temp: l.temp,
+      budget: l.price || 0,
+      expected_commission: l.commission || 0,
+      general_notes: l.notes || '',
+      source_campaign: l.source || '',
+      updated_at: l.updatedAt,
+      addedAt: l.addedAt,
+      island_presence: {},
+      status: l.status || '',
+      score: null,
+      _source: 'old',
+    });
+  });
+
+  return merged;
+}
+
 async function loadPipeline() {
-  try {
-    const leads = await firebaseFetch('Leads');
-    firebaseLeads = Array.isArray(leads) ? leads : [];
+  // Fetch both sources in parallel
+  const [fbResult, localResult] = await Promise.allSettled([
+    firebaseFetch('Leads'),
+    fetch(PIPELINE_URL).then(r => r.json()),
+  ]);
+
+  // Firebase leads
+  if (fbResult.status === 'fulfilled') {
+    firebaseLeadsRaw = Array.isArray(fbResult.value) ? fbResult.value : [];
     firebaseMode = true;
-  } catch(e) {
-    console.warn('Firebase unavailable, falling back to local pipeline:', e.message);
-    // Fallback: load pipeline_data.json (local server or Netlify static)
-    try {
-      const res = await fetch(PIPELINE_URL);
-      const data = await res.json();
-      pipelineData = data;
-      // Convert local leads to Firebase-like format
-      firebaseLeads = (data.leads || []).map(l => ({
-        _id: l.firebase_id || l.id,
-        display_name: l.client,
-        name: l.client,
-        phone_number: l.phone || '',
-        active_project: l.project,
-        project_id: l.project,
-        temp: l.temp === 'חם מאוד' ? 'HOT' : l.temp === 'חם' ? 'WARM' : l.temp === 'קר' ? 'COLD' : l.temp === 'בישראל' ? 'LUKEWARM' : '',
-        tier: l.temp === 'חם מאוד' ? 'HOT' : l.temp === 'חם' ? 'WARM' : l.temp === 'קר' ? 'COLD' : '',
-        budget: l.price || 0,
-        expected_commission: l.commission || 0,
-        general_notes: l.notes || '',
-        source_campaign: l.source || '',
-        updated_at: l.updatedAt,
-        addedAt: l.addedAt,
-        island_presence: {},
-        status: l.status || '',
-      }));
-      firebaseMode = false;
-    } catch(e2) {
-      console.error('Local pipeline also failed:', e2);
-      firebaseLeads = [];
-      firebaseMode = false;
-    }
+  } else {
+    console.warn('Firebase unavailable:', fbResult.reason?.message);
+    firebaseLeadsRaw = [];
+    firebaseMode = false;
   }
+
+  // Local leads
+  if (localResult.status === 'fulfilled') {
+    pipelineData = localResult.value;
+    localLeadsRaw = pipelineData.leads || [];
+  } else {
+    console.warn('Local pipeline unavailable');
+    localLeadsRaw = [];
+  }
+
+  // Merge
+  firebaseLeads = mergeLeadSources(firebaseLeadsRaw, localLeadsRaw);
+
   renderPipelineKPIs();
   renderPipelineTable();
-  // Show mode indicator
-  const modeLabel = firebaseMode ? 'Firebase Live' : 'Local (pipeline_data.json)';
-  const modeColor = firebaseMode ? 'text-primary' : 'text-secondary';
-  document.querySelector('#page-pipeline .bg-surface-container-low h2').innerHTML =
-    `Smart Work List <span class="text-xs font-normal ${modeColor} mr-4">[${modeLabel}]</span>`;
+  renderDailyFocus();
+
+  // Mode indicator
+  const fbCount = firebaseLeadsRaw.length;
+  const localOnly = firebaseLeads.filter(l => l._source === 'old').length;
+  const titleEl = document.getElementById('pipeline-list-title');
+  if (titleEl) {
+    titleEl.innerHTML = `Smart Work List <span class="text-xs font-normal text-primary mr-4">[${fbCount} בוט + ${localOnly} ישנים]</span>`;
+  }
 }
 
 function isRemoved(lead) {
@@ -933,101 +1116,150 @@ function renderPipelineKPIs() {
   const onIsland = leads.filter(isOnIsland).length;
   document.getElementById('kpi-on-island').textContent = onIsland;
 
-  const hot = leads.filter(l => l.temp === 'HOT' || l.tier === 'HOT').length;
+  const hot = leads.filter(l => {
+    const t = l._unified_tier || firebaseTierToUnified(l.temp || l.tier);
+    return t === 'VERY_HOT' || t === 'HOT';
+  }).length;
   document.getElementById('kpi-hot-leads').textContent = hot;
 
   const totalComm = leads.reduce((sum, l) => sum + (parseFloat(l.expected_commission) || 0), 0);
   document.getElementById('kpi-total-commission').textContent = totalComm > 0 ? formatCurrency(totalComm) : '--';
 }
 
+// Active chip filter
+let activeChipFilter = 'all';
+
+function getTierBadge(lead) {
+  const tier = lead._unified_tier || firebaseTierToUnified(lead.temp || lead.tier);
+  switch(tier) {
+    case 'VERY_HOT': return '<span class="tier-badge tier-very-hot">🔴 חם מאוד</span>';
+    case 'HOT':      return '<span class="tier-badge tier-hot">🟠 חם</span>';
+    case 'WARM':     return '<span class="tier-badge tier-warm">🟡 פושר</span>';
+    case 'COLD':     return '<span class="tier-badge tier-cold">⚪ קר</span>';
+    default:         return '<span class="tier-badge tier-unknown">לא ידוע</span>';
+  }
+}
+
+function getSourceBadge(lead) {
+  if (lead._source === 'bot') return '<span class="source-badge src-bot">בוט</span>';
+  if (lead._source === 'old') return '<span class="source-badge src-old">ישן</span>';
+  return '';
+}
+
 function renderPipelineTable() {
   const tbody = document.getElementById('pipeline-table-body');
-  const filterTemp = document.getElementById('pipeline-filter-temp').value;
-  const filterIsland = document.getElementById('pipeline-filter-island').value;
+  const searchQ = (document.getElementById('pipeline-search')?.value || '').toLowerCase().trim();
+  const sortBy = document.getElementById('pipeline-sort')?.value || 'updated';
 
   let leads = [...firebaseLeads];
 
-  // By default hide removed leads unless explicitly filtering for them
-  if (filterIsland === 'removed') {
-    leads = leads.filter(isRemoved);
-  } else {
-    leads = leads.filter(l => !isRemoved(l));
-  }
+  // Hide removed
+  leads = leads.filter(l => !isRemoved(l));
 
-  // Temp filter
-  if (filterTemp) {
-    const tempMap = { 'very-hot': 'HOT', 'hot': 'WARM', 'warm': 'LUKEWARM', 'cold': 'COLD' };
-    leads = leads.filter(l => (l.temp || l.tier) === tempMap[filterTemp]);
-  }
-
-  // Island filter
-  if (filterIsland === 'on-island') {
-    leads = leads.filter(isOnIsland);
-  } else if (filterIsland === 'arriving') {
+  // Search filter
+  if (searchQ) {
     leads = leads.filter(l => {
-      const ip = l.island_presence;
-      return (ip && (ip.status || '').toLowerCase() === 'arriving_soon');
+      const name = (l.display_name || l.name || '').toLowerCase();
+      const phone = (l.phone_number || '').toLowerCase();
+      const project = (l.active_project || l.project_id || '').toLowerCase();
+      return name.includes(searchQ) || phone.includes(searchQ) || project.includes(searchQ);
     });
   }
 
-  // Sort: hot first, then by updatedAt desc
-  const tempOrder = { 'HOT': 0, 'WARM': 1, 'LUKEWARM': 2, 'COLD': 3 };
-  leads.sort((a, b) => {
-    const ta = tempOrder[a.temp || a.tier] ?? 9;
-    const tb = tempOrder[b.temp || b.tier] ?? 9;
-    if (ta !== tb) return ta - tb;
-    return (b.updated_at || '').localeCompare(a.updated_at || '');
-  });
+  // Chip filter
+  if (activeChipFilter === 'very-hot') {
+    leads = leads.filter(l => (l._unified_tier || firebaseTierToUnified(l.temp || l.tier)) === 'VERY_HOT');
+  } else if (activeChipFilter === 'hot') {
+    leads = leads.filter(l => (l._unified_tier || firebaseTierToUnified(l.temp || l.tier)) === 'HOT');
+  } else if (activeChipFilter === 'old') {
+    leads = leads.filter(l => l._source === 'old');
+  } else if (activeChipFilter === 'bot') {
+    leads = leads.filter(l => l._source === 'bot');
+  } else if (activeChipFilter === 'on-island') {
+    leads = leads.filter(isOnIsland);
+  }
+
+  // Sort
+  const tierOrder = { 'VERY_HOT': 0, 'HOT': 1, 'WARM': 2, 'COLD': 3 };
+  if (sortBy === 'updated') {
+    leads.sort((a, b) => {
+      const ta = tierOrder[a._unified_tier || firebaseTierToUnified(a.temp || a.tier)] ?? 9;
+      const tb = tierOrder[b._unified_tier || firebaseTierToUnified(b.temp || b.tier)] ?? 9;
+      if (ta !== tb) return ta - tb;
+      return (b.updated_at || '').localeCompare(a.updated_at || '');
+    });
+  } else if (sortBy === 'created') {
+    leads.sort((a, b) => (b.addedAt || '').localeCompare(a.addedAt || ''));
+  } else if (sortBy === 'score') {
+    leads.sort((a, b) => (b.score || 0) - (a.score || 0));
+  }
 
   if (leads.length === 0) {
-    const msg = !getToken() ? 'No token set — click <b>Token</b> in the top bar'
-      : !firebaseMode && !LOCAL_API ? 'Token may be expired — click <b>Token</b> to update'
+    const msg = !getToken() && firebaseLeadsRaw.length === 0 ? 'No token set — click <b>Token</b> in the top bar'
       : 'No leads match current filters';
-    tbody.innerHTML = `<tr><td colspan="7" class="px-6 py-12 text-center text-on-surface-variant">${msg}</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="8" class="px-6 py-12 text-center text-on-surface-variant">${msg}</td></tr>`;
     return;
   }
 
   tbody.innerHTML = leads.map(lead => {
     const name = lead.display_name || lead.name || lead.phone_number || 'Unknown';
-    const temp = lead.temp || lead.tier || '';
-    const tempClass = temp === 'HOT' ? 'temp-very-hot' : temp === 'WARM' ? 'temp-warm' : temp === 'COLD' ? 'temp-cold' : 'temp-israel';
     const project = lead.active_project || lead.project_id || '';
-    const budget = parseBudget(lead.budget);
-    const source = lead.source_campaign || '';
+    const commission = lead.expected_commission ? formatCurrency(lead.expected_commission) : '--';
     const lastContact = lead.updated_at ? timeAgo(lead.updated_at) : '--';
-    const isOld = daysSince(lead.updated_at) > 7;
+    const daysOld = daysSince(lead.updated_at);
+    const isOld = daysOld > 7;
     const onIsland = isOnIsland(lead);
     const firebaseId = lead._id || '';
-    const removed = isRemoved(lead);
+    const phone = (lead.phone_number || '').replace(/\D/g, '');
     const escapedName = esc(name).replace(/'/g, "\\'");
+    const scoreDisplay = lead.score != null ? lead.score : '--';
 
-    return `<tr class="hover:bg-surface-container-high transition-colors cursor-pointer ${removed ? 'opacity-40' : ''}" onclick="openLeadDetail('${firebaseId}')">
-      <td class="px-6 py-4"><div class="temp-dot ${tempClass}"></div></td>
-      <td class="px-6 py-4 font-semibold text-secondary">
-        ${esc(name)}
-        ${onIsland ? '<span class="ml-2 text-[10px] bg-primary/10 text-primary px-1 py-0.5">ON ISLAND</span>' : ''}
-        ${removed ? '<span class="ml-2 text-[10px] bg-error/10 text-error px-1 py-0.5">REMOVED</span>' : ''}
+    return `<tr class="hover:bg-surface-container-high transition-colors cursor-pointer" onclick="openLeadDetail('${firebaseId}')">
+      <td class="px-4 py-3">${getTierBadge(lead)}</td>
+      <td class="px-4 py-3">
+        <div class="font-semibold text-secondary">${esc(name)}</div>
+        <div class="flex items-center gap-1 mt-0.5">
+          ${getSourceBadge(lead)}
+          ${onIsland ? '<span class="text-[10px] bg-primary/10 text-primary px-1 py-0.5">באי</span>' : ''}
+        </div>
       </td>
-      <td class="px-6 py-4 text-sm">${esc(project)}</td>
-      <td class="px-6 py-4 font-bold text-primary">${budget}</td>
-      <td class="px-6 py-4 text-sm text-on-surface-variant">${esc(source)}</td>
-      <td class="px-6 py-4 text-sm ${isOld ? 'text-error' : ''}">${lastContact}</td>
-      <td class="px-6 py-4 text-left" onclick="event.stopPropagation()">
-        <div class="row-menu">
-          <span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-white">more_vert</span>
-          <div class="row-menu-dropdown">
-            <button onclick="openLeadDetail('${firebaseId}')">Edit Lead</button>
-            ${!removed ? `<button class="text-error" onclick="removeLead('${firebaseId}', '${escapedName}')">Remove Lead</button>` : ''}
-          </div>
+      <td class="px-4 py-3 text-sm">${esc(project)}</td>
+      <td class="px-4 py-3 font-bold text-primary text-sm hide-mobile">${commission}</td>
+      <td class="px-4 py-3 text-sm text-on-surface-variant">${lead.source_campaign ? esc(lead.source_campaign) : ''}</td>
+      <td class="px-4 py-3 text-sm ${isOld ? 'text-error font-bold' : ''}">
+        ${lastContact}
+        ${daysOld > 2 ? '<div class="text-[10px] text-error">' + daysOld + 'd</div>' : ''}
+      </td>
+      <td class="px-4 py-3 text-sm hide-mobile">${scoreDisplay}</td>
+      <td class="px-4 py-3 text-left" onclick="event.stopPropagation()">
+        <div class="flex items-center gap-2">
+          ${phone ? `<a href="https://wa.me/${phone}" target="_blank" class="wa-btn" title="WhatsApp">📱</a>` : ''}
+          <button class="arrow-btn" onclick="openLeadDetail('${firebaseId}')" title="פרטים">→</button>
         </div>
       </td>
     </tr>`;
   }).join('');
 }
 
-// Pipeline filters
-document.getElementById('pipeline-filter-temp').addEventListener('change', renderPipelineTable);
-document.getElementById('pipeline-filter-island').addEventListener('change', renderPipelineTable);
+// Pipeline chip filters
+document.getElementById('pipeline-chips')?.addEventListener('click', (e) => {
+  const chip = e.target.closest('.chip');
+  if (!chip) return;
+  const filter = chip.dataset.filter;
+  activeChipFilter = filter;
+  document.querySelectorAll('#pipeline-chips .chip').forEach(c => {
+    c.classList.remove('active', 'active-red', 'active-orange');
+  });
+  if (filter === 'very-hot') chip.classList.add('active-red');
+  else if (filter === 'hot') chip.classList.add('active-orange');
+  else chip.classList.add('active');
+  renderPipelineTable();
+});
+
+// Pipeline search
+document.getElementById('pipeline-search')?.addEventListener('input', renderPipelineTable);
+// Pipeline sort
+document.getElementById('pipeline-sort')?.addEventListener('change', renderPipelineTable);
 
 // ============ LEAD DETAIL PANEL ============
 function openLeadDetail(firebaseId) {
@@ -1072,6 +1304,13 @@ function openLeadDetail(firebaseId) {
       btn.classList.add(btn.dataset.temp === 'very-hot' ? 'bg-error/10' : btn.dataset.temp === 'hot' ? 'bg-secondary/10' : 'bg-primary/10');
     }
   });
+
+  // Show "move to closings" button only when status = CONTRACT
+  const closingsBtn = document.getElementById('btn-move-to-closings');
+  if (closingsBtn) {
+    const status = (lead.status || '').toUpperCase();
+    closingsBtn.classList.toggle('hidden', status !== 'CONTRACT');
+  }
 }
 
 function closeDetailPanel() {
@@ -1320,6 +1559,157 @@ document.querySelectorAll('#detail-temp-buttons button').forEach(btn => {
     btn.classList.add(btn.dataset.temp === 'very-hot' ? 'bg-error/10' : btn.dataset.temp === 'hot' ? 'bg-secondary/10' : 'bg-primary/10');
   });
 });
+
+// ============ DAILY FOCUS ============
+function renderDailyFocus() {
+  const now = Date.now();
+  const h48 = 48 * 60 * 60 * 1000;
+  const todayStr = new Date().toISOString().slice(0, 10);
+  const leads = firebaseLeads.filter(l => !isRemoved(l));
+  const focusLeads = [];
+
+  leads.forEach(l => {
+    const tier = l._unified_tier || firebaseTierToUnified(l.temp || l.tier);
+    const lastMsg = new Date(l.last_message_at || l.updated_at || 0).getTime();
+    const silent = (now - lastMsg) > h48;
+    const updatedToday = (l.updated_at || '').slice(0, 10) === todayStr;
+
+    let reason = '';
+    // Rule 1: Hot/Very Hot + silent 48h
+    if ((tier === 'VERY_HOT' || tier === 'HOT') && silent) {
+      reason = tier === 'VERY_HOT' ? '🔴 חם מאוד — לא דיברת 48+ שעות' : '🟠 חם — לא דיברת 48+ שעות';
+    }
+    // Rule 3: Follow_Up scheduled today
+    else if (l.Follow_Up && (l.Follow_Up.scheduled_date || '').slice(0, 10) === todayStr) {
+      reason = '📅 פולואפ מתוזמן להיום';
+    }
+    if (reason) focusLeads.push({ lead: l, reason });
+  });
+
+  // Cap at 5
+  const display = focusLeads.slice(0, 5);
+  const countEl = document.getElementById('focus-count');
+  const bodyEl = document.getElementById('focus-body');
+
+  if (display.length === 0) {
+    countEl.textContent = '(אין פריטים)';
+    bodyEl.innerHTML = '<p class="text-xs text-on-surface-variant pb-2">אין לידים דורשי טיפול כרגע 🎉</p>';
+    return;
+  }
+
+  countEl.textContent = `(${display.length})`;
+  bodyEl.innerHTML = display.map(({ lead, reason }) => {
+    const name = lead.display_name || lead.name || lead.phone_number || 'Unknown';
+    const project = lead.active_project || lead.project_id || '';
+    const phone = (lead.phone_number || '').replace(/\D/g, '');
+    return `<div class="focus-row">
+      <div>
+        <span class="text-sm font-bold text-secondary">${esc(name)}</span>
+        <span class="text-xs text-on-surface-variant mr-2">${esc(project)}</span>
+        <div class="text-[10px] text-on-surface-variant">${reason}</div>
+      </div>
+      ${phone ? `<a href="https://wa.me/${phone}" target="_blank" class="wa-btn" title="WhatsApp">📱</a>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function toggleFocusWidget() {
+  const body = document.getElementById('focus-body');
+  const chevron = document.getElementById('focus-chevron');
+  body.classList.toggle('hidden');
+  chevron.textContent = body.classList.contains('hidden') ? 'expand_more' : 'expand_less';
+}
+
+// ============ MOVE TO CLOSINGS ============
+function moveToClosings() {
+  if (!selectedLead) return;
+  const name = selectedLead.display_name || selectedLead.name || 'Unknown';
+  if (!confirm(`להעביר את ${name} לסגירות?`)) return;
+
+  const token = getToken();
+  const firebaseId = selectedLead._id;
+
+  // Update Firebase status to CONTRACT
+  if (firebaseMode && token && firebaseId && !firebaseId.startsWith('lead_')) {
+    fetch(`${API_BASE}/api/firebase-proxy`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        token: token,
+        collection: 'Leads',
+        record_id: firebaseId,
+        data: { status: 'CONTRACT' }
+      })
+    }).then(r => r.json()).then(res => {
+      if (res.success) showToast(`${name} — status updated to CONTRACT`);
+      else showToast('Firebase update failed: ' + (res.error || ''), true);
+    }).catch(e => showToast('Firebase error: ' + e.message, true));
+  }
+
+  // Update local state
+  selectedLead.status = 'CONTRACT';
+  closeDetailPanel();
+  renderPipelineTable();
+  showToast(`${name} — הועבר לסגירות`);
+}
+
+// ============ SCHEDULE MESSAGE ============
+function showScheduleModal() {
+  if (!selectedLead) return;
+  const name = selectedLead.display_name || selectedLead.name || 'Unknown';
+  document.getElementById('sched-lead-name').textContent = `— ${name}`;
+  // Default date = tomorrow
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  document.getElementById('sched-date').value = tomorrow.toISOString().slice(0, 10);
+  document.getElementById('schedule-modal').classList.remove('hidden');
+}
+
+function hideScheduleModal() {
+  document.getElementById('schedule-modal').classList.add('hidden');
+}
+
+async function confirmSchedule() {
+  if (!selectedLead) return;
+  const date = document.getElementById('sched-date').value;
+  const template = document.getElementById('sched-template').value;
+  if (!date) { showToast('בחר תאריך', true); return; }
+
+  const token = getToken();
+  if (!token) { showToast('Set token first', true); return; }
+
+  const firebaseId = selectedLead._id;
+  const followUpData = {
+    scheduled_date: date,
+    template: template,
+    created_at: new Date().toISOString(),
+    status: 'pending',
+  };
+
+  try {
+    const res = await fetch(`${API_BASE}/api/firebase-proxy`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        token: token,
+        collection: 'Leads',
+        record_id: firebaseId,
+        data: { Follow_Up: followUpData }
+      })
+    });
+    const result = await res.json();
+    if (result.success) {
+      selectedLead.Follow_Up = followUpData;
+      showToast(`הודעה תוזמנה ל-${date}`);
+    } else {
+      showToast('Error: ' + (result.error || 'Unknown'), true);
+    }
+  } catch(e) {
+    showToast('Schedule failed: ' + e.message, true);
+  }
+
+  hideScheduleModal();
+}
 
 // ============ CLOSINGS ============
 let closingSortCol = 'id';
@@ -2247,14 +2637,21 @@ function renderReportChart() {
     </div>`).join('');
 }
 
-// ============ SEARCH ============
+// ============ SEARCH (global bar — delegates to pipeline search when on pipeline page) ============
 document.getElementById('global-search').addEventListener('input', (e) => {
   const q = e.target.value.toLowerCase().trim();
-  if (!q || currentPage !== 'pipeline') return;
-
-  const rows = document.querySelectorAll('#pipeline-table-body tr');
+  if (currentPage === 'pipeline') {
+    // Sync to pipeline search field
+    const ps = document.getElementById('pipeline-search');
+    if (ps) { ps.value = q; renderPipelineTable(); }
+    return;
+  }
+  // Other pages: basic row visibility toggle
+  const tableId = currentPage === 'closings' ? 'closings-table-body' : null;
+  if (!tableId) return;
+  const rows = document.querySelectorAll(`#${tableId} tr`);
   rows.forEach(row => {
-    row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
+    row.style.display = !q || row.textContent.toLowerCase().includes(q) ? '' : 'none';
   });
 });
 
@@ -2409,8 +2806,22 @@ function startAutoRefresh() {
 
 // ============ INIT ============
 (async function init() {
-  await loadPageData('pipeline');
+  // Read URL hash for initial page
+  const validPages = ['pipeline', 'closings', 'campaigns', 'projects', 'reports'];
+  const hash = window.location.hash.replace('#', '');
+  const startPage = validPages.includes(hash) ? hash : 'pipeline';
+
+  if (startPage !== 'pipeline') {
+    showPage(startPage);
+  }
+  await loadPageData(startPage);
   startAutoRefresh();
+
+  // Listen for hash changes (back/forward)
+  window.addEventListener('hashchange', () => {
+    const h = window.location.hash.replace('#', '');
+    if (validPages.includes(h) && h !== currentPage) showPage(h);
+  });
 })();
 </script>
 </body>
