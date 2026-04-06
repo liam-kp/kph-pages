@@ -94,6 +94,13 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
 .cb-dropdown-menu label { display:flex; align-items:center; gap:8px; padding:7px 14px; font-size:12px; color:#E2E8F0; cursor:pointer; white-space:nowrap; direction:rtl; }
 .cb-dropdown-menu label:hover { background:rgba(74,144,217,0.1); }
 .cb-dropdown-menu input[type="checkbox"] { accent-color:#4A90D9; width:15px; height:15px; cursor:pointer; }
+.na-chip { transition:all 0.15s; cursor:pointer; }
+.na-chip:hover { border-color:#6DD5FA; color:#E2E8F0; }
+.na-chip.active { background:#4A90D9; border-color:#4A90D9; color:#fff; }
+.island-dot { display:inline-block; width:7px; height:7px; border-radius:9999px !important; margin-left:4px; vertical-align:middle; }
+.island-dot-on { background:#22c55e; box-shadow:0 0 4px #22c55e; }
+.island-dot-off { display:none; }
+.island-dot-unknown { background:#64748b; opacity:0.5; }
 .gantt-table { width:100%; border-collapse:collapse; font-size:11px; }
 .gantt-table th { padding:8px 6px; text-align:center; font-weight:700; color:#94A3B8; background:#10141a; border-bottom:1px solid #334155; white-space:nowrap; }
 .gantt-table th:first-child { text-align:right; min-width:100px; position:sticky; right:0; background:#10141a; z-index:2; }
@@ -286,6 +293,13 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
           <button class="chip" data-filter="old">ישנים</button>
           <button class="chip" data-filter="bot">בוט</button>
           <button class="chip" data-filter="on-island">באי</button>
+        </div>
+        <div class="chip-bar" id="pipeline-action-chips">
+          <span class="text-[10px] text-on-surface-variant font-bold" style="padding:4px 0">NEXT ACTION:</span>
+          <button class="chip" data-action-filter="CALL">&#128222;</button>
+          <button class="chip" data-action-filter="MEETING">&#128197;</button>
+          <button class="chip" data-action-filter="FOLLOWUP_ARRIVAL">&#128198;</button>
+          <button class="chip" data-action-filter="FOLLOWUP">&#128172;</button>
         </div>
       </div>
 
@@ -610,9 +624,9 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
     <!-- Island Presence -->
     <div class="space-y-3" id="detail-island-section">
       <label class="text-[10px] text-on-surface-variant uppercase tracking-widest font-bold">Island Presence</label>
-      <div class="flex gap-1">
-        <button id="island-btn-on" onclick="setIslandStatus('on_island')" class="flex-1 py-2 text-[10px] font-bold border border-primary text-primary transition-colors">On Island</button>
-        <button id="island-btn-off" onclick="setIslandStatus('off_island')" class="flex-1 py-2 text-[10px] font-bold border border-outline-variant text-on-surface-variant transition-colors">Off Island</button>
+      <div class="flex gap-2">
+        <button id="island-btn-on" onclick="setIslandStatus('on_island')" class="flex-1 py-2.5 text-[11px] font-bold transition-all" style="border:none">&#x1F7E2; באי</button>
+        <button id="island-btn-off" onclick="setIslandStatus('off_island')" class="flex-1 py-2.5 text-[11px] font-bold transition-all" style="border:none">&#x26AB; לא באי</button>
       </div>
       <div id="island-type-row" class="hidden flex gap-1">
         <button id="island-type-perm" onclick="setIslandType('permanent')" class="flex-1 py-2 text-[10px] font-bold border border-outline-variant text-on-surface-variant transition-colors">Permanent</button>
@@ -634,6 +648,17 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
     <div class="space-y-2">
       <label class="text-[10px] text-on-surface-variant uppercase tracking-widest font-bold">Memory Notes</label>
       <textarea id="detail-notes" class="w-full bg-surface-container-low border-none text-xs p-3 h-32 focus:ring-1 focus:ring-secondary resize-none" placeholder="Notes..."></textarea>
+    </div>
+
+    <!-- Next Action -->
+    <div class="space-y-2">
+      <label class="text-[10px] text-on-surface-variant uppercase tracking-widest font-bold">NEXT ACTION</label>
+      <div class="grid grid-cols-2 gap-2" id="detail-next-action">
+        <button data-action="CALL" onclick="selectNextAction('CALL')" class="na-chip py-2 text-[11px] font-bold border border-outline-variant text-on-surface-variant">&#128222; שיחת טלפון</button>
+        <button data-action="MEETING" onclick="selectNextAction('MEETING')" class="na-chip py-2 text-[11px] font-bold border border-outline-variant text-on-surface-variant">&#128197; תאום פגישה</button>
+        <button data-action="FOLLOWUP_ARRIVAL" onclick="selectNextAction('FOLLOWUP_ARRIVAL')" class="na-chip py-2 text-[11px] font-bold border border-outline-variant text-on-surface-variant">&#128198; פולואפ בהגעה</button>
+        <button data-action="FOLLOWUP" onclick="selectNextAction('FOLLOWUP')" class="na-chip py-2 text-[11px] font-bold border border-outline-variant text-on-surface-variant">&#128172; פולואפ רגיל</button>
+      </div>
     </div>
 
     <!-- Actions -->
@@ -1086,6 +1111,24 @@ function isRemoved(lead) {
   return lead.status === 'removed' || lead.status === 'REMOVED';
 }
 
+function getIslandDot(lead) {
+  const ip = lead.island_presence;
+  if (ip && typeof ip === 'object' && ip.status) {
+    const s = (ip.status || '').toLowerCase().replace(/ /g, '_');
+    if (s === 'on_island') return '<span class="island-dot island-dot-on"></span>';
+    if (s === 'off_island') return '';
+  }
+  if (isOnIsland(lead)) return '<span class="island-dot island-dot-on"></span>';
+  // Unknown/null — show grey dot only if we have no data
+  if (!ip) return '<span class="island-dot island-dot-unknown"></span>';
+  return '';
+}
+
+function getActiveActionFilters() {
+  const chips = document.querySelectorAll('#pipeline-action-chips .chip.active');
+  return [...chips].map(c => c.dataset.actionFilter);
+}
+
 function isOnIsland(lead) {
   // Structured island_presence (set via side panel or Firebase)
   const ip = lead.island_presence;
@@ -1179,6 +1222,12 @@ function renderPipelineTable() {
     leads = leads.filter(isOnIsland);
   }
 
+  // Next Action filter
+  const activeActions = getActiveActionFilters();
+  if (activeActions.length > 0) {
+    leads = leads.filter(l => activeActions.includes(l.next_action || ''));
+  }
+
   // Sort
   const tierOrder = { 'VERY_HOT': 0, 'HOT': 1, 'WARM': 2, 'COLD': 3 };
   if (sortBy === 'updated') {
@@ -1217,10 +1266,9 @@ function renderPipelineTable() {
     return `<tr class="hover:bg-surface-container-high transition-colors cursor-pointer" onclick="openLeadDetail('${firebaseId}')">
       <td class="px-4 py-3">${getTierBadge(lead)}</td>
       <td class="px-4 py-3">
-        <div class="font-semibold text-secondary">${esc(name)}</div>
+        <div class="font-semibold text-secondary">${esc(name)}${getIslandDot(lead)}</div>
         <div class="flex items-center gap-1 mt-0.5">
           ${getSourceBadge(lead)}
-          ${onIsland ? '<span class="text-[10px] bg-primary/10 text-primary px-1 py-0.5">באי</span>' : ''}
         </div>
       </td>
       <td class="px-4 py-3 text-sm">${esc(project)}</td>
@@ -1256,6 +1304,14 @@ document.getElementById('pipeline-chips')?.addEventListener('click', (e) => {
   renderPipelineTable();
 });
 
+// Action filter chips (multi-select toggle)
+document.getElementById('pipeline-action-chips')?.addEventListener('click', (e) => {
+  const chip = e.target.closest('.chip');
+  if (!chip || !chip.dataset.actionFilter) return;
+  chip.classList.toggle('active');
+  renderPipelineTable();
+});
+
 // Pipeline search
 document.getElementById('pipeline-search')?.addEventListener('input', renderPipelineTable);
 // Pipeline sort
@@ -1288,8 +1344,9 @@ function openLeadDetail(firebaseId) {
   document.getElementById('detail-added').textContent = lead.addedAt ? new Date(lead.addedAt).toLocaleDateString('he-IL') : '--';
   document.getElementById('detail-notes').value = lead.general_notes || '';
 
-  // Island presence
+  // Island presence + Next Action
   populateIslandUI();
+  populateNextActionUI();
 
   // WhatsApp link
   const phone = (lead.phone_number || '').replace(/\D/g, '');
@@ -1429,6 +1486,25 @@ document.getElementById('detail-name-input').addEventListener('blur', () => {
 // ---- Island Presence editing ----
 let islandState = { status: 'off_island', type: '', from: '', until: '' };
 
+// ---- Next Action ----
+function selectNextAction(action) {
+  document.querySelectorAll('#detail-next-action .na-chip').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.action === action);
+  });
+}
+
+function getSelectedNextAction() {
+  const active = document.querySelector('#detail-next-action .na-chip.active');
+  return active ? active.dataset.action : '';
+}
+
+function populateNextActionUI() {
+  const action = selectedLead?.next_action || '';
+  document.querySelectorAll('#detail-next-action .na-chip').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.action === action);
+  });
+}
+
 function populateIslandUI() {
   const ip = selectedLead?.island_presence;
   if (ip && typeof ip === 'object') {
@@ -1452,14 +1528,26 @@ function renderIslandUI() {
   const permBtn = document.getElementById('island-type-perm');
   const tempBtn = document.getElementById('island-type-temp');
 
-  // Toggle buttons
+  // Toggle buttons — clear visual states
   if (islandState.status === 'on_island') {
-    onBtn.className = 'flex-1 py-2 text-[10px] font-bold border border-primary text-on-primary bg-primary transition-colors';
-    offBtn.className = 'flex-1 py-2 text-[10px] font-bold border border-outline-variant text-on-surface-variant transition-colors';
+    onBtn.style.cssText = 'background:#22c55e;color:#fff;opacity:1;border:none';
+    onBtn.className = 'flex-1 py-2.5 text-[11px] font-bold transition-all';
+    offBtn.style.cssText = 'background:#1c2026;color:#64748b;opacity:0.3;border:none';
+    offBtn.className = 'flex-1 py-2.5 text-[11px] font-bold transition-all';
     typeRow.classList.remove('hidden');
+  } else if (islandState.status === 'off_island') {
+    offBtn.style.cssText = 'background:#334155;color:#fff;opacity:1;border:none';
+    offBtn.className = 'flex-1 py-2.5 text-[11px] font-bold transition-all';
+    onBtn.style.cssText = 'background:#1c2026;color:#64748b;opacity:0.3;border:none';
+    onBtn.className = 'flex-1 py-2.5 text-[11px] font-bold transition-all';
+    typeRow.classList.add('hidden');
+    datesRow.classList.add('hidden');
   } else {
-    offBtn.className = 'flex-1 py-2 text-[10px] font-bold border border-outline-variant text-on-primary bg-outline-variant transition-colors';
-    onBtn.className = 'flex-1 py-2 text-[10px] font-bold border border-primary text-primary transition-colors';
+    // Unknown — both neutral
+    onBtn.style.cssText = 'background:#1c2026;color:#94A3B8;opacity:0.7;border:1px solid #3e4943';
+    onBtn.className = 'flex-1 py-2.5 text-[11px] font-bold transition-all';
+    offBtn.style.cssText = 'background:#1c2026;color:#94A3B8;opacity:0.7;border:1px solid #3e4943';
+    offBtn.className = 'flex-1 py-2.5 text-[11px] font-bold transition-all';
     typeRow.classList.add('hidden');
     datesRow.classList.add('hidden');
   }
@@ -1519,6 +1607,7 @@ async function saveLeadDetail() {
     general_notes: document.getElementById('detail-notes').value,
     expected_commission: parseFloat(document.getElementById('detail-commission').value) || 0,
     island_presence: getIslandPayload(),
+    next_action: getSelectedNextAction(),
   };
 
   try {
@@ -1537,6 +1626,7 @@ async function saveLeadDetail() {
       // Update local state so table re-renders immediately
       if (selectedLead) {
         selectedLead.island_presence = getIslandPayload();
+        selectedLead.next_action = getSelectedNextAction();
         selectedLead.general_notes = data.general_notes;
         selectedLead.expected_commission = data.expected_commission;
       }
