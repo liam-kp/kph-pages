@@ -1112,16 +1112,13 @@ function isRemoved(lead) {
 }
 
 function getIslandDot(lead) {
-  const ip = lead.island_presence;
-  if (ip && typeof ip === 'object' && ip.status) {
-    const s = (ip.status || '').toLowerCase().replace(/ /g, '_');
-    if (s === 'on_island') return '<span class="island-dot island-dot-on"></span>';
-    if (s === 'off_island') return '';
-  }
   if (isOnIsland(lead)) return '<span class="island-dot island-dot-on"></span>';
-  // Unknown/null — show grey dot only if we have no data
-  if (!ip) return '<span class="island-dot island-dot-unknown"></span>';
-  return '';
+  // Explicitly off
+  const arrival = (lead.arrival_status || '').toUpperCase();
+  const ipStatus = (lead.island_presence?.status || '').toLowerCase().replace(/ /g, '_');
+  if (arrival === 'NOT_ON_ISLAND' || ipStatus === 'off_island' || lead.on_island === false) return '';
+  // Unknown/null
+  return '<span class="island-dot island-dot-unknown"></span>';
 }
 
 function getActiveActionFilters() {
@@ -1130,12 +1127,18 @@ function getActiveActionFilters() {
 }
 
 function isOnIsland(lead) {
-  // Structured island_presence (set via side panel or Firebase)
+  // 1. Boolean on_island field
+  if (lead.on_island === true) return true;
+
+  // 2. arrival_status string (Firebase bot field)
+  const arrival = (lead.arrival_status || '').toUpperCase();
+  if (arrival === 'ON_ISLAND' || arrival === 'ARRIVING_SOON') return true;
+
+  // 3. Structured island_presence (set via side panel)
   const ip = lead.island_presence;
   if (ip && typeof ip === 'object') {
     const s = (ip.status || '').toLowerCase().replace(/ /g, '_');
     if (s === 'on_island' || s === 'arriving_soon') {
-      // If temporary, check dates
       if (ip.type === 'temporary' && ip.until) {
         return new Date(ip.until) >= new Date(new Date().toISOString().slice(0, 10));
       }
@@ -1143,10 +1146,12 @@ function isOnIsland(lead) {
     }
     if (s === 'off_island') return false;
   }
-  // Also check top-level status
+
+  // 4. Top-level status field
   const st = (lead.status || '').toLowerCase();
   if (st === 'on_island' || st === 'on island') return true;
-  // Local fallback: check notes for "באי" / "נמצא באי" / "on island"
+
+  // 5. Local fallback: check notes
   const notes = (lead.general_notes || lead.notes || '').toLowerCase();
   if (/\bבאי\b/.test(notes) || /נמצא באי/.test(notes) || /on.?island/i.test(notes)) return true;
   return false;
@@ -1507,15 +1512,23 @@ function populateNextActionUI() {
 
 function populateIslandUI() {
   const ip = selectedLead?.island_presence;
-  if (ip && typeof ip === 'object') {
-    islandState.status = (ip.status || 'off_island').toLowerCase().replace(/ /g, '_');
+  if (ip && typeof ip === 'object' && ip.status) {
+    islandState.status = (ip.status || '').toLowerCase().replace(/ /g, '_');
     islandState.type = ip.type || '';
     islandState.from = ip.from || '';
     islandState.until = ip.until || '';
   } else {
-    // Detect from notes as hint
-    const onIslandDetected = selectedLead ? isOnIsland(selectedLead) : false;
-    islandState = { status: onIslandDetected ? 'on_island' : 'off_island', type: '', from: '', until: '' };
+    // Read from arrival_status (Firebase bot field) or on_island boolean
+    const arrival = (selectedLead?.arrival_status || '').toUpperCase();
+    if (arrival === 'ON_ISLAND' || selectedLead?.on_island === true) {
+      islandState = { status: 'on_island', type: '', from: '', until: '' };
+    } else if (arrival === 'NOT_ON_ISLAND' || selectedLead?.on_island === false) {
+      islandState = { status: 'off_island', type: '', from: '', until: '' };
+    } else {
+      // Fallback: detect from notes/other signals
+      const detected = selectedLead ? isOnIsland(selectedLead) : false;
+      islandState = { status: detected ? 'on_island' : '', type: '', from: '', until: '' };
+    }
   }
   renderIslandUI();
 }
