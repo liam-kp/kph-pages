@@ -650,6 +650,12 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
       <textarea id="detail-notes" class="w-full bg-surface-container-low border-none text-xs p-3 h-32 focus:ring-1 focus:ring-secondary resize-none" placeholder="Notes..."></textarea>
     </div>
 
+    <!-- Lead Insights -->
+    <div class="space-y-2" id="detail-insights-section">
+      <label class="text-[10px] text-on-surface-variant uppercase tracking-widest font-bold">LEAD INSIGHTS</label>
+      <div id="detail-insights" class="space-y-1.5 text-xs"></div>
+    </div>
+
     <!-- Next Action -->
     <div class="space-y-2">
       <label class="text-[10px] text-on-surface-variant uppercase tracking-widest font-bold">NEXT ACTION</label>
@@ -861,17 +867,24 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
       <span class="text-[10px] text-on-surface-variant font-normal" id="sched-lead-name"></span>
     </h3>
     <div class="space-y-4">
-      <div>
-        <label>תאריך</label>
-        <input type="date" id="sched-date"/>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label>תאריך</label>
+          <input type="date" id="sched-date"/>
+        </div>
+        <div>
+          <label>שעה</label>
+          <input type="time" id="sched-time" style="background:#10141a;color:#E2E8F0;border:1px solid #3e4943;border-radius:6px;padding:6px 10px;font-size:12px;width:100%"/>
+        </div>
       </div>
       <div>
-        <label>תבנית הודעה</label>
-        <select id="sched-template">
-          <option value="followup_day2">פולואפ יום 2</option>
-          <option value="followup_week">פולואפ שבוע</option>
-          <option value="wakeup">התעוררות</option>
-        </select>
+        <label>הודעה</label>
+        <textarea id="sched-message" rows="3" style="background:#10141a;color:#E2E8F0;border:1px solid #3e4943;border-radius:6px;padding:8px 10px;font-size:12px;width:100%;resize:none;direction:rtl" placeholder="כתוב את ההודעה הבאה..."></textarea>
+        <div class="flex gap-2 mt-2">
+          <button type="button" onclick="fillSchedTemplate('day2')" class="text-[10px] px-2 py-1 border border-[#3e4943] text-[#94A3B8] hover:text-white hover:border-[#6DD5FA]">פולואפ יום 2</button>
+          <button type="button" onclick="fillSchedTemplate('week')" class="text-[10px] px-2 py-1 border border-[#3e4943] text-[#94A3B8] hover:text-white hover:border-[#6DD5FA]">פולואפ שבוע</button>
+          <button type="button" onclick="fillSchedTemplate('wakeup')" class="text-[10px] px-2 py-1 border border-[#3e4943] text-[#94A3B8] hover:text-white hover:border-[#6DD5FA]">התעוררות</button>
+        </div>
       </div>
       <div class="flex gap-3 pt-2">
         <button onclick="confirmSchedule()" class="flex-1 py-2.5 text-xs font-bold bg-[#68dbae] text-[#003826]">אישור</button>
@@ -1352,6 +1365,7 @@ function openLeadDetail(firebaseId) {
   // Island presence + Next Action
   populateIslandUI();
   populateNextActionUI();
+  populateInsights();
 
   // WhatsApp link
   const phone = (lead.phone_number || '').replace(/\D/g, '');
@@ -1508,6 +1522,51 @@ function populateNextActionUI() {
   document.querySelectorAll('#detail-next-action .na-chip').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.action === action);
   });
+}
+
+function populateInsights() {
+  const el = document.getElementById('detail-insights');
+  const section = document.getElementById('detail-insights-section');
+  if (!selectedLead) { section.classList.add('hidden'); return; }
+
+  const lines = [];
+  // Budget
+  const budget = parseBudget(selectedLead.budget);
+  if (budget && budget !== '--') lines.push(`<div>💰 תקציב: <strong class="text-primary">${budget}</strong></div>`);
+
+  // Hot signals
+  let signals = selectedLead.hot_signals_json;
+  if (typeof signals === 'string') { try { signals = JSON.parse(signals); } catch(e) { signals = null; } }
+  if (Array.isArray(signals) && signals.length > 0) {
+    const latest = signals[signals.length - 1];
+    const typeStr = (latest.type || '').replace(/_/g, ' ').toLowerCase();
+    lines.push(`<div>🔥 <strong style="color:#FB923C">${signals.length} סיגנלים</strong> <span style="color:#64748b">— ${typeStr}</span></div>`);
+  }
+
+  // Property preferences
+  let prefs = selectedLead.property_preferences_json;
+  if (typeof prefs === 'string') { try { prefs = JSON.parse(prefs); } catch(e) { prefs = null; } }
+  if (prefs && typeof prefs === 'object') {
+    const types = prefs.property_types || prefs.types || [];
+    const notes = prefs.notes || prefs.preferences || '';
+    const display = Array.isArray(types) && types.length ? types.join(', ') : notes;
+    if (display) lines.push(`<div>🏠 ${esc(String(display).slice(0, 80))}</div>`);
+  }
+
+  // Total messages
+  const totalMsg = selectedLead.total_messages;
+  if (totalMsg && totalMsg > 0) lines.push(`<div>💬 <strong>${totalMsg}</strong> הודעות</div>`);
+
+  // Scoring reasoning
+  const reasoning = selectedLead.scoring_reasoning;
+  if (reasoning) {
+    const truncated = String(reasoning).slice(0, 120) + (reasoning.length > 120 ? '...' : '');
+    lines.push(`<div style="color:#64748b;font-style:italic;font-size:10px;line-height:1.4;max-height:2.8em;overflow:hidden">${esc(truncated)}</div>`);
+  }
+
+  if (lines.length === 0) { section.classList.add('hidden'); return; }
+  section.classList.remove('hidden');
+  el.innerHTML = lines.join('');
 }
 
 function populateIslandUI() {
@@ -1757,14 +1816,27 @@ function moveToClosings() {
 }
 
 // ============ SCHEDULE MESSAGE ============
+const SCHED_TEMPLATES = {
+  day2: 'מה קורה? הספקת לעבור על מה ששלחתי?\nעדכן אם יש שאלות 🙏',
+  week: 'היי! עבר שבוע מאז שדיברנו.\nיש לנו עדכונים חדשים על הפרויקט — אשמח לשתף.\nמתי נוח לך?',
+  wakeup: 'היי! יש לנו מלאי חדש שנכנס השבוע 🏡\nחשבתי עליך — רוצה לראות?',
+};
+
+function fillSchedTemplate(key) {
+  document.getElementById('sched-message').value = SCHED_TEMPLATES[key] || '';
+}
+
 function showScheduleModal() {
   if (!selectedLead) return;
   const name = selectedLead.display_name || selectedLead.name || 'Unknown';
   document.getElementById('sched-lead-name').textContent = `— ${name}`;
-  // Default date = tomorrow
-  const tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  document.getElementById('sched-date').value = tomorrow.toISOString().slice(0, 10);
+  // Default date = today
+  const now = new Date();
+  document.getElementById('sched-date').value = now.toISOString().slice(0, 10);
+  // Default time = now + 30 min
+  const later = new Date(now.getTime() + 30 * 60000);
+  document.getElementById('sched-time').value = later.toTimeString().slice(0, 5);
+  document.getElementById('sched-message').value = '';
   document.getElementById('schedule-modal').classList.remove('hidden');
 }
 
@@ -1775,37 +1847,51 @@ function hideScheduleModal() {
 async function confirmSchedule() {
   if (!selectedLead) return;
   const date = document.getElementById('sched-date').value;
-  const template = document.getElementById('sched-template').value;
+  const time = document.getElementById('sched-time').value || '10:00';
+  const message = document.getElementById('sched-message').value.trim();
   if (!date) { showToast('בחר תאריך', true); return; }
 
   const token = getToken();
   if (!token) { showToast('Set token first', true); return; }
 
+  const scheduledDatetime = `${date}T${time}:00`;
   const firebaseId = selectedLead._id;
   const followUpData = {
-    scheduled_date: date,
-    template: template,
+    scheduled_date: scheduledDatetime,
+    message: message,
     created_at: new Date().toISOString(),
     status: 'pending',
   };
 
   try {
-    const res = await fetch(`${API_BASE}/api/firebase-proxy`, {
+    // Write to /Leads
+    const res1 = await fetch(`${API_BASE}/api/firebase-proxy`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        token: token,
-        collection: 'Leads',
-        record_id: firebaseId,
-        data: { Follow_Up: followUpData }
+        token, collection: 'Leads', record_id: firebaseId,
+        data: { Follow_Up: followUpData, next_followup_date: scheduledDatetime }
       })
     });
-    const result = await res.json();
-    if (result.success) {
+    const r1 = await res1.json();
+
+    // Write to /Follow_Ups
+    const followUpId = `${firebaseId}_${Date.now()}`;
+    const res2 = await fetch(`${API_BASE}/api/firebase-proxy`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        token, collection: 'Follow_Ups', record_id: followUpId,
+        data: { ...followUpData, lead_id: firebaseId, lead_name: selectedLead.display_name || selectedLead.name || '' }
+      })
+    });
+
+    if (r1.success) {
       selectedLead.Follow_Up = followUpData;
-      showToast(`הודעה תוזמנה ל-${date}`);
+      selectedLead.next_followup_date = scheduledDatetime;
+      showToast(`תוזמן ל-${date} ${time}`);
     } else {
-      showToast('Error: ' + (result.error || 'Unknown'), true);
+      showToast('Error: ' + (r1.error || 'Unknown'), true);
     }
   } catch(e) {
     showToast('Schedule failed: ' + e.message, true);
