@@ -1063,7 +1063,40 @@ let localLeadsRaw = [];
 let firebaseLeadsRaw = [];
 
 function normalizePhone(p) {
-  return (p || '').replace(/\D/g, '').replace(/^0+/, '');
+  let n = (p || '').replace(/@s\.whatsapp\.net/i, '').replace(/\D/g, '');
+  // Strip leading "1" if Baileys format (>13 digits starting with 1)
+  if (n.length > 13 && n.startsWith('1')) n = n.slice(1);
+  return n.replace(/^0+/, '');
+}
+
+function formatPhoneDisplay(p) {
+  const n = normalizePhone(p);
+  if (!n) return '';
+  if (n.startsWith('972') && n.length >= 12) {
+    // +972-XX-XXX-XXXX
+    return '+972-' + n.slice(3,5) + '-' + n.slice(5,8) + '-' + n.slice(8);
+  }
+  if (n.startsWith('66') && n.length >= 10) {
+    // +66-X-XXXX-XXXX
+    return '+66-' + n.slice(2,3) + '-' + n.slice(3,7) + '-' + n.slice(7);
+  }
+  return '+' + n;
+}
+
+function isUnknownName(lead) {
+  const name = (lead.display_name || lead.name || '').trim();
+  if (!name) return true;
+  // Name equals raw phone or "Customer" or a single dot
+  const rawPhone = (lead.phone_number || '').replace(/@s\.whatsapp\.net/i, '');
+  if (name === rawPhone || name === 'Customer' || name === '.') return true;
+  // Name is just digits (phone number as name)
+  if (/^\d{8,}$/.test(name)) return true;
+  return false;
+}
+
+function getLeadDisplayName(lead) {
+  if (isUnknownName(lead)) return '<span style="color:#64748b;font-style:italic">ליד לא מזוהה</span>';
+  return esc(lead.display_name || lead.name || '');
 }
 
 function hebrewTempToTier(t) {
@@ -1335,7 +1368,7 @@ function renderPipelineTable() {
   }
 
   tbody.innerHTML = leads.map(lead => {
-    const name = lead.display_name || lead.name || lead.phone_number || 'Unknown';
+    const nameHtml = getLeadDisplayName(lead);
     const project = lead.active_project || lead.project_id || '';
     const commission = lead.expected_commission ? formatCurrency(lead.expected_commission) : '--';
     const lastContact = lead.updated_at ? timeAgo(lead.updated_at) : '--';
@@ -1343,14 +1376,15 @@ function renderPipelineTable() {
     const isOld = daysOld > 7;
     const onIsland = isOnIsland(lead);
     const firebaseId = lead._id || '';
-    const phone = (lead.phone_number || '').replace(/\D/g, '');
-    const escapedName = esc(name).replace(/'/g, "\\'");
+    const phone = normalizePhone(lead.phone_number);
+    const phoneDisplay = formatPhoneDisplay(lead.phone_number);
     const scoreDisplay = lead.score != null ? lead.score : '--';
 
     return `<tr class="hover:bg-surface-container-high transition-colors cursor-pointer" onclick="openLeadDetail('${firebaseId}')">
       <td class="px-4 py-3">${getTierBadge(lead)}</td>
       <td class="px-4 py-3">
-        <div class="font-semibold text-secondary">${esc(name)}${getIslandDot(lead)}</div>
+        <div class="font-semibold text-secondary">${nameHtml}${getIslandDot(lead)}</div>
+        ${phoneDisplay ? `<div class="text-[10px] text-on-surface-variant font-mono mt-0.5">${phoneDisplay}</div>` : ''}
         <div class="flex items-center gap-1 mt-0.5">
           ${getSourceBadge(lead)}
         </div>
@@ -1366,7 +1400,7 @@ function renderPipelineTable() {
       <td class="px-4 py-3 text-left" onclick="event.stopPropagation()">
         <div class="flex items-center gap-2">
           ${phone ? `<a href="https://wa.me/${phone}" target="_blank" class="wa-btn" title="WhatsApp">📱</a>` : ''}
-          <button class="arrow-btn" onclick="openLeadDetail('${firebaseId}')" title="פרטים">→</button>
+          <button class="arrow-btn" onclick="openLeadDetail('${firebaseId}')" title="פרטים">&rarr;</button>
         </div>
       </td>
     </tr>`;
@@ -1414,13 +1448,17 @@ function openLeadDetail(firebaseId) {
   const displayName = lead.display_name || lead.name || '';
   const nameEl = document.getElementById('detail-name');
   const nameInput = document.getElementById('detail-name-input');
-  nameEl.textContent = displayName || lead.phone_number || 'Unknown';
+  if (isUnknownName(lead)) {
+    nameEl.innerHTML = '<span style="color:#64748b;font-style:italic">ליד לא מזוהה</span>';
+  } else {
+    nameEl.textContent = displayName;
+  }
   nameEl.classList.remove('hidden');
   nameInput.classList.add('hidden');
-  nameInput.value = displayName;
-  nameInput.placeholder = lead.phone_number || 'Enter name...';
+  nameInput.value = isUnknownName(lead) ? '' : displayName;
+  nameInput.placeholder = formatPhoneDisplay(lead.phone_number) || 'Enter name...';
   document.getElementById('detail-id').textContent = lead._id || '';
-  document.getElementById('detail-phone').textContent = lead.phone_number || '--';
+  document.getElementById('detail-phone').textContent = formatPhoneDisplay(lead.phone_number) || '--';
   document.getElementById('detail-project').textContent = lead.active_project || lead.project_id || '--';
   document.getElementById('detail-budget').textContent = parseBudget(lead.budget);
   document.getElementById('detail-commission').value = lead.expected_commission || 0;
@@ -1434,7 +1472,7 @@ function openLeadDetail(firebaseId) {
   populateInsights();
 
   // WhatsApp link
-  const phone = (lead.phone_number || '').replace(/\D/g, '');
+  const phone = normalizePhone(lead.phone_number);
   document.getElementById('detail-whatsapp').href = phone ? `https://wa.me/${phone}` : '#';
 
   // Temp buttons
@@ -1827,12 +1865,12 @@ function renderDailyFocus() {
 
   countEl.textContent = `(${display.length})`;
   bodyEl.innerHTML = display.map(({ lead, reason }) => {
-    const name = lead.display_name || lead.name || lead.phone_number || 'Unknown';
+    const nameHtml = getLeadDisplayName(lead);
     const project = lead.active_project || lead.project_id || '';
-    const phone = (lead.phone_number || '').replace(/\D/g, '');
+    const phone = normalizePhone(lead.phone_number);
     return `<div class="focus-row">
       <div>
-        <span class="text-sm font-bold text-secondary">${esc(name)}</span>
+        <span class="text-sm font-bold text-secondary">${nameHtml}</span>
         <span class="text-xs text-on-surface-variant mr-2">${esc(project)}</span>
         <div class="text-[10px] text-on-surface-variant">${reason}</div>
       </div>
