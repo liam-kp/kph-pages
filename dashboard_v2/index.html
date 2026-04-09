@@ -152,15 +152,58 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
 .sched-modal-body select, .sched-modal-body input[type="date"] { width:100%; background:#10141a; color:#dfe2eb; border:1px solid #3e4943; border-radius:6px; padding:8px 10px; font-size:13px; }
 .sched-modal-body label { display:block; font-size:11px; color:#bdcac1; margin-bottom:4px; text-transform:uppercase; letter-spacing:0.5px; font-weight:700; }
 
-/* Bottom Sheet (mobile side panel) */
+.mob-nav-btn { background:none; border:none; color:#64748b; padding:8px 12px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+.mob-nav-btn.active { color:#68dbae; }
+.mob-nav-btn .material-symbols-outlined { font-size:24px; }
+
+/* Mobile layout (<768px) */
 @media (max-width: 767px) {
-  #detail-panel { position:fixed!important; bottom:0; left:0; right:0; top:auto!important; width:100%!important; max-height:80vh; border-radius:16px 16px 0 0; border-right:none!important; border-top:2px solid #3e4943; z-index:60!important; }
+  /* PROBLEM 1 — Hide sidebar, show bottom nav */
+  aside.w-64 { display:none!important; }
+  header .flex.gap-8 > nav { display:none!important; }
+  header .flex.gap-4 > .relative { display:none!important; } /* hide search on mobile */
+  header { padding:0 12px!important; height:48px!important; }
+  body { padding-bottom:56px; }
+  #mobile-bottom-nav { display:flex!important; }
+
+  /* PROBLEM 2 — Filter chips horizontal scroll */
+  .chip-bar { display:flex!important; flex-wrap:nowrap!important; overflow-x:auto!important; -webkit-overflow-scrolling:touch; scrollbar-width:none; gap:6px!important; padding-bottom:4px; }
+  .chip-bar::-webkit-scrollbar { display:none; }
+
+  /* PROBLEM 3 — Action filter touch targets */
+  #pipeline-action-chips .chip { min-width:44px; min-height:44px; display:flex; align-items:center; justify-content:center; font-size:18px; }
+
+  /* PROBLEM 4 — Hide extra table columns */
+  .hide-mobile, .hide-mob { display:none!important; }
+
+  /* PROBLEM 5 — Hide title + count on mobile */
+  #pipeline-list-title { display:none!important; }
+  .bg-surface-container-low .flex.justify-between { flex-direction:column; gap:8px; }
+  .bg-surface-container-low .flex.justify-between > .flex.items-center.gap-3 { width:100%; }
+  #pipeline-search { width:100%!important; }
+  #pipeline-sort { flex-shrink:0; }
+
+  /* PROBLEM 6 — Side panel bottom sheet 90vh */
+  #detail-panel { position:fixed!important; bottom:0; left:0; right:0; top:auto!important; width:100%!important; max-height:90vh; border-radius:16px 16px 0 0; border-right:none!important; border-top:2px solid #3e4943; z-index:60!important; overflow-y:auto!important; }
   #detail-panel .p-6 { padding:16px!important; }
+
+  /* Touch targets */
   .wa-btn { width:44px; height:44px; font-size:18px; }
-  .hide-mobile { display:none!important; }
-  .pipeline-table-wrap { overflow-x:auto; }
-  .pipeline-table-wrap table { min-width:600px; }
+  .arrow-btn { min-width:44px; min-height:44px; }
+  .chip { min-height:36px; padding:6px 12px!important; white-space:nowrap; flex-shrink:0; }
+
+  /* Pipeline table compact */
+  .pipeline-table-wrap { overflow-x:hidden; }
+  .pipeline-table-wrap table { min-width:0!important; width:100%; }
+  .pipeline-table-wrap th, .pipeline-table-wrap td { padding:8px 6px!important; }
+
+  /* KPI cards 2-col */
   #page-pipeline .grid-cols-4 { grid-template-columns:repeat(2,1fr)!important; }
+  #page-pipeline { padding:12px!important; }
+  #page-pipeline .space-y-6 > * { margin-bottom:12px; }
+
+  /* General RTL */
+  #page-pipeline, #page-closings, #page-campaigns, #page-projects, #page-reports { direction:rtl; text-align:right; }
 }
 </style>
 </head>
@@ -204,6 +247,15 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
     </div>
   </div>
 </aside>
+
+<!-- ========== MOBILE BOTTOM NAV ========== -->
+<nav id="mobile-bottom-nav" class="fixed bottom-0 left-0 right-0 h-14 bg-[#0a0e14] border-t border-[#3d4943] z-50 items-center justify-around" style="display:none">
+  <button class="mob-nav-btn active" data-page="pipeline"><span class="material-symbols-outlined">dashboard</span></button>
+  <button class="mob-nav-btn" data-page="closings"><span class="material-symbols-outlined">payments</span></button>
+  <button class="mob-nav-btn" data-page="campaigns"><span class="material-symbols-outlined">campaign</span></button>
+  <button class="mob-nav-btn" data-page="projects"><span class="material-symbols-outlined">location_city</span></button>
+  <button class="mob-nav-btn" data-page="reports"><span class="material-symbols-outlined">insert_chart</span></button>
+</nav>
 
 <!-- ========== MAIN CONTENT ========== -->
 <main class="flex-1 flex flex-col min-w-0 bg-surface overflow-hidden">
@@ -310,9 +362,9 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
             <tr class="text-on-surface-variant text-[11px] uppercase tracking-widest border-b border-outline-variant/30">
               <th class="px-4 py-4 font-medium">Tier</th>
               <th class="px-4 py-4 font-medium">Lead Name</th>
-              <th class="px-4 py-4 font-medium">Project</th>
+              <th class="px-4 py-4 font-medium hide-mob">Project</th>
               <th class="px-4 py-4 font-medium hide-mobile">Commission</th>
-              <th class="px-4 py-4 font-medium">Source</th>
+              <th class="px-4 py-4 font-medium hide-mob">Source</th>
               <th class="px-4 py-4 font-medium">Last Contact</th>
               <th class="px-4 py-4 font-medium hide-mobile">Score</th>
               <th class="px-4 py-4 font-medium text-left" style="width:100px">Actions</th>
@@ -952,6 +1004,11 @@ function showPage(pageId) {
     }
   });
 
+  // Update mobile bottom nav
+  document.querySelectorAll('#mobile-bottom-nav .mob-nav-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.page === pageId);
+  });
+
   // Close detail panel on page switch
   closeDetailPanel();
 
@@ -1289,9 +1346,9 @@ function renderPipelineTable() {
           ${getSourceBadge(lead)}
         </div>
       </td>
-      <td class="px-4 py-3 text-sm">${esc(project)}</td>
+      <td class="px-4 py-3 text-sm hide-mob">${esc(project)}</td>
       <td class="px-4 py-3 font-bold text-primary text-sm hide-mobile">${commission}</td>
-      <td class="px-4 py-3 text-sm text-on-surface-variant">${lead.source_campaign ? esc(lead.source_campaign) : ''}</td>
+      <td class="px-4 py-3 text-sm text-on-surface-variant hide-mob">${lead.source_campaign ? esc(lead.source_campaign) : ''}</td>
       <td class="px-4 py-3 text-sm ${isOld ? 'text-error font-bold' : ''}">
         ${lastContact}
         ${daysOld > 2 ? '<div class="text-[10px] text-error">' + daysOld + 'd</div>' : ''}
