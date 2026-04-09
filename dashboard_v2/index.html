@@ -1136,20 +1136,29 @@ function mergeLeadSources(fbLeads, localLeads) {
 }
 
 async function loadPipeline() {
-  // Fetch both sources in parallel
-  const [fbResult, localResult] = await Promise.allSettled([
+  // Fetch all three sources in parallel
+  const SNAPSHOT_URL = IS_LOCAL ? '/firebase_leads_snapshot.json' : `${NETLIFY_PROXY}/firebase_snapshot.json`;
+  const [fbResult, localResult, snapResult] = await Promise.allSettled([
     firebaseFetch('Leads'),
     fetch(PIPELINE_URL).then(r => r.json()),
+    fetch(SNAPSHOT_URL).then(r => r.json()),
   ]);
 
-  // Firebase leads
+  // Firebase leads (live API)
   if (fbResult.status === 'fulfilled') {
     firebaseLeadsRaw = Array.isArray(fbResult.value) ? fbResult.value : [];
     firebaseMode = true;
   } else {
     console.warn('Firebase unavailable:', fbResult.reason?.message);
-    firebaseLeadsRaw = [];
-    firebaseMode = false;
+    // Fallback: use snapshot if available
+    if (snapResult.status === 'fulfilled' && Array.isArray(snapResult.value)) {
+      firebaseLeadsRaw = snapResult.value;
+      firebaseMode = false;
+      console.log(`Loaded ${firebaseLeadsRaw.length} leads from snapshot`);
+    } else {
+      firebaseLeadsRaw = [];
+      firebaseMode = false;
+    }
   }
 
   // Local leads
