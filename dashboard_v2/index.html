@@ -745,7 +745,7 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
       <span class="material-symbols-outlined text-primary">key</span>
       Firebase API Token
     </h3>
-    <p class="text-xs text-on-surface-variant">Token is stored in sessionStorage only. Never saved to code.</p>
+    <p class="text-xs text-on-surface-variant">Token persists in localStorage. Get it from AI Agent Pro → DevTools → <code>JSON.parse(localStorage.getItem('auth-storage')).state.token</code></p>
     <input id="token-input" class="w-full bg-surface-container-low border-b-[0.5px] border-outline-variant focus:border-secondary focus:ring-0 text-sm py-3 px-2" placeholder="Paste Bearer token..." type="password"/>
     <div class="flex gap-3 flex-row-reverse">
       <button onclick="saveToken()" class="bg-primary text-on-primary px-8 py-3 text-sm font-bold active:scale-95 transition-transform">Save</button>
@@ -958,8 +958,25 @@ const PIPELINE_URL = IS_LOCAL ? `${API_BASE}/pipeline` : `${NETLIFY_PROXY}/pipel
 const CUSTOMER_ID = '11a3a8c9-d3db-4b32-8c08-35dd7868b959';
 
 // ============ TOKEN ============
-function getToken() { return sessionStorage.getItem('kph_token') || ''; }
-function setToken(t) { sessionStorage.setItem('kph_token', t); }
+function getToken() {
+  // 1. Check sessionStorage (manually set via Token button)
+  const session = sessionStorage.getItem('kph_token');
+  if (session) return session;
+  // 2. Check localStorage persistence
+  const stored = localStorage.getItem('kph_token');
+  if (stored) return stored;
+  // 3. Try AI Agent Pro auth-storage (if user is logged into the platform)
+  try {
+    const authStorage = JSON.parse(localStorage.getItem('auth-storage') || '{}');
+    const platformToken = authStorage?.state?.token;
+    if (platformToken) return platformToken;
+  } catch(e) {}
+  return '';
+}
+function setToken(t) {
+  sessionStorage.setItem('kph_token', t);
+  localStorage.setItem('kph_token', t); // persist across refreshes
+}
 
 function showTokenModal() {
   document.getElementById('token-modal').classList.remove('hidden');
@@ -1773,7 +1790,7 @@ function getIslandPayload() {
 async function saveLeadDetail() {
   if (!selectedLead) return;
   const token = getToken();
-  if (!token) { showTokenModal(); return; }
+  if (!token) { showToast('יש לרענן את הטוקן — לחץ על כפתור Token', true); showTokenModal(); return; }
 
   // Get selected temp
   let newTemp = selectedLead.temp || selectedLead.tier;
@@ -1956,7 +1973,11 @@ async function confirmSchedule() {
   if (!date) { showToast('בחר תאריך', true); return; }
 
   const token = getToken();
-  if (!token) { showToast('Set token first', true); return; }
+  if (!token) {
+    showToast('יש לרענן את הטוקן — לחץ על כפתור Token', true);
+    showTokenModal();
+    return;
+  }
 
   const scheduledDatetime = `${date}T${time}:00`;
   const firebaseId = selectedLead._id;
@@ -1995,10 +2016,16 @@ async function confirmSchedule() {
       selectedLead.next_followup_date = scheduledDatetime;
       showToast(`תוזמן ל-${date} ${time}`);
     } else {
-      showToast('Error: ' + (r1.error || 'Unknown'), true);
+      const err = r1.error || 'Unknown';
+      if (/401|auth|token|migration/i.test(err)) {
+        showToast('הטוקן פג תוקף — לחץ Token לעדכון', true);
+        showTokenModal();
+      } else {
+        showToast('שגיאה: ' + err, true);
+      }
     }
   } catch(e) {
-    showToast('Schedule failed: ' + e.message, true);
+    showToast('תזמון נכשל: ' + e.message, true);
   }
 
   hideScheduleModal();
