@@ -978,6 +978,26 @@ function setToken(t) {
   localStorage.setItem('kph_token', t); // persist across refreshes
 }
 
+function isAuthError(err) {
+  return /401|auth|token|migration|unauthorized/i.test(String(err));
+}
+function handleAuthError(err) {
+  if (isAuthError(err)) {
+    showToast('הטוקן פג תוקף — לחץ Token לעדכון', true);
+    showTokenModal();
+    return true;
+  }
+  return false;
+}
+function requireToken() {
+  const t = getToken();
+  if (!t) {
+    showToast('יש לרענן את הטוקן — לחץ על כפתור Token', true);
+    showTokenModal();
+  }
+  return t;
+}
+
 function showTokenModal() {
   document.getElementById('token-modal').classList.remove('hidden');
   document.getElementById('token-input').value = getToken();
@@ -1556,7 +1576,8 @@ async function commitNameEdit() {
 
   const token = getToken();
   if (!token && firebaseMode) {
-    showToast('Set a token first to save names', true);
+    showToast('יש לרענן את הטוקן — לחץ על כפתור Token', true);
+    showTokenModal();
     nameInput.classList.add('hidden');
     nameEl.classList.remove('hidden');
     return;
@@ -1578,7 +1599,7 @@ async function commitNameEdit() {
       });
       const result = await res.json();
       if (!result.success) {
-        showToast('Save failed: ' + (result.error || 'Unknown'), true);
+        if (!handleAuthError(result.error)) showToast('שמירה נכשלה: ' + (result.error || 'Unknown'), true);
         nameEditSaving = false;
         nameInput.classList.add('hidden');
         nameEl.classList.remove('hidden');
@@ -1587,7 +1608,7 @@ async function commitNameEdit() {
       // GET readback already done by proxy — result.data has verified record
       showToast('Name updated');
     } catch(e) {
-      showToast('Save failed: ' + e.message, true);
+      if (!handleAuthError(e.message)) showToast('שמירה נכשלה: ' + e.message, true);
       nameEditSaving = false;
       nameInput.classList.add('hidden');
       nameEl.classList.remove('hidden');
@@ -1827,10 +1848,10 @@ async function saveLeadDetail() {
       renderPipelineKPIs();
       renderPipelineTable();
     } else {
-      showToast('Error: ' + (result.error || 'Unknown'), true);
+      if (!handleAuthError(result.error)) showToast('שגיאה: ' + (result.error || 'Unknown'), true);
     }
   } catch(e) {
-    showToast('Save failed: ' + e.message, true);
+    if (!handleAuthError(e.message)) showToast('שמירה נכשלה: ' + e.message, true);
   }
 }
 
@@ -3037,6 +3058,7 @@ async function removeLead(firebaseId, name) {
 
   const token = getToken();
   if (!token && firebaseMode) {
+    showToast('יש לרענן את הטוקן — לחץ על כפתור Token', true);
     showTokenModal();
     return;
   }
@@ -3056,7 +3078,7 @@ async function removeLead(firebaseId, name) {
       });
       const result = await res.json();
       if (!result.success) {
-        showToast('Error: ' + (result.error || 'Unknown'), true);
+        if (!handleAuthError(result.error)) showToast('שגיאה: ' + (result.error || 'Unknown'), true);
         return;
       }
     } catch(e) {
