@@ -949,8 +949,10 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
 <!-- ========== JAVASCRIPT ========== -->
 <script>
 // ============ CONFIG ============
-// Auto-detect: localhost → local server, GitHub Pages → Netlify proxy
+// Reads: localhost → local server, GitHub Pages → Netlify proxy (kept as-is — works)
+// Writes: direct to aiagentpro.online via firebasePut() — see below
 const NETLIFY_PROXY = 'https://kph-proxy.netlify.app';
+const AIAGENTPRO_API = 'https://api.aiagentpro.online';
 const IS_LOCAL = ['localhost', '127.0.0.1'].includes(window.location.hostname);
 const API_BASE = IS_LOCAL ? `${window.location.protocol}//${window.location.hostname}:8081` : NETLIFY_PROXY;
 const LOCAL_API = IS_LOCAL ? API_BASE : null; // local-only endpoints (pipeline, deals)
@@ -1076,6 +1078,40 @@ async function firebaseFetch(collection) {
     throw new Error(body.error || `Firebase ${res.status}`);
   }
   return res.json();
+}
+
+// ============ FIREBASE PUT (direct to aiagentpro, with GET-verify) ============
+// Always PUT + always GET-verify. Throws on failure; caller wraps in try/catch
+// and routes to handleAuthError/showToast.
+async function firebasePut(collection, docId, data) {
+  const token = getToken();
+  if (!token) throw new Error('No token');
+  if (!docId) throw new Error('Missing docId');
+  const url = `${AIAGENTPRO_API}/api/firebase-data/${collection}/${encodeURIComponent(docId)}?customerId=${CUSTOMER_ID}`;
+  const authHeaders = { 'Authorization': `Bearer ${token}` };
+
+  const putRes = await fetch(url, {
+    method: 'PUT',
+    headers: { ...authHeaders, 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  if (!putRes.ok) {
+    const body = await putRes.json().catch(() => ({}));
+    throw new Error(body.error || body.message || `PUT ${putRes.status}`);
+  }
+
+  // GET-verify: confirm the write landed (tolerate wrapped response shapes)
+  const verifyRes = await fetch(url, { headers: authHeaders });
+  if (!verifyRes.ok) throw new Error(`Verify GET ${verifyRes.status}`);
+  const raw = await verifyRes.json().catch(() => null);
+  if (!raw || typeof raw !== 'object') throw new Error('Verify GET returned no record');
+  const record = (raw.data && typeof raw.data === 'object') ? raw.data
+               : (raw.record && typeof raw.record === 'object') ? raw.record
+               : raw;
+  for (const k of Object.keys(data)) {
+    if (!(k in record)) throw new Error(`Verify failed: field "${k}" missing after write`);
+  }
+  return record;
 }
 
 // ============ PAGE LOADERS ============
@@ -1257,7 +1293,8 @@ async function loadPipeline() {
 }
 
 function isRemoved(lead) {
-  return lead.status === 'removed' || lead.status === 'REMOVED';
+  const s = lead.status;
+  return s === 'removed' || s === 'REMOVED' || s === 'CLOSED_LOST';
 }
 
 function getIslandDot(lead) {
@@ -1587,25 +1624,7 @@ async function commitNameEdit() {
 
   if (firebaseMode && token) {
     try {
-      const res = await fetch(`${API_BASE}/api/firebase-proxy`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          token: token,
-          collection: 'Leads',
-          record_id: selectedLead._id,
-          data: { display_name: newName }
-        })
-      });
-      const result = await res.json();
-      if (!result.success) {
-        if (!handleAuthError(result.error)) showToast('שמירה נכשלה: ' + (result.error || 'Unknown'), true);
-        nameEditSaving = false;
-        nameInput.classList.add('hidden');
-        nameEl.classList.remove('hidden');
-        return;
-      }
-      // GET readback already done by proxy — result.data has verified record
+      await firebasePut('Leads', selectedLead._id, { display_name: newName });
       showToast('Name updated');
     } catch(e) {
       if (!handleAuthError(e.message)) showToast('שמירה נכשלה: ' + e.message, true);
@@ -1825,33 +1844,19 @@ async function saveLeadDetail() {
   };
 
   try {
-    const res = await fetch(`${API_BASE}/api/firebase-proxy`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        token: token,
-        collection: 'Leads',
-        record_id: selectedLead._id,
-        data: data
-      })
-    });
-    const result = await res.json();
-    if (result.success) {
-      // Update local state so table re-renders immediately
-      if (selectedLead) {
-        selectedLead.island_presence = getIslandPayload();
-        selectedLead.next_action = getSelectedNextAction();
-        selectedLead.general_notes = data.general_notes;
-        selectedLead.expected_commission = data.expected_commission;
-      }
-      showToast('Lead updated successfully');
-      renderPipelineKPIs();
-      renderPipelineTable();
-    } else {
-      if (!handleAuthError(result.error)) showToast('שגיאה: ' + (result.error || 'Unknown'), true);
+    await firebasePut('Leads', selectedLead._id, data);
+    // Update local state so table re-renders immediately
+    if (selectedLead) {
+      selectedLead.island_presence = data.island_presence;
+      selectedLead.next_action = data.next_action;
+      selectedLead.general_notes = data.general_notes;
+      selectedLead.expected_commission = data.expected_commission;
     }
+    showToast('Lead updated successfully');
+    renderPipelineKPIs();
+    renderPipelineTable();
   } catch(e) {
-    if (!handleAuthError(e.message)) showToast('שמירה נכשלה: ' + e.message, true);
+    if (!handleAuthError(e.message)) showToast('שגיאה: ' + e.message, true);
   }
 }
 
@@ -1935,19 +1940,11 @@ function moveToClosings() {
 
   // Update Firebase status to CONTRACT
   if (firebaseMode && token && firebaseId && !firebaseId.startsWith('lead_')) {
-    fetch(`${API_BASE}/api/firebase-proxy`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        token: token,
-        collection: 'Leads',
-        record_id: firebaseId,
-        data: { status: 'CONTRACT' }
-      })
-    }).then(r => r.json()).then(res => {
-      if (res.success) showToast(`${name} — status updated to CONTRACT`);
-      else showToast('Firebase update failed: ' + (res.error || ''), true);
-    }).catch(e => showToast('Firebase error: ' + e.message, true));
+    firebasePut('Leads', firebaseId, { status: 'CONTRACT' })
+      .then(() => showToast(`${name} — status updated to CONTRACT`))
+      .catch(e => {
+        if (!handleAuthError(e.message)) showToast('Firebase update failed: ' + e.message, true);
+      });
   }
 
   // Update local state
@@ -2010,43 +2007,25 @@ async function confirmSchedule() {
   };
 
   try {
-    // Write to /Leads
-    const res1 = await fetch(`${API_BASE}/api/firebase-proxy`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        token, collection: 'Leads', record_id: firebaseId,
-        data: { Follow_Up: followUpData, next_followup_date: scheduledDatetime }
-      })
-    });
-    const r1 = await res1.json();
-
-    // Write to /Follow_Ups
+    // Write to /Follow_Ups first (creating the canonical record)
     const followUpId = `${firebaseId}_${Date.now()}`;
-    const res2 = await fetch(`${API_BASE}/api/firebase-proxy`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        token, collection: 'Follow_Ups', record_id: followUpId,
-        data: { ...followUpData, lead_id: firebaseId, lead_name: selectedLead.display_name || selectedLead.name || '' }
-      })
+    await firebasePut('Follow_Ups', followUpId, {
+      ...followUpData,
+      lead_id: firebaseId,
+      lead_name: selectedLead.display_name || selectedLead.name || '',
     });
 
-    if (r1.success) {
-      selectedLead.Follow_Up = followUpData;
-      selectedLead.next_followup_date = scheduledDatetime;
-      showToast(`תוזמן ל-${date} ${time}`);
-    } else {
-      const err = r1.error || 'Unknown';
-      if (/401|auth|token|migration/i.test(err)) {
-        showToast('הטוקן פג תוקף — לחץ Token לעדכון', true);
-        showTokenModal();
-      } else {
-        showToast('שגיאה: ' + err, true);
-      }
-    }
+    // Write to /Leads (denormalized pointer to latest follow-up)
+    await firebasePut('Leads', firebaseId, {
+      Follow_Up: followUpData,
+      next_followup_date: scheduledDatetime,
+    });
+
+    selectedLead.Follow_Up = followUpData;
+    selectedLead.next_followup_date = scheduledDatetime;
+    showToast(`תוזמן ל-${date} ${time}`);
   } catch(e) {
-    showToast('תזמון נכשל: ' + e.message, true);
+    if (!handleAuthError(e.message)) showToast('תזמון נכשל: ' + e.message, true);
   }
 
   hideScheduleModal();
@@ -3063,26 +3042,14 @@ async function removeLead(firebaseId, name) {
     return;
   }
 
+  const removedAt = new Date().toISOString();
+
   if (firebaseMode && token) {
-    // Firebase: soft-delete via proxy
+    // Firebase: soft-delete → CLOSED_LOST
     try {
-      const res = await fetch(`${API_BASE}/api/firebase-proxy`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          token: token,
-          collection: 'Leads',
-          record_id: firebaseId,
-          data: { status: 'removed', removed_at: new Date().toISOString() }
-        })
-      });
-      const result = await res.json();
-      if (!result.success) {
-        if (!handleAuthError(result.error)) showToast('שגיאה: ' + (result.error || 'Unknown'), true);
-        return;
-      }
+      await firebasePut('Leads', firebaseId, { status: 'CLOSED_LOST', removed_at: removedAt });
     } catch(e) {
-      showToast('Remove failed: ' + e.message, true);
+      if (!handleAuthError(e.message)) showToast('Remove failed: ' + e.message, true);
       return;
     }
   }
@@ -3090,8 +3057,8 @@ async function removeLead(firebaseId, name) {
   // Update local state immediately
   const lead = firebaseLeads.find(l => l._id === firebaseId);
   if (lead) {
-    lead.status = 'removed';
-    lead.removed_at = new Date().toISOString();
+    lead.status = 'CLOSED_LOST';
+    lead.removed_at = removedAt;
   }
 
   closeDetailPanel();
