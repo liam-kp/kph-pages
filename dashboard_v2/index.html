@@ -86,6 +86,8 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
 .cb-blue { background:rgba(74,144,217,0.15); color:#4A90D9; }
 .cb-purple { background:rgba(167,139,250,0.15); color:#A78BFA; }
 .cb-orange { background:rgba(251,146,60,0.15); color:#FB923C; }
+.cb-gray { background:rgba(107,114,128,0.18); color:#9CA3AF; }
+.cb-sky { background:rgba(109,213,250,0.15); color:#6DD5FA; }
 .cf-select { background:#31353c; color:#E2E8F0; border:1px solid #3e4943; border-radius:6px; padding:6px 10px; font-size:12px; cursor:pointer; appearance:none; -webkit-appearance:none; direction:rtl; }
 .cf-select:focus { outline:none; border-color:#4A90D9; }
 .cb-dropdown { position:relative; display:inline-block; }
@@ -396,8 +398,10 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
         <div class="cb-dropdown" id="cf-status-dd">
           <button class="cf-select" onclick="toggleCbDropdown('status')" type="button" id="cf-status-btn">כל הסטטוסים &#9660;</button>
           <div class="cb-dropdown-menu hidden" id="cf-status-menu">
+            <label><input type="checkbox" value="hot_lead" onchange="onCbChange('status')"> חם מאוד</label>
+            <label><input type="checkbox" value="negotiation" onchange="onCbChange('status')"> במשא ומתן</label>
+            <label><input type="checkbox" value="Contract" onchange="onCbChange('status')"> בחוזה</label>
             <label><input type="checkbox" value="Closed Won" onchange="onCbChange('status')"> נסגר</label>
-            <label><input type="checkbox" value="Contract" onchange="onCbChange('status')"> לקראת סגירה</label>
             <label><input type="checkbox" value="cancelled" onchange="onCbChange('status')"> מבוטל</label>
           </div>
         </div>
@@ -429,6 +433,7 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
               <th class="p-3 font-medium cursor-pointer" onclick="sortClosings('paidAmount')">Paid</th>
               <th class="p-3 font-medium">Remaining</th>
               <th class="p-3 font-medium">Partner</th>
+              <th class="p-3 font-medium cursor-pointer" onclick="sortClosings('developer_name')">Developer</th>
               <th class="p-3 font-medium cursor-pointer" onclick="sortClosings('closeSort')">Close Date</th>
               <th class="p-3 font-medium cursor-pointer" onclick="sortClosings('cycle')">Cycle</th>
               <th class="p-3 font-medium">Source</th>
@@ -828,13 +833,29 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
     </div>
     <form id="edit-deal-form" class="p-6 space-y-5" onsubmit="submitDealEdit(event)">
       <input type="hidden" id="edit-deal-id"/>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="space-y-2">
+          <label class="text-xs text-on-surface-variant uppercase tracking-widest font-bold">Deal Status</label>
+          <select id="edit-deal-status" class="w-full bg-surface-container-low border-none text-sm py-3 px-3">
+            <option value="hot_lead">חם מאוד</option>
+            <option value="negotiation">במשא ומתן</option>
+            <option value="Contract">בחוזה</option>
+            <option value="Closed Won">נסגר</option>
+            <option value="cancelled">מבוטל</option>
+          </select>
+        </div>
+        <div class="space-y-2">
+          <label class="text-xs text-on-surface-variant uppercase tracking-widest font-bold">Payment Status</label>
+          <select id="edit-pay-status" class="w-full bg-surface-container-low border-none text-sm py-3 px-3">
+            <option value="שולם">שולם (Paid)</option>
+            <option value="שולם חלקי">שולם חלקי (Partial)</option>
+            <option value="לא שולם">לא שולם (Unpaid)</option>
+          </select>
+        </div>
+      </div>
       <div class="space-y-2">
-        <label class="text-xs text-on-surface-variant uppercase tracking-widest font-bold">Payment Status</label>
-        <select id="edit-pay-status" class="w-full bg-surface-container-low border-none text-sm py-3 px-3">
-          <option value="שולם">שולם (Paid)</option>
-          <option value="שולם חלקי">שולם ח��קי (Partial)</option>
-          <option value="לא שולם">לא שולם (Unpaid)</option>
-        </select>
+        <label class="text-xs text-on-surface-variant uppercase tracking-widest font-bold">Developer Name</label>
+        <input id="edit-developer-name" type="text" class="w-full bg-surface-container-low border-none text-sm py-3 px-3" placeholder="שם היזם"/>
       </div>
       <div class="grid grid-cols-2 gap-4">
         <div class="space-y-2">
@@ -2224,11 +2245,16 @@ function renderNextPaymentCard() {
 
 function renderClosingsKPIs(deals) {
   const el = document.getElementById('closings-kpis');
-  const totalVolume = deals.reduce((s, d) => s + (d.price || 0), 0);
-  const totalNet = deals.reduce((s, d) => s + (d.net || 0), 0);
-  const totalDevProfit = deals.reduce((s, d) => s + (d.devProfit || 0), 0);
-  const totalPaid = deals.reduce((s, d) => s + (d.paidAmount || 0), 0);
+  // Pipeline statuses — not yet closed; excluded from revenue totals
+  const PIPELINE_STATUSES = new Set(['hot_lead', 'negotiation', 'Negotiation', 'Contract']);
+  const closedDeals = deals.filter(d => !PIPELINE_STATUSES.has(d.status));
+  const pipelineDeals = deals.filter(d => PIPELINE_STATUSES.has(d.status));
+  const totalVolume = closedDeals.reduce((s, d) => s + (d.price || 0), 0);
+  const totalNet = closedDeals.reduce((s, d) => s + (d.net || 0), 0);
+  const totalDevProfit = closedDeals.reduce((s, d) => s + (d.devProfit || 0), 0);
+  const totalPaid = closedDeals.reduce((s, d) => s + (d.paidAmount || 0), 0);
   const outstanding = totalNet - totalPaid;
+  const pipelineValue = pipelineDeals.reduce((s, d) => s + (d.net || 0), 0);
   const cycles = deals.filter(d => d.cycle > 0);
   const avgCycle = cycles.length ? Math.round(cycles.reduce((s, d) => s + d.cycle, 0) / cycles.length) : 0;
 
@@ -2248,11 +2274,11 @@ function renderClosingsKPIs(deals) {
   const fmtB = n => n >= 1000000 ? '฿' + (n / 1000000).toFixed(1) + 'M' : n >= 1000 ? '฿' + Math.round(n / 1000) + 'K' : '฿' + n;
   const fmtFull = n => '฿' + n.toLocaleString();
 
-  // Avg deals/month
-  const avgDealsMonth = (deals.length / activeMonths).toFixed(1);
-  // Broker vs dev monthly breakdown
-  const brokerNet = deals.filter(d => d.role === 'ברוקר').reduce((s, d) => s + (d.net || 0), 0);
-  const devNet = deals.filter(d => d.role === 'יזם').reduce((s, d) => s + (d.net || 0), 0);
+  // Avg deals/month (closed only)
+  const avgDealsMonth = (closedDeals.length / activeMonths).toFixed(1);
+  // Broker vs dev monthly breakdown (closed only)
+  const brokerNet = closedDeals.filter(d => d.role === 'ברוקר').reduce((s, d) => s + (d.net || 0), 0);
+  const devNet = closedDeals.filter(d => d.role === 'יזם').reduce((s, d) => s + (d.net || 0), 0);
   const avgBrokerMonthly = Math.round(brokerNet / activeMonths);
   const avgDevMonthly = Math.round(devNet / activeMonths);
 
@@ -2266,16 +2292,33 @@ function renderClosingsKPIs(deals) {
     <div class="bg-surface-container p-4 ghost-border"><p class="text-[10px]" style="color:#94A3B8">CASH COLLECTED</p><p class="text-2xl font-bold" style="color:#34D399">${fmtB(totalPaid)}</p><p class="text-[10px]" style="color:#FB923C">Outstanding: ${fmtFull(outstanding)}<br>Rate: ${collectionRate}%</p></div>
     <div class="bg-surface-container p-4 ghost-border"><p class="text-[10px]" style="color:#94A3B8">AVG SALES CYCLE</p><p class="text-2xl font-bold text-white">${avgCycle}<span class="text-sm" style="color:#94A3B8"> days</span></p></div>
     <div class="bg-surface-container p-4 ghost-border"><p class="text-[10px]" style="color:#94A3B8">OUTSTANDING</p><p class="text-2xl font-bold" style="color:#FB923C">${fmtB(outstanding)}</p><p class="text-[10px]" style="color:#94A3B8">${fmtFull(outstanding)}</p></div>
+    <div class="bg-surface-container p-4 ghost-border"><p class="text-[10px]" style="color:#94A3B8">PIPELINE VALUE</p><p class="text-2xl font-bold" style="color:#6DD5FA">${fmtB(pipelineValue)}</p><p class="text-[10px]" style="color:#94A3B8">${pipelineDeals.length} open deals<br>${fmtFull(pipelineValue)}</p></div>
     ${renderNextPaymentCard()}
   `;
 }
 
 function renderClosingsTable(deals) {
   const tbody = document.getElementById('closings-table-body');
-  if (!deals.length) { tbody.innerHTML = '<tr><td colspan="15" class="p-8 text-center text-on-surface-variant">No deals match filters</td></tr>'; return; }
+  if (!deals.length) { tbody.innerHTML = '<tr><td colspan="16" class="p-8 text-center text-on-surface-variant">No deals match filters</td></tr>'; return; }
 
   const payBadge = s => s === 'שולם' ? 'cb-green' : s === 'שולם חלקי' ? 'cb-yellow' : 'cb-red';
-  const statusBadge = s => s === 'Closed Won' ? 'cb-green' : s === 'Contract' ? 'cb-yellow' : s === 'Negotiation' ? 'cb-orange' : 'cb-blue';
+  const statusBadge = s => {
+    if (s === 'Closed Won') return 'cb-green';
+    if (s === 'Contract') return 'cb-sky';
+    if (s === 'hot_lead') return 'cb-orange';
+    if (s === 'negotiation' || s === 'Negotiation') return 'cb-yellow';
+    if (s === 'cancelled') return 'cb-gray';
+    return 'cb-blue';
+  };
+  const statusLabel = s => {
+    if (s === 'Closed Won') return 'נסגר';
+    if (s === 'Contract') return 'בחוזה';
+    if (s === 'hot_lead') return 'חם מאוד';
+    if (s === 'negotiation' || s === 'Negotiation') return 'במשא ומתן';
+    if (s === 'cancelled') return 'מבוטל';
+    if (s === 'pipeline') return 'בפייפליין';
+    return s || '-';
+  };
   const roleBadge = r => r === 'יזם' ? 'cb-purple' : 'cb-blue';
   const fmtB = n => n > 0 ? '฿' + n.toLocaleString() : n === 0 ? '-' : '฿' + n.toLocaleString();
   const paidColor = d => d.paidAmount >= d.net ? '#34D399' : d.paidAmount > 0 ? '#FBBF24' : '#FF2D2D';
@@ -2296,17 +2339,18 @@ function renderClosingsTable(deals) {
       <td class="p-3 font-bold" style="color:${paidColor(d)}">${fmtB(d.paidAmount || 0)}</td>
       <td class="p-3 font-bold" style="color:${remColor(d)}">${fmtB(d.remaining)}</td>
       <td class="p-3 text-on-surface-variant">${esc(d.partner || '-')}</td>
+      <td class="p-3 text-on-surface-variant">${esc(d.developer_name || '-')}</td>
       <td class="p-3">${esc(d.closeDate || '--')}</td>
       <td class="p-3">${d.cycle > 0 ? d.cycle + 'd' : '-'}</td>
       <td class="p-3"><span class="closings-badge cb-blue">${esc(d.source || '-')}</span></td>
-      <td class="p-3"><span class="closings-badge ${statusBadge(d.status)}">${esc(d.status || '-')}</span></td>
+      <td class="p-3"><span class="closings-badge ${statusBadge(d.status)}">${esc(statusLabel(d.status))}</span></td>
       <td class="p-3"><span class="closings-badge ${payBadge(d.payStatus)}">${esc(d.payStatus || '-')}</span></td>
       <td class="p-3" onclick="event.stopPropagation()"><span class="material-symbols-outlined text-on-surface-variant text-sm cursor-pointer hover:text-white" onclick="openDealEdit(${d.id})">edit</span></td>
     </tr>`;
 
     // Expand row with full details
     const partnerInfo = d.partner ? `Partner: ${d.partner} (${d.partnerRole || ''}${d.partnerPct > 0 ? ', ' + d.partnerPct + '% = ฿' + (d.partnerAmt || 0).toLocaleString() : ''})` : '';
-    html += `<tr class="expand-row" id="deal-expand-${d.id}"><td colspan="15" class="p-4 text-[11px] text-on-surface-variant">
+    html += `<tr class="expand-row" id="deal-expand-${d.id}"><td colspan="16" class="p-4 text-[11px] text-on-surface-variant">
       <strong class="text-secondary">Deal #${d.id} — ${esc(d.client)}</strong> <span class="closings-badge ${roleBadge(d.role)}">${esc(d.role)}</span><br>
       Project: ${esc(d.project)} &nbsp;|&nbsp; Price: ${d.price > 0 ? fmtB(d.price) : 'Unknown'} &nbsp;|&nbsp;
       ${d.role === 'יזם' ? 'Dev Profit: ฿' + (d.devProfit || 0).toLocaleString() : 'Gross: ฿' + (d.totalGross || 0).toLocaleString()} &nbsp;|&nbsp; Net: ฿${(d.net || 0).toLocaleString()}<br>
@@ -2324,7 +2368,7 @@ function renderClosingsTable(deals) {
     <td class="p-3" style="color:#34D399">฿${totNet.toLocaleString()}</td>
     <td class="p-3" style="color:#34D399">฿${totPaid.toLocaleString()}</td>
     <td class="p-3" style="color:${totRem > 0 ? '#FF2D2D' : '#34D399'}">฿${totRem.toLocaleString()}</td>
-    <td class="p-3" colspan="7"></td>
+    <td class="p-3" colspan="8"></td>
   </tr>`;
 
   tbody.innerHTML = html;
@@ -2543,6 +2587,8 @@ function openDealEdit(dealId) {
 
   document.getElementById('edit-deal-id').value = dealId;
   document.getElementById('edit-deal-title').textContent = `Edit — ${deal.client}`;
+  document.getElementById('edit-deal-status').value = deal.status || 'Contract';
+  document.getElementById('edit-developer-name').value = deal.developer_name || '';
   document.getElementById('edit-pay-status').value = deal.payStatus || 'לא שולם';
   document.getElementById('edit-paid-amount').value = deal.paidAmount || 0;
   document.getElementById('edit-notes').value = deal.notes || '';
@@ -2568,6 +2614,8 @@ async function submitDealEdit(e) {
   e.preventDefault();
   const dealId = parseInt(document.getElementById('edit-deal-id').value);
   const updates = {
+    status: document.getElementById('edit-deal-status').value,
+    developer_name: document.getElementById('edit-developer-name').value.trim(),
     payStatus: document.getElementById('edit-pay-status').value,
     paidAmount: parseFloat(document.getElementById('edit-paid-amount').value) || 0,
     notes: document.getElementById('edit-notes').value,
