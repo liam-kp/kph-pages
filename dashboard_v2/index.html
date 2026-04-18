@@ -935,21 +935,54 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
 <!-- ========== SCHEDULE MESSAGE MODAL ========== -->
 <div id="schedule-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[120] flex items-center justify-center p-4 hidden">
   <div class="sched-modal-body">
-    <h3 class="text-sm font-bold text-white mb-4 flex items-center gap-2">
+    <h3 class="text-sm font-bold text-white mb-3 flex items-center gap-2">
       <span>🕐</span> תזמן הודעה
       <span class="text-[10px] text-on-surface-variant font-normal" id="sched-lead-name"></span>
     </h3>
-    <div class="space-y-4">
+
+    <div id="sched-clocks" class="grid grid-cols-3 gap-2 mb-3 text-[11px]" style="direction:rtl">
+      <div class="p-2 text-center" style="background:#10141a;border:1px solid #3e4943">
+        <div class="text-[#94A3B8] font-bold">🇮🇱 ישראל</div>
+        <div id="sched-clock-il" class="text-white font-mono mt-1">--:--</div>
+      </div>
+      <div class="p-2 text-center" style="background:#10141a;border:1px solid #3e4943">
+        <div class="text-[#94A3B8] font-bold">🇹🇭 בנגקוק</div>
+        <div id="sched-clock-bkk" class="text-white font-mono mt-1">--:--</div>
+      </div>
+      <div class="p-2 text-center" style="background:#10141a;border:1px solid #3e4943">
+        <div class="text-[#94A3B8] font-bold">🌍 שלי</div>
+        <div id="sched-clock-me" class="text-white font-mono mt-1">--:--</div>
+      </div>
+    </div>
+
+    <div class="space-y-3">
+      <div>
+        <label>שלח לפי שעון של:</label>
+        <select id="sched-tz" onchange="updateSchedPreview()">
+          <option value="lead">לקוח (אוטומטי)</option>
+          <option value="Asia/Jerusalem">ישראל</option>
+          <option value="Asia/Bangkok">בנגקוק</option>
+          <option value="device">שלי (המכשיר)</option>
+        </select>
+      </div>
       <div class="grid grid-cols-2 gap-3">
         <div>
           <label>תאריך</label>
-          <input type="date" id="sched-date"/>
+          <input type="date" id="sched-date" onchange="updateSchedPreview()"/>
         </div>
         <div>
           <label>שעה</label>
-          <input type="time" id="sched-time" style="background:#10141a;color:#E2E8F0;border:1px solid #3e4943;border-radius:6px;padding:6px 10px;font-size:12px;width:100%"/>
+          <input type="time" id="sched-time" onchange="updateSchedPreview()" oninput="updateSchedPreview()" style="background:#10141a;color:#E2E8F0;border:1px solid #3e4943;border-radius:6px;padding:6px 10px;font-size:12px;width:100%"/>
         </div>
       </div>
+
+      <div id="sched-preview" class="text-[11px] text-[#94A3B8]" style="direction:rtl;min-height:14px"></div>
+
+      <div id="sched-warn" class="hidden p-2 text-[11px] flex items-center gap-2" style="background:#3a2a10;border:1px solid #b8860b;color:#ffd670;direction:rtl">
+        <span id="sched-warn-text" class="flex-1"></span>
+        <button type="button" onclick="applySendWindowFix()" class="px-2 py-0.5 text-[10px] font-bold bg-[#68dbae] text-[#003826]">תקן</button>
+      </div>
+
       <div>
         <label>הודעה</label>
         <textarea id="sched-message" rows="3" style="background:#10141a;color:#E2E8F0;border:1px solid #3e4943;border-radius:6px;padding:8px 10px;font-size:12px;width:100%;resize:none;direction:rtl" placeholder="כתוב את ההודעה הבאה..."></textarea>
@@ -959,7 +992,7 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
           <button type="button" onclick="fillSchedTemplate('wakeup')" class="text-[10px] px-2 py-1 border border-[#3e4943] text-[#94A3B8] hover:text-white hover:border-[#6DD5FA]">התעוררות</button>
         </div>
       </div>
-      <div class="flex gap-3 pt-2">
+      <div class="flex gap-3 pt-1">
         <button onclick="confirmSchedule()" class="flex-1 py-2.5 text-xs font-bold bg-[#68dbae] text-[#003826]">אישור</button>
         <button onclick="hideScheduleModal()" class="flex-1 py-2.5 text-xs font-bold border border-[#3e4943] text-[#bdcac1]">ביטול</button>
       </div>
@@ -1981,27 +2014,148 @@ const SCHED_TEMPLATES = {
   week: 'היי! עבר שבוע מאז שדיברנו.\nיש לנו עדכונים חדשים על הפרויקט — אשמח לשתף.\nמתי נוח לך?',
   wakeup: 'היי! יש לנו מלאי חדש שנכנס השבוע 🏡\nחשבתי עליך — רוצה לראות?',
 };
+const SCHED_IL_TZ = 'Asia/Jerusalem';
+const SCHED_BKK_TZ = 'Asia/Bangkok';
+const SCHED_DEVICE_TZ = (() => { try { return Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'; } catch(e) { return 'UTC'; } })();
+const SCHED_SEND_WINDOW = { start: 10, end: 20 }; // 10:00–20:00 in lead's local time
+let schedClockInterval = null;
 
 function fillSchedTemplate(key) {
   document.getElementById('sched-message').value = SCHED_TEMPLATES[key] || '';
+}
+
+// Minutes to add to UTC to get wall-clock in `timeZone` at the given instant.
+function schedTzOffsetMin(timeZone, date) {
+  const dtf = new Intl.DateTimeFormat('en-US', {
+    timeZone, hour12: false,
+    year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', second: '2-digit'
+  });
+  const parts = {};
+  dtf.formatToParts(date).forEach(p => { if (p.type !== 'literal') parts[p.type] = p.value; });
+  const h = parts.hour === '24' ? 0 : parseInt(parts.hour, 10);
+  const asUTC = Date.UTC(+parts.year, +parts.month - 1, +parts.day, h, +parts.minute, +parts.second);
+  return (asUTC - date.getTime()) / 60000;
+}
+
+// Interpret "YYYY-MM-DD" + "HH:mm" as wall-clock in `timeZone`; return the UTC Date.
+function schedWallToUTC(dateStr, timeStr, timeZone) {
+  const naiveUTC = new Date(`${dateStr}T${timeStr}:00Z`);
+  const offset = schedTzOffsetMin(timeZone, naiveUTC);
+  return new Date(naiveUTC.getTime() - offset * 60000);
+}
+
+function schedFormatTimeInTz(date, timeZone) {
+  return new Intl.DateTimeFormat('en-GB', { timeZone, hour12: false, hour: '2-digit', minute: '2-digit' }).format(date);
+}
+function schedFormatFullInTz(date, timeZone) {
+  return new Intl.DateTimeFormat('en-GB', {
+    timeZone, hour12: false,
+    day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit'
+  }).format(date);
+}
+function schedFormatDateInTz(date, timeZone) {
+  return new Intl.DateTimeFormat('en-CA', { timeZone, year: 'numeric', month: '2-digit', day: '2-digit' }).format(date);
+}
+function schedHourInTz(date, timeZone) {
+  const h = new Intl.DateTimeFormat('en-GB', { timeZone, hour12: false, hour: '2-digit' }).format(date);
+  return parseInt(h, 10) % 24;
+}
+
+function schedLeadTz() {
+  return (selectedLead && isOnIsland(selectedLead)) ? SCHED_BKK_TZ : SCHED_IL_TZ;
+}
+function schedResolveTz(sel) {
+  if (sel === 'lead') return schedLeadTz();
+  if (sel === 'device') return SCHED_DEVICE_TZ;
+  return sel; // explicit IANA name
+}
+function schedTzLabel(tz, sel) {
+  if (sel === 'device') return 'המכשיר';
+  if (sel === 'lead') return (tz === SCHED_BKK_TZ ? 'לקוח — בנגקוק' : 'לקוח — ישראל');
+  if (tz === SCHED_IL_TZ) return 'ישראל';
+  if (tz === SCHED_BKK_TZ) return 'בנגקוק';
+  return tz;
+}
+
+function updateSchedClocks() {
+  const now = new Date();
+  const elIL = document.getElementById('sched-clock-il');
+  const elBKK = document.getElementById('sched-clock-bkk');
+  const elME = document.getElementById('sched-clock-me');
+  if (elIL) elIL.textContent = schedFormatTimeInTz(now, SCHED_IL_TZ);
+  if (elBKK) elBKK.textContent = schedFormatTimeInTz(now, SCHED_BKK_TZ);
+  if (elME) elME.textContent = schedFormatTimeInTz(now, SCHED_DEVICE_TZ);
+}
+
+function updateSchedPreview() {
+  const dateEl = document.getElementById('sched-date');
+  const timeEl = document.getElementById('sched-time');
+  const tzEl = document.getElementById('sched-tz');
+  const previewEl = document.getElementById('sched-preview');
+  const warnEl = document.getElementById('sched-warn');
+  const warnTextEl = document.getElementById('sched-warn-text');
+  if (!dateEl || !timeEl || !tzEl || !previewEl) return;
+
+  const date = dateEl.value;
+  const time = timeEl.value || '10:00';
+  const sel = tzEl.value;
+  const tz = schedResolveTz(sel);
+
+  if (!date) { previewEl.textContent = ''; warnEl.classList.add('hidden'); return; }
+
+  const utc = schedWallToUTC(date, time, tz);
+  previewEl.textContent = `⏰ תישלח ב-${schedFormatFullInTz(utc, tz)} לפי שעון ${schedTzLabel(tz, sel)}`;
+
+  const leadTz = schedLeadTz();
+  const leadHour = schedHourInTz(utc, leadTz);
+  if (leadHour < SCHED_SEND_WINDOW.start || leadHour >= SCHED_SEND_WINDOW.end) {
+    const leadTime = schedFormatTimeInTz(utc, leadTz);
+    const leadLbl = (leadTz === SCHED_BKK_TZ ? 'בנגקוק' : 'ישראל');
+    warnTextEl.textContent = `⚠️ זמן שליחה לא מומלץ (${leadTime} ${leadLbl}) — לשלוח ב-10:00 אותו יום?`;
+    warnEl.classList.remove('hidden');
+  } else {
+    warnEl.classList.add('hidden');
+  }
+}
+
+// "תקן" button — snap the time input to 10:00 in the lead's timezone,
+// expressed in whatever timezone the user is currently scheduling by.
+function applySendWindowFix() {
+  const date = document.getElementById('sched-date').value;
+  if (!date) return;
+  const sel = document.getElementById('sched-tz').value;
+  const selTz = schedResolveTz(sel);
+  const leadTz = schedLeadTz();
+  const utc10LeadTz = schedWallToUTC(date, '10:00', leadTz);
+  document.getElementById('sched-time').value = schedFormatTimeInTz(utc10LeadTz, selTz);
+  updateSchedPreview();
 }
 
 function showScheduleModal() {
   if (!selectedLead) return;
   const name = selectedLead.display_name || selectedLead.name || 'Unknown';
   document.getElementById('sched-lead-name').textContent = `— ${name}`;
-  // Default date = today
-  const now = new Date();
-  document.getElementById('sched-date').value = now.toISOString().slice(0, 10);
-  // Default time = now + 30 min
-  const later = new Date(now.getTime() + 30 * 60000);
-  document.getElementById('sched-time').value = later.toTimeString().slice(0, 5);
+
+  // Default: follow lead context (auto-timezone)
+  document.getElementById('sched-tz').value = 'lead';
+  const leadTz = schedLeadTz();
+  const later = new Date(Date.now() + 30 * 60000);
+  document.getElementById('sched-date').value = schedFormatDateInTz(later, leadTz);
+  document.getElementById('sched-time').value = schedFormatTimeInTz(later, leadTz);
   document.getElementById('sched-message').value = '';
+
+  updateSchedClocks();
+  if (schedClockInterval) clearInterval(schedClockInterval);
+  schedClockInterval = setInterval(updateSchedClocks, 30000);
+
+  updateSchedPreview();
   document.getElementById('schedule-modal').classList.remove('hidden');
 }
 
 function hideScheduleModal() {
   document.getElementById('schedule-modal').classList.add('hidden');
+  if (schedClockInterval) { clearInterval(schedClockInterval); schedClockInterval = null; }
 }
 
 async function confirmSchedule() {
@@ -2018,33 +2172,38 @@ async function confirmSchedule() {
     return;
   }
 
-  const scheduledDatetime = `${date}T${time}:00`;
+  const tzSel = document.getElementById('sched-tz').value;
+  const tz = schedResolveTz(tzSel);
+  const scheduledUTC = schedWallToUTC(date, time, tz);
+  const scheduledISO = scheduledUTC.toISOString();
   const firebaseId = selectedLead._id;
+  const phone = selectedLead.phone_number || selectedLead.phone || '';
+
   const followUpData = {
-    scheduled_date: scheduledDatetime,
+    scheduled_date: scheduledISO,
     message: message,
     created_at: new Date().toISOString(),
-    status: 'pending',
+    status: 'PENDING',
+    lead_id: firebaseId,
+    phone_number: phone,
+    timezone: tz,
   };
 
   try {
-    // Write to /Follow_Ups first (creating the canonical record)
     const followUpId = `${firebaseId}_${Date.now()}`;
     await firebasePut('Follow_Ups', followUpId, {
       ...followUpData,
-      lead_id: firebaseId,
       lead_name: selectedLead.display_name || selectedLead.name || '',
     });
 
-    // Write to /Leads (denormalized pointer to latest follow-up)
     await firebasePut('Leads', firebaseId, {
       Follow_Up: followUpData,
-      next_followup_date: scheduledDatetime,
+      next_followup_date: scheduledISO,
     });
 
     selectedLead.Follow_Up = followUpData;
-    selectedLead.next_followup_date = scheduledDatetime;
-    showToast(`תוזמן ל-${date} ${time}`);
+    selectedLead.next_followup_date = scheduledISO;
+    showToast(`תוזמן ל-${schedFormatFullInTz(scheduledUTC, tz)} (${schedTzLabel(tz, tzSel)})`);
   } catch(e) {
     if (!handleAuthError(e.message)) showToast('תזמון נכשל: ' + e.message, true);
   }
