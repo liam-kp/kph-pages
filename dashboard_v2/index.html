@@ -1674,9 +1674,10 @@ function openLeadDetail(firebaseId) {
   const temp = lead.temp || lead.tier || '';
   document.querySelectorAll('#detail-temp-buttons button').forEach(btn => {
     btn.classList.remove('bg-error/10', 'bg-secondary/10', 'bg-primary/10', 'bg-outline/10');
-    const map = { 'very-hot': 'HOT', 'hot': 'WARM', 'warm': 'LUKEWARM', 'cold': 'COLD' };
-    if (map[btn.dataset.temp] === temp) {
-      btn.classList.add(btn.dataset.temp === 'very-hot' ? 'bg-error/10' : btn.dataset.temp === 'hot' ? 'bg-secondary/10' : 'bg-primary/10');
+    delete btn.dataset.active;
+    if (TEMP_BTN_TO_TIER[btn.dataset.temp] === temp) {
+      btn.classList.add(tempBtnActiveClass(btn.dataset.temp));
+      btn.dataset.active = 'true';
     }
   });
 
@@ -1948,14 +1949,23 @@ function getIslandPayload() {
   return payload;
 }
 
+const TEMP_BTN_TO_TIER = { 'very-hot': 'HOT', 'hot': 'WARM', 'warm': 'LUKEWARM', 'cold': 'COLD' };
+function tempBtnActiveClass(tempKey) {
+  if (tempKey === 'very-hot') return 'bg-error/10';
+  if (tempKey === 'hot') return 'bg-secondary/10';
+  if (tempKey === 'warm') return 'bg-primary/10';
+  return 'bg-outline/10';
+}
+
+function getSelectedTier() {
+  const btn = document.querySelector('#detail-temp-buttons button[data-active="true"]');
+  return btn ? (TEMP_BTN_TO_TIER[btn.dataset.temp] || null) : null;
+}
+
 async function saveLeadDetail() {
   if (!selectedLead) return;
   const token = getToken();
   if (!token) { showToast('יש לרענן את הטוקן — לחץ על כפתור Token', true); showTokenModal(); return; }
-
-  // Get selected temp
-  let newTemp = selectedLead.temp || selectedLead.tier;
-  const activeBtn = document.querySelector('#detail-temp-buttons button.bg-error\\/10, #detail-temp-buttons button.bg-secondary\\/10, #detail-temp-buttons button.bg-primary\\/10');
 
   const data = {
     general_notes: document.getElementById('detail-notes').value,
@@ -1964,15 +1974,20 @@ async function saveLeadDetail() {
     next_action: getSelectedNextAction(),
   };
 
+  const tier = getSelectedTier();
+  if (tier) { data.tier = tier; data.temp = tier; }
+
+  // If an inline name edit is in progress (input visible), include the edited value.
+  const nameInput = document.getElementById('detail-name-input');
+  if (nameInput && !nameInput.classList.contains('hidden')) {
+    const newName = nameInput.value.trim();
+    const cur = selectedLead.display_name || selectedLead.name || '';
+    if (newName && newName !== cur) { data.display_name = newName; data.name = newName; }
+  }
+
   try {
     await firebasePut('Leads', selectedLead._id, data);
-    // Update local state so table re-renders immediately
-    if (selectedLead) {
-      selectedLead.island_presence = data.island_presence;
-      selectedLead.next_action = data.next_action;
-      selectedLead.general_notes = data.general_notes;
-      selectedLead.expected_commission = data.expected_commission;
-    }
+    Object.assign(selectedLead, data);
     showToast('Lead updated successfully');
     renderPipelineKPIs();
     renderPipelineTable();
@@ -1981,12 +1996,15 @@ async function saveLeadDetail() {
   }
 }
 
-// Temp button clicks
+// Temp button clicks — mark one as active via data-active, sync class for styling
 document.querySelectorAll('#detail-temp-buttons button').forEach(btn => {
   btn.addEventListener('click', () => {
-    document.querySelectorAll('#detail-temp-buttons button').forEach(b =>
-      b.classList.remove('bg-error/10', 'bg-secondary/10', 'bg-primary/10', 'bg-outline/10'));
-    btn.classList.add(btn.dataset.temp === 'very-hot' ? 'bg-error/10' : btn.dataset.temp === 'hot' ? 'bg-secondary/10' : 'bg-primary/10');
+    document.querySelectorAll('#detail-temp-buttons button').forEach(b => {
+      b.classList.remove('bg-error/10', 'bg-secondary/10', 'bg-primary/10', 'bg-outline/10');
+      delete b.dataset.active;
+    });
+    btn.classList.add(tempBtnActiveClass(btn.dataset.temp));
+    btn.dataset.active = 'true';
   });
 });
 
