@@ -421,18 +421,21 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
 
       <!-- Deals Table -->
       <section class="bg-surface-container ghost-border overflow-x-auto">
-        <table class="w-full text-left text-[12px] border-collapse" style="min-width:1100px">
+        <table class="w-full text-left text-[12px] border-collapse" style="min-width:1400px">
           <thead>
             <tr class="text-[10px] text-on-surface-variant border-b-[0.5px] border-outline-variant bg-surface-container-low uppercase tracking-wider">
               <th class="p-3 font-medium w-6"></th>
               <th class="p-3 font-medium cursor-pointer" onclick="sortClosings('client')">Client</th>
               <th class="p-3 font-medium cursor-pointer" onclick="sortClosings('project')">Project</th>
               <th class="p-3 font-medium cursor-pointer" onclick="sortClosings('role')">Role</th>
-              <th class="p-3 font-medium cursor-pointer" onclick="sortClosings('price')">Deal Price</th>
-              <th class="p-3 font-medium cursor-pointer" onclick="sortClosings('net')">Net to Liran</th>
+              <th class="p-3 font-medium cursor-pointer" onclick="sortClosings('deal_price')">Deal Price</th>
+              <th class="p-3 font-medium cursor-pointer" onclick="sortClosings('gross_commission')">Gross Comm</th>
+              <th class="p-3 font-medium">Partner</th>
+              <th class="p-3 font-medium cursor-pointer" onclick="sortClosings('partner_pct')">Partner %</th>
+              <th class="p-3 font-medium cursor-pointer" onclick="sortClosings('partner_amount')">Partner Amount</th>
+              <th class="p-3 font-medium cursor-pointer" onclick="sortClosings('net_to_liran')">Net to Liran</th>
               <th class="p-3 font-medium cursor-pointer" onclick="sortClosings('paidAmount')">Paid</th>
               <th class="p-3 font-medium">Remaining</th>
-              <th class="p-3 font-medium">Partner</th>
               <th class="p-3 font-medium cursor-pointer" onclick="sortClosings('developer_name')">Developer</th>
               <th class="p-3 font-medium cursor-pointer" onclick="sortClosings('closeSort')">Close Date</th>
               <th class="p-3 font-medium cursor-pointer" onclick="sortClosings('cycle')">Cycle</th>
@@ -821,7 +824,7 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
 
 <!-- ========== EDIT DEAL MODAL ========== -->
 <div id="edit-deal-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4 hidden overflow-y-auto">
-  <div class="bg-surface-container w-full max-w-lg ghost-border shadow-2xl my-auto">
+  <div class="bg-surface-container w-full max-w-xl ghost-border shadow-2xl my-auto">
     <div class="bg-surface-container-high p-6 border-b-[0.5px] border-outline-variant flex justify-between items-center">
       <h3 class="text-lg font-bold flex items-center gap-2">
         <span class="material-symbols-outlined text-secondary">edit</span>
@@ -857,6 +860,70 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
         <label class="text-xs text-on-surface-variant uppercase tracking-widest font-bold">Developer Name</label>
         <input id="edit-developer-name" type="text" class="w-full bg-surface-container-low border-none text-sm py-3 px-3" placeholder="שם היזם"/>
       </div>
+
+      <!-- Commission structure section -->
+      <div class="p-4 bg-surface-container-low ghost-border space-y-4">
+        <div class="flex items-center justify-between">
+          <p class="text-xs font-bold tracking-widest uppercase" style="color:#6DD5FA">מבנה עמלה</p>
+          <span id="edit-comm-invariant" class="text-[10px] font-bold" style="color:#34D399"></span>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div class="space-y-1">
+            <label class="text-[10px] text-on-surface-variant uppercase font-bold">Deal Price ฿</label>
+            <input id="edit-deal-price" type="number" class="w-full bg-surface-container border-none text-sm py-2 px-2 font-bold" style="color:#6DD5FA"/>
+          </div>
+          <div class="space-y-1">
+            <label class="text-[10px] text-on-surface-variant uppercase font-bold">Gross Commission ฿</label>
+            <input id="edit-gross-comm" type="number" class="w-full bg-surface-container border-none text-sm py-2 px-2 font-bold" style="color:#6DD5FA" oninput="recalcCommSplit()"/>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div class="space-y-1">
+            <label class="text-[10px] text-on-surface-variant uppercase font-bold">שם שותף (ריק = ללא שותף)</label>
+            <input id="edit-partner" type="text" class="w-full bg-surface-container border-none text-sm py-2 px-2" placeholder="שם שותף" oninput="onPartnerChange()"/>
+          </div>
+          <div class="space-y-1">
+            <label class="text-[10px] text-on-surface-variant uppercase font-bold">תפקיד</label>
+            <select id="edit-partner-role" class="w-full bg-surface-container border-none text-sm py-2 px-2">
+              <option value="">—</option>
+              <option value="Co-broker">Co-broker</option>
+              <option value="Referral">Referral</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+        <div id="edit-partner-split" class="space-y-3">
+          <div class="flex gap-4 text-[11px]">
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="radio" name="split-mode" value="pct" checked onchange="onSplitModeChange()"/>
+              <span>הזנה באחוזים</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="radio" name="split-mode" value="amt" onchange="onSplitModeChange()"/>
+              <span>הזנה בסכום</span>
+            </label>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div class="space-y-1">
+              <label class="text-[10px] text-on-surface-variant uppercase font-bold">Partner %</label>
+              <input id="edit-partner-pct" type="number" step="0.01" min="0" max="100" class="w-full bg-surface-container border-none text-sm py-2 px-2 font-bold" style="color:#FBBF24" oninput="onSplitInput('pct')"/>
+            </div>
+            <div class="space-y-1">
+              <label class="text-[10px] text-on-surface-variant uppercase font-bold">Partner Amount ฿</label>
+              <input id="edit-partner-amount" type="number" min="0" class="w-full bg-surface-container border-none text-sm py-2 px-2 font-bold" style="color:#FB923C" oninput="onSplitInput('amt')"/>
+            </div>
+          </div>
+          <div class="text-[11px] space-y-0.5 pr-1">
+            <div>סכום שותף: <span id="edit-split-readout-amt" class="font-bold" style="color:#FB923C">฿0</span></div>
+            <div>Net ללירן: <span id="edit-split-readout-net" class="font-bold" style="color:#34D399">฿0</span></div>
+          </div>
+        </div>
+        <div class="space-y-1">
+          <label class="text-[10px] text-on-surface-variant uppercase font-bold">Net to Liran ฿ (מחושב)</label>
+          <input id="edit-net-to-liran" type="text" readonly class="w-full bg-surface-container border-none text-sm py-2 px-2 font-bold" style="color:#34D399"/>
+        </div>
+      </div>
+
       <div class="grid grid-cols-2 gap-4">
         <div class="space-y-2">
           <label class="text-xs text-on-surface-variant uppercase tracking-widest font-bold">Paid Amount ฿</label>
@@ -2296,7 +2363,11 @@ document.addEventListener('click', (e) => {
 });
 
 function getFilteredDeals() {
-  let deals = (pipelineData?.deals || []).map(d => ({ ...d, remaining: (d.net || 0) - (d.paidAmount || 0) }));
+  let deals = (pipelineData?.deals || []).map(d => {
+    const net = d.net_to_liran ?? d.net ?? 0;
+    const paid = d.paidAmount ?? d.paid ?? 0;
+    return { ...d, remaining: Math.max(0, net - paid) };
+  });
   const fy = document.getElementById('cf-year')?.value || '';
   const fr = document.getElementById('cf-role')?.value || '';
   const fs = document.getElementById('cf-source')?.value || '';
@@ -2408,12 +2479,15 @@ function renderClosingsKPIs(deals) {
   const PIPELINE_STATUSES = new Set(['hot_lead', 'negotiation', 'Negotiation', 'Contract']);
   const closedDeals = deals.filter(d => !PIPELINE_STATUSES.has(d.status));
   const pipelineDeals = deals.filter(d => PIPELINE_STATUSES.has(d.status));
-  const totalVolume = closedDeals.reduce((s, d) => s + (d.price || 0), 0);
-  const totalNet = closedDeals.reduce((s, d) => s + (d.net || 0), 0);
+  const netOf = d => d.net_to_liran ?? d.net ?? 0;
+  const priceOf = d => d.deal_price ?? d.price ?? 0;
+  const paidOf = d => d.paidAmount ?? d.paid ?? 0;
+  const totalVolume = closedDeals.reduce((s, d) => s + priceOf(d), 0);
+  const totalNet = closedDeals.reduce((s, d) => s + netOf(d), 0);
   const totalDevProfit = closedDeals.reduce((s, d) => s + (d.devProfit || 0), 0);
-  const totalPaid = closedDeals.reduce((s, d) => s + (d.paidAmount || 0), 0);
+  const totalPaid = closedDeals.reduce((s, d) => s + paidOf(d), 0);
   const outstanding = totalNet - totalPaid;
-  const pipelineValue = pipelineDeals.reduce((s, d) => s + (d.net || 0), 0);
+  const pipelineValue = pipelineDeals.reduce((s, d) => s + netOf(d), 0);
   const cycles = deals.filter(d => d.cycle > 0);
   const avgCycle = cycles.length ? Math.round(cycles.reduce((s, d) => s + d.cycle, 0) / cycles.length) : 0;
 
@@ -2436,8 +2510,8 @@ function renderClosingsKPIs(deals) {
   // Avg deals/month (closed only)
   const avgDealsMonth = (closedDeals.length / activeMonths).toFixed(1);
   // Broker vs dev monthly breakdown (closed only)
-  const brokerNet = closedDeals.filter(d => d.role === 'ברוקר').reduce((s, d) => s + (d.net || 0), 0);
-  const devNet = closedDeals.filter(d => d.role === 'יזם').reduce((s, d) => s + (d.net || 0), 0);
+  const brokerNet = closedDeals.filter(d => d.role === 'ברוקר').reduce((s, d) => s + netOf(d), 0);
+  const devNet = closedDeals.filter(d => d.role === 'יזם').reduce((s, d) => s + netOf(d), 0);
   const avgBrokerMonthly = Math.round(brokerNet / activeMonths);
   const avgDevMonthly = Math.round(devNet / activeMonths);
 
@@ -2458,7 +2532,7 @@ function renderClosingsKPIs(deals) {
 
 function renderClosingsTable(deals) {
   const tbody = document.getElementById('closings-table-body');
-  if (!deals.length) { tbody.innerHTML = '<tr><td colspan="16" class="p-8 text-center text-on-surface-variant">No deals match filters</td></tr>'; return; }
+  if (!deals.length) { tbody.innerHTML = '<tr><td colspan="19" class="p-8 text-center text-on-surface-variant">No deals match filters</td></tr>'; return; }
 
   const payBadge = s => s === 'שולם' ? 'cb-green' : s === 'שולם חלקי' ? 'cb-yellow' : 'cb-red';
   const statusBadge = s => {
@@ -2480,24 +2554,36 @@ function renderClosingsTable(deals) {
   };
   const roleBadge = r => r === 'יזם' ? 'cb-purple' : 'cb-blue';
   const fmtB = n => n > 0 ? '฿' + n.toLocaleString() : n === 0 ? '-' : '฿' + n.toLocaleString();
-  const paidColor = d => d.paidAmount >= d.net ? '#34D399' : d.paidAmount > 0 ? '#FBBF24' : '#FF2D2D';
-  const remColor = d => d.remaining > 0 ? '#FF2D2D' : '#34D399';
+  const paidColor = (paid, net) => paid >= net ? '#34D399' : paid > 0 ? '#FBBF24' : '#FF2D2D';
+  const remColor = rem => rem > 0 ? '#FF2D2D' : '#34D399';
+  const fmtPct = p => p > 0 ? (Number.isInteger(p) ? p : p.toFixed(2).replace(/\.?0+$/, '')) + '%' : '-';
 
-  let totPrice = 0, totNet = 0, totPaid = 0, totRem = 0;
+  let totPrice = 0, totGross = 0, totPartnerAmt = 0, totNet = 0, totPaid = 0, totRem = 0;
   let html = '';
 
   deals.forEach(d => {
-    totPrice += d.price || 0; totNet += d.net || 0; totPaid += d.paidAmount || 0; totRem += d.remaining || 0;
+    const dealPrice = d.deal_price ?? d.price ?? 0;
+    const gross = d.gross_commission ?? d.gross ?? 0;
+    const partnerAmt = d.partner_amount ?? d.partnerAmt ?? 0;
+    const partnerPct = d.partner_pct ?? d.partnerPct ?? 0;
+    const net = d.net_to_liran ?? d.net ?? 0;
+    const paid = d.paidAmount ?? d.paid ?? 0;
+    totPrice += dealPrice; totGross += gross; totPartnerAmt += partnerAmt;
+    totNet += net; totPaid += paid; totRem += d.remaining || 0;
+
     html += `<tr class="hover:bg-surface-container-high transition-colors cursor-pointer" onclick="toggleDealExpand(${d.id})">
       <td class="p-3 text-primary text-[11px]">&#9660;</td>
       <td class="p-3 font-semibold text-secondary">${esc(d.client)}</td>
       <td class="p-3">${esc(d.project)}</td>
       <td class="p-3"><span class="closings-badge ${roleBadge(d.role)}">${esc(d.role)}</span></td>
-      <td class="p-3 font-bold" style="color:#6DD5FA">${d.price > 0 ? fmtB(d.price) : '-'}</td>
-      <td class="p-3 font-bold" style="color:#34D399">${d.net > 0 ? fmtB(d.net) : '-'}</td>
-      <td class="p-3 font-bold" style="color:${paidColor(d)}">${fmtB(d.paidAmount || 0)}</td>
-      <td class="p-3 font-bold" style="color:${remColor(d)}">${fmtB(d.remaining)}</td>
+      <td class="p-3 font-bold" style="color:#6DD5FA">${dealPrice > 0 ? fmtB(dealPrice) : '-'}</td>
+      <td class="p-3 font-bold" style="color:#6DD5FA">${gross > 0 ? fmtB(gross) : '-'}</td>
       <td class="p-3 text-on-surface-variant">${esc(d.partner || '-')}</td>
+      <td class="p-3 font-bold" style="color:#FBBF24">${d.partner ? fmtPct(partnerPct) : '-'}</td>
+      <td class="p-3 font-bold" style="color:#FB923C">${partnerAmt > 0 ? fmtB(partnerAmt) : '-'}</td>
+      <td class="p-3 font-bold" style="color:#34D399">${net > 0 ? fmtB(net) : '-'}</td>
+      <td class="p-3 font-bold" style="color:${paidColor(paid, net)}">${fmtB(paid || 0)}</td>
+      <td class="p-3 font-bold" style="color:${remColor(d.remaining)}">${fmtB(d.remaining)}</td>
       <td class="p-3 text-on-surface-variant">${esc(d.developer_name || '-')}</td>
       <td class="p-3">${esc(d.closeDate || '--')}</td>
       <td class="p-3">${d.cycle > 0 ? d.cycle + 'd' : '-'}</td>
@@ -2509,10 +2595,13 @@ function renderClosingsTable(deals) {
 
     // Expand row with full details
     const partnerInfo = d.partner ? `Partner: ${d.partner} (${d.partnerRole || ''}${d.partnerPct > 0 ? ', ' + d.partnerPct + '% = ฿' + (d.partnerAmt || 0).toLocaleString() : ''})` : '';
-    html += `<tr class="expand-row" id="deal-expand-${d.id}"><td colspan="16" class="p-4 text-[11px] text-on-surface-variant">
+    const grossExp = d.gross_commission ?? d.gross ?? 0;
+    const netExp = d.net_to_liran ?? d.net ?? 0;
+    const priceExp = d.deal_price ?? d.price ?? 0;
+    html += `<tr class="expand-row" id="deal-expand-${d.id}"><td colspan="19" class="p-4 text-[11px] text-on-surface-variant">
       <strong class="text-secondary">Deal #${d.id} — ${esc(d.client)}</strong> <span class="closings-badge ${roleBadge(d.role)}">${esc(d.role)}</span><br>
-      Project: ${esc(d.project)} &nbsp;|&nbsp; Price: ${d.price > 0 ? fmtB(d.price) : 'Unknown'} &nbsp;|&nbsp;
-      ${d.role === 'יזם' ? 'Dev Profit: ฿' + (d.devProfit || 0).toLocaleString() : 'Gross: ฿' + (d.totalGross || 0).toLocaleString()} &nbsp;|&nbsp; Net: ฿${(d.net || 0).toLocaleString()}<br>
+      Project: ${esc(d.project)} &nbsp;|&nbsp; Price: ${priceExp > 0 ? fmtB(priceExp) : 'Unknown'} &nbsp;|&nbsp;
+      Gross Comm: ฿${grossExp.toLocaleString()} &nbsp;|&nbsp; Net to Liran: ฿${netExp.toLocaleString()}<br>
       ${partnerInfo ? partnerInfo + '<br>' : ''}
       ${d.accomp > 0 ? 'Accompaniment: ฿' + d.accomp.toLocaleString() + '<br>' : ''}
       First Contact: ${d.firstContact || '-'} &nbsp;|&nbsp; Arrival: ${d.arrival || '-'} &nbsp;|&nbsp; Cycle: ${d.cycle || 0}d<br>
@@ -2520,14 +2609,18 @@ function renderClosingsTable(deals) {
     </td></tr>`;
   });
 
-  // Total row
+  // Total row: columns are [expand, Client, Project, Role, Price, Gross, Partner, %, PartnerAmt, Net, Paid, Rem, Dev, Close, Cycle, Source, Status, Pay, Edit]
   html += `<tr class="bg-surface-container-low font-bold text-[11px]" style="position:sticky;bottom:0">
     <td class="p-3" colspan="4" style="text-align:right">TOTAL</td>
     <td class="p-3" style="color:#6DD5FA">฿${totPrice.toLocaleString()}</td>
+    <td class="p-3" style="color:#6DD5FA">฿${totGross.toLocaleString()}</td>
+    <td class="p-3"></td>
+    <td class="p-3"></td>
+    <td class="p-3" style="color:#FB923C">฿${totPartnerAmt.toLocaleString()}</td>
     <td class="p-3" style="color:#34D399">฿${totNet.toLocaleString()}</td>
     <td class="p-3" style="color:#34D399">฿${totPaid.toLocaleString()}</td>
     <td class="p-3" style="color:${totRem > 0 ? '#FF2D2D' : '#34D399'}">฿${totRem.toLocaleString()}</td>
-    <td class="p-3" colspan="8"></td>
+    <td class="p-3" colspan="7"></td>
   </tr>`;
 
   tbody.innerHTML = html;
@@ -2738,6 +2831,7 @@ async function submitNewDeal(e) {
 
 // ============ EDIT DEAL ============
 let editDealNet = 0;
+let editSplitMode = 'pct';
 
 function openDealEdit(dealId) {
   const deals = pipelineData?.deals || [];
@@ -2749,13 +2843,28 @@ function openDealEdit(dealId) {
   document.getElementById('edit-deal-status').value = deal.status || 'Contract';
   document.getElementById('edit-developer-name').value = deal.developer_name || '';
   document.getElementById('edit-pay-status').value = deal.payStatus || 'לא שולם';
-  document.getElementById('edit-paid-amount').value = deal.paidAmount || 0;
+
+  // Commission structure
+  const gross = deal.gross_commission ?? deal.gross ?? 0;
+  const partnerAmt = deal.partner_amount ?? deal.partnerAmt ?? 0;
+  const partnerPct = deal.partner_pct ?? deal.partnerPct ?? 0;
+  document.getElementById('edit-deal-price').value = deal.deal_price ?? deal.price ?? 0;
+  document.getElementById('edit-gross-comm').value = gross;
+  document.getElementById('edit-partner').value = deal.partner || '';
+  document.getElementById('edit-partner-role').value = deal.partner_role || deal.partnerRole || '';
+  document.getElementById('edit-partner-pct').value = partnerPct || '';
+  document.getElementById('edit-partner-amount').value = partnerAmt || '';
+  editSplitMode = 'pct';
+  document.querySelectorAll('input[name="split-mode"]').forEach(r => r.checked = (r.value === 'pct'));
+  recalcCommSplit();
+  onPartnerChange();
+
+  document.getElementById('edit-paid-amount').value = deal.paidAmount ?? deal.paid ?? 0;
   document.getElementById('edit-notes').value = deal.notes || '';
   document.getElementById('edit-pay-date').value = deal.lastPayDate || '';
   document.getElementById('edit-upcoming').checked = !!deal.upcoming;
   document.getElementById('edit-next-pay-date').value = deal.next_payment_date || '';
   document.getElementById('edit-next-pay-amount').value = deal.next_payment_amount || '';
-  editDealNet = deal.net || 0;
   updateEditRemaining();
   document.getElementById('edit-deal-modal').classList.remove('hidden');
 }
@@ -2769,28 +2878,129 @@ function updateEditRemaining() {
   document.getElementById('edit-remaining').style.color = rem > 0 ? '#FF2D2D' : '#34D399';
 }
 
+// ============ Commission split calculator ============
+function _grossVal() { return parseFloat(document.getElementById('edit-gross-comm').value) || 0; }
+function _partnerName() { return (document.getElementById('edit-partner').value || '').trim(); }
+
+function onSplitModeChange() {
+  const mode = document.querySelector('input[name="split-mode"]:checked')?.value || 'pct';
+  editSplitMode = mode;
+  const pctInput = document.getElementById('edit-partner-pct');
+  const amtInput = document.getElementById('edit-partner-amount');
+  if (mode === 'pct') {
+    pctInput.readOnly = false; amtInput.readOnly = true;
+    pctInput.classList.remove('opacity-60'); amtInput.classList.add('opacity-60');
+  } else {
+    pctInput.readOnly = true; amtInput.readOnly = false;
+    pctInput.classList.add('opacity-60'); amtInput.classList.remove('opacity-60');
+  }
+  recalcCommSplit();
+}
+
+function onSplitInput(source) {
+  const gross = _grossVal();
+  const pctInput = document.getElementById('edit-partner-pct');
+  const amtInput = document.getElementById('edit-partner-amount');
+  if (source === 'pct') {
+    const pct = parseFloat(pctInput.value) || 0;
+    amtInput.value = gross > 0 ? Math.round(gross * pct / 100) : 0;
+  } else if (source === 'amt') {
+    const amt = parseFloat(amtInput.value) || 0;
+    pctInput.value = gross > 0 ? +(amt / gross * 100).toFixed(2) : 0;
+  }
+  updateSplitReadout();
+}
+
+function recalcCommSplit() {
+  // Re-derive the passive field from the active one
+  onSplitInput(editSplitMode);
+}
+
+function onPartnerChange() {
+  const hasPartner = _partnerName().length > 0;
+  const splitBox = document.getElementById('edit-partner-split');
+  splitBox.style.opacity = hasPartner ? '1' : '0.4';
+  splitBox.style.pointerEvents = hasPartner ? 'auto' : 'none';
+  if (!hasPartner) {
+    document.getElementById('edit-partner-pct').value = '';
+    document.getElementById('edit-partner-amount').value = '';
+    document.getElementById('edit-partner-role').value = '';
+  }
+  updateSplitReadout();
+}
+
+function updateSplitReadout() {
+  const gross = _grossVal();
+  const hasPartner = _partnerName().length > 0;
+  const amt = hasPartner ? (parseFloat(document.getElementById('edit-partner-amount').value) || 0) : 0;
+  const net = Math.max(0, gross - amt);
+  document.getElementById('edit-split-readout-amt').textContent = '฿' + amt.toLocaleString();
+  document.getElementById('edit-split-readout-net').textContent = '฿' + net.toLocaleString();
+  document.getElementById('edit-net-to-liran').value = '฿' + net.toLocaleString();
+  editDealNet = net;
+  const inv = document.getElementById('edit-comm-invariant');
+  if (gross > 0) {
+    inv.textContent = `✓ ${gross.toLocaleString()} − ${amt.toLocaleString()} = ${net.toLocaleString()}`;
+    inv.style.color = '#34D399';
+  } else {
+    inv.textContent = '';
+  }
+  updateEditRemaining();
+}
+
 async function submitDealEdit(e) {
   e.preventDefault();
   const dealId = parseInt(document.getElementById('edit-deal-id').value);
+
+  // Build canonical commission payload from modal state
+  const dealPrice = parseFloat(document.getElementById('edit-deal-price').value) || 0;
+  const gross = _grossVal();
+  const partner = _partnerName();
+  const hasPartner = partner.length > 0;
+  const partnerRole = hasPartner ? (document.getElementById('edit-partner-role').value || '') : '';
+  const partnerAmt = hasPartner ? (parseFloat(document.getElementById('edit-partner-amount').value) || 0) : 0;
+  const partnerPct = hasPartner && gross > 0 ? +(partnerAmt / gross * 100).toFixed(2) : 0;
+  const netToLiran = Math.max(0, gross - partnerAmt);
+  const paidAmount = parseFloat(document.getElementById('edit-paid-amount').value) || 0;
+  const remaining = Math.max(0, netToLiran - paidAmount);
+
   const updates = {
     status: document.getElementById('edit-deal-status').value,
     developer_name: document.getElementById('edit-developer-name').value.trim(),
     payStatus: document.getElementById('edit-pay-status').value,
-    paidAmount: parseFloat(document.getElementById('edit-paid-amount').value) || 0,
+    // Commission canonical + legacy mirrors
+    deal_price: dealPrice,
+    price: dealPrice,
+    gross_commission: gross,
+    gross: gross,
+    totalGross: gross,
+    commission: gross,
+    partner: partner,
+    partner_role: partnerRole,
+    partnerRole: partnerRole,
+    partner_pct: partnerPct,
+    partnerPct: partnerPct,
+    partner_amount: partnerAmt,
+    partnerAmt: partnerAmt,
+    net_to_liran: netToLiran,
+    net: netToLiran,
+    paidAmount: paidAmount,
+    paid: paidAmount,
+    remaining: remaining,
     notes: document.getElementById('edit-notes').value,
     lastPayDate: document.getElementById('edit-pay-date').value,
     upcoming: document.getElementById('edit-upcoming').checked,
     next_payment_date: document.getElementById('edit-next-pay-date').value,
     next_payment_amount: parseFloat(document.getElementById('edit-next-pay-amount').value) || 0,
+    updated_at: new Date().toISOString(),
   };
 
   // Update local state immediately
   const deal = (pipelineData?.deals || []).find(d => d.id === dealId);
-  if (deal) {
-    Object.assign(deal, updates);
-  }
+  if (deal) Object.assign(deal, updates);
 
-  // Try to persist via server
+  // Persist via server, then GET readback to verify
+  let serverOk = false;
   if (LOCAL_API) {
     try {
       const res = await fetch(`${LOCAL_API}/pipeline/update`, {
@@ -2800,16 +3010,28 @@ async function submitDealEdit(e) {
       });
       const result = await res.json();
       if (!result.success) {
-        showToast('Server save failed: ' + result.error, true);
+        showToast('שמירה נכשלה: ' + (result.error || 'שגיאת שרת'), true);
+      } else {
+        serverOk = true;
+        // Readback: verify canonical fields persisted correctly
+        const verify = result.deal || {};
+        const mismatches = [];
+        if ((verify.gross_commission ?? verify.gross ?? 0) !== gross) mismatches.push('gross_commission');
+        if ((verify.partner_amount ?? verify.partnerAmt ?? 0) !== partnerAmt) mismatches.push('partner_amount');
+        if ((verify.net_to_liran ?? verify.net ?? 0) !== netToLiran) mismatches.push('net_to_liran');
+        if ((verify.partner || '') !== partner) mismatches.push('partner');
+        if (mismatches.length) {
+          showToast('אי התאמה אחרי שמירה: ' + mismatches.join(', '), true);
+        }
       }
     } catch(err) {
-      showToast('Server unreachable — saved locally only', true);
+      showToast('השרת לא זמין — נשמר מקומית בלבד', true);
     }
   }
 
   hideEditDealModal();
   renderClosings();
-  showToast('Deal updated');
+  if (serverOk) showToast('העסקה עודכנה ✓');
 }
 
 // ============ CANCEL / RETURN TO PIPELINE ============
