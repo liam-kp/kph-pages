@@ -9,6 +9,7 @@ Run this playbook end-to-end when onboarding a new project (e.g., KP-XXX-NNN).
 1. `00_claudechat_project_interview.md` — Claude Chat interviews Liam to gather raw project data
 2. `01_cowork_rename_images.md` — Cowork renames images to KP-XXX-NNN convention
 3. `02_claudecode_upload_firebase.md` — Claude Code uploads project record to Firebase
+3. `03_claudechat_html_summary.md` — Claude Chat creates bilingual HTML investment summary artifacts (HE + EN)
 4. `04_claudecode_update_firebase_fields_v4.md` — Update full field set on /Projects_Public
 5. `05_claudecode_decision_tree_objections.md` — Build decision tree + objections cheat sheet
 6. `06_claudecode_jade_prompt_section.md` — Add new section to Maya master prompt
