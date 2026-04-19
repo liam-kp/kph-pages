@@ -158,6 +158,74 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
 .mob-nav-btn.active { color:#68dbae; }
 .mob-nav-btn .material-symbols-outlined { font-size:24px; }
 
+/* ===== Extended Edit Modal sections ===== */
+.modal-divider { border:none; border-top:1px solid rgba(135,148,140,0.2); margin:12px 0 4px; }
+.modal-section { display:flex; flex-direction:column; gap:6px; }
+.modal-section > label { font-size:11px; font-weight:700; color:#bccac1; text-transform:uppercase; letter-spacing:0.5px; }
+.modal-section input[type="number"], .modal-section input[type="date"], .modal-section textarea, .modal-section select { background:#10141a; color:#dfe2eb; border:1px solid #3e4943; border-radius:6px; padding:8px 10px; font-size:13px; width:100%; }
+.modal-section input:focus, .modal-section textarea:focus, .modal-section select:focus { outline:none; border-color:#68dbae; }
+.modal-section textarea { resize:vertical; font-family:inherit; }
+.modal-hint { font-size:10px; color:#94A3B8; margin-top:2px; }
+.budget-input-row { display:grid; grid-template-columns:1fr 100px; gap:8px; }
+.language-pills, .check-hours-pills { display:flex; gap:6px; flex-wrap:wrap; }
+.lang-pill, .hours-pill { background:#1c2026; color:#bccac1; border:1px solid #3e4943; border-radius:6px; padding:6px 12px; font-size:12px; cursor:pointer; transition:all 0.15s; }
+.lang-pill:hover, .hours-pill:hover { border-color:#68dbae; color:#68dbae; }
+.lang-pill.active, .hours-pill.active { background:#68dbae; color:#10141a; border-color:#68dbae; font-weight:700; }
+
+/* ===== Today on Island tab ===== */
+.toi-header { display:flex; flex-direction:column; gap:6px; margin-bottom:18px; padding:14px 16px; background:linear-gradient(135deg, #1c2026 0%, #10141a 100%); border:1px solid #3e4943; border-right:4px solid #68dbae; }
+.toi-header h2 { font-size:20px; font-weight:700; color:#fff; display:flex; align-items:center; gap:8px; margin:0; }
+.toi-date { font-size:12px; color:#94A3B8; font-family:monospace; }
+.toi-kpis { display:flex; gap:10px; flex-wrap:wrap; margin-top:4px; font-size:13px; color:#bccac1; }
+.toi-kpis .kpi b { color:#68dbae; font-weight:700; font-size:15px; margin-left:4px; }
+.toi-kpis .kpi-separator { color:#3e4943; }
+.toi-block { margin-bottom:18px; background:#1c2026; border:1px solid #3e4943; padding:14px 16px; }
+.toi-block h3 { font-size:14px; font-weight:700; color:#fff; margin:0 0 10px 0; display:flex; align-items:center; gap:8px; }
+.toi-block-urgent { border-right:4px solid #ef4444; }
+.toi-block-meetings { border-right:4px solid #A78BFA; }
+.toi-block-arriving { border-right:4px solid #6DD5FA; }
+.toi-block-engaged { border-right:4px solid #FB923C; }
+.toi-block-toggle { cursor:pointer; user-select:none; }
+.toi-block-toggle::after { content:"▼"; font-size:9px; color:#94A3B8; margin-right:auto; }
+.toi-block.collapsed .toi-block-toggle::after { content:"▶"; }
+.toi-count { background:#10141a; color:#bccac1; border-radius:10px; padding:2px 8px; font-size:11px; font-weight:600; margin-right:4px; }
+.toi-cards { display:flex; flex-direction:column; gap:8px; }
+.toi-card { display:flex; gap:10px; padding:10px 12px; background:#10141a; border:1px solid rgba(62,73,67,0.6); border-radius:6px; align-items:center; transition:all 0.15s; }
+.toi-card:hover { border-color:#68dbae; }
+.toi-card.card-contacted { opacity:0.7; }
+.toi-card-main { flex:1; min-width:0; display:flex; flex-direction:column; gap:4px; }
+.toi-card-header { display:flex; justify-content:space-between; gap:8px; flex-wrap:wrap; align-items:center; }
+.toi-card-name { font-size:14px; font-weight:700; color:#fff; }
+.toi-card-name small { color:#94A3B8; font-weight:400; font-family:monospace; font-size:11px; }
+.toi-card-badges { display:flex; gap:4px; flex-wrap:wrap; }
+.toi-badge-contacted { background:rgba(45,212,191,0.18); color:#2DD4BF; font-size:10px; font-weight:600; padding:2px 8px; border-radius:10px; }
+.toi-badge-departure { background:rgba(251,146,60,0.15); color:#FB923C; font-size:10px; font-weight:600; padding:2px 8px; border-radius:10px; }
+.toi-card-meta { display:flex; gap:10px; font-size:11px; color:#94A3B8; flex-wrap:wrap; }
+.toi-card-meta .toi-budget { color:#FFD700; font-weight:600; }
+.toi-card-note { font-size:11px; color:#bccac1; opacity:0.85; overflow:hidden; text-overflow:ellipsis; }
+.toi-card-note .toi-source { color:#68dbae; font-family:monospace; font-size:10px; text-transform:uppercase; }
+.toi-card-actions { display:flex; gap:4px; flex-shrink:0; flex-wrap:wrap; justify-content:flex-end; }
+.toi-card-actions button { background:#1c2026; color:#bccac1; border:1px solid #3e4943; border-radius:6px; padding:6px 10px; font-size:11px; font-weight:600; cursor:pointer; transition:all 0.15s; min-height:32px; }
+.toi-card-actions button:hover { background:#252a33; color:#fff; }
+.toi-card-actions .btn-call { color:#25D366; border-color:rgba(37,211,102,0.3); }
+.toi-card-actions .btn-call:hover { background:rgba(37,211,102,0.1); border-color:#25D366; }
+.toi-card-actions .btn-wa { color:#25D366; border-color:rgba(37,211,102,0.3); }
+.toi-card-actions .btn-wa:hover { background:rgba(37,211,102,0.1); border-color:#25D366; }
+.toi-card-actions .btn-schedule { color:#A78BFA; border-color:rgba(167,139,250,0.3); }
+.toi-card-actions .btn-schedule:hover { background:rgba(167,139,250,0.1); border-color:#A78BFA; }
+.toi-card-actions .btn-met { color:#34D399; border-color:rgba(52,211,153,0.3); }
+.toi-card-actions .btn-met:hover { background:rgba(52,211,153,0.1); border-color:#34D399; }
+.toi-card-actions .btn-noshow { color:#ef4444; border-color:rgba(239,68,68,0.3); }
+.toi-card-actions .btn-noshow:hover { background:rgba(239,68,68,0.1); border-color:#ef4444; }
+.toi-empty { padding:40px 20px; text-align:center; color:#94A3B8; font-size:14px; background:#1c2026; border:1px solid #3e4943; }
+
+@media (max-width:767px) {
+  .toi-card { flex-direction:column; align-items:stretch; }
+  .toi-card-actions { justify-content:space-between; }
+  .toi-card-actions button { flex:1; min-width:60px; }
+  .budget-input-row { grid-template-columns:1fr; }
+}
+
 /* Mobile layout (<768px) */
 @media (max-width: 767px) {
   /* PROBLEM 1 — Hide sidebar, show bottom nav */
@@ -218,7 +286,11 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
     <p class="text-xs text-on-surface-variant opacity-70">Admin Dashboard v2</p>
   </div>
   <nav class="flex-1 mt-4" id="sidebar-nav">
-    <div class="nav-item flex items-center gap-3 px-6 py-4 text-[#bccac1] hover:bg-[#181c22] cursor-pointer active" data-page="pipeline">
+    <div class="nav-item flex items-center gap-3 px-6 py-4 text-[#bccac1] hover:bg-[#181c22] cursor-pointer active" data-page="today">
+      <span class="material-symbols-outlined">sunny</span>
+      <span class="text-sm font-medium">Today on Island</span>
+    </div>
+    <div class="nav-item flex items-center gap-3 px-6 py-4 text-[#bccac1] hover:bg-[#181c22] cursor-pointer" data-page="pipeline">
       <span class="material-symbols-outlined">dashboard</span>
       <span class="text-sm font-bold">Pipeline</span>
     </div>
@@ -256,7 +328,8 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
 
 <!-- ========== MOBILE BOTTOM NAV ========== -->
 <nav id="mobile-bottom-nav" class="fixed bottom-0 left-0 right-0 h-14 bg-[#0a0e14] border-t border-[#3d4943] z-50 items-center justify-around" style="display:none">
-  <button class="mob-nav-btn active" data-page="pipeline"><span class="material-symbols-outlined">dashboard</span></button>
+  <button class="mob-nav-btn active" data-page="today"><span class="material-symbols-outlined">sunny</span></button>
+  <button class="mob-nav-btn" data-page="pipeline"><span class="material-symbols-outlined">dashboard</span></button>
   <button class="mob-nav-btn" data-page="closings"><span class="material-symbols-outlined">payments</span></button>
   <button class="mob-nav-btn" data-page="campaigns"><span class="material-symbols-outlined">campaign</span></button>
   <button class="mob-nav-btn" data-page="projects"><span class="material-symbols-outlined">location_city</span></button>
@@ -271,7 +344,8 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
     <div class="flex items-center gap-8">
       <div class="text-xl font-bold text-white flex items-center gap-2 after:content-[''] after:w-2 after:h-2 after:bg-[#68dbae] after:rounded-full">KPH Sales OS</div>
       <nav class="hidden md:flex gap-6" id="top-tabs">
-        <a class="top-tab active text-sm pb-1 cursor-pointer" data-page="pipeline">Pipeline</a>
+        <a class="top-tab active text-sm pb-1 cursor-pointer" data-page="today">🏝️ Today</a>
+        <a class="top-tab text-[#bccac1] text-sm pb-1 cursor-pointer hover:text-white" data-page="pipeline">Pipeline</a>
         <a class="top-tab text-[#bccac1] text-sm pb-1 cursor-pointer hover:text-white" data-page="closings">Closings</a>
         <a class="top-tab text-[#bccac1] text-sm pb-1 cursor-pointer hover:text-white" data-page="campaigns">Campaigns</a>
         <a class="top-tab text-[#bccac1] text-sm pb-1 cursor-pointer hover:text-white" data-page="projects">Projects</a>
@@ -293,8 +367,52 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
   <!-- Scrollable Content -->
   <div class="flex-1 overflow-y-auto" id="main-scroll">
 
+    <!-- ==================== TODAY ON ISLAND PAGE ==================== -->
+    <div id="page-today" class="page-content active p-6 fade-in" style="direction:rtl;">
+      <div class="toi-header">
+        <h2>🏝️ Today on Island</h2>
+        <div class="toi-date" id="toi-date"></div>
+        <div class="toi-kpis">
+          <span class="kpi"><b id="toi-kpi-on-island">0</b> ליד באי</span>
+          <span class="kpi-separator">·</span>
+          <span class="kpi"><b id="toi-kpi-meetings">0</b> פגישות היום</span>
+          <span class="kpi-separator">·</span>
+          <span class="kpi"><b id="toi-kpi-hot-no-meeting">0</b> חמים ללא פגישה</span>
+        </div>
+      </div>
+
+      <!-- Block 1: URGENT -->
+      <section class="toi-block toi-block-urgent" data-block="urgent">
+        <h3>🔴 חם ודחוף — באי, אין פגישה</h3>
+        <div class="toi-cards" id="block-urgent-cards"></div>
+      </section>
+
+      <!-- Block 2: Today's meetings -->
+      <section class="toi-block toi-block-meetings" data-block="meetings">
+        <h3>📅 פגישות היום</h3>
+        <div class="toi-cards" id="block-meetings-cards"></div>
+      </section>
+
+      <!-- Block 3: Arriving this week -->
+      <section class="toi-block toi-block-arriving collapsed" data-block="arriving">
+        <h3 class="toi-block-toggle">✈️ מגיעים השבוע <span class="toi-count" id="count-arriving">0</span></h3>
+        <div class="toi-cards" id="block-arriving-cards" style="display:none;"></div>
+      </section>
+
+      <!-- Block 4: Engaged -->
+      <section class="toi-block toi-block-engaged collapsed" data-block="engaged">
+        <h3 class="toi-block-toggle">🟡 באי — בשיחה <span class="toi-count" id="count-engaged">0</span></h3>
+        <div class="toi-cards" id="block-engaged-cards" style="display:none;"></div>
+      </section>
+
+      <div class="toi-empty" id="toi-empty" style="display:none;">
+        🏝️ אין אף אחד באי היום.<br>
+        <small>המתן ללידים חדשים או בדוק בטאב Pipeline.</small>
+      </div>
+    </div>
+
     <!-- ==================== PIPELINE PAGE ==================== -->
-    <div id="page-pipeline" class="page-content active p-6 space-y-5 fade-in">
+    <div id="page-pipeline" class="page-content p-6 space-y-5 fade-in">
       <!-- KPI Row -->
       <div class="grid grid-cols-4 gap-4" id="pipeline-kpis">
         <div class="bg-surface-container p-4 ghost-border">
@@ -1228,17 +1346,17 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
 
 <!-- ========== BOTI — EDIT EXTRACTED MODAL ========== -->
 <div id="boti-edit-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[110] flex items-center justify-center p-4 hidden">
-  <div class="bg-surface-container w-full max-w-lg ghost-border shadow-2xl">
-    <div class="bg-surface-container-high p-5 border-b-[0.5px] border-outline-variant flex justify-between items-center">
+  <div class="bg-surface-container w-full max-w-lg ghost-border shadow-2xl" style="max-height:92vh; display:flex; flex-direction:column;">
+    <div class="bg-surface-container-high p-5 border-b-[0.5px] border-outline-variant flex justify-between items-center" style="flex-shrink:0;">
       <h3 class="text-lg font-bold flex items-center gap-2">
         <span class="material-symbols-outlined text-secondary">edit</span>
-        ערוך חילוץ
+        ערוך ליד
       </h3>
       <button onclick="hideBotiEditModal()" class="text-on-surface-variant hover:text-white">
         <span class="material-symbols-outlined">close</span>
       </button>
     </div>
-    <form class="p-6 space-y-4" onsubmit="submitBotiEdit(event)">
+    <form class="p-6 space-y-4" onsubmit="submitBotiEdit(event)" style="overflow-y:auto; flex:1;">
       <input type="hidden" id="boti-e-id"/>
       <div class="grid grid-cols-2 gap-4">
         <div class="space-y-1">
@@ -1264,6 +1382,90 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
           <input type="checkbox" id="boti-e-meeting" class="accent-primary w-4 h-4"/> פגישה
         </label>
       </div>
+
+      <hr class="modal-divider">
+
+      <!-- Section: Budget -->
+      <div class="modal-section">
+        <label>💰 תקציב</label>
+        <div class="budget-input-row">
+          <input type="number" id="edit-budget-amount" placeholder="לדוגמה: 5000000" min="0" step="10000"/>
+          <select id="edit-budget-currency">
+            <option value="THB">฿ THB</option>
+            <option value="USD">$ USD</option>
+            <option value="ILS">₪ ILS</option>
+            <option value="EUR">€ EUR</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Section: Departure date -->
+      <div class="modal-section">
+        <label>✈️ תאריך עזיבה מהאי</label>
+        <input type="date" id="edit-departure-date"/>
+        <small class="modal-hint">חשוב — אם הוא עוזב בקרוב, צריך למהר לפגישה</small>
+      </div>
+
+      <!-- Section: Interest -->
+      <div class="modal-section">
+        <label>🏠 מתעניין ב...</label>
+        <select id="edit-interest">
+          <option value="">-- בחר --</option>
+          <optgroup label="סוג נכס">
+            <option value="Beachfront">Beachfront</option>
+            <option value="Villa">Villa</option>
+            <option value="Land">Land / Plot</option>
+            <option value="Apartment">Apartment</option>
+          </optgroup>
+          <optgroup label="פרויקטים פעילים">
+            <option value="KP-BCH-011">Red Sunset (Beachfront)</option>
+            <option value="KP-ZEN-012">Maduwan Zenith</option>
+            <option value="KP-SRI-013">Srithanu Villas</option>
+            <option value="KP-NAI-014">Villa Nai-Wok</option>
+          </optgroup>
+          <optgroup label="אחר">
+            <option value="Unknown">לא יודע עדיין</option>
+            <option value="Other">אחר (בהערות)</option>
+          </optgroup>
+        </select>
+      </div>
+
+      <!-- Section: Language -->
+      <div class="modal-section">
+        <label>🗣️ שפה</label>
+        <div class="language-pills" id="edit-language-pills">
+          <button type="button" class="lang-pill" data-lang="he">עברית</button>
+          <button type="button" class="lang-pill" data-lang="en">English</button>
+          <button type="button" class="lang-pill" data-lang="ru">Русский</button>
+        </div>
+      </div>
+
+      <!-- Section: Free notes -->
+      <div class="modal-section">
+        <label>📝 הערות חופשיות</label>
+        <textarea id="edit-notes" rows="3" placeholder="כל מידע נוסף שחשוב לזכור על הליד..."></textarea>
+      </div>
+
+      <!-- Section: Status + contacted tracking -->
+      <div class="modal-section">
+        <label>🔄 סטטוס</label>
+        <select id="edit-status">
+          <option value="new">חדש — טרם פניתי</option>
+          <option value="contacted">פניתי — ממתין לתגובה</option>
+          <option value="met">נפגשנו</option>
+          <option value="closed">סגור</option>
+        </select>
+        <div id="edit-contacted-section" style="display:none; margin-top:10px;">
+          <label style="display:block; margin-bottom:6px;">⏱️ בדיקה חוזרת אחרי</label>
+          <div class="check-hours-pills" id="edit-check-hours-pills">
+            <button type="button" class="hours-pill" data-hours="4">4 שעות</button>
+            <button type="button" class="hours-pill" data-hours="8">8 שעות</button>
+            <button type="button" class="hours-pill" data-hours="24">24 שעות</button>
+            <button type="button" class="hours-pill" data-hours="">ללא</button>
+          </div>
+        </div>
+      </div>
+
       <div class="pt-3 flex gap-3 flex-row-reverse">
         <button type="submit" class="bg-secondary text-on-secondary px-6 py-2 text-sm font-bold">שמור</button>
         <button type="button" onclick="hideBotiEditModal()" class="px-6 py-2 text-sm border-[0.5px] border-outline-variant text-on-surface-variant">ביטול</button>
@@ -1324,6 +1526,84 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
       <pre id="boti-raw-text" class="bg-surface-container-low p-4 text-sm whitespace-pre-wrap leading-relaxed" dir="auto"></pre>
       <div id="boti-raw-all" class="space-y-2"></div>
     </div>
+  </div>
+</div>
+
+<!-- ========== TOI — SCHEDULE MEETING MODAL ========== -->
+<div id="toi-schedule-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[110] flex items-center justify-center p-4 hidden">
+  <div class="bg-surface-container w-full max-w-md ghost-border shadow-2xl" style="direction:rtl;">
+    <div class="bg-surface-container-high p-5 border-b-[0.5px] border-outline-variant flex justify-between items-center">
+      <h3 class="text-lg font-bold flex items-center gap-2" style="color:#A78BFA">
+        <span class="material-symbols-outlined">event</span>
+        תזמן פגישה
+      </h3>
+      <button onclick="hideToiScheduleModal()" class="text-on-surface-variant hover:text-white">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <form class="p-6 space-y-4" onsubmit="submitToiSchedule(event)">
+      <input type="hidden" id="toi-s-lead-id"/>
+      <div id="toi-s-lead-name" class="text-sm text-on-surface-variant"></div>
+      <div class="modal-section">
+        <label>📅 תאריך</label>
+        <input type="date" id="toi-s-date" required/>
+      </div>
+      <div class="modal-section">
+        <label>🕐 שעה</label>
+        <input type="time" id="toi-s-time" required/>
+      </div>
+      <div class="modal-section">
+        <label>📍 מיקום</label>
+        <input type="text" id="toi-s-location" placeholder="לדוגמה: Red Sunset / סריטאנו..."/>
+      </div>
+      <div class="modal-section">
+        <label>🏠 פרויקט</label>
+        <select id="toi-s-project">
+          <option value="">-- בחר --</option>
+          <option value="KP-BCH-011">Red Sunset (Beachfront)</option>
+          <option value="KP-ZEN-012">Maduwan Zenith</option>
+          <option value="KP-SRI-013">Srithanu Villas</option>
+          <option value="KP-NAI-014">Villa Nai-Wok</option>
+          <option value="Other">אחר</option>
+        </select>
+      </div>
+      <div class="modal-section">
+        <label>📝 הערות</label>
+        <textarea id="toi-s-notes" rows="2" placeholder="כל מידע על הפגישה..."></textarea>
+      </div>
+      <div class="pt-3 flex gap-3 flex-row-reverse">
+        <button type="submit" class="bg-secondary text-on-secondary px-6 py-2 text-sm font-bold">שמור פגישה</button>
+        <button type="button" onclick="hideToiScheduleModal()" class="px-6 py-2 text-sm border-[0.5px] border-outline-variant text-on-surface-variant">ביטול</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ========== TOI — MEETING OUTCOME MODAL ========== -->
+<div id="toi-outcome-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[110] flex items-center justify-center p-4 hidden">
+  <div class="bg-surface-container w-full max-w-md ghost-border shadow-2xl" style="direction:rtl;">
+    <div class="bg-surface-container-high p-5 border-b-[0.5px] border-outline-variant flex justify-between items-center">
+      <h3 class="text-lg font-bold flex items-center gap-2" id="toi-o-title">
+        <span class="material-symbols-outlined">description</span>
+        סיכום פגישה
+      </h3>
+      <button onclick="hideToiOutcomeModal()" class="text-on-surface-variant hover:text-white">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <form class="p-6 space-y-4" onsubmit="submitToiOutcome(event)">
+      <input type="hidden" id="toi-o-meeting-id"/>
+      <input type="hidden" id="toi-o-outcome"/>
+      <div id="toi-o-lead-name" class="text-sm text-on-surface-variant"></div>
+      <div class="modal-section">
+        <label>📝 סיכום</label>
+        <textarea id="toi-o-notes" rows="4" placeholder="מה דובר? הסכמות? פולואפ?"></textarea>
+      </div>
+      <div class="pt-3 flex gap-3 flex-row-reverse">
+        <button type="submit" class="bg-secondary text-on-secondary px-6 py-2 text-sm font-bold">שמור</button>
+        <button type="button" onclick="hideToiOutcomeModal()" class="px-6 py-2 text-sm border-[0.5px] border-outline-variant text-on-surface-variant">ביטול</button>
+      </div>
+    </form>
   </div>
 </div>
 
@@ -1395,7 +1675,7 @@ function saveToken() {
 }
 
 // ============ STATE ============
-let currentPage = 'pipeline';
+let currentPage = 'today';
 let firebaseLeads = [];
 let pipelineData = null;
 let selectedLead = null;
@@ -1502,6 +1782,11 @@ async function firebasePut(collection, docId, data) {
 async function loadPageData(page) {
   try {
     switch(page) {
+      case 'today':
+        if (typeof renderTodayOnIsland === 'function') renderTodayOnIsland();
+        if (typeof toiBindActions === 'function') toiBindActions();
+        if (typeof toiBindEditModalExtras === 'function') toiBindEditModalExtras();
+        break;
       case 'pipeline': await loadPipeline(); break;
       case 'closings': await loadClosings(); break;
       case 'campaigns': await loadCampaigns(); break;
@@ -4374,6 +4659,36 @@ function openBotiEditModal(id) {
   document.getElementById('boti-e-hot').checked = !!lead.is_hot;
   document.getElementById('boti-e-arriving').checked = !!lead.is_arriving;
   document.getElementById('boti-e-meeting').checked = !!lead.needs_meeting;
+
+  // Extended fields (v2)
+  document.getElementById('edit-budget-amount').value = lead.budget != null ? lead.budget : '';
+  document.getElementById('edit-budget-currency').value = lead.budget_currency || 'THB';
+  document.getElementById('edit-departure-date').value = lead.departure_date || '';
+  document.getElementById('edit-interest').value = lead.interest || '';
+  document.getElementById('edit-notes').value = lead.notes || '';
+  document.getElementById('edit-status').value = lead.status || 'new';
+
+  // Language pills
+  document.querySelectorAll('#edit-language-pills .lang-pill').forEach(p => {
+    p.classList.toggle('active', p.dataset.lang === (lead.language || ''));
+  });
+
+  // Hours pills — derive from next_check_hours (or existing next_check_at)
+  let currentHours = lead.next_check_hours;
+  if (currentHours == null && lead.next_check_at && lead.contacted_at) {
+    const diffMs = new Date(lead.next_check_at) - new Date(lead.contacted_at);
+    const hrs = Math.round(diffMs / 3600000);
+    if ([4, 8, 24].includes(hrs)) currentHours = hrs;
+  }
+  document.querySelectorAll('#edit-check-hours-pills .hours-pill').forEach(p => {
+    const v = p.dataset.hours;
+    p.classList.toggle('active', String(currentHours ?? '') === v);
+  });
+
+  // Toggle contacted section visibility
+  document.getElementById('edit-contacted-section').style.display =
+    lead.status === 'contacted' ? '' : 'none';
+
   document.getElementById('boti-edit-modal').classList.remove('hidden');
 }
 function hideBotiEditModal() { document.getElementById('boti-edit-modal').classList.add('hidden'); }
@@ -4390,11 +4705,47 @@ function submitBotiEdit(e) {
   lead.is_hot = document.getElementById('boti-e-hot').checked;
   lead.is_arriving = document.getElementById('boti-e-arriving').checked;
   lead.needs_meeting = document.getElementById('boti-e-meeting').checked;
+
+  // Extended fields
+  const budgetAmount = document.getElementById('edit-budget-amount').value.trim();
+  lead.budget = budgetAmount ? Number(budgetAmount) : null;
+  lead.budget_currency = document.getElementById('edit-budget-currency').value || 'THB';
+  lead.departure_date = document.getElementById('edit-departure-date').value || null;
+  lead.interest = document.getElementById('edit-interest').value || null;
+  lead.notes = document.getElementById('edit-notes').value || '';
+  const langActive = document.querySelector('#edit-language-pills .lang-pill.active');
+  lead.language = langActive ? langActive.dataset.lang : null;
+
+  const prevStatus = lead.status;
+  const newStatus = document.getElementById('edit-status').value || 'new';
+  lead.status = newStatus === 'new' ? null : newStatus;
+
+  if (newStatus === 'contacted') {
+    if (prevStatus !== 'contacted' || !lead.contacted_at) {
+      lead.contacted_at = new Date().toISOString();
+    }
+    const hoursActive = document.querySelector('#edit-check-hours-pills .hours-pill.active');
+    const hoursVal = hoursActive ? hoursActive.dataset.hours : '';
+    if (hoursVal) {
+      lead.next_check_hours = parseInt(hoursVal, 10);
+      lead.next_check_at = new Date(new Date(lead.contacted_at).getTime() + lead.next_check_hours * 3600 * 1000).toISOString();
+    } else {
+      lead.next_check_hours = null;
+      lead.next_check_at = null;
+    }
+  } else if (newStatus === 'new') {
+    lead.status = null;
+    lead.contacted_at = null;
+    lead.next_check_at = null;
+    lead.next_check_hours = null;
+  }
+
   lead.user_edited = true;
   if (!lead.original_name) lead.original_name = lead.name;
   botiSave(leads);
   hideBotiEditModal();
   renderBotiPage();
+  if (typeof renderTodayOnIsland === 'function' && currentPage === 'today') renderTodayOnIsland();
   showToast('עודכן');
 }
 
@@ -4580,15 +4931,397 @@ document.addEventListener('DOMContentLoaded', () => {
   botiRestoreKnownLeads();
 });
 
+// ============ TODAY ON ISLAND ============
+const TOI_MEETINGS_KEY = 'kph_toi_meetings_v1';
+
+function toiMeetingsLoad() {
+  try { return JSON.parse(localStorage.getItem(TOI_MEETINGS_KEY) || '[]'); }
+  catch { return []; }
+}
+function toiMeetingsSave(arr) {
+  localStorage.setItem(TOI_MEETINGS_KEY, JSON.stringify(arr));
+}
+
+function toiTodayISO() {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+function toiAddDays(iso, n) {
+  const d = new Date(iso + 'T00:00:00');
+  d.setDate(d.getDate() + n);
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+function toiHoursSince(iso) {
+  if (!iso) return 0;
+  return (Date.now() - new Date(iso).getTime()) / 3600000;
+}
+function toiRemainingHours(lead) {
+  if (!lead.contacted_at || !lead.next_check_hours) return 0;
+  const elapsed = toiHoursSince(lead.contacted_at);
+  return Math.max(0, Math.round(lead.next_check_hours - elapsed));
+}
+function toiFormatShortDate(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  return String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0');
+}
+function toiLangFlag(lang) {
+  return ({ he: '🇮🇱', en: '🇬🇧', ru: '🇷🇺' })[lang] || '';
+}
+function toiFormatBudget(amount, currency) {
+  if (!amount) return '';
+  const sym = ({ THB: '฿', USD: '$', ILS: '₪', EUR: '€' })[currency] || (currency || '฿');
+  if (amount >= 1000000) return sym + (amount / 1000000).toFixed(1).replace('.0','') + 'M';
+  if (amount >= 1000) return sym + (amount / 1000).toFixed(0) + 'K';
+  return sym + amount;
+}
+function toiArrivalLabel(lead) {
+  if (lead.is_on_island) return 'באי';
+  if (lead.is_arriving) return 'מגיע';
+  return '—';
+}
+
+function toiBucketizeLeads(leads, meetings) {
+  const today = toiTodayISO();
+  const oneWeekOut = toiAddDays(today, 7);
+  const todayMeetings = (meetings || []).filter(m => m.date === today && !m.outcome);
+  const meetingPhones = new Set(todayMeetings.map(m => normalizePhone(m.phone)));
+
+  const blocks = { urgent: [], meetings: todayMeetings, arriving: [], engaged: [] };
+
+  for (const lead of leads) {
+    if (lead.transferred_to_pipeline || lead.rejected) continue;
+    const phone = normalizePhone(lead.phone);
+    const isOnIsland = !!lead.is_on_island;
+    const isArriving = !!lead.is_arriving || (lead.arrival_date && lead.arrival_date <= oneWeekOut && lead.arrival_date >= today);
+    const hasMeetingToday = phone && meetingPhones.has(phone);
+    const isClosed = lead.status === 'closed' || lead.status === 'met';
+    if (isClosed) continue;
+
+    if (isOnIsland && !hasMeetingToday) {
+      const isEngaged = !!lead.needs_meeting && !hasMeetingToday && lead.status && lead.status !== 'new';
+      if (isEngaged) blocks.engaged.push(lead);
+      else blocks.urgent.push(lead);
+    } else if (isArriving && !isOnIsland) {
+      blocks.arriving.push(lead);
+    }
+  }
+
+  blocks.urgent.sort((a, b) => {
+    const aContacted = a.status === 'contacted';
+    const bContacted = b.status === 'contacted';
+    const aExpired = aContacted && toiHoursSince(a.contacted_at) >= (a.next_check_hours || 999);
+    const bExpired = bContacted && toiHoursSince(b.contacted_at) >= (b.next_check_hours || 999);
+    const aPriority = !aContacted ? 0 : aExpired ? 1 : 2;
+    const bPriority = !bContacted ? 0 : bExpired ? 1 : 2;
+    if (aPriority !== bPriority) return aPriority - bPriority;
+    return String(b.date || '').localeCompare(String(a.date || ''));
+  });
+
+  blocks.arriving.sort((a, b) => String(a.arrival_date || a.date || '').localeCompare(String(b.arrival_date || b.date || '')));
+  return blocks;
+}
+
+function renderToiLeadCard(lead, blockType) {
+  const isContacted = lead.status === 'contacted';
+  const remaining = toiRemainingHours(lead);
+  const checkExpired = isContacted && lead.next_check_hours && toiHoursSince(lead.contacted_at) >= lead.next_check_hours;
+
+  const contactedBadge = isContacted && !checkExpired && lead.next_check_hours
+    ? `<span class="toi-badge-contacted">📩 טופל · ${remaining}h</span>`
+    : (isContacted ? `<span class="toi-badge-contacted">📩 טופל</span>` : '');
+  const departureBadge = lead.departure_date
+    ? `<span class="toi-badge-departure">✈️ עוזב ${toiFormatShortDate(lead.departure_date)}</span>`
+    : '';
+  const budgetDisplay = lead.budget
+    ? toiFormatBudget(lead.budget, lead.budget_currency || 'THB')
+    : 'ללא תקציב';
+  const interestDisplay = lead.interest || lead.notes || lead.raw_text || 'עניין לא ידוע';
+  const source = lead.source || 'boti';
+
+  return `
+    <div class="toi-card ${isContacted ? 'card-contacted' : ''}" data-lead-id="${lead.id}" data-phone="${lead.phone || ''}">
+      <div class="toi-card-main">
+        <div class="toi-card-header">
+          <div class="toi-card-name">${escapeHtml(lead.name || 'ללא שם')} <small>· ${escapeHtml(lead.phone || '—')}</small></div>
+          <div class="toi-card-badges">${contactedBadge}${departureBadge}</div>
+        </div>
+        <div class="toi-card-meta">
+          <span class="toi-arrival">🏝️ ${toiArrivalLabel(lead)}</span>
+          <span class="toi-budget">💰 ${budgetDisplay}</span>
+          ${lead.language ? `<span class="toi-lang">${toiLangFlag(lead.language)}</span>` : ''}
+        </div>
+        <div class="toi-card-note">💬 ${escapeHtml(String(interestDisplay).slice(0, 120))} · <span class="toi-source">${source}</span></div>
+      </div>
+      <div class="toi-card-actions">${renderToiCardActions(lead, blockType)}</div>
+    </div>
+  `;
+}
+
+function renderToiMeetingCard(meeting) {
+  const leads = botiLoad();
+  const lead = leads.find(l => normalizePhone(l.phone) === normalizePhone(meeting.phone)) || { id: meeting.leadId, name: meeting.leadName, phone: meeting.phone };
+  const timeStr = meeting.time || '';
+  const loc = meeting.location || '';
+  const project = meeting.project || '';
+  const note = [timeStr, loc, project].filter(Boolean).join(' · ');
+  return `
+    <div class="toi-card" data-meeting-id="${meeting.id}" data-lead-id="${lead.id || ''}" data-phone="${lead.phone || meeting.phone || ''}">
+      <div class="toi-card-main">
+        <div class="toi-card-header">
+          <div class="toi-card-name">${escapeHtml(lead.name || 'ללא שם')} <small>· ${escapeHtml(lead.phone || meeting.phone || '—')}</small></div>
+        </div>
+        <div class="toi-card-meta">
+          <span>🕐 ${escapeHtml(timeStr || '—')}</span>
+          ${loc ? `<span>📍 ${escapeHtml(loc)}</span>` : ''}
+          ${project ? `<span>🏠 ${escapeHtml(project)}</span>` : ''}
+        </div>
+        ${meeting.notes ? `<div class="toi-card-note">📝 ${escapeHtml(meeting.notes)}</div>` : ''}
+      </div>
+      <div class="toi-card-actions">
+        <button class="btn-met" data-meeting-id="${meeting.id}">✅ נפגשנו</button>
+        <button class="btn-noshow" data-meeting-id="${meeting.id}">❌ לא הגיע</button>
+        <button class="btn-log" data-meeting-id="${meeting.id}">📝 סיכום</button>
+      </div>
+    </div>
+  `;
+}
+
+function renderToiCardActions(lead, blockType) {
+  const phone = lead.phone || '';
+  return `
+    <button class="btn-call" data-phone="${phone}">📞</button>
+    <button class="btn-wa" data-phone="${phone}">💬 WA</button>
+    <button class="btn-schedule" data-lead-id="${lead.id}">📅 תזמן</button>
+    <button class="btn-edit" data-lead-id="${lead.id}">✏️</button>
+  `;
+}
+
+function renderTodayOnIsland() {
+  const dateEl = document.getElementById('toi-date');
+  if (dateEl) {
+    const d = new Date();
+    const dayNames = ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
+    dateEl.textContent = `${dayNames[d.getDay()]}, ${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
+  }
+
+  const leads = botiLoad();
+  const meetings = toiMeetingsLoad();
+  const blocks = toiBucketizeLeads(leads, meetings);
+
+  const urgentEl = document.getElementById('block-urgent-cards');
+  const meetingsEl = document.getElementById('block-meetings-cards');
+  const arrivingEl = document.getElementById('block-arriving-cards');
+  const engagedEl = document.getElementById('block-engaged-cards');
+
+  urgentEl.innerHTML = blocks.urgent.length
+    ? blocks.urgent.map(l => renderToiLeadCard(l, 'urgent')).join('')
+    : '<div class="text-xs text-on-surface-variant opacity-70 p-2">אין לידים דחופים כרגע ✨</div>';
+
+  meetingsEl.innerHTML = blocks.meetings.length
+    ? blocks.meetings.map(m => renderToiMeetingCard(m)).join('')
+    : '<div class="text-xs text-on-surface-variant opacity-70 p-2">אין פגישות קבועות היום</div>';
+
+  arrivingEl.innerHTML = blocks.arriving.length
+    ? blocks.arriving.map(l => renderToiLeadCard(l, 'arriving')).join('')
+    : '<div class="text-xs text-on-surface-variant opacity-70 p-2">אין לידים מגיעים השבוע</div>';
+
+  engagedEl.innerHTML = blocks.engaged.length
+    ? blocks.engaged.map(l => renderToiLeadCard(l, 'engaged')).join('')
+    : '<div class="text-xs text-on-surface-variant opacity-70 p-2">אין לידים בשיחה פעילה</div>';
+
+  document.getElementById('count-arriving').textContent = blocks.arriving.length;
+  document.getElementById('count-engaged').textContent = blocks.engaged.length;
+
+  const onIslandCount = leads.filter(l => !l.transferred_to_pipeline && !l.rejected && l.is_on_island).length;
+  const hotNoMeetingCount = leads.filter(l => !l.transferred_to_pipeline && !l.rejected && l.is_hot && !l.needs_meeting).length;
+  document.getElementById('toi-kpi-on-island').textContent = onIslandCount;
+  document.getElementById('toi-kpi-meetings').textContent = blocks.meetings.length;
+  document.getElementById('toi-kpi-hot-no-meeting').textContent = hotNoMeetingCount;
+
+  const totalCards = blocks.urgent.length + blocks.meetings.length + blocks.arriving.length + blocks.engaged.length;
+  document.getElementById('toi-empty').style.display = totalCards === 0 ? '' : 'none';
+}
+
+// ---- TOI action delegation ----
+function toiBindActions() {
+  const page = document.getElementById('page-today');
+  if (!page || page.dataset.bound === '1') return;
+  page.dataset.bound = '1';
+
+  page.addEventListener('click', (e) => {
+    const btn = e.target.closest('button');
+    if (!btn) {
+      // Collapsible block toggle
+      const toggle = e.target.closest('.toi-block-toggle');
+      if (toggle) {
+        const block = toggle.closest('.toi-block');
+        block.classList.toggle('collapsed');
+        const cards = block.querySelector('.toi-cards');
+        if (cards) cards.style.display = block.classList.contains('collapsed') ? 'none' : '';
+      }
+      return;
+    }
+
+    if (btn.classList.contains('btn-call')) {
+      const p = (btn.dataset.phone || '').replace(/\D/g, '');
+      if (p) window.open(`tel:+${p}`);
+    } else if (btn.classList.contains('btn-wa')) {
+      const p = (btn.dataset.phone || '').replace(/\D/g, '');
+      if (p) window.open(`https://wa.me/${p}`, '_blank');
+    } else if (btn.classList.contains('btn-edit')) {
+      openBotiEditModal(btn.dataset.leadId);
+    } else if (btn.classList.contains('btn-schedule')) {
+      openToiScheduleModal(btn.dataset.leadId);
+    } else if (btn.classList.contains('btn-met')) {
+      openToiOutcomeModal(btn.dataset.meetingId, 'met');
+    } else if (btn.classList.contains('btn-noshow')) {
+      markToiMeetingOutcome(btn.dataset.meetingId, 'no_show');
+    } else if (btn.classList.contains('btn-log')) {
+      openToiOutcomeModal(btn.dataset.meetingId, 'met');
+    }
+  });
+}
+
+// ---- Status dropdown live toggle in edit modal ----
+function toiBindEditModalExtras() {
+  const statusSel = document.getElementById('edit-status');
+  if (statusSel && statusSel.dataset.bound !== '1') {
+    statusSel.dataset.bound = '1';
+    statusSel.addEventListener('change', () => {
+      document.getElementById('edit-contacted-section').style.display = statusSel.value === 'contacted' ? '' : 'none';
+    });
+  }
+  document.querySelectorAll('#edit-language-pills .lang-pill').forEach(p => {
+    if (p.dataset.bound === '1') return;
+    p.dataset.bound = '1';
+    p.addEventListener('click', () => {
+      const wasActive = p.classList.contains('active');
+      document.querySelectorAll('#edit-language-pills .lang-pill').forEach(x => x.classList.remove('active'));
+      if (!wasActive) p.classList.add('active');
+    });
+  });
+  document.querySelectorAll('#edit-check-hours-pills .hours-pill').forEach(p => {
+    if (p.dataset.bound === '1') return;
+    p.dataset.bound = '1';
+    p.addEventListener('click', () => {
+      document.querySelectorAll('#edit-check-hours-pills .hours-pill').forEach(x => x.classList.remove('active'));
+      p.classList.add('active');
+    });
+  });
+}
+
+// ---- Schedule modal ----
+function openToiScheduleModal(leadId) {
+  const lead = botiLoad().find(l => l.id === leadId);
+  if (!lead) return;
+  document.getElementById('toi-s-lead-id').value = leadId;
+  document.getElementById('toi-s-lead-name').textContent = `${lead.name || 'ללא שם'} · ${lead.phone || ''}`;
+  document.getElementById('toi-s-date').value = toiTodayISO();
+  document.getElementById('toi-s-time').value = '';
+  document.getElementById('toi-s-location').value = '';
+  document.getElementById('toi-s-project').value = lead.interest || '';
+  document.getElementById('toi-s-notes').value = '';
+  document.getElementById('toi-schedule-modal').classList.remove('hidden');
+}
+function hideToiScheduleModal() { document.getElementById('toi-schedule-modal').classList.add('hidden'); }
+
+function submitToiSchedule(e) {
+  e.preventDefault();
+  const leadId = document.getElementById('toi-s-lead-id').value;
+  const leads = botiLoad();
+  const lead = leads.find(l => l.id === leadId);
+  if (!lead) { hideToiScheduleModal(); return; }
+  const meeting = {
+    id: 'meet_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7),
+    leadId,
+    leadName: lead.name || '',
+    phone: lead.phone || '',
+    date: document.getElementById('toi-s-date').value,
+    time: document.getElementById('toi-s-time').value,
+    location: document.getElementById('toi-s-location').value.trim(),
+    project: document.getElementById('toi-s-project').value,
+    notes: document.getElementById('toi-s-notes').value.trim(),
+    outcome: null,
+    createdAt: new Date().toISOString(),
+  };
+  const meetings = toiMeetingsLoad();
+  meetings.push(meeting);
+  toiMeetingsSave(meetings);
+  lead.needs_meeting = true;
+  botiSave(leads);
+  hideToiScheduleModal();
+  renderTodayOnIsland();
+  showToast('פגישה נקבעה ✓');
+}
+
+// ---- Outcome modal ----
+function openToiOutcomeModal(meetingId, outcome) {
+  const meetings = toiMeetingsLoad();
+  const m = meetings.find(x => x.id === meetingId);
+  if (!m) return;
+  document.getElementById('toi-o-meeting-id').value = meetingId;
+  document.getElementById('toi-o-outcome').value = outcome;
+  document.getElementById('toi-o-lead-name').textContent = `${m.leadName || 'ללא שם'} · ${m.phone || ''}`;
+  document.getElementById('toi-o-notes').value = '';
+  document.getElementById('toi-o-title').innerHTML = outcome === 'met'
+    ? '<span class="material-symbols-outlined">check_circle</span> נפגשנו — סיכום'
+    : '<span class="material-symbols-outlined">cancel</span> לא הגיע — פולואפ';
+  document.getElementById('toi-outcome-modal').classList.remove('hidden');
+}
+function hideToiOutcomeModal() { document.getElementById('toi-outcome-modal').classList.add('hidden'); }
+
+function submitToiOutcome(e) {
+  e.preventDefault();
+  const meetingId = document.getElementById('toi-o-meeting-id').value;
+  const outcome = document.getElementById('toi-o-outcome').value;
+  const notes = document.getElementById('toi-o-notes').value.trim();
+  markToiMeetingOutcome(meetingId, outcome, notes);
+  hideToiOutcomeModal();
+}
+
+function markToiMeetingOutcome(meetingId, outcome, notes) {
+  const meetings = toiMeetingsLoad();
+  const m = meetings.find(x => x.id === meetingId);
+  if (!m) return;
+  m.outcome = outcome;
+  m.outcomeNotes = notes || m.outcomeNotes || '';
+  m.outcomeAt = new Date().toISOString();
+  toiMeetingsSave(meetings);
+
+  const leads = botiLoad();
+  const lead = leads.find(l => l.id === m.leadId) || leads.find(l => normalizePhone(l.phone) === normalizePhone(m.phone));
+  if (lead) {
+    if (outcome === 'met') {
+      lead.status = 'met';
+      lead.needs_meeting = false;
+    } else if (outcome === 'no_show') {
+      const tomorrow = toiAddDays(toiTodayISO(), 1);
+      lead.next_check_at = new Date(tomorrow + 'T10:00:00').toISOString();
+      lead.status = 'contacted';
+      lead.contacted_at = new Date().toISOString();
+      lead.next_check_hours = 24;
+    }
+    botiSave(leads);
+  }
+  renderTodayOnIsland();
+  showToast(outcome === 'met' ? 'נשמר ✓' : 'נוצר פולואפ למחר');
+}
+
 // ============ INIT ============
 (async function init() {
   // Read URL hash for initial page
-  const validPages = ['pipeline', 'closings', 'campaigns', 'projects', 'reports', 'boti'];
+  const validPages = ['today', 'pipeline', 'closings', 'campaigns', 'projects', 'reports', 'boti'];
   const hash = window.location.hash.replace('#', '');
-  const startPage = validPages.includes(hash) ? hash : 'pipeline';
+  const startPage = validPages.includes(hash) ? hash : 'today';
 
-  if (startPage !== 'pipeline') {
+  currentPage = startPage;
+  if (startPage !== 'today') {
     showPage(startPage);
+  } else {
+    renderTodayOnIsland();
+    toiBindActions();
+    toiBindEditModalExtras();
   }
   await loadPageData(startPage);
   startAutoRefresh();
