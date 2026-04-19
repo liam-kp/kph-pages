@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+
+<html class="dark" dir="rtl" lang="he"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>KPH Sales OS - Campaigns</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@100;300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-fixed-variant": "#574500",
+                    "secondary-fixed-dim": "#e9c349",
+                    "error-container": "#93000a",
+                    "primary-fixed-dim": "#74daae",
+                    "on-tertiary-fixed-variant": "#653e00",
+                    "inverse-on-surface": "#2d3137",
+                    "surface-container-lowest": "#0a0e14",
+                    "on-error-container": "#ffdad6",
+                    "on-surface-variant": "#bdcac1",
+                    "on-primary": "#003826",
+                    "surface-dim": "#10141a",
+                    "on-primary-fixed": "#002115",
+                    "tertiary-container": "#c98100",
+                    "outline-variant": "#3e4943",
+                    "on-error": "#690005",
+                    "surface": "#10141a",
+                    "primary-fixed": "#90f6c9",
+                    "tertiary-fixed": "#ffddb7",
+                    "primary": "#74daae",
+                    "tertiary-fixed-dim": "#ffb95d",
+                    "tertiary": "#ffb95d",
+                    "error": "#ffb4ab",
+                    "secondary-container": "#af8d11",
+                    "primary-container": "#39a27a",
+                    "on-background": "#dfe2eb",
+                    "on-tertiary-fixed": "#2a1700",
+                    "surface-tint": "#74daae",
+                    "on-secondary": "#3c2f00",
+                    "on-tertiary": "#462a00",
+                    "surface-container-highest": "#31353c",
+                    "on-surface": "#dfe2eb",
+                    "on-primary-container": "#003120",
+                    "inverse-primary": "#006c4c",
+                    "outline": "#87948c",
+                    "surface-container": "#1c2026",
+                    "surface-container-high": "#262a31",
+                    "secondary-fixed": "#ffe088",
+                    "background": "#10141a",
+                    "surface-variant": "#31353c",
+                    "on-tertiary-container": "#3d2400",
+                    "on-secondary-fixed": "#241a00",
+                    "on-primary-fixed-variant": "#005139",
+                    "surface-bright": "#353940",
+                    "surface-container-low": "#181c22",
+                    "on-secondary-container": "#342800",
+                    "inverse-surface": "#dfe2eb",
+                    "secondary": "#e9c349"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0px",
+                    "lg": "0px",
+                    "xl": "0px",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Be Vietnam Pro"],
+                    "body": ["Be Vietnam Pro"],
+                    "label": ["Be Vietnam Pro"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Be Vietnam Pro', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .ghost-border {
+            outline: 0.5px solid rgba(135, 148, 140, 0.2);
+        }
+        .detail-panel {
+            box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface antialiased overflow-hidden h-screen flex flex-row-reverse">
+<!-- Right Sidebar Navigation (Shared Component Logic) -->
+<aside class="flex flex-col h-full sticky top-0 right-0 w-64 bg-[#0a0e14] border-l-[0.5px] border-[#3d4943] z-50 font-['Be_Vietnam_Pro'] text-right">
+<div class="p-6">
+<h1 class="text-lg font-black text-[#68dbae] tracking-tight">KPH Sales OS</h1>
+<p class="text-xs text-on-surface-variant mt-1">ניהול מכירות נדל"ן</p>
+</div>
+<nav class="flex-1 mt-4 px-3 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 text-[#bccac1] hover:bg-[#181c22] transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined text-xl">dashboard</span>
+<span class="text-sm font-medium">לוח בקרה</span>
+</a>
+<!-- Active Tab: Campaigns/Leads Context -->
+<a class="flex items-center gap-3 px-4 py-3 bg-[#1c2026] text-[#68dbae] border-r-4 border-[#68dbae] transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined text-xl">group</span>
+<span class="text-sm font-bold">לידים</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#bccac1] hover:bg-[#181c22] transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined text-xl">location_city</span>
+<span class="text-sm font-medium">נכסים</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#bccac1] hover:bg-[#181c22] transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined text-xl">insert_chart</span>
+<span class="text-sm font-medium">דוחות</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#bccac1] hover:bg-[#181c22] transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined text-xl">settings</span>
+<span class="text-sm font-medium">הגדרות</span>
+</a>
+</nav>
+<div class="p-4 border-t-[0.5px] border-[#3d4943] bg-[#0a0e14]">
+<div class="flex items-center gap-3">
+<div class="flex-1">
+<p class="text-sm font-bold text-on-surface">אלכס גולדמן</p>
+<p class="text-[10px] text-on-surface-variant">מנהל מכירות בכיר</p>
+</div>
+<div class="w-10 h-10 bg-surface-container-high overflow-hidden ghost-border">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="close-up portrait of a professional man in a dark studio setting with cinematic lighting and soft focus background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC1EwKQ1s6fPtV6d3arYsbT_od3roaAXhIBDJHikC1mOTvqEUynrjNjMACq6ut3LpJ2X_9jb0cb3bvLqyTufKTnt2wSvM1XhhbMXyLnMbQrlx_UjBiG3gm_ds37bBZyCVmh8Q1TbD7lVlq1hDXUaJVtc0KzRiXpk0rvI0XYHzhZ2A4XbGsjOFWxZpgMlpdK6RxlXX_eLD3ehBoOdZOHCqgdRClovl4UUCfotB8xi3CicuzhXtEaJm6oNmNRp4gcr5G6vLDm0S17N-E"/>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 flex flex-col overflow-hidden">
+<!-- Top Navigation Bar -->
+<header class="flex flex-row-reverse justify-between items-center w-full px-8 h-16 bg-[#10141a] border-b-[0.5px] border-[#3d4943] z-40 font-['Be_Vietnam_Pro'] text-right">
+<div class="flex flex-row-reverse items-center gap-8">
+<div class="flex flex-row-reverse gap-6">
+<a class="text-[#68dbae] border-b-2 border-[#68dbae] pb-1 font-bold text-sm" href="#">קמפיינים</a>
+<a class="text-[#bccac1] hover:text-white transition-colors text-sm" href="#">פייפליין</a>
+<a class="text-[#bccac1] hover:text-white transition-colors text-sm" href="#">סגירות</a>
+</div>
+</div>
+<div class="flex flex-row-reverse items-center gap-4">
+<button class="bg-[#74daae] text-[#003826] px-4 py-1.5 font-bold text-sm hover:brightness-110 active:scale-95 transition-all transition-transform">
+                    + קמפיין חדש
+                </button>
+<div class="h-8 w-8 flex items-center justify-center text-[#bccac1] hover:bg-[#1c2026] transition-all">
+<span class="material-symbols-outlined">notifications</span>
+</div>
+</div>
+</header>
+<!-- Dynamic View: Campaigns Grid -->
+<section class="flex-1 overflow-y-auto p-8 bg-surface">
+<div class="max-w-6xl mr-0">
+<div class="flex justify-between items-end mb-10">
+<div>
+<h2 class="text-3xl font-bold tracking-tight text-on-surface">ניהול קמפיינים פעילים</h2>
+<p class="text-on-surface-variant text-sm mt-2">מעקב ושידור הודעות לקהלי יעד ממוקדים</p>
+</div>
+<div class="flex gap-4">
+<div class="flex items-center gap-2 bg-surface-container px-4 py-2 ghost-border">
+<span class="material-symbols-outlined text-primary text-sm">filter_alt</span>
+<span class="text-xs font-bold text-on-surface-variant">סינון לפי סטטוס</span>
+</div>
+</div>
+</div>
+<!-- Bento-style Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Card 1: Beachfront Villas -->
+<div class="bg-surface-container p-6 ghost-border relative group transition-all hover:bg-surface-container-high">
+<div class="absolute top-0 right-0 w-1 h-full bg-primary opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="flex justify-between items-start mb-6">
+<span class="text-[10px] font-bold tracking-widest uppercase text-primary border border-primary/30 px-2 py-0.5">ACTIVE</span>
+<span class="material-symbols-outlined text-on-surface-variant">more_vert</span>
+</div>
+<h3 class="text-xl font-bold text-secondary mb-1">Beachfront Villas</h3>
+<p class="text-xs text-on-surface-variant mb-6">Phuket High-End Cluster</p>
+<div class="space-y-4">
+<div class="flex justify-between items-end">
+<span class="text-xs text-on-surface-variant">לידים רשומים</span>
+<span class="text-2xl font-bold text-primary tracking-tighter">842</span>
+</div>
+<div class="h-[1px] bg-outline-variant/30 w-full"></div>
+<div class="flex justify-between">
+<span class="text-[11px] text-on-surface-variant">שידור אחרון</span>
+<span class="text-[11px] text-on-surface font-mono">14.05.24 | 09:30</span>
+</div>
+</div>
+<button class="w-full mt-6 py-3 border border-secondary/50 text-secondary text-xs font-bold hover:bg-secondary hover:text-surface transition-all">
+                            שידור להודעה חדשה
+                        </button>
+</div>
+<!-- Card 2: Maduwan Zenith -->
+<div class="bg-surface-container p-6 ghost-border relative group transition-all hover:bg-surface-container-high border-r-4 border-primary">
+<div class="flex justify-between items-start mb-6">
+<span class="text-[10px] font-bold tracking-widest uppercase text-primary border border-primary px-2 py-0.5">ACTIVE</span>
+<span class="material-symbols-outlined text-on-surface-variant">more_vert</span>
+</div>
+<h3 class="text-xl font-bold text-secondary mb-1">Maduwan Zenith</h3>
+<p class="text-xs text-on-surface-variant mb-6">Exclusive Hillside Plots</p>
+<div class="space-y-4">
+<div class="flex justify-between items-end">
+<span class="text-xs text-on-surface-variant">לידים רשומים</span>
+<span class="text-2xl font-bold text-primary tracking-tighter">1,204</span>
+</div>
+<div class="h-[1px] bg-outline-variant/30 w-full"></div>
+<div class="flex justify-between">
+<span class="text-[11px] text-on-surface-variant">שידור אחרון</span>
+<span class="text-[11px] text-on-surface font-mono">אתמול | 18:22</span>
+</div>
+</div>
+<button class="w-full mt-6 py-3 bg-secondary text-surface text-xs font-bold hover:brightness-110 transition-all">
+                            השידור פתוח (עריכה)
+                        </button>
+</div>
+<!-- Card 3: Srithanu Villas -->
+<div class="bg-surface-container p-6 ghost-border opacity-70 group transition-all hover:opacity-100 hover:bg-surface-container-high">
+<div class="flex justify-between items-start mb-6">
+<span class="text-[10px] font-bold tracking-widest uppercase text-error border border-error/30 px-2 py-0.5">PAUSED</span>
+<span class="material-symbols-outlined text-on-surface-variant">more_vert</span>
+</div>
+<h3 class="text-xl font-bold text-secondary mb-1">Srithanu Villas</h3>
+<p class="text-xs text-on-surface-variant mb-6">Sunset Bay Development</p>
+<div class="space-y-4">
+<div class="flex justify-between items-end">
+<span class="text-xs text-on-surface-variant">לידים רשומים</span>
+<span class="text-2xl font-bold text-on-surface-variant tracking-tighter">450</span>
+</div>
+<div class="h-[1px] bg-outline-variant/30 w-full"></div>
+<div class="flex justify-between">
+<span class="text-[11px] text-on-surface-variant">שידור אחרון</span>
+<span class="text-[11px] text-on-surface font-mono">02.05.24 | 11:00</span>
+</div>
+</div>
+<button class="w-full mt-6 py-3 border border-outline-variant text-on-surface-variant text-xs font-bold hover:text-on-surface transition-all">
+                            הפעל קמפיין מחדש
+                        </button>
+</div>
+</div>
+<!-- Background Abstract Map Decorative Element -->
+<div class="mt-12 h-64 bg-surface-container-low ghost-border overflow-hidden relative">
+<img class="w-full h-full object-cover opacity-20 grayscale" data-alt="abstract minimalist architectural blueprint map of a resort complex with dark obsidian and emerald lines in high contrast" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCMF9tvQXJQuqp078Dgi3-4W15hH7P93dXSUarsXj_KJp7_WDli3X-TWe_C7sC019Je_IST0OFJrb0LS-LL97lPt4l0s06fAevi85avJ6xruNIpjZgjHANjcgoiAzAtM9tOTUTVnXDr8x03tvpzulMj3gP8KQ1HnF432CZOVE8W_CVVHYKBB_IzkU2U8J9uudg-Rs-qIzFWlasozdQsYKKowPoySLbSxrszrwZmIFrB94GzMOlKQppTll8NBD-T1GYmsUR-FL6aOw4"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface to-transparent"></div>
+<div class="absolute bottom-6 right-6">
+<span class="text-[10px] tracking-[0.2em] text-on-surface-variant font-bold uppercase">System Analytics Ledger — Updated Live</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Broadcast Detail Panel (Left-side Sliding Panel) -->
+<aside class="w-[450px] bg-surface-bright detail-panel border-r-[0.5px] border-outline-variant flex flex-col h-full z-[60] overflow-y-auto">
+<div class="p-8">
+<div class="flex justify-between items-center mb-8">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-white transition-colors">close</button>
+<div class="text-right">
+<h2 class="text-xl font-bold text-on-surface">שידור קמפיין</h2>
+<p class="text-xs text-secondary tracking-widest font-bold">Maduwan Zenith</p>
+</div>
+</div>
+<!-- Audience Filter -->
+<div class="mb-10">
+<label class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest block mb-4">סינון קהל יעד</label>
+<div class="grid grid-cols-2 gap-2">
+<div class="bg-surface-container p-3 ghost-border border-r-2 border-primary">
+<div class="flex justify-between items-center">
+<span class="text-xs font-bold text-on-surface">הכל</span>
+<span class="text-sm font-bold text-primary">47</span>
+</div>
+</div>
+<div class="bg-surface-container p-3 ghost-border hover:bg-surface-container-high transition-colors">
+<div class="flex justify-between items-center">
+<span class="text-xs font-medium text-on-surface-variant">חמים בלבד</span>
+<span class="text-sm font-bold text-on-surface">15</span>
+</div>
+</div>
+<div class="bg-surface-container p-3 ghost-border hover:bg-surface-container-high transition-colors">
+<div class="flex justify-between items-center">
+<span class="text-xs font-medium text-on-surface-variant">באי (ROI)</span>
+<span class="text-sm font-bold text-on-surface">8</span>
+</div>
+</div>
+<div class="bg-surface-container p-3 ghost-border hover:bg-surface-container-high transition-colors">
+<div class="flex justify-between items-center">
+<span class="text-xs font-medium text-on-surface-variant">ללא קשר 7+ ימים</span>
+<span class="text-sm font-bold text-error">12</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Message Composer -->
+<div class="mb-8">
+<div class="flex flex-row-reverse border-b border-outline-variant mb-4">
+<button class="px-4 py-2 text-xs font-bold text-secondary border-b-2 border-secondary">גרסה א</button>
+<button class="px-4 py-2 text-xs font-medium text-on-surface-variant hover:text-on-surface transition-colors">גרסה ב</button>
+<button class="px-4 py-2 text-xs font-medium text-on-surface-variant hover:text-on-surface transition-colors">גרסה ג</button>
+</div>
+<div class="relative">
+<textarea class="w-full bg-surface-container border-0 focus:ring-1 focus:ring-secondary text-sm p-4 h-48 text-right leading-relaxed placeholder:text-on-surface-variant/50" placeholder="הקלד כאן את תוכן ההודעה..."></textarea>
+<div class="absolute bottom-3 left-3 flex gap-2">
+<span class="material-symbols-outlined text-on-surface-variant text-sm hover:text-primary transition-colors cursor-pointer">emoji_emotions</span>
+<span class="material-symbols-outlined text-on-surface-variant text-sm hover:text-primary transition-colors cursor-pointer">attach_file</span>
+</div>
+</div>
+<div class="mt-2 flex justify-between items-center">
+<p class="text-[10px] text-on-surface-variant italic">המערכת מחלקת אוטומטית בין הגרסאות לאופטימיזציה</p>
+<span class="text-[10px] text-on-surface-variant font-mono">142/500</span>
+</div>
+</div>
+<!-- Anti-Spam Notice -->
+<div class="bg-surface-container-high p-4 mb-8 flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary text-lg">info</span>
+<p class="text-[11px] leading-snug text-on-surface-variant">
+<strong class="text-on-surface block mb-1">אזהרת אנטי-ספאם</strong>
+                    השידורים מתבצעים במרווחים של 45-90 שניות למניעת חסימות. מומלץ להוסיף משתנה שם אישי.
+                </p>
+</div>
+<!-- Actions -->
+<div class="grid grid-cols-2 gap-4 mt-auto">
+<button class="py-4 border border-outline-variant text-on-surface font-bold text-sm hover:bg-surface-container transition-colors">תצוגה מקדימה</button>
+<button class="py-4 bg-primary text-on-primary font-bold text-sm hover:brightness-110 active:scale-[0.98] transition-all">שלח שידור (47)</button>
+</div>
+</div>
+</aside>
+</body></html>

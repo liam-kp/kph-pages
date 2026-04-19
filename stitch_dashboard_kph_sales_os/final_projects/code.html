@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+
+<html class="dark" dir="rtl" lang="he"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>KPH Sales OS - פרויקטים</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@100;300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed-variant": "#574500",
+                        "secondary-fixed-dim": "#e9c349",
+                        "error-container": "#93000a",
+                        "primary-fixed-dim": "#74daae",
+                        "on-tertiary-fixed-variant": "#653e00",
+                        "inverse-on-surface": "#2d3137",
+                        "surface-container-lowest": "#0a0e14",
+                        "on-error-container": "#ffdad6",
+                        "on-surface-variant": "#bdcac1",
+                        "on-primary": "#003826",
+                        "surface-dim": "#10141a",
+                        "on-primary-fixed": "#002115",
+                        "tertiary-container": "#c98100",
+                        "outline-variant": "#3e4943",
+                        "on-error": "#690005",
+                        "surface": "#10141a",
+                        "primary-fixed": "#90f6c9",
+                        "tertiary-fixed": "#ffddb7",
+                        "primary": "#74daae",
+                        "tertiary-fixed-dim": "#ffb95d",
+                        "tertiary": "#ffb95d",
+                        "error": "#ffb4ab",
+                        "secondary-container": "#af8d11",
+                        "primary-container": "#39a27a",
+                        "on-background": "#dfe2eb",
+                        "on-tertiary-fixed": "#2a1700",
+                        "surface-tint": "#74daae",
+                        "on-secondary": "#3c2f00",
+                        "on-tertiary": "#462a00",
+                        "surface-container-highest": "#31353c",
+                        "on-surface": "#dfe2eb",
+                        "on-primary-container": "#003120",
+                        "inverse-primary": "#006c4c",
+                        "outline": "#87948c",
+                        "surface-container": "#1c2026",
+                        "surface-container-high": "#262a31",
+                        "secondary-fixed": "#ffe088",
+                        "background": "#10141a",
+                        "surface-variant": "#31353c",
+                        "on-tertiary-container": "#3d2400",
+                        "on-secondary-fixed": "#241a00",
+                        "on-primary-fixed-variant": "#005139",
+                        "surface-bright": "#353940",
+                        "surface-container-low": "#181c22",
+                        "on-secondary-container": "#342800",
+                        "inverse-surface": "#dfe2eb",
+                        "secondary": "#e9c349"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0px",
+                        "lg": "0px",
+                        "xl": "0px",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Be Vietnam Pro"],
+                        "body": ["Be Vietnam Pro"],
+                        "label": ["Be Vietnam Pro"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Be Vietnam Pro', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: #10141a; }
+        ::-webkit-scrollbar-thumb { background: #3e4943; }
+        .glass-sidebar { backdrop-filter: blur(12px); background-color: rgba(10, 14, 20, 0.8); }
+        .ghost-border { outline: 0.5px solid rgba(62, 73, 67, 0.4); }
+    </style>
+</head>
+<body class="bg-surface text-on-surface overflow-hidden h-screen flex flex-row-reverse">
+<!-- TopNavBar (Horizontal Anchor for Identity) -->
+<header class="bg-[#10141a] text-right antialiased border-b-[0.5px] border-[#3d4943] docked full-width top-0 z-50 fixed w-full h-16 flex flex-row-reverse justify-between items-center px-6">
+<div class="text-xl font-bold text-white flex items-center gap-2 after:content-[''] after:w-2 after:h-2 after:bg-[#68dbae] after:rounded-full">
+            KPH Sales OS
+        </div>
+<div class="flex items-center gap-6">
+<nav class="hidden md:flex gap-8 items-center h-full">
+<a class="text-[#bccac1] hover:text-white transition-colors" href="#">פייפליין</a>
+<a class="text-[#bccac1] hover:text-white transition-colors" href="#">סגירות</a>
+<a class="text-[#68dbae] border-b-2 border-[#68dbae] pb-1 font-bold" href="#">פרויקטים</a>
+</nav>
+<div class="flex items-center gap-3">
+<button class="bg-[#39a27a] text-[#003120] px-4 py-2 font-bold hover:bg-[#74daae] transition-all active:scale-95 text-sm">+ ליד חדש</button>
+<div class="w-8 h-8 rounded-full bg-surface-container-high border-[0.5px] border-outline-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-sm">notifications</span>
+</div>
+</div>
+</div>
+</header>
+<!-- SideNavBar (Right Side - Main Nav) -->
+<aside class="bg-[#0a0e14] font-['Be_Vietnam_Pro'] text-right docked fixed right-0 h-full w-64 border-l-[0.5px] border-[#3d4943] pt-20 z-40 flex flex-col h-full sticky top-0 right-0">
+<div class="px-6 mb-8">
+<h2 class="text-lg font-black text-[#68dbae]">KPH Sales OS</h2>
+<p class="text-xs text-on-surface-variant">ניהול מכירות נדל"ן</p>
+</div>
+<nav class="flex flex-col flex-1">
+<a class="flex items-center gap-3 px-6 py-4 text-[#bccac1] hover:bg-[#181c22] transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span>לוח בקרה</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-4 text-[#bccac1] hover:bg-[#181c22] transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span>לידים</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-4 text-[#bccac1] hover:bg-[#181c22] transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="location_city">location_city</span>
+<span>נכסים</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-4 bg-[#1c2026] text-[#68dbae] border-r-4 border-[#68dbae] transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="insert_chart">insert_chart</span>
+<span>פרויקטים</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-4 text-[#bccac1] hover:bg-[#181c22] transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span>הגדרות</span>
+</a>
+</nav>
+<div class="p-6 border-t-[0.5px] border-outline-variant flex items-center gap-3">
+<div class="w-10 h-10 bg-secondary flex items-center justify-center text-on-secondary font-bold">AK</div>
+<div class="flex flex-col">
+<span class="text-sm font-bold">איתי קליין</span>
+<span class="text-[10px] text-on-surface-variant uppercase tracking-widest">מנהל פרויקטים</span>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 pr-64 pl-[400px] pt-20 h-screen overflow-y-auto bg-surface">
+<div class="p-8 max-w-6xl mx-auto">
+<!-- Filter Bar -->
+<div class="mb-10">
+<div class="flex items-center justify-between mb-6">
+<h1 class="text-3xl font-bold tracking-tight">פרויקטים</h1>
+<span class="text-sm text-primary font-mono tracking-widest">12 פרויקטים נמצאו</span>
+</div>
+<div class="flex flex-wrap gap-2">
+<button class="bg-surface-container-high ghost-border px-4 py-2 text-xs font-medium flex items-center gap-2 hover:bg-surface-bright">
+<span>אזור: הכל</span>
+<span class="material-symbols-outlined text-[16px]">expand_more</span>
+</button>
+<button class="bg-surface-container-high ghost-border px-4 py-2 text-xs font-medium flex items-center gap-2 hover:bg-surface-bright">
+<span>טווח מחירים</span>
+<span class="material-symbols-outlined text-[16px]">payments</span>
+</button>
+<button class="bg-surface-container-high ghost-border px-4 py-2 text-xs font-medium flex items-center gap-2 hover:bg-surface-bright">
+<span>סטטוס</span>
+<span class="material-symbols-outlined text-[16px]">bolt</span>
+</button>
+<button class="bg-surface-container-high ghost-border px-4 py-2 text-xs font-medium flex items-center gap-2 hover:bg-surface-bright">
+<span>בעלות</span>
+</button>
+<button class="bg-surface-container-high ghost-border px-4 py-2 text-xs font-medium flex items-center gap-2 hover:bg-surface-bright">
+<span>סוג נכס</span>
+</button>
+<button class="bg-primary text-on-primary px-4 py-2 text-xs font-bold">
+<span>Sea View</span>
+</button>
+<button class="bg-surface-container-high ghost-border px-4 py-2 text-xs font-medium flex items-center gap-2 hover:bg-surface-bright">
+<span>חדרי שינה</span>
+</button>
+<button class="text-error text-xs font-bold px-2 hover:underline">נקה הכל</button>
+</div>
+</div>
+<!-- Active Campaigns Section -->
+<section class="mb-12">
+<div class="flex items-center gap-4 mb-6">
+<div class="h-[1px] flex-1 bg-outline-variant"></div>
+<h2 class="text-sm font-bold tracking-[0.2em] text-on-surface-variant uppercase">קמפיינים פעילים</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Card 1 -->
+<div class="bg-surface-container ghost-border p-6 group cursor-pointer hover:bg-surface-container-high transition-colors">
+<div class="flex justify-between items-start mb-4">
+<div>
+<span class="bg-primary/10 text-primary text-[10px] font-bold px-2 py-1 mb-2 inline-block tracking-tighter">CAMPAIGN ACTIVE</span>
+<h3 class="text-xl font-bold text-secondary">Beachfront Villas</h3>
+<p class="text-xs text-on-surface-variant">Srithanu, Koh Phangan</p>
+</div>
+<div class="text-right">
+<p class="text-lg font-bold text-primary font-mono">$1,200,000</p>
+<p class="text-[10px] text-on-surface-variant">החל מ-</p>
+</div>
+</div>
+<div class="mt-8">
+<div class="flex justify-between text-[10px] font-bold mb-2 uppercase">
+<span>התקדמות שלבים</span>
+<span class="text-primary">6 / 8</span>
+</div>
+<div class="h-[2px] w-full bg-surface-container-highest">
+<div class="h-full bg-primary" style="width: 75%;"></div>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container ghost-border p-6 group cursor-pointer hover:bg-surface-container-high transition-colors">
+<div class="flex justify-between items-start mb-4">
+<div>
+<span class="bg-primary/10 text-primary text-[10px] font-bold px-2 py-1 mb-2 inline-block tracking-tighter">CAMPAIGN ACTIVE</span>
+<h3 class="text-xl font-bold text-secondary">Maduwan Zenith</h3>
+<p class="text-xs text-on-surface-variant">Maduwan Heights</p>
+</div>
+<div class="text-right">
+<p class="text-lg font-bold text-primary font-mono">$850,000</p>
+<p class="text-[10px] text-on-surface-variant">החל מ-</p>
+</div>
+</div>
+<div class="mt-8">
+<div class="flex justify-between text-[10px] font-bold mb-2 uppercase">
+<span>התקדמות שלבים</span>
+<span class="text-primary">3 / 8</span>
+</div>
+<div class="h-[2px] w-full bg-surface-container-highest">
+<div class="h-full bg-primary" style="width: 37.5%;"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Catalog Only Section -->
+<section class="mb-12">
+<div class="flex items-center gap-4 mb-6">
+<div class="h-[1px] flex-1 bg-outline-variant"></div>
+<h2 class="text-sm font-bold tracking-[0.2em] text-on-surface-variant uppercase">קטלוג בלבד</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 opacity-80">
+<!-- Card 3 -->
+<div class="bg-surface-container-low ghost-border p-6 border-r-4 border-surface-bright">
+<div class="flex justify-between items-start mb-4">
+<div>
+<span class="bg-surface-bright text-on-surface text-[10px] font-bold px-2 py-1 mb-2 inline-block tracking-tighter">CATALOG</span>
+<h3 class="text-lg font-bold text-secondary-fixed-dim">Srithanu Villas</h3>
+<p class="text-xs text-on-surface-variant">Srithanu Village</p>
+</div>
+<div class="text-right">
+<p class="text-md font-bold text-on-surface-variant font-mono">$450k</p>
+</div>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="bg-surface-container-low ghost-border p-6 border-r-4 border-surface-bright">
+<div class="flex justify-between items-start mb-4">
+<div>
+<span class="bg-surface-bright text-on-surface text-[10px] font-bold px-2 py-1 mb-2 inline-block tracking-tighter">CATALOG</span>
+<h3 class="text-lg font-bold text-secondary-fixed-dim">Villa Nai-Wok</h3>
+<p class="text-xs text-on-surface-variant">Nai Wok Beach Area</p>
+</div>
+<div class="text-right">
+<p class="text-md font-bold text-on-surface-variant font-mono">$620k</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Radar Table -->
+<section>
+<div class="flex items-center justify-between mb-6">
+<div class="flex items-center gap-4 flex-1">
+<div class="h-[1px] flex-1 bg-outline-variant"></div>
+<h2 class="text-sm font-bold tracking-[0.2em] text-on-surface-variant uppercase">רדאר פיתוח</h2>
+</div>
+</div>
+<div class="bg-surface-container-low overflow-hidden">
+<table class="w-full text-right text-xs">
+<thead>
+<tr class="bg-surface-container-high text-on-surface-variant uppercase tracking-tighter font-bold">
+<th class="px-6 py-4">שם יזם וטלפון</th>
+<th class="px-6 py-4">נכס / פרויקט</th>
+<th class="px-6 py-4">מיקום</th>
+<th class="px-6 py-4">מחיר משוער</th>
+<th class="px-6 py-4">הערות</th>
+<th class="px-6 py-4 text-left">פעולות</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/30">
+<tr class="hover:bg-surface-container transition-colors">
+<td class="px-6 py-4">
+<div class="flex flex-col">
+<span class="font-bold text-on-surface">סאמי חסון</span>
+<span class="text-[10px] text-on-surface-variant font-mono">+66 82-444-1234</span>
+</div>
+</td>
+<td class="px-6 py-4 font-medium text-secondary">The Ridge View</td>
+<td class="px-6 py-4 text-on-surface-variant">Hin Kong</td>
+<td class="px-6 py-4 font-mono text-primary">$1.5M</td>
+<td class="px-6 py-4 text-on-surface-variant italic">ממתין להיתר בנייה סופי</td>
+<td class="px-6 py-4 text-left">
+<button class="bg-surface-bright px-3 py-1.5 flex items-center gap-1 hover:bg-on-surface-variant hover:text-surface transition-all">
+<span class="material-symbols-outlined text-sm">folder_open</span>
+<span class="font-bold">📁 Prepare Folder</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container transition-colors">
+<td class="px-6 py-4">
+<div class="flex flex-col">
+<span class="font-bold text-on-surface">פיליפ דופונט</span>
+<span class="text-[10px] text-on-surface-variant font-mono">+66 91-001-9988</span>
+</div>
+</td>
+<td class="px-6 py-4 font-medium text-secondary">Sky Loft 7</td>
+<td class="px-6 py-4 text-on-surface-variant">Thong Sala</td>
+<td class="px-6 py-4 font-mono text-primary">$320k</td>
+<td class="px-6 py-4 text-on-surface-variant italic">הסכם שיווק בלעדי במו"מ</td>
+<td class="px-6 py-4 text-left">
+<button class="bg-surface-bright px-3 py-1.5 flex items-center gap-1 hover:bg-on-surface-variant hover:text-surface transition-all">
+<span class="material-symbols-outlined text-sm">folder_open</span>
+<span class="font-bold">📁 Prepare Folder</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</div>
+</main>
+<!-- Project Edit Panel (Side Panel Left) -->
+<aside class="fixed left-0 top-0 h-full w-[400px] bg-surface-bright z-50 border-r-[0.5px] border-outline-variant shadow-2xl flex flex-col">
+<div class="h-16 border-b-[0.5px] border-outline-variant flex items-center justify-between px-6">
+<h3 class="text-lg font-bold flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">edit_note</span>
+                עריכת פרויקט
+            </h3>
+<button class="w-8 h-8 flex items-center justify-center hover:bg-surface-container-highest transition-colors">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<div class="flex-1 overflow-y-auto p-6 space-y-8">
+<!-- Basic Details -->
+<div class="space-y-4">
+<div class="flex flex-col gap-1">
+<label class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">שם הפרויקט</label>
+<input class="bg-transparent border-0 border-b-[0.5px] border-outline-variant focus:ring-0 focus:border-secondary transition-all text-secondary font-bold text-lg p-0" type="text" value="Beachfront Villas"/>
+</div>
+<div class="flex flex-col gap-1">
+<label class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Google Maps URL</label>
+<div class="flex items-center gap-2 bg-surface-container-low px-3 py-2 ghost-border">
+<span class="material-symbols-outlined text-sm text-on-surface-variant">map</span>
+<input class="bg-transparent border-0 flex-1 text-xs focus:ring-0 p-0 text-on-surface" type="text" value="https://maps.google.com/?q=..."/>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<label class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Bot Description (AI)</label>
+<textarea class="bg-surface-container-low ghost-border border-0 text-xs focus:ring-0 p-3 text-on-surface-variant leading-relaxed" rows="4">וילות יוקרה בקו הראשון לים בסרית'נו. 3 חדרי שינה, בריכת אינפיניטי פרטית, נוף מלא לשקיעה. מוכן למסירה ביוני 2024.</textarea>
+</div>
+</div>
+<!-- Internal Developer Info -->
+<div class="bg-surface-container-low p-5 space-y-4 relative">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-sm text-secondary">lock</span>
+<h4 class="text-xs font-bold text-on-surface uppercase tracking-tight">פרטי יזם (פנימי)</h4>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="flex flex-col gap-1">
+<label class="text-[9px] font-bold text-on-surface-variant">שם היזם</label>
+<input class="bg-transparent border-0 border-b-[0.5px] border-outline-variant text-[11px] p-0 focus:ring-0" type="text" value="אנוואט צ'אי"/>
+</div>
+<div class="flex flex-col gap-1">
+<label class="text-[9px] font-bold text-on-surface-variant">נייד יזם</label>
+<input class="bg-transparent border-0 border-b-[0.5px] border-outline-variant text-[11px] font-mono p-0 focus:ring-0 text-right" dir="ltr" type="text" value="+66 81-123-4567"/>
+</div>
+</div>
+</div>
+<!-- Image/Map Placeholder -->
+<div class="w-full aspect-video bg-surface-container-highest flex items-center justify-center relative">
+<img alt="Real Estate Concept" class="w-full h-full object-cover grayscale opacity-50" data-alt="luxury beachfront villa at sunset with architectural lines and soft tropical lighting, high-end real estate photography" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhx4KE1otzLQMRJX_pMCW2mNhiAzBSfwS_6eb03VhwU1RKM30EekNmdhpWL27Imayx3R8intOHtVbhmsOCRy8CQoXsVgJvpDOour3OYh-vjsULqsQSAhQs56nUIsG9Iu2AeoLIDdtVvHuwcpGLhAXapOKwV-4soPWhOeKken0Qo-YCFj1QLGlcrg9-E_UBgvDtF5xqfu3n-9wG0bldbAUp0nkqb0Jw2lQ1HpQ413353PO9PLyzzltmVtrluxzziNuSxdiFMkDyTbs"/>
+<div class="absolute inset-0 border-[0.5px] border-outline-variant"></div>
+<div class="absolute bottom-4 right-4 bg-surface px-2 py-1 text-[10px] font-bold ghost-border">PREVIEW</div>
+</div>
+</div>
+<div class="p-6 border-t-[0.5px] border-outline-variant bg-surface flex items-center justify-between">
+<button class="bg-surface-container-high text-error border-[0.5px] border-error/30 px-6 py-2 text-xs font-bold hover:bg-error hover:text-on-error transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">pause_circle</span>
+                השהה פרויקט
+            </button>
+<button class="bg-primary text-on-primary px-8 py-2 text-xs font-black uppercase tracking-widest">
+                שמור שינויים
+            </button>
+</div>
+</aside>
+</body></html>

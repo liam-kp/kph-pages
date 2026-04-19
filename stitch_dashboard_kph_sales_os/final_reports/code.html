@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+
+<html class="dark" dir="rtl" lang="he"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>KPH Sales OS - דוחות</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@100;300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-fixed-variant": "#574500",
+                    "secondary-fixed-dim": "#e9c349",
+                    "error-container": "#93000a",
+                    "primary-fixed-dim": "#74daae",
+                    "on-tertiary-fixed-variant": "#653e00",
+                    "inverse-on-surface": "#2d3137",
+                    "surface-container-lowest": "#0a0e14",
+                    "on-error-container": "#ffdad6",
+                    "on-surface-variant": "#bdcac1",
+                    "on-primary": "#003826",
+                    "surface-dim": "#10141a",
+                    "on-primary-fixed": "#002115",
+                    "tertiary-container": "#c98100",
+                    "outline-variant": "#3e4943",
+                    "on-error": "#690005",
+                    "surface": "#10141a",
+                    "primary-fixed": "#90f6c9",
+                    "tertiary-fixed": "#ffddb7",
+                    "primary": "#74daae",
+                    "tertiary-fixed-dim": "#ffb95d",
+                    "tertiary": "#ffb95d",
+                    "error": "#ffb4ab",
+                    "secondary-container": "#af8d11",
+                    "primary-container": "#39a27a",
+                    "on-background": "#dfe2eb",
+                    "on-tertiary-fixed": "#2a1700",
+                    "surface-tint": "#74daae",
+                    "on-secondary": "#3c2f00",
+                    "on-tertiary": "#462a00",
+                    "surface-container-highest": "#31353c",
+                    "on-surface": "#dfe2eb",
+                    "on-primary-container": "#003120",
+                    "inverse-primary": "#006c4c",
+                    "outline": "#87948c",
+                    "surface-container": "#1c2026",
+                    "surface-container-high": "#262a31",
+                    "secondary-fixed": "#ffe088",
+                    "background": "#10141a",
+                    "surface-variant": "#31353c",
+                    "on-tertiary-container": "#3d2400",
+                    "on-secondary-fixed": "#241a00",
+                    "on-primary-fixed-variant": "#005139",
+                    "surface-bright": "#353940",
+                    "surface-container-low": "#181c22",
+                    "on-secondary-container": "#342800",
+                    "inverse-surface": "#dfe2eb",
+                    "secondary": "#e9c349"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0px",
+                    "lg": "0px",
+                    "xl": "0px",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Be Vietnam Pro"],
+                    "body": ["Be Vietnam Pro"],
+                    "label": ["Be Vietnam Pro"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Be Vietnam Pro', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Custom Hairline */
+        .hairline-b { border-bottom: 0.5px solid rgba(62, 73, 67, 0.4); }
+        .hairline-l { border-left: 0.5px solid rgba(62, 73, 67, 0.4); }
+        .hairline-r { border-right: 0.5px solid rgba(62, 73, 67, 0.4); }
+        .hairline-all { border: 0.5px solid rgba(62, 73, 67, 0.4); }
+    </style>
+</head>
+<body class="bg-surface text-on-surface flex min-h-screen">
+<!-- SideNavBar (Authority Source: JSON) -->
+<aside class="flex flex-col h-full sticky top-0 right-0 bg-[#0a0e14] text-[#68dbae] font-['Be_Vietnam_Pro'] text-right border-l-[0.5px] border-[#3d4943] w-64 z-50">
+<div class="p-6">
+<div class="text-lg font-black text-[#68dbae] mb-1">KPH Sales OS</div>
+<div class="text-xs text-[#bdcac1] opacity-70">ניהול מכירות נדל"ן</div>
+</div>
+<nav class="flex-1 mt-4">
+<div class="flex items-center gap-4 px-6 py-4 text-[#bccac1] hover:bg-[#181c22] transition-all duration-150 ease-in-out cursor-pointer">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="text-sm font-medium">לוח בקרה</span>
+</div>
+<div class="flex items-center gap-4 px-6 py-4 text-[#bccac1] hover:bg-[#181c22] transition-all duration-150 ease-in-out cursor-pointer">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="text-sm font-medium">לידים</span>
+</div>
+<div class="flex items-center gap-4 px-6 py-4 text-[#bccac1] hover:bg-[#181c22] transition-all duration-150 ease-in-out cursor-pointer">
+<span class="material-symbols-outlined" data-icon="location_city">location_city</span>
+<span class="text-sm font-medium">נכסים</span>
+</div>
+<!-- Active State Logic applied to "דוחות" -->
+<div class="flex items-center gap-4 px-6 py-4 bg-[#1c2026] text-[#68dbae] border-r-4 border-[#68dbae] transition-all duration-150 ease-in-out cursor-pointer">
+<span class="material-symbols-outlined" data-icon="insert_chart">insert_chart</span>
+<span class="text-sm font-bold">דוחות</span>
+</div>
+<div class="flex items-center gap-4 px-6 py-4 text-[#bccac1] hover:bg-[#181c22] transition-all duration-150 ease-in-out cursor-pointer">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="text-sm font-medium">הגדרות</span>
+</div>
+</nav>
+<div class="mt-auto p-6 hairline-b border-t border-[#3d4943]/20">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-surface-container-highest hairline-all flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary">person</span>
+</div>
+<div class="flex flex-col">
+<span class="text-xs font-bold text-on-surface">איתי לוי</span>
+<span class="text-[10px] text-on-surface-variant">מנהל מכירות</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 flex flex-col min-w-0 bg-surface overflow-y-auto">
+<!-- TopAppBar (Authority Source: JSON) -->
+<header class="flex flex-row-reverse justify-between items-center w-full px-6 h-16 bg-[#10141a] font-['Be_Vietnam_Pro'] text-right antialiased border-b-[0.5px] border-[#3d4943] sticky top-0 z-40">
+<div class="flex items-center gap-8 flex-row-reverse">
+<div class="text-xl font-bold text-white flex items-center gap-2 after:content-[''] after:w-2 after:h-2 after:bg-[#68dbae] after:rounded-full">KPH Sales OS</div>
+<nav class="hidden md:flex flex-row-reverse gap-6">
+<a class="text-[#bccac1] hover:text-white transition-colors text-sm" href="#">פייפליין</a>
+<a class="text-[#bccac1] hover:text-white transition-colors text-sm" href="#">סגירות</a>
+<a class="text-[#bccac1] hover:text-white transition-colors text-sm" href="#">פרויקטים</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="bg-primary text-on-primary px-4 py-1.5 text-sm font-bold active:scale-95 transition-transform">+ ליד חדש</button>
+<button class="text-[#bccac1] hover:bg-[#1c2026] p-2 transition-all duration-200">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</div>
+</header>
+<div class="p-8 space-y-8 max-w-[1280px] mx-auto w-full">
+<!-- TOP ROW: Metrics -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+<!-- Metric 1 -->
+<div class="bg-surface-container p-5 hairline-all">
+<div class="text-[10px] uppercase tracking-wider text-on-surface-variant font-bold mb-2">Pipeline Leads</div>
+<div class="text-3xl font-bold text-primary">1,422</div>
+<div class="mt-2 flex items-center text-[10px] text-primary/70">
+<span class="material-symbols-outlined text-[12px] ml-1">trending_up</span>
+<span>+8% מהחודש שעבר</span>
+</div>
+</div>
+<!-- Metric 2 -->
+<div class="bg-surface-container p-5 hairline-all">
+<div class="text-[10px] uppercase tracking-wider text-on-surface-variant font-bold mb-2">On Island</div>
+<div class="text-3xl font-bold text-[#2dd4bf]">42</div>
+<div class="mt-2 flex items-center text-[10px] text-[#2dd4bf]/70">
+<span class="material-symbols-outlined text-[12px] ml-1">sync</span>
+<span>בטיפול פעיל כרגע</span>
+</div>
+</div>
+<!-- Metric 3 -->
+<div class="bg-surface-container p-5 hairline-all border-r-2 border-error/50">
+<div class="text-[10px] uppercase tracking-wider text-on-surface-variant font-bold mb-2">Missed Follow-ups</div>
+<div class="text-3xl font-bold text-error">8</div>
+<div class="mt-2 flex items-center text-[10px] text-error/70">
+<span class="material-symbols-outlined text-[12px] ml-1">priority_high</span>
+<span>דורש טיפול מיידי</span>
+</div>
+</div>
+<!-- Metric 4 -->
+<div class="bg-surface-container p-5 hairline-all">
+<div class="text-[10px] uppercase tracking-wider text-on-surface-variant font-bold mb-2">Conversions</div>
+<div class="text-3xl font-bold text-secondary">+12.4%</div>
+<div class="mt-2 flex items-center text-[10px] text-secondary/70">
+<span class="material-symbols-outlined text-[12px] ml-1">workspace_premium</span>
+<span>מעל ליעד הרבעוני</span>
+</div>
+</div>
+</div>
+<!-- MIDDLE ROW: Report Cards -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+<!-- Card 1 -->
+<div class="bg-surface-container hairline-all flex flex-col group">
+<div class="p-4 flex-1">
+<div class="w-10 h-10 bg-error/10 text-error flex items-center justify-center mb-4">
+<span class="material-symbols-outlined">history</span>
+</div>
+<h3 class="text-sm font-bold text-on-surface mb-1">Missed Follow-ups 48h+</h3>
+<p class="text-xs text-on-surface-variant leading-relaxed">פירוט לידים שלא קיבלו מענה מעל יומיים עבודה.</p>
+</div>
+<div class="flex border-t border-[#3d4943]/20">
+<button class="flex-1 py-3 text-[11px] font-bold text-on-surface hover:bg-surface-container-high transition-colors">PREVIEW</button>
+<button class="flex-1 py-3 text-[11px] font-bold text-primary bg-primary/5 hover:bg-primary/10 transition-colors flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-[14px]">send</span>
+                            WHATSAPP
+                        </button>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container hairline-all flex flex-col group">
+<div class="p-4 flex-1">
+<div class="w-10 h-10 bg-primary/10 text-primary flex items-center justify-center mb-4">
+<span class="material-symbols-outlined">insert_chart_outlined</span>
+</div>
+<h3 class="text-sm font-bold text-on-surface mb-1">Pipeline Snapshot</h3>
+<p class="text-xs text-on-surface-variant leading-relaxed">תמונת מצב שבועית של כל שלבי המכירה במערכת.</p>
+</div>
+<div class="flex border-t border-[#3d4943]/20">
+<button class="flex-1 py-3 text-[11px] font-bold text-on-surface hover:bg-surface-container-high transition-colors">PREVIEW</button>
+<button class="flex-1 py-3 text-[11px] font-bold text-primary bg-primary/5 hover:bg-primary/10 transition-colors flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-[14px]">send</span>
+                            WHATSAPP
+                        </button>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-container hairline-all flex flex-col group">
+<div class="p-4 flex-1">
+<div class="w-10 h-10 bg-[#2dd4bf]/10 text-[#2dd4bf] flex items-center justify-center mb-4">
+<span class="material-symbols-outlined">flight_land</span>
+</div>
+<h3 class="text-sm font-bold text-on-surface mb-1">On Island This Week</h3>
+<p class="text-xs text-on-surface-variant leading-relaxed">סיכום פעילות לידים חמים הנמצאים כרגע בביקור.</p>
+</div>
+<div class="flex border-t border-[#3d4943]/20">
+<button class="flex-1 py-3 text-[11px] font-bold text-on-surface hover:bg-surface-container-high transition-colors">PREVIEW</button>
+<button class="flex-1 py-3 text-[11px] font-bold text-primary bg-primary/5 hover:bg-primary/10 transition-colors flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-[14px]">send</span>
+                            WHATSAPP
+                        </button>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="bg-surface-container hairline-all flex flex-col group">
+<div class="p-4 flex-1">
+<div class="w-10 h-10 bg-secondary/10 text-secondary flex items-center justify-center mb-4">
+<span class="material-symbols-outlined">payments</span>
+</div>
+<h3 class="text-sm font-bold text-on-surface mb-1">This Month's Deals</h3>
+<p class="text-xs text-on-surface-variant leading-relaxed">פירוט עסקאות שנחתמו ושווי חוזים בחודש הנוכחי.</p>
+</div>
+<div class="flex border-t border-[#3d4943]/20">
+<button class="flex-1 py-3 text-[11px] font-bold text-on-surface hover:bg-surface-container-high transition-colors">PREVIEW</button>
+<button class="flex-1 py-3 text-[11px] font-bold text-primary bg-primary/5 hover:bg-primary/10 transition-colors flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-[14px]">send</span>
+                            WHATSAPP
+                        </button>
+</div>
+</div>
+</div>
+<!-- BOTTOM: Chart Section -->
+<div class="bg-surface-container hairline-all p-6">
+<div class="flex items-center justify-between mb-8">
+<div>
+<h2 class="text-lg font-bold text-on-surface">Incoming vs Converted leads</h2>
+<p class="text-xs text-on-surface-variant">ניתוח ביצועים חצי שנתי</p>
+</div>
+<div class="flex items-center gap-4 text-[10px] font-bold">
+<div class="flex items-center gap-1.5"><span class="w-2 h-2 bg-primary"></span> נכנסים</div>
+<div class="flex items-center gap-1.5"><span class="w-2 h-2 bg-primary-container"></span> המרות</div>
+</div>
+</div>
+<div class="h-48 w-full flex items-end gap-6 px-4">
+<!-- June -->
+<div class="flex-1 flex flex-col items-center gap-2 group">
+<div class="w-full flex items-end justify-center gap-1 h-full">
+<div class="w-4 bg-primary transition-all group-hover:opacity-80" style="height: 65%;"></div>
+<div class="w-4 bg-primary-container transition-all group-hover:opacity-80" style="height: 25%;"></div>
+</div>
+<span class="text-[10px] font-bold text-on-surface-variant">JUN</span>
+</div>
+<!-- July -->
+<div class="flex-1 flex flex-col items-center gap-2 group">
+<div class="w-full flex items-end justify-center gap-1 h-full">
+<div class="w-4 bg-primary transition-all group-hover:opacity-80" style="height: 85%;"></div>
+<div class="w-4 bg-primary-container transition-all group-hover:opacity-80" style="height: 40%;"></div>
+</div>
+<span class="text-[10px] font-bold text-on-surface-variant">JUL</span>
+</div>
+<!-- Aug -->
+<div class="flex-1 flex flex-col items-center gap-2 group">
+<div class="w-full flex items-end justify-center gap-1 h-full">
+<div class="w-4 bg-primary transition-all group-hover:opacity-80" style="height: 45%;"></div>
+<div class="w-4 bg-primary-container transition-all group-hover:opacity-80" style="height: 15%;"></div>
+</div>
+<span class="text-[10px] font-bold text-on-surface-variant">AUG</span>
+</div>
+<!-- Sep -->
+<div class="flex-1 flex flex-col items-center gap-2 group">
+<div class="w-full flex items-end justify-center gap-1 h-full">
+<div class="w-4 bg-primary transition-all group-hover:opacity-80" style="height: 70%;"></div>
+<div class="w-4 bg-primary-container transition-all group-hover:opacity-80" style="height: 35%;"></div>
+</div>
+<span class="text-[10px] font-bold text-on-surface-variant">SEP</span>
+</div>
+<!-- Oct -->
+<div class="flex-1 flex flex-col items-center gap-2 group">
+<div class="w-full flex items-end justify-center gap-1 h-full">
+<div class="w-4 bg-primary transition-all group-hover:opacity-80" style="height: 95%;"></div>
+<div class="w-4 bg-primary-container transition-all group-hover:opacity-80" style="height: 55%;"></div>
+</div>
+<span class="text-[10px] font-bold text-on-surface-variant">OCT</span>
+</div>
+<!-- Nov -->
+<div class="flex-1 flex flex-col items-center gap-2 group">
+<div class="w-full flex items-end justify-center gap-1 h-full">
+<div class="w-4 bg-primary transition-all group-hover:opacity-80" style="height: 60%;"></div>
+<div class="w-4 bg-primary-container transition-all group-hover:opacity-80" style="height: 20%;"></div>
+</div>
+<span class="text-[10px] font-bold text-on-surface-variant">NOV</span>
+</div>
+</div>
+</div>
+<!-- Automated Schedules Section -->
+<section class="bg-surface-container hairline-all p-6">
+<div class="flex items-center justify-between mb-6">
+<div>
+<h2 class="text-lg font-bold text-on-surface">Automated Schedules</h2>
+<p class="text-xs text-on-surface-variant">ניהול תזמון דוחות אוטומטיים</p>
+</div>
+<button class="text-secondary text-xs font-bold px-4 py-2 border border-secondary/30 hover:bg-secondary/5 transition-colors">
+                        + Add Schedule
+                    </button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-right">
+<thead class="border-b border-[#3d4943]/20">
+<tr class="text-[10px] text-on-surface-variant uppercase font-bold">
+<th class="pb-4 font-bold">שם הדוח</th>
+<th class="pb-4 font-bold">תדירות</th>
+<th class="pb-4 font-bold">נמענים</th>
+<th class="pb-4 font-bold">סטטוס</th>
+<th class="pb-4 font-bold"></th>
+</tr>
+</thead>
+<tbody class="text-xs">
+<tr class="border-b border-[#3d4943]/10 hover:bg-surface-container-high transition-colors">
+<td class="py-4 font-medium">Pipeline Snapshot</td>
+<td class="py-4">כל יום שני, 09:00</td>
+<td class="py-4">Management Team</td>
+<td class="py-4">
+<span class="px-2 py-0.5 bg-primary/10 text-primary text-[10px] font-bold">ACTIVE</span>
+</td>
+<td class="py-4 text-left">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-white">more_vert</span>
+</td>
+</tr>
+<tr class="border-b border-[#3d4943]/10 hover:bg-surface-container-high transition-colors">
+<td class="py-4 font-medium">Missed Follow-ups</td>
+<td class="py-4">כל יום, 08:30</td>
+<td class="py-4">Sales Admins</td>
+<td class="py-4">
+<span class="px-2 py-0.5 bg-primary/10 text-primary text-[10px] font-bold">ACTIVE</span>
+</td>
+<td class="py-4 text-left">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-white">more_vert</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-high transition-colors">
+<td class="py-4 font-medium">Monthly Deal Review</td>
+<td class="py-4">1 לכל חודש</td>
+<td class="py-4">Finance Dept</td>
+<td class="py-4">
+<span class="px-2 py-0.5 bg-surface-container-highest text-on-surface-variant text-[10px] font-bold">PAUSED</span>
+</td>
+<td class="py-4 text-left">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-white">more_vert</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="mt-6 pt-6 border-t border-[#3d4943]/20 flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant text-[16px]">info</span>
+<span class="text-[10px] text-on-surface-variant">WhatsApp delivery requires API setup</span>
+</div>
+</section>
+</div>
+</main>
+<!-- Side Detail Panel (Contextual/Hidden) -->
+<aside class="hidden lg:flex w-80 bg-surface-bright flex-col hairline-r z-30">
+<div class="p-6">
+<h3 class="text-sm font-bold text-secondary mb-6">Recent Activity</h3>
+<div class="space-y-6">
+<!-- Activity Item -->
+<div class="flex gap-3">
+<div class="mt-1 w-1.5 h-1.5 rounded-full bg-primary shrink-0"></div>
+<div>
+<p class="text-xs text-on-surface font-medium leading-tight">דוח Pipeline נשלח ל-WhatsApp של איתן</p>
+<p class="text-[10px] text-on-surface-variant mt-1">לפני 12 דקות</p>
+</div>
+</div>
+<!-- Activity Item -->
+<div class="flex gap-3">
+<div class="mt-1 w-1.5 h-1.5 rounded-full bg-secondary shrink-0"></div>
+<div>
+<p class="text-xs text-on-surface font-medium leading-tight">עסקת חודש נובמבר עודכנה ע"י המערכת</p>
+<p class="text-[10px] text-on-surface-variant mt-1">לפני שעה</p>
+</div>
+</div>
+<!-- Activity Item -->
+<div class="flex gap-3">
+<div class="mt-1 w-1.5 h-1.5 rounded-full bg-error shrink-0"></div>
+<div>
+<p class="text-xs text-on-surface font-medium leading-tight">8 לידים סווגו כ"חסרי מענה" בדו"ח היומי</p>
+<p class="text-[10px] text-on-surface-variant mt-1">הבוקר, 08:31</p>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-auto p-6 bg-surface-container-highest">
+<div class="text-[10px] font-bold text-on-surface-variant mb-4">SYSTEM HEALTH</div>
+<div class="flex flex-col gap-3">
+<div class="flex justify-between items-center text-[10px]">
+<span class="text-on-surface">WhatsApp API</span>
+<span class="text-primary font-bold">CONNECTED</span>
+</div>
+<div class="w-full bg-surface-container-low h-1">
+<div class="bg-primary h-1" style="width: 100%;"></div>
+</div>
+<div class="flex justify-between items-center text-[10px] mt-2">
+<span class="text-on-surface">Data Sync</span>
+<span class="text-primary font-bold">SYNCHRONIZED</span>
+</div>
+<div class="w-full bg-surface-container-low h-1">
+<div class="bg-primary h-1" style="width: 98%;"></div>
+</div>
+</div>
+</div>
+</aside>
+</body></html>
