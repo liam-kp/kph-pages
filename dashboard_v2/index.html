@@ -539,6 +539,14 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
         </div>
       </div>
 
+      <!-- Search results (only visible while a search query is active) -->
+      <section class="toi-block toi-block-search" data-block="search" id="block-search" style="display:none">
+        <div class="toi-block-header">
+          <h3 class="block-title">🔍 תוצאות חיפוש <span class="block-count" id="count-search">0</span></h3>
+        </div>
+        <div class="toi-cards" id="block-search-cards"></div>
+      </section>
+
       <!-- Block 1: URGENT -->
       <section class="toi-block toi-block-urgent" data-block="urgent">
         <div class="toi-block-header">
@@ -2003,7 +2011,12 @@ async function firebasePut(collection, docId, data) {
   const record = (raw.data && typeof raw.data === 'object') ? raw.data
                : (raw.record && typeof raw.record === 'object') ? raw.record
                : raw;
+  // Skip null/undefined values: the Firebase wrapper treats PUT null as "delete
+  // field", so verifying its presence would always fail for intentionally-cleared
+  // or optional fields. We only verify that fields we explicitly set to a real
+  // value actually landed.
   for (const k of Object.keys(data)) {
+    if (data[k] === null || data[k] === undefined) continue;
     if (!(k in record)) throw new Error(`Verify failed: field "${k}" missing after write`);
   }
   return record;
@@ -3158,6 +3171,21 @@ function applySchedQuick(key, silent) {
 }
 
 // ---- Existing follow-ups ----
+// Reads /Follow_Ups DIRECT from aiagentpro (bypasses dead Netlify proxy).
+// Graceful: failure hides the section and console.warns — write path stays
+// independent, so a failed read never blocks the user from scheduling.
+async function firebaseFetchDirect(collection) {
+  const token = getToken();
+  if (!token) throw new Error('No token');
+  const url = `${AIAGENTPRO_API}/api/firebase-data/${collection}?customerId=${CUSTOMER_ID}`;
+  const res = await fetch(url, { headers: { 'Authorization': `Bearer ${token}` } });
+  if (!res.ok) {
+    const body = await res.text().catch(() => '');
+    throw new Error(`GET ${collection} ${res.status}${body ? ': ' + body.slice(0, 160) : ''}`);
+  }
+  return res.json();
+}
+
 async function loadExistingFollowups(lead) {
   const wrap = document.getElementById('sched-existing-wrap');
   const list = document.getElementById('sched-existing-list');
@@ -3165,7 +3193,7 @@ async function loadExistingFollowups(lead) {
   list.innerHTML = '<div class="text-[11px] text-[#64748b]">טוען...</div>';
   wrap.classList.remove('hidden');
   try {
-    const raw = await firebaseFetch('Follow_Ups');
+    const raw = await firebaseFetchDirect('Follow_Ups');
     const items = Array.isArray(raw) ? raw : (raw && Array.isArray(raw.data) ? raw.data : []);
     const phoneNorm = normalizePhone(lead.phone_number || lead.phone || '');
     const matches = items.filter(fu => {
@@ -3197,7 +3225,10 @@ async function loadExistingFollowups(lead) {
         </div>`;
     }).join('');
   } catch (e) {
-    list.innerHTML = `<div class="text-[11px]" style="color:#ef4444;direction:rtl">שגיאה בטעינת follow-ups: ${escapeHtml(String(e.message || e))}</div>`;
+    // Graceful: don't block scheduling. Hide the section, warn dev console,
+    // but let the user continue to submit a new follow-up.
+    console.warn('[loadExistingFollowups] failed (read-only, non-blocking):', e);
+    wrap.classList.add('hidden');
   }
 }
 
@@ -3257,8 +3288,15 @@ async function confirmSchedule() {
   }
 
   const nowIso = new Date().toISOString();
+  // Schema fields observed on server-side /Follow_Ups records:
+  //   _id, attempt_number, channel_id, contact_id, conversation_id, created_at,
+  //   max_attempts, phone_number, reason, scheduled_date, status, trigger_type,
+  //   updated_at.
+  // We include `custom_message` for the SCHEDULE agent to render the CUSTOM
+  // trigger body. We only include lead_id when we have a real Firebase lead
+  // to reference — sending null would trigger "field missing after write"
+  // verify errors (the wrapper silently drops null values on write).
   const followUpRecord = {
-    // Core fields consumed by Adam's SCHEDULE agent
     scheduled_date: scheduledISO,
     status: 'PENDING',
     phone_number: phone,
@@ -3266,21 +3304,17 @@ async function confirmSchedule() {
     trigger_type: 'CUSTOM',
     attempt_number: 0,
     max_attempts: 1,
-    // Message content — both keys for backward compat
     message: message,
     custom_message: message,
-    // Metadata / audit trail
     contact_id: lead.contact_id || `manual_${Date.now()}`,
     channel_id: lead.channel_id || 'default',
     conversation_id: lead.conversation_id || `manual_${Date.now()}`,
-    lead_id: firebaseId || null,
-    lead_name: lead.display_name || '',
     reason: `Manual schedule by Liam from TOI dashboard at ${nowIso}`,
-    generated_by: 'focus_approved',
-    timezone_used: tz,
     created_at: nowIso,
     updated_at: nowIso,
   };
+  if (firebaseId) followUpRecord.lead_id = firebaseId;
+  if (lead.display_name) followUpRecord.lead_name = lead.display_name;
 
   const btn = document.getElementById('sched-confirm-btn');
   if (btn) { btn.disabled = true; btn.textContent = '⏳ שולח...'; }
@@ -5735,19 +5769,42 @@ function renderTodayOnIsland() {
   // Bucketize uses the pre-filtered pool
   const blocks = toiBucketizeLeads(visibleLeads, meetings);
 
+  // Search-active mode: many leads match the query but sit outside
+  // urgent/meetings/arriving/engaged buckets (e.g. overseas leads not on the
+  // island). Without this path, typing "Mickey" appears to do nothing even
+  // when Mickey matches. When query is set: show a flat search-results block
+  // and hide the four bucket blocks.
+  const hasSearch = !!(toiState.searchQuery && toiState.searchQuery.length);
+  const searchSection = document.getElementById('block-search');
+  const searchContainer = document.getElementById('block-search-cards');
+  const searchCountEl = document.getElementById('count-search');
+  if (searchSection) searchSection.style.display = hasSearch ? '' : 'none';
+
   // Make sure expanded lead is still visible; clear otherwise
   if (toiState.expandedLeadId) {
-    const stillVisible = ['urgent','arriving','engaged'].some(b =>
-      blocks[b].some(l => l.id === toiState.expandedLeadId));
+    const stillVisible = hasSearch
+      ? visibleLeads.some(l => l.id === toiState.expandedLeadId)
+      : ['urgent','arriving','engaged'].some(b => blocks[b].some(l => l.id === toiState.expandedLeadId));
     if (!stillVisible) toiState.expandedLeadId = null;
+  }
+
+  if (hasSearch && searchContainer) {
+    if (visibleLeads.length === 0) {
+      searchContainer.innerHTML = '<div class="text-xs text-on-surface-variant opacity-70 p-2" style="direction:rtl">אין לידים תואמים לחיפוש</div>';
+    } else {
+      searchContainer.innerHTML = renderBlockCards('urgent', visibleLeads);
+    }
+    if (searchCountEl) searchCountEl.textContent = visibleLeads.length;
   }
 
   ['urgent','meetings','arriving','engaged'].forEach(blockName => {
     const section = document.querySelector(`.toi-block[data-block="${blockName}"]`);
     if (!section) return;
 
-    // Solo mode: hide non-matching blocks
-    if (toiState.soloBlock && toiState.soloBlock !== blockName) {
+    // Hide bucket blocks entirely during search; solo mode hides non-matching otherwise.
+    if (hasSearch) {
+      section.style.display = 'none';
+    } else if (toiState.soloBlock && toiState.soloBlock !== blockName) {
       section.style.display = 'none';
     } else {
       section.style.display = '';
