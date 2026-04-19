@@ -4036,6 +4036,10 @@ function botiFormatDate(iso) {
 
 function botiStatusBadges(l) {
   const b = [];
+  if (l.status === 'contacted') {
+    const when = l.contacted_at ? botiFormatDate(l.contacted_at) : '';
+    b.push(`<span class="closings-badge" style="background:rgba(45,212,191,0.18);color:#2DD4BF">📩 טופל${when ? ' · ' + when : ''}</span>`);
+  }
   if (l.is_on_island) b.push('<span class="closings-badge" style="background:rgba(52,211,153,0.15);color:#34D399">🏝️ באי</span>');
   if (l.is_hot)       b.push('<span class="closings-badge" style="background:rgba(251,146,60,0.15);color:#FB923C">🔥 חם מאוד</span>');
   if (l.is_arriving)  b.push('<span class="closings-badge" style="background:rgba(109,213,250,0.15);color:#6DD5FA">✈️ מגיע</span>');
@@ -4313,6 +4317,98 @@ function openBotiRawModal(id) {
 }
 function hideBotiRawModal() { document.getElementById('boti-raw-modal').classList.add('hidden'); }
 
+// ---- Boti one-time restore (2 leads lost after edit flow, 2026-04-19) ----
+const BOTI_RESTORE_KEY = 'kph_boti_restore_v1_done';
+
+function botiRestoreKnownLeads() {
+  if (localStorage.getItem(BOTI_RESTORE_KEY)) return;
+  const leads = botiLoad();
+  const now = new Date().toISOString();
+
+  const balieliRawTexts = [
+    { date: '2026-04-19T07:31:16.000Z', text: 'היום 1100 +972 50-680-5726 balieli10093  באי - צריך לארגן איתו פגישה נוספת להראות לו את הבית של I\u2019m - עומרי בסריטאנו ואולי את הבית של מיטל פישר וניר' },
+    { date: '2026-04-15T11:23:09.000Z', text: 'מחר 1000 balieli10093  הגיע לאי' },
+    { date: '2025-12-15T13:19:47.000Z', text: '11/4/2925 1400 balieli10093  מגיע לאי' },
+    { date: '2025-12-15T12:06:21.000Z', text: '2.4.2025 1300 balieli10093  מגיע לאי מחפש וילה 3 חדרים בצלוקלאם' },
+  ];
+
+  const known = [
+    {
+      id: 'boti_restore_972506805726',
+      phone: '972506805726',
+      name: 'balieli10093',
+      original_name: 'balieli10093',
+      date: '2026-04-19T07:31:16.000Z',
+      raw_text: balieliRawTexts[0].text,
+      all_raw_texts: balieliRawTexts,
+      is_on_island: true,
+      is_arriving: false,
+      is_hot: false,
+      needs_meeting: true,
+      interest: 'Srithanu',
+      budget: null,
+      mention_count: balieliRawTexts.length,
+      transferred_to_pipeline: false,
+      rejected: false,
+      user_edited: false,
+      status: 'contacted',
+      contacted_at: now,
+      last_message_sent: '(שוחזר מיצוא בוטי 19/04 — טופל בעבר, צריך לארגן פגישה להראות את הבית של עומרי בסריטאנו + מיטל פישר/ניר)',
+      restore_note: 'Auto-restore 2026-04-19 (Ofer + balieli10093 vanished post-edit)',
+    },
+    {
+      id: 'boti_restore_972545933913',
+      phone: '972545933913',
+      name: 'Ofer',
+      original_name: 'Ofer',
+      date: '2026-04-16T14:17:10.000Z',
+      raw_text: 'מחר 1100 +972 54-593-3913 ofer באי',
+      all_raw_texts: [{ date: '2026-04-16T14:17:10.000Z', text: 'מחר 1100 +972 54-593-3913 ofer באי' }],
+      is_on_island: true,
+      is_arriving: false,
+      is_hot: false,
+      needs_meeting: false,
+      interest: null,
+      budget: null,
+      mention_count: 1,
+      transferred_to_pipeline: false,
+      rejected: false,
+      user_edited: false,
+      status: 'contacted',
+      contacted_at: now,
+      last_message_sent: 'הי עופר מה קורה? שבוע טוב. רוצה לנסות לארגן פגישה היום מחר? אם בא לך נעלה רגע לשיחה. עדכן שפנוי. יום נעים, לירן',
+      restore_note: 'Auto-restore 2026-04-19',
+    },
+  ];
+
+  let changed = false;
+  for (const k of known) {
+    const existing = leads.find(l => l.phone === k.phone);
+    if (existing) {
+      // Fix any harmful flags; keep their own content where set
+      if (existing.rejected || existing.transferred_to_pipeline) {
+        existing.rejected = false;
+        existing.transferred_to_pipeline = false;
+      }
+      if (!existing.status || existing.status !== 'contacted') {
+        existing.status = 'contacted';
+        existing.contacted_at = k.contacted_at;
+        existing.last_message_sent = k.last_message_sent;
+      }
+      if (!existing.name && k.name) existing.name = k.name;
+      if (!existing.original_name && k.original_name) existing.original_name = k.original_name;
+      existing.restore_note = k.restore_note;
+      changed = true;
+    } else {
+      leads.push(k);
+      changed = true;
+    }
+  }
+  if (changed) botiSave(leads);
+  localStorage.setItem(BOTI_RESTORE_KEY, now);
+  console.log('[Boti] Restored', known.length, 'known leads');
+}
+
 // ---- Boti wiring ----
 document.addEventListener('DOMContentLoaded', () => {
   const fi = document.getElementById('boti-file-input');
@@ -4321,6 +4417,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (df) df.addEventListener('change', renderBotiPage);
   const sr = document.getElementById('boti-show-rejected');
   if (sr) sr.addEventListener('change', renderBotiPage);
+  botiRestoreKnownLeads();
 });
 
 // ============ INIT ============
