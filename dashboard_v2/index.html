@@ -275,6 +275,135 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
   /* General RTL */
   #page-pipeline, #page-closings, #page-campaigns, #page-projects, #page-reports { direction:rtl; text-align:right; }
 }
+
+/* ============================================================ */
+/* ===== TOI-02: Density-with-clarity (compact rows + UI) ===== */
+/* ============================================================ */
+
+/* Filter chips bar */
+.toi-filters { position:sticky; top:0; z-index:10; background:#10141a; padding:10px 0 12px; margin-bottom:14px; border-bottom:1px solid rgba(62,73,67,0.6); display:flex; flex-direction:column; gap:8px; }
+.toi-filters-row { display:flex; gap:6px; flex-wrap:wrap; align-items:center; }
+.filter-chip { padding:6px 14px; border-radius:999px; background:transparent; border:1px solid #3e4943; color:#bccac1; font-size:13px; cursor:pointer; transition:all 0.15s; display:inline-flex; align-items:center; gap:6px; font-weight:500; font-family:inherit; }
+.filter-chip:hover { background:#181c22; border-color:#68dbae; color:#dfe2eb; }
+.filter-chip.active { background:#68dbae; color:#003826; border-color:#68dbae; }
+.chip-count { background:rgba(0,0,0,0.20); padding:1px 7px; border-radius:999px; font-size:11px; font-weight:700; min-width:18px; text-align:center; }
+.filter-chip.active .chip-count { background:rgba(0,0,0,0.25); color:#003826; }
+.toi-filters-tools { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.toi-search { padding:7px 12px; border-radius:6px; border:1px solid #3e4943; background:#10141a; color:#dfe2eb; font-size:13px; min-width:220px; direction:rtl; font-family:inherit; }
+.toi-search:focus { outline:none; border-color:#68dbae; }
+.toi-solo-indicator { display:none; align-items:center; gap:8px; padding:6px 12px; background:rgba(167,139,250,0.12); color:#A78BFA; border:1px solid rgba(167,139,250,0.35); border-radius:999px; font-size:12px; cursor:pointer; font-weight:600; }
+.toi-solo-indicator:hover { background:rgba(167,139,250,0.2); }
+.toi-solo-indicator.visible { display:inline-flex; }
+
+/* Block header v2 (toggle + solo) */
+.toi-block-header { display:flex; align-items:center; gap:10px; margin-bottom:10px; user-select:none; }
+.block-toggle, .block-solo { background:transparent; border:none; cursor:pointer; width:28px; height:28px; border-radius:4px; font-size:13px; color:#94A3B8; transition:all 0.15s; display:inline-flex; align-items:center; justify-content:center; font-family:inherit; }
+.block-toggle:hover, .block-solo:hover { background:#10141a; color:#dfe2eb; }
+.toggle-icon { display:inline-block; transition:transform 0.2s; font-size:11px; }
+.toi-block.collapsed .toggle-icon { transform:rotate(-90deg); }
+.toi-block.collapsed .toi-cards { display:none; }
+.block-title { flex:1; margin:0; font-size:14px; font-weight:700; color:#fff; display:flex; align-items:center; gap:8px; }
+.block-count { background:#10141a; color:#bccac1; border-radius:10px; padding:2px 9px; font-size:11px; font-weight:600; }
+.toi-block .toi-cards { display:flex; flex-direction:column; gap:2px; }
+
+/* Compact lead row */
+.lead-row { display:grid; grid-template-columns:8px minmax(0,1fr) 130px 90px 80px 90px 52px; gap:10px; align-items:center; padding:7px 36px 7px 12px; border-bottom:1px solid rgba(62,73,67,0.35); cursor:pointer; transition:background 0.1s; font-size:13px; position:relative; background:#10141a; }
+.lead-row:hover { background:#181c22; }
+.lead-row.expanded { background:#181c22; }
+.lead-row.contacted-row { opacity:0.72; }
+.row-status-dot { width:8px; height:8px; border-radius:50%; background:#3e4943; }
+.row-status-dot.hot { background:#ef4444; box-shadow:0 0 6px rgba(239,68,68,0.6); }
+.row-status-dot.departure-soon { background:#FB923C; box-shadow:0 0 6px rgba(251,146,60,0.5); }
+.row-name { font-weight:700; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0; }
+.row-name .row-name-sub { color:#94A3B8; font-weight:400; font-size:11px; margin-right:6px; }
+.row-phone { font-family:monospace; color:#bccac1; font-size:11px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.row-budget { color:#FFD700; font-size:12px; font-weight:600; white-space:nowrap; }
+.row-budget.no-budget { color:#64748b; font-weight:400; font-style:italic; }
+.row-arrival { font-size:12px; color:#bccac1; white-space:nowrap; }
+.row-meta { color:#94A3B8; font-size:11px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.row-source { font-size:10px; padding:2px 7px; background:#1c2026; border-radius:10px; color:#94A3B8; font-family:monospace; text-transform:uppercase; text-align:center; letter-spacing:0.5px; }
+
+/* Quick-action floating panel (hover) */
+.row-quick-actions { display:flex; gap:3px; opacity:0; transition:opacity 0.12s; position:absolute; left:12px; top:50%; transform:translateY(-50%); background:#262a31; padding:3px; border-radius:6px; box-shadow:0 2px 10px rgba(0,0,0,0.5); border:1px solid #3e4943; pointer-events:none; z-index:5; }
+.lead-row:hover .row-quick-actions, .lead-row:focus-within .row-quick-actions { opacity:1; pointer-events:auto; }
+.qa-btn { width:28px; height:28px; border-radius:4px; background:transparent; border:none; cursor:pointer; font-size:14px; color:#bccac1; transition:all 0.1s; display:inline-flex; align-items:center; justify-content:center; font-family:inherit; }
+.qa-btn:hover { background:#181c22; color:#dfe2eb; }
+.qa-btn.qa-delete:hover { background:rgba(239,68,68,0.2); color:#ef4444; }
+.qa-btn.qa-call:hover { color:#25D366; }
+.qa-btn.qa-wa:hover { color:#25D366; }
+
+/* Expanded panel (accordion) */
+.lead-expanded { background:#1c2026; border-top:1px solid rgba(62,73,67,0.5); border-bottom:1px solid rgba(62,73,67,0.5); padding:14px 16px 16px; margin-bottom:2px; animation:expandFade 0.15s ease-out; }
+@keyframes expandFade { from { opacity:0; } to { opacity:1; } }
+.lead-expanded .exp-badges { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px; }
+.lead-expanded .exp-note { font-size:13px; color:#dfe2eb; margin-bottom:10px; line-height:1.5; background:#10141a; padding:10px 12px; border-right:2px solid #68dbae; }
+.lead-expanded .exp-meta-row { display:flex; gap:16px; margin-bottom:12px; font-size:12px; color:#bccac1; flex-wrap:wrap; }
+.lead-expanded .exp-meta-row span b { color:#fff; font-weight:600; }
+.lead-expanded .exp-actions { display:flex; gap:6px; flex-wrap:wrap; align-items:center; }
+.exp-btn { padding:7px 13px; border-radius:6px; background:#10141a; border:1px solid #3e4943; cursor:pointer; font-size:12px; font-weight:600; color:#bccac1; transition:all 0.12s; display:inline-flex; align-items:center; gap:5px; font-family:inherit; }
+.exp-btn:hover { background:#262a31; color:#fff; border-color:#68dbae; }
+.exp-btn.exp-primary { background:#68dbae; color:#003826; border-color:#68dbae; }
+.exp-btn.exp-primary:hover { background:#74daae; border-color:#74daae; }
+.exp-btn.exp-wa { color:#25D366; border-color:rgba(37,211,102,0.3); }
+.exp-btn.exp-wa:hover { background:rgba(37,211,102,0.1); border-color:#25D366; }
+.exp-btn.exp-schedule { color:#A78BFA; border-color:rgba(167,139,250,0.3); }
+.exp-btn.exp-schedule:hover { background:rgba(167,139,250,0.1); border-color:#A78BFA; }
+.exp-btn.exp-danger { color:#ef4444; border-color:rgba(239,68,68,0.3); margin-right:auto; }
+.exp-btn.exp-danger:hover { background:rgba(239,68,68,0.15); border-color:#ef4444; }
+
+/* Meeting row (reuse toi-card compact style) */
+.meeting-row { display:grid; grid-template-columns:minmax(0,1fr) 80px 120px auto; gap:10px; align-items:center; padding:9px 12px; border-bottom:1px solid rgba(62,73,67,0.35); background:#10141a; font-size:13px; }
+.meeting-row:hover { background:#181c22; }
+.meeting-row .mr-name { font-weight:700; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.meeting-row .mr-name small { color:#94A3B8; font-weight:400; font-family:monospace; font-size:11px; }
+.meeting-row .mr-time { color:#A78BFA; font-size:12px; white-space:nowrap; }
+.meeting-row .mr-loc { color:#bccac1; font-size:11px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.meeting-row .mr-actions { display:flex; gap:4px; }
+.meeting-row .mr-actions button { background:#1c2026; color:#bccac1; border:1px solid #3e4943; border-radius:6px; padding:5px 9px; font-size:11px; font-weight:600; cursor:pointer; font-family:inherit; }
+.meeting-row .mr-actions .btn-met { color:#34D399; border-color:rgba(52,211,153,0.3); }
+.meeting-row .mr-actions .btn-met:hover { background:rgba(52,211,153,0.1); border-color:#34D399; }
+.meeting-row .mr-actions .btn-noshow { color:#ef4444; border-color:rgba(239,68,68,0.3); }
+.meeting-row .mr-actions .btn-noshow:hover { background:rgba(239,68,68,0.1); border-color:#ef4444; }
+.meeting-row .mr-actions .btn-log:hover { background:#262a31; color:#fff; }
+
+/* Badges inside row + expanded */
+.row-badge { display:inline-block; padding:1px 7px; border-radius:10px; font-size:10px; font-weight:600; white-space:nowrap; }
+.row-badge.rb-contacted { background:rgba(45,212,191,0.18); color:#2DD4BF; }
+.row-badge.rb-departure { background:rgba(251,146,60,0.15); color:#FB923C; }
+.row-badge.rb-hot { background:rgba(239,68,68,0.15); color:#ef4444; }
+.row-badge.rb-new { background:rgba(109,213,250,0.15); color:#6DD5FA; }
+
+/* Confirm modal */
+.confirm-modal { position:fixed; inset:0; background:rgba(0,0,0,0.75); backdrop-filter:blur(4px); z-index:300; display:flex; align-items:center; justify-content:center; padding:16px; }
+.confirm-modal.hidden { display:none; }
+.confirm-box { background:#1c2026; border:1px solid #3e4943; max-width:420px; width:100%; padding:24px; box-shadow:0 12px 32px rgba(0,0,0,0.6); direction:rtl; }
+.confirm-box h3 { font-size:17px; font-weight:700; color:#fff; margin:0 0 10px 0; display:flex; align-items:center; gap:8px; }
+.confirm-box p { font-size:13px; color:#bccac1; margin:0 0 20px 0; line-height:1.6; }
+.confirm-box .confirm-actions { display:flex; gap:10px; flex-direction:row-reverse; }
+.confirm-box button { padding:9px 18px; font-size:13px; font-weight:700; border:none; cursor:pointer; font-family:inherit; }
+.confirm-box .btn-danger { background:#ef4444; color:#fff; }
+.confirm-box .btn-danger:hover { background:#dc2626; }
+.confirm-box .btn-cancel { background:transparent; color:#bccac1; border:1px solid #3e4943; }
+.confirm-box .btn-cancel:hover { background:#262a31; color:#fff; }
+
+/* Delete button inside edit modal */
+.edit-delete-btn { background:transparent; color:#ef4444; border:1px solid rgba(239,68,68,0.35); padding:8px 16px; font-size:12px; font-weight:700; cursor:pointer; font-family:inherit; transition:all 0.12s; }
+.edit-delete-btn:hover { background:rgba(239,68,68,0.1); border-color:#ef4444; }
+
+/* Mobile adjustments */
+@media (max-width:767px) {
+  .lead-row { grid-template-columns:8px minmax(0,1fr) auto; padding-left:8px; padding-right:8px; gap:8px; }
+  .row-phone, .row-budget, .row-arrival, .row-meta { display:none; }
+  .row-quick-actions { opacity:1; pointer-events:auto; position:static; transform:none; box-shadow:none; background:transparent; border:none; padding:0; }
+  .toi-search { min-width:140px; flex:1; }
+  .meeting-row { grid-template-columns:minmax(0,1fr) auto; }
+  .meeting-row .mr-time, .meeting-row .mr-loc { display:none; }
+  .confirm-box { max-width:calc(100vw - 32px); }
+}
+
+/* Legacy: keep for backward compatibility but remove legacy toi-block-toggle behavior */
+.toi-block-toggle { cursor:default; }
+.toi-block-toggle::after { content:""; display:none; }
 </style>
 </head>
 <body class="text-on-surface overflow-hidden h-screen flex flex-row-reverse">
@@ -381,28 +510,63 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
         </div>
       </div>
 
+      <!-- Filter chips + search -->
+      <div class="toi-filters" id="toi-filters">
+        <div class="toi-filters-row">
+          <button type="button" class="filter-chip active" data-filter="all">הכל <span class="chip-count">0</span></button>
+          <button type="button" class="filter-chip" data-filter="on-island-today">באי היום <span class="chip-count">0</span></button>
+          <button type="button" class="filter-chip" data-filter="leaving-this-week">עוזב השבוע <span class="chip-count">0</span></button>
+          <button type="button" class="filter-chip" data-filter="hot">חמים <span class="chip-count">0</span></button>
+          <button type="button" class="filter-chip" data-filter="no-contact">לא יצרתי קשר <span class="chip-count">0</span></button>
+          <button type="button" class="filter-chip" data-filter="no-budget">ללא תקציב <span class="chip-count">0</span></button>
+        </div>
+        <div class="toi-filters-tools">
+          <input type="text" id="toi-search" placeholder="🔍 חיפוש (שם / טלפון / הערות)... [/]" class="toi-search" autocomplete="off"/>
+          <button type="button" class="toi-solo-indicator" id="toi-solo-indicator">
+            <span>מציג רק: <b id="toi-solo-name"></b></span>
+            <span>✕ לחץ לחזרה</span>
+          </button>
+        </div>
+      </div>
+
       <!-- Block 1: URGENT -->
       <section class="toi-block toi-block-urgent" data-block="urgent">
-        <h3>🔴 חם ודחוף — באי, אין פגישה</h3>
+        <div class="toi-block-header">
+          <button type="button" class="block-toggle" data-action="toggle" title="קפל/הרחב"><span class="toggle-icon">▼</span></button>
+          <h3 class="block-title">🔴 חם ודחוף — באי, אין פגישה <span class="block-count" id="count-urgent">0</span></h3>
+          <button type="button" class="block-solo" data-action="solo" title="הצג רק בלוק זה">⊙</button>
+        </div>
         <div class="toi-cards" id="block-urgent-cards"></div>
       </section>
 
       <!-- Block 2: Today's meetings -->
       <section class="toi-block toi-block-meetings" data-block="meetings">
-        <h3>📅 פגישות היום</h3>
+        <div class="toi-block-header">
+          <button type="button" class="block-toggle" data-action="toggle" title="קפל/הרחב"><span class="toggle-icon">▼</span></button>
+          <h3 class="block-title">📅 פגישות היום <span class="block-count" id="count-meetings">0</span></h3>
+          <button type="button" class="block-solo" data-action="solo" title="הצג רק בלוק זה">⊙</button>
+        </div>
         <div class="toi-cards" id="block-meetings-cards"></div>
       </section>
 
       <!-- Block 3: Arriving this week -->
       <section class="toi-block toi-block-arriving collapsed" data-block="arriving">
-        <h3 class="toi-block-toggle">✈️ מגיעים השבוע <span class="toi-count" id="count-arriving">0</span></h3>
-        <div class="toi-cards" id="block-arriving-cards" style="display:none;"></div>
+        <div class="toi-block-header">
+          <button type="button" class="block-toggle" data-action="toggle" title="קפל/הרחב"><span class="toggle-icon">▼</span></button>
+          <h3 class="block-title">✈️ מגיעים השבוע <span class="block-count" id="count-arriving">0</span></h3>
+          <button type="button" class="block-solo" data-action="solo" title="הצג רק בלוק זה">⊙</button>
+        </div>
+        <div class="toi-cards" id="block-arriving-cards"></div>
       </section>
 
       <!-- Block 4: Engaged -->
       <section class="toi-block toi-block-engaged collapsed" data-block="engaged">
-        <h3 class="toi-block-toggle">🟡 באי — בשיחה <span class="toi-count" id="count-engaged">0</span></h3>
-        <div class="toi-cards" id="block-engaged-cards" style="display:none;"></div>
+        <div class="toi-block-header">
+          <button type="button" class="block-toggle" data-action="toggle" title="קפל/הרחב"><span class="toggle-icon">▼</span></button>
+          <h3 class="block-title">🟡 באי — בשיחה <span class="block-count" id="count-engaged">0</span></h3>
+          <button type="button" class="block-solo" data-action="solo" title="הצג רק בלוק זה">⊙</button>
+        </div>
+        <div class="toi-cards" id="block-engaged-cards"></div>
       </section>
 
       <div class="toi-empty" id="toi-empty" style="display:none;">
@@ -1466,9 +1630,10 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
         </div>
       </div>
 
-      <div class="pt-3 flex gap-3 flex-row-reverse">
+      <div class="pt-3 flex gap-3 flex-row-reverse items-center">
         <button type="submit" class="bg-secondary text-on-secondary px-6 py-2 text-sm font-bold">שמור</button>
         <button type="button" onclick="hideBotiEditModal()" class="px-6 py-2 text-sm border-[0.5px] border-outline-variant text-on-surface-variant">ביטול</button>
+        <button type="button" class="edit-delete-btn" id="edit-modal-delete-btn" style="margin-right:auto;">🗑️ מחק ליד</button>
       </div>
     </form>
   </div>
@@ -1525,6 +1690,18 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
       <div class="text-[11px] text-on-surface-variant" id="boti-raw-meta"></div>
       <pre id="boti-raw-text" class="bg-surface-container-low p-4 text-sm whitespace-pre-wrap leading-relaxed" dir="auto"></pre>
       <div id="boti-raw-all" class="space-y-2"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== TOI — CONFIRM (generic) MODAL ========== -->
+<div id="toi-confirm-modal" class="confirm-modal hidden">
+  <div class="confirm-box">
+    <h3 id="toi-confirm-title"><span class="material-symbols-outlined" style="color:#ef4444;">warning</span><span>מחק ליד?</span></h3>
+    <p id="toi-confirm-message"></p>
+    <div class="confirm-actions">
+      <button type="button" class="btn-danger" id="toi-confirm-ok">מחק</button>
+      <button type="button" class="btn-cancel" id="toi-confirm-cancel">ביטול</button>
     </div>
   </div>
 </div>
@@ -5057,79 +5234,191 @@ function toiBucketizeLeads(leads, meetings) {
   return blocks;
 }
 
-function renderToiLeadCard(lead, blockType) {
+// ============================================================
+// ===== TOI-02: state, filters, compact rows, expand, delete =====
+// ============================================================
+
+const toiState = {
+  activeFilter: 'all',
+  searchQuery: '',
+  expandedLeadId: null,
+  soloBlock: null,
+  pendingConfirm: null,   // { onConfirm }
+};
+
+const BLOCK_LABELS = {
+  urgent: '🔴 חם ודחוף',
+  meetings: '📅 פגישות היום',
+  arriving: '✈️ מגיעים השבוע',
+  engaged: '🟡 באי — בשיחה',
+};
+
+// Debounce helper
+function toiDebounce(fn, ms) {
+  let t = null;
+  return (...args) => { if (t) clearTimeout(t); t = setTimeout(() => fn(...args), ms); };
+}
+
+function toiIsLeadVisible(lead) {
+  // Filter by rejected/transferred/closed happens in bucketize — here we apply chips + search
+  if (toiState.searchQuery) {
+    const q = toiState.searchQuery.toLowerCase();
+    const hay = [lead.name, lead.phone, lead.notes, lead.interest, lead.raw_text]
+      .filter(Boolean).join(' ').toLowerCase();
+    if (!hay.includes(q)) return false;
+  }
+  const today = toiTodayISO();
+  const oneWeekOut = toiAddDays(today, 7);
+  switch (toiState.activeFilter) {
+    case 'all': return true;
+    case 'on-island-today': return !!lead.is_on_island;
+    case 'leaving-this-week':
+      return !!lead.departure_date && lead.departure_date >= today && lead.departure_date <= oneWeekOut;
+    case 'hot': return !!lead.is_hot;
+    case 'no-contact': return !lead.status || lead.status === 'new';
+    case 'no-budget': return !lead.budget;
+    default: return true;
+  }
+}
+
+function toiFilterableLeads(allLeads) {
+  return allLeads.filter(l => !l.transferred_to_pipeline && !l.rejected && l.status !== 'closed' && l.status !== 'met');
+}
+
+function toiUpdateFilterCounts(allLeads) {
+  const pool = toiFilterableLeads(allLeads);
+  const today = toiTodayISO();
+  const oneWeekOut = toiAddDays(today, 7);
+  const counts = {
+    'all': pool.length,
+    'on-island-today': pool.filter(l => l.is_on_island).length,
+    'leaving-this-week': pool.filter(l => l.departure_date && l.departure_date >= today && l.departure_date <= oneWeekOut).length,
+    'hot': pool.filter(l => l.is_hot).length,
+    'no-contact': pool.filter(l => !l.status || l.status === 'new').length,
+    'no-budget': pool.filter(l => !l.budget).length,
+  };
+  document.querySelectorAll('.filter-chip').forEach(chip => {
+    const c = counts[chip.dataset.filter];
+    const span = chip.querySelector('.chip-count');
+    if (span) span.textContent = (c == null ? 0 : c);
+  });
+}
+
+function toiGetLeadById(id) {
+  return botiLoad().find(l => l.id === id) || null;
+}
+
+function renderLeadRow(lead) {
+  const isContacted = lead.status === 'contacted';
+  const today = toiTodayISO();
+  const oneWeekOut = toiAddDays(today, 7);
+  const leavingSoon = !!lead.departure_date && lead.departure_date >= today && lead.departure_date <= oneWeekOut;
+  const dotClass = lead.is_hot ? 'hot' : (leavingSoon ? 'departure-soon' : '');
+  const budget = lead.budget ? toiFormatBudget(lead.budget, lead.budget_currency || 'THB') : 'ללא';
+  const budgetCls = lead.budget ? '' : 'no-budget';
+  const arrivalLabel = lead.is_on_island ? '🏝️ באי' : (lead.is_arriving ? '✈️ מגיע' : '—');
+  const metaBits = [];
+  if (lead.departure_date) metaBits.push('עוזב ' + toiFormatShortDate(lead.departure_date));
+  else if (lead.date) metaBits.push(toiFormatShortDate(lead.date));
+  if (lead.language) metaBits.push(toiLangFlag(lead.language));
+  const meta = metaBits.join(' · ');
+  const source = (lead.source || 'boti').toUpperCase();
+  const safeName = escapeHtml(lead.name || 'ללא שם');
+  const safePhone = escapeHtml(lead.phone || '—');
+
+  return `
+    <div class="lead-row ${isContacted ? 'contacted-row' : ''} ${toiState.expandedLeadId === lead.id ? 'expanded' : ''}" data-lead-id="${lead.id}" data-phone="${escapeHtml(lead.phone || '')}" tabindex="0">
+      <div class="row-status-dot ${dotClass}"></div>
+      <div class="row-name">${safeName}</div>
+      <div class="row-phone">${safePhone}</div>
+      <div class="row-budget ${budgetCls}">${escapeHtml(budget)}</div>
+      <div class="row-arrival">${arrivalLabel}</div>
+      <div class="row-meta">${escapeHtml(meta)}</div>
+      <div class="row-source">${escapeHtml(source)}</div>
+      <div class="row-quick-actions">
+        <button type="button" class="qa-btn qa-call" data-action="call" data-phone="${escapeHtml(lead.phone || '')}" title="התקשר">📞</button>
+        <button type="button" class="qa-btn qa-wa" data-action="wa" data-phone="${escapeHtml(lead.phone || '')}" title="WhatsApp">💬</button>
+        <button type="button" class="qa-btn qa-edit" data-action="edit" data-lead-id="${lead.id}" title="ערוך">✏️</button>
+        <button type="button" class="qa-btn qa-delete" data-action="delete" data-lead-id="${lead.id}" title="מחק">🗑️</button>
+      </div>
+    </div>`;
+}
+
+function renderLeadExpanded(lead, blockType) {
   const isContacted = lead.status === 'contacted';
   const remaining = toiRemainingHours(lead);
-  const checkExpired = isContacted && lead.next_check_hours && toiHoursSince(lead.contacted_at) >= lead.next_check_hours;
+  const badges = [];
+  if (lead.is_hot) badges.push('<span class="row-badge rb-hot">🔥 חם</span>');
+  if (!lead.status || lead.status === 'new') badges.push('<span class="row-badge rb-new">חדש</span>');
+  if (isContacted) {
+    badges.push(lead.next_check_hours
+      ? `<span class="row-badge rb-contacted">📩 טופל · ${remaining}h</span>`
+      : '<span class="row-badge rb-contacted">📩 טופל</span>');
+  }
+  if (lead.departure_date) badges.push(`<span class="row-badge rb-departure">✈️ עוזב ${toiFormatShortDate(lead.departure_date)}</span>`);
 
-  const contactedBadge = isContacted && !checkExpired && lead.next_check_hours
-    ? `<span class="toi-badge-contacted">📩 טופל · ${remaining}h</span>`
-    : (isContacted ? `<span class="toi-badge-contacted">📩 טופל</span>` : '');
-  const departureBadge = lead.departure_date
-    ? `<span class="toi-badge-departure">✈️ עוזב ${toiFormatShortDate(lead.departure_date)}</span>`
-    : '';
-  const budgetDisplay = lead.budget
-    ? toiFormatBudget(lead.budget, lead.budget_currency || 'THB')
-    : 'ללא תקציב';
-  const interestDisplay = lead.interest || lead.notes || lead.raw_text || 'עניין לא ידוע';
-  const source = lead.source || 'boti';
+  const fullNote = lead.interest || lead.notes || lead.raw_text || 'אין תיאור';
+  const budget = lead.budget ? toiFormatBudget(lead.budget, lead.budget_currency || 'THB') : '—';
+  const source = (lead.source || 'boti').toUpperCase();
 
   return `
-    <div class="toi-card ${isContacted ? 'card-contacted' : ''}" data-lead-id="${lead.id}" data-phone="${lead.phone || ''}">
-      <div class="toi-card-main">
-        <div class="toi-card-header">
-          <div class="toi-card-name">${escapeHtml(lead.name || 'ללא שם')} <small>· ${escapeHtml(lead.phone || '—')}</small></div>
-          <div class="toi-card-badges">${contactedBadge}${departureBadge}</div>
-        </div>
-        <div class="toi-card-meta">
-          <span class="toi-arrival">🏝️ ${toiArrivalLabel(lead)}</span>
-          <span class="toi-budget">💰 ${budgetDisplay}</span>
-          ${lead.language ? `<span class="toi-lang">${toiLangFlag(lead.language)}</span>` : ''}
-        </div>
-        <div class="toi-card-note">💬 ${escapeHtml(String(interestDisplay).slice(0, 120))} · <span class="toi-source">${source}</span></div>
+    <div class="lead-expanded" data-expanded-lead-id="${lead.id}">
+      ${badges.length ? `<div class="exp-badges">${badges.join('')}</div>` : ''}
+      <div class="exp-note">💬 ${escapeHtml(String(fullNote))}</div>
+      <div class="exp-meta-row">
+        <span><b>תקציב:</b> ${escapeHtml(budget)}</span>
+        <span><b>הגעה:</b> ${escapeHtml(toiArrivalLabel(lead))}</span>
+        ${lead.language ? `<span><b>שפה:</b> ${toiLangFlag(lead.language)}</span>` : ''}
+        <span><b>מקור:</b> ${escapeHtml(source)}</span>
       </div>
-      <div class="toi-card-actions">${renderToiCardActions(lead, blockType)}</div>
-    </div>
-  `;
+      <div class="exp-actions">
+        <button type="button" class="exp-btn exp-primary" data-action="wa" data-phone="${escapeHtml(lead.phone || '')}">💬 WhatsApp</button>
+        <button type="button" class="exp-btn" data-action="call" data-phone="${escapeHtml(lead.phone || '')}">📞 התקשר</button>
+        <button type="button" class="exp-btn exp-schedule" data-action="schedule" data-lead-id="${lead.id}">📅 תזמן פגישה</button>
+        <button type="button" class="exp-btn" data-action="edit" data-lead-id="${lead.id}">✏️ ערוך</button>
+        <button type="button" class="exp-btn exp-danger" data-action="delete" data-lead-id="${lead.id}">🗑️ מחק</button>
+      </div>
+    </div>`;
 }
 
-function renderToiMeetingCard(meeting) {
+function renderMeetingRow(meeting) {
   const leads = botiLoad();
-  const lead = leads.find(l => normalizePhone(l.phone) === normalizePhone(meeting.phone)) || { id: meeting.leadId, name: meeting.leadName, phone: meeting.phone };
-  const timeStr = meeting.time || '';
-  const loc = meeting.location || '';
-  const project = meeting.project || '';
-  const note = [timeStr, loc, project].filter(Boolean).join(' · ');
+  const lead = leads.find(l => normalizePhone(l.phone) === normalizePhone(meeting.phone))
+            || { id: meeting.leadId, name: meeting.leadName, phone: meeting.phone };
+  const time = meeting.time || '—';
+  const locBits = [];
+  if (meeting.location) locBits.push(meeting.location);
+  if (meeting.project) locBits.push(meeting.project);
+  const loc = locBits.join(' · ');
   return `
-    <div class="toi-card" data-meeting-id="${meeting.id}" data-lead-id="${lead.id || ''}" data-phone="${lead.phone || meeting.phone || ''}">
-      <div class="toi-card-main">
-        <div class="toi-card-header">
-          <div class="toi-card-name">${escapeHtml(lead.name || 'ללא שם')} <small>· ${escapeHtml(lead.phone || meeting.phone || '—')}</small></div>
-        </div>
-        <div class="toi-card-meta">
-          <span>🕐 ${escapeHtml(timeStr || '—')}</span>
-          ${loc ? `<span>📍 ${escapeHtml(loc)}</span>` : ''}
-          ${project ? `<span>🏠 ${escapeHtml(project)}</span>` : ''}
-        </div>
-        ${meeting.notes ? `<div class="toi-card-note">📝 ${escapeHtml(meeting.notes)}</div>` : ''}
+    <div class="meeting-row" data-meeting-id="${meeting.id}" data-lead-id="${lead.id || ''}" data-phone="${escapeHtml(lead.phone || meeting.phone || '')}">
+      <div class="mr-name">${escapeHtml(lead.name || 'ללא שם')} <small>· ${escapeHtml(lead.phone || meeting.phone || '—')}</small></div>
+      <div class="mr-time">🕐 ${escapeHtml(time)}</div>
+      <div class="mr-loc">${loc ? '📍 ' + escapeHtml(loc) : ''}</div>
+      <div class="mr-actions">
+        <button type="button" class="btn-met" data-meeting-id="${meeting.id}" title="נפגשנו">✅</button>
+        <button type="button" class="btn-noshow" data-meeting-id="${meeting.id}" title="לא הגיע">❌</button>
+        <button type="button" class="btn-log" data-meeting-id="${meeting.id}" title="סיכום">📝</button>
       </div>
-      <div class="toi-card-actions">
-        <button class="btn-met" data-meeting-id="${meeting.id}">✅ נפגשנו</button>
-        <button class="btn-noshow" data-meeting-id="${meeting.id}">❌ לא הגיע</button>
-        <button class="btn-log" data-meeting-id="${meeting.id}">📝 סיכום</button>
-      </div>
-    </div>
-  `;
+    </div>`;
 }
 
-function renderToiCardActions(lead, blockType) {
-  const phone = lead.phone || '';
-  return `
-    <button class="btn-call" data-phone="${phone}">📞</button>
-    <button class="btn-wa" data-phone="${phone}">💬 WA</button>
-    <button class="btn-schedule" data-lead-id="${lead.id}">📅 תזמן</button>
-    <button class="btn-edit" data-lead-id="${lead.id}">✏️</button>
-  `;
+function renderBlockCards(blockName, items) {
+  if (!items.length) {
+    const empty = {
+      urgent: 'אין לידים דחופים כרגע ✨',
+      meetings: 'אין פגישות קבועות היום',
+      arriving: 'אין לידים מגיעים השבוע',
+      engaged: 'אין לידים בשיחה פעילה',
+    }[blockName] || '—';
+    return `<div class="text-xs text-on-surface-variant opacity-70 p-2">${empty}</div>`;
+  }
+  if (blockName === 'meetings') return items.map(renderMeetingRow).join('');
+  return items.map(l => {
+    const row = renderLeadRow(l);
+    const expanded = (toiState.expandedLeadId === l.id) ? renderLeadExpanded(l, blockName) : '';
+    return row + expanded;
+  }).join('');
 }
 
 function renderTodayOnIsland() {
@@ -5140,82 +5429,302 @@ function renderTodayOnIsland() {
     dateEl.textContent = `${dayNames[d.getDay()]}, ${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
   }
 
-  const leads = botiLoad();
+  const allLeads = botiLoad();
   const meetings = toiMeetingsLoad();
-  const blocks = toiBucketizeLeads(leads, meetings);
 
-  const urgentEl = document.getElementById('block-urgent-cards');
-  const meetingsEl = document.getElementById('block-meetings-cards');
-  const arrivingEl = document.getElementById('block-arriving-cards');
-  const engagedEl = document.getElementById('block-engaged-cards');
+  // Counts (chips) use the full pool so the user sees live totals regardless of active chip
+  toiUpdateFilterCounts(allLeads);
 
-  urgentEl.innerHTML = blocks.urgent.length
-    ? blocks.urgent.map(l => renderToiLeadCard(l, 'urgent')).join('')
-    : '<div class="text-xs text-on-surface-variant opacity-70 p-2">אין לידים דחופים כרגע ✨</div>';
+  // Visible leads = filter chip + search applied
+  const visibleLeads = toiFilterableLeads(allLeads).filter(toiIsLeadVisible);
 
-  meetingsEl.innerHTML = blocks.meetings.length
-    ? blocks.meetings.map(m => renderToiMeetingCard(m)).join('')
-    : '<div class="text-xs text-on-surface-variant opacity-70 p-2">אין פגישות קבועות היום</div>';
+  // Bucketize uses the pre-filtered pool
+  const blocks = toiBucketizeLeads(visibleLeads, meetings);
 
-  arrivingEl.innerHTML = blocks.arriving.length
-    ? blocks.arriving.map(l => renderToiLeadCard(l, 'arriving')).join('')
-    : '<div class="text-xs text-on-surface-variant opacity-70 p-2">אין לידים מגיעים השבוע</div>';
+  // Make sure expanded lead is still visible; clear otherwise
+  if (toiState.expandedLeadId) {
+    const stillVisible = ['urgent','arriving','engaged'].some(b =>
+      blocks[b].some(l => l.id === toiState.expandedLeadId));
+    if (!stillVisible) toiState.expandedLeadId = null;
+  }
 
-  engagedEl.innerHTML = blocks.engaged.length
-    ? blocks.engaged.map(l => renderToiLeadCard(l, 'engaged')).join('')
-    : '<div class="text-xs text-on-surface-variant opacity-70 p-2">אין לידים בשיחה פעילה</div>';
+  ['urgent','meetings','arriving','engaged'].forEach(blockName => {
+    const section = document.querySelector(`.toi-block[data-block="${blockName}"]`);
+    if (!section) return;
 
-  document.getElementById('count-arriving').textContent = blocks.arriving.length;
-  document.getElementById('count-engaged').textContent = blocks.engaged.length;
+    // Solo mode: hide non-matching blocks
+    if (toiState.soloBlock && toiState.soloBlock !== blockName) {
+      section.style.display = 'none';
+    } else {
+      section.style.display = '';
+    }
 
-  const onIslandCount = leads.filter(l => !l.transferred_to_pipeline && !l.rejected && l.is_on_island).length;
-  const hotNoMeetingCount = leads.filter(l => !l.transferred_to_pipeline && !l.rejected && l.is_hot && !l.needs_meeting).length;
-  document.getElementById('toi-kpi-on-island').textContent = onIslandCount;
-  document.getElementById('toi-kpi-meetings').textContent = blocks.meetings.length;
-  document.getElementById('toi-kpi-hot-no-meeting').textContent = hotNoMeetingCount;
+    const container = section.querySelector('.toi-cards');
+    if (container) container.innerHTML = renderBlockCards(blockName, blocks[blockName]);
+    const countEl = document.getElementById(`count-${blockName}`);
+    if (countEl) countEl.textContent = blocks[blockName].length;
+  });
 
-  const totalCards = blocks.urgent.length + blocks.meetings.length + blocks.arriving.length + blocks.engaged.length;
-  document.getElementById('toi-empty').style.display = totalCards === 0 ? '' : 'none';
+  // Solo indicator pill
+  const soloEl = document.getElementById('toi-solo-indicator');
+  const soloName = document.getElementById('toi-solo-name');
+  if (soloEl) {
+    if (toiState.soloBlock) {
+      soloEl.classList.add('visible');
+      if (soloName) soloName.textContent = BLOCK_LABELS[toiState.soloBlock] || toiState.soloBlock;
+    } else {
+      soloEl.classList.remove('visible');
+    }
+  }
+
+  // KPIs (use full pool)
+  const pool = toiFilterableLeads(allLeads);
+  const onIslandCount = pool.filter(l => l.is_on_island).length;
+  const hotNoMeetingCount = pool.filter(l => l.is_hot && !l.needs_meeting).length;
+  const kpiIsland = document.getElementById('toi-kpi-on-island');
+  const kpiMeetings = document.getElementById('toi-kpi-meetings');
+  const kpiHot = document.getElementById('toi-kpi-hot-no-meeting');
+  if (kpiIsland) kpiIsland.textContent = onIslandCount;
+  if (kpiMeetings) kpiMeetings.textContent = blocks.meetings.length;
+  if (kpiHot) kpiHot.textContent = hotNoMeetingCount;
+
+  const total = blocks.urgent.length + blocks.meetings.length + blocks.arriving.length + blocks.engaged.length;
+  const empty = document.getElementById('toi-empty');
+  if (empty) empty.style.display = total === 0 ? '' : 'none';
 }
 
-// ---- TOI action delegation ----
+function toiToggleExpand(leadId) {
+  toiState.expandedLeadId = (toiState.expandedLeadId === leadId) ? null : leadId;
+  renderTodayOnIsland();
+}
+
+function toiSetFilter(filter) {
+  toiState.activeFilter = filter;
+  document.querySelectorAll('.filter-chip').forEach(c => {
+    c.classList.toggle('active', c.dataset.filter === filter);
+  });
+  renderTodayOnIsland();
+}
+
+function toiSetSolo(blockName) {
+  toiState.soloBlock = (toiState.soloBlock === blockName) ? null : blockName;
+  renderTodayOnIsland();
+}
+
+// ---- Confirm modal ----
+function toiShowConfirm({ title, message, confirmText, onConfirm }) {
+  const modal = document.getElementById('toi-confirm-modal');
+  if (!modal) return;
+  const titleEl = document.getElementById('toi-confirm-title');
+  const msgEl = document.getElementById('toi-confirm-message');
+  const okBtn = document.getElementById('toi-confirm-ok');
+  if (titleEl) titleEl.querySelector('span:last-child').textContent = title || 'אישור';
+  if (msgEl) msgEl.textContent = message || '';
+  if (okBtn) okBtn.textContent = confirmText || 'אישור';
+  toiState.pendingConfirm = { onConfirm: onConfirm || (() => {}) };
+  modal.classList.remove('hidden');
+  // Focus OK for quick Enter confirm
+  setTimeout(() => { if (okBtn) okBtn.focus(); }, 30);
+}
+
+function toiHideConfirm() {
+  const modal = document.getElementById('toi-confirm-modal');
+  if (modal) modal.classList.add('hidden');
+  toiState.pendingConfirm = null;
+}
+
+function toiDeleteLead(leadId) {
+  const lead = toiGetLeadById(leadId);
+  if (!lead) { showToast('הליד לא נמצא', true); return; }
+  const leads = botiLoad();
+  const updated = leads.filter(l => l.id !== leadId);
+  botiSave(updated);
+  if (toiState.expandedLeadId === leadId) toiState.expandedLeadId = null;
+  renderTodayOnIsland();
+  // If BOTI page is the current view, refresh it too
+  if (typeof renderBotiPage === 'function' && currentPage === 'boti') renderBotiPage();
+  showToast(`הליד "${lead.name || lead.phone || 'ללא שם'}" נמחק`);
+}
+
+function toiRequestDelete(leadId) {
+  const lead = toiGetLeadById(leadId);
+  if (!lead) return;
+  const label = lead.name || 'הליד';
+  const phone = lead.phone ? ` (${lead.phone})` : '';
+  toiShowConfirm({
+    title: 'מחק ליד?',
+    message: `האם למחוק את ${label}${phone}? הפעולה אינה הפיכה.`,
+    confirmText: 'מחק',
+    onConfirm: () => toiDeleteLead(leadId),
+  });
+}
+
+// ---- Event delegation ----
 function toiBindActions() {
   const page = document.getElementById('page-today');
   if (!page || page.dataset.bound === '1') return;
   page.dataset.bound = '1';
 
   page.addEventListener('click', (e) => {
-    const btn = e.target.closest('button');
-    if (!btn) {
-      // Collapsible block toggle
-      const toggle = e.target.closest('.toi-block-toggle');
-      if (toggle) {
-        const block = toggle.closest('.toi-block');
-        block.classList.toggle('collapsed');
-        const cards = block.querySelector('.toi-cards');
-        if (cards) cards.style.display = block.classList.contains('collapsed') ? 'none' : '';
-      }
+    // Filter chip
+    const chip = e.target.closest('.filter-chip');
+    if (chip) { toiSetFilter(chip.dataset.filter); return; }
+
+    // Solo indicator clear
+    if (e.target.closest('#toi-solo-indicator')) { toiSetSolo(null); return; }
+
+    // Block toggle (collapse/expand)
+    const toggleBtn = e.target.closest('.block-toggle');
+    if (toggleBtn) {
+      const block = toggleBtn.closest('.toi-block');
+      if (block) block.classList.toggle('collapsed');
+      return;
+    }
+    // Block solo
+    const soloBtn = e.target.closest('.block-solo');
+    if (soloBtn) {
+      const block = soloBtn.closest('.toi-block');
+      if (block) toiSetSolo(block.dataset.block);
       return;
     }
 
-    if (btn.classList.contains('btn-call')) {
-      const p = (btn.dataset.phone || '').replace(/\D/g, '');
-      if (p) window.open(`tel:+${p}`);
-    } else if (btn.classList.contains('btn-wa')) {
-      const p = (btn.dataset.phone || '').replace(/\D/g, '');
-      if (p) window.open(`https://wa.me/${p}`, '_blank');
-    } else if (btn.classList.contains('btn-edit')) {
-      openBotiEditModal(btn.dataset.leadId);
-    } else if (btn.classList.contains('btn-schedule')) {
-      openToiScheduleModal(btn.dataset.leadId);
-    } else if (btn.classList.contains('btn-met')) {
-      openToiOutcomeModal(btn.dataset.meetingId, 'met');
-    } else if (btn.classList.contains('btn-noshow')) {
-      markToiMeetingOutcome(btn.dataset.meetingId, 'no_show');
-    } else if (btn.classList.contains('btn-log')) {
-      openToiOutcomeModal(btn.dataset.meetingId, 'met');
+    // Action buttons (quick-actions + expanded + meeting row)
+    const actionBtn = e.target.closest('button[data-action], .btn-met, .btn-noshow, .btn-log');
+    if (actionBtn) {
+      e.stopPropagation();
+      const action = actionBtn.dataset.action;
+      if (action === 'call') {
+        const p = (actionBtn.dataset.phone || '').replace(/\D/g, '');
+        if (p) window.open(`tel:+${p}`);
+        return;
+      }
+      if (action === 'wa') {
+        const p = (actionBtn.dataset.phone || '').replace(/\D/g, '');
+        if (p) window.open(`https://wa.me/${p}`, '_blank');
+        return;
+      }
+      if (action === 'edit') { openBotiEditModal(actionBtn.dataset.leadId); return; }
+      if (action === 'schedule') { openToiScheduleModal(actionBtn.dataset.leadId); return; }
+      if (action === 'delete') { toiRequestDelete(actionBtn.dataset.leadId); return; }
+      if (actionBtn.classList.contains('btn-met')) { openToiOutcomeModal(actionBtn.dataset.meetingId, 'met'); return; }
+      if (actionBtn.classList.contains('btn-noshow')) { markToiMeetingOutcome(actionBtn.dataset.meetingId, 'no_show'); return; }
+      if (actionBtn.classList.contains('btn-log')) { openToiOutcomeModal(actionBtn.dataset.meetingId, 'met'); return; }
     }
+
+    // Row click → toggle expand (only when no action button matched)
+    const row = e.target.closest('.lead-row');
+    if (row) { toiToggleExpand(row.dataset.leadId); return; }
   });
+
+  // Search input (debounced)
+  const searchInput = document.getElementById('toi-search');
+  if (searchInput && searchInput.dataset.bound !== '1') {
+    searchInput.dataset.bound = '1';
+    const handler = toiDebounce(() => {
+      toiState.searchQuery = searchInput.value.trim();
+      renderTodayOnIsland();
+    }, 180);
+    searchInput.addEventListener('input', handler);
+  }
+
+  // Confirm modal actions
+  const okBtn = document.getElementById('toi-confirm-ok');
+  const cancelBtn = document.getElementById('toi-confirm-cancel');
+  const confirmModal = document.getElementById('toi-confirm-modal');
+  if (okBtn && okBtn.dataset.bound !== '1') {
+    okBtn.dataset.bound = '1';
+    okBtn.addEventListener('click', () => {
+      const cb = toiState.pendingConfirm && toiState.pendingConfirm.onConfirm;
+      toiHideConfirm();
+      if (typeof cb === 'function') cb();
+    });
+  }
+  if (cancelBtn && cancelBtn.dataset.bound !== '1') {
+    cancelBtn.dataset.bound = '1';
+    cancelBtn.addEventListener('click', toiHideConfirm);
+  }
+  if (confirmModal && confirmModal.dataset.bound !== '1') {
+    confirmModal.dataset.bound = '1';
+    confirmModal.addEventListener('click', (e) => {
+      if (e.target === confirmModal) toiHideConfirm();
+    });
+  }
+
+  // Delete button inside edit modal
+  const editDelBtn = document.getElementById('edit-modal-delete-btn');
+  if (editDelBtn && editDelBtn.dataset.bound !== '1') {
+    editDelBtn.dataset.bound = '1';
+    editDelBtn.addEventListener('click', () => {
+      const id = document.getElementById('boti-e-id').value;
+      if (!id) return;
+      hideBotiEditModal();
+      toiRequestDelete(id);
+    });
+  }
+
+  // Keyboard navigation (only when TOI page active)
+  if (!window.__toiKeysBound) {
+    window.__toiKeysBound = true;
+    document.addEventListener('keydown', (e) => {
+      if (currentPage !== 'today') return;
+      const tag = e.target.tagName;
+      const isInput = tag === 'INPUT' || tag === 'TEXTAREA' || e.target.isContentEditable;
+
+      // Esc closes confirm modal first, then expanded
+      if (e.key === 'Escape') {
+        const modal = document.getElementById('toi-confirm-modal');
+        if (modal && !modal.classList.contains('hidden')) { toiHideConfirm(); e.preventDefault(); return; }
+        if (toiState.expandedLeadId) {
+          toiState.expandedLeadId = null;
+          renderTodayOnIsland();
+          e.preventDefault();
+        }
+        return;
+      }
+
+      // "/" focuses search (even from non-input, but not from textarea/input)
+      if (e.key === '/' && !isInput) {
+        e.preventDefault();
+        const s = document.getElementById('toi-search');
+        if (s) s.focus();
+        return;
+      }
+
+      if (isInput) return;  // skip nav keys when typing
+
+      const rows = Array.from(document.querySelectorAll('#page-today .lead-row'));
+      if (!rows.length) return;
+      const currentIdx = rows.findIndex(r => r.classList.contains('expanded'));
+
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        const nextIdx = currentIdx < 0 ? 0 : Math.min(currentIdx + 1, rows.length - 1);
+        const nextId = rows[nextIdx].dataset.leadId;
+        if (nextId !== toiState.expandedLeadId) { toiToggleExpand(nextId); }
+        requestAnimationFrame(() => {
+          const r = document.querySelector(`#page-today .lead-row[data-lead-id="${nextId}"]`);
+          if (r) r.scrollIntoView({ block: 'nearest' });
+        });
+        return;
+      }
+      if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        const prevIdx = currentIdx <= 0 ? 0 : currentIdx - 1;
+        const prevId = rows[prevIdx].dataset.leadId;
+        if (prevId !== toiState.expandedLeadId) { toiToggleExpand(prevId); }
+        requestAnimationFrame(() => {
+          const r = document.querySelector(`#page-today .lead-row[data-lead-id="${prevId}"]`);
+          if (r) r.scrollIntoView({ block: 'nearest' });
+        });
+        return;
+      }
+      if ((e.key === 'Delete' || e.key === 'Backspace') && toiState.expandedLeadId) {
+        e.preventDefault();
+        toiRequestDelete(toiState.expandedLeadId);
+        return;
+      }
+    });
+  }
 }
 
 // ---- Status dropdown live toggle in edit modal ----
