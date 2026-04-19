@@ -656,10 +656,18 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
           סונכרן: <span id="boti-sync-date" class="font-mono">--</span>
         </div>
         <label class="flex items-center gap-1.5 text-[11px] text-on-surface-variant cursor-pointer">
+          <input type="checkbox" id="boti-show-contacted" class="w-3.5 h-3.5" style="accent-color:#2DD4BF"/>
+          <span>טופלו</span>
+          <span id="boti-contacted-count" class="text-[10px] opacity-70"></span>
+        </label>
+        <label class="flex items-center gap-1.5 text-[11px] text-on-surface-variant cursor-pointer">
           <input type="checkbox" id="boti-show-rejected" class="accent-error w-3.5 h-3.5"/>
           <span>הצג דחויים</span>
           <span id="boti-rejected-count" class="text-[10px] opacity-70"></span>
         </label>
+        <div class="text-[11px] text-on-surface-variant">
+          ממתינים לתגובה: <span id="boti-awaiting-count" class="font-bold" style="color:#2DD4BF">0</span>
+        </div>
         <button id="boti-clear-btn" onclick="clearBotiLeads()" class="px-3 py-1.5 text-[11px] border border-outline-variant text-on-surface-variant hover:bg-surface-container-high">
           נקה הכל
         </button>
@@ -1264,6 +1272,41 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
   </div>
 </div>
 
+<!-- ========== BOTI — CONTACTED (marked as handled) MODAL ========== -->
+<div id="boti-contacted-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[110] flex items-center justify-center p-4 hidden">
+  <div class="bg-surface-container w-full max-w-lg ghost-border shadow-2xl">
+    <div class="bg-surface-container-high p-5 border-b-[0.5px] border-outline-variant flex justify-between items-center">
+      <h3 class="text-lg font-bold flex items-center gap-2" style="color:#2DD4BF">
+        <span class="material-symbols-outlined">mark_email_read</span>
+        סומן כ-טופל
+      </h3>
+      <button onclick="hideBotiContactedModal()" class="text-on-surface-variant hover:text-white">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <form class="p-6 space-y-4" onsubmit="submitBotiContacted(event)">
+      <input type="hidden" id="boti-c-id"/>
+      <div class="space-y-1">
+        <label class="text-[10px] text-on-surface-variant uppercase tracking-widest font-bold">איזו הודעה שלחת? (לוג)</label>
+        <textarea id="boti-c-message" required class="w-full bg-surface-container-low border-b-[0.5px] border-outline-variant focus:border-secondary focus:ring-0 text-sm py-2 px-2 h-28 resize-none" placeholder="תעתק את ההודעה ששלחת..."></textarea>
+      </div>
+      <label class="flex items-center gap-2 cursor-pointer">
+        <input type="checkbox" id="boti-c-reminder" class="accent-primary w-4 h-4"/>
+        <span class="text-sm">קבע תזכורת לבדוק תגובה</span>
+        <select id="boti-c-hours" class="cf-select text-xs">
+          <option value="4">בעוד 4 שעות</option>
+          <option value="8" selected>בעוד 8 שעות</option>
+          <option value="24">בעוד 24 שעות</option>
+        </select>
+      </label>
+      <div class="pt-3 flex gap-3 flex-row-reverse">
+        <button type="submit" class="px-8 py-3 text-sm font-bold text-white" style="background:#2DD4BF">שמור</button>
+        <button type="button" onclick="hideBotiContactedModal()" class="px-8 py-3 text-sm border-[0.5px] border-outline-variant text-on-surface-variant">ביטול</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <!-- ========== BOTI — RAW TEXT VIEW MODAL ========== -->
 <div id="boti-raw-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[110] flex items-center justify-center p-4 hidden">
   <div class="bg-surface-container w-full max-w-xl ghost-border shadow-2xl">
@@ -1729,7 +1772,9 @@ function getSourceBadge(lead) {
 
 function renderPipelineTable() {
   const tbody = document.getElementById('pipeline-table-body');
-  const searchQ = (document.getElementById('pipeline-search')?.value || '').toLowerCase().trim();
+  const perPageQ = (document.getElementById('pipeline-search')?.value || '').toLowerCase().trim();
+  const globalQ = (document.getElementById('global-search')?.value || '').toLowerCase().trim();
+  const searchQ = globalQ || perPageQ;
   const sortBy = document.getElementById('pipeline-sort')?.value || 'updated';
 
   let leads = [...firebaseLeads];
@@ -2646,7 +2691,16 @@ function getFilteredDeals() {
 
 function renderClosings() {
   populateClosingDynamicFilters();
-  const deals = getFilteredDeals();
+  let deals = getFilteredDeals();
+  const gq = (document.getElementById('global-search')?.value || '').toLowerCase().trim();
+  if (gq) {
+    deals = deals.filter(d => {
+      const client = (d.client || '').toLowerCase();
+      const project = (d.project || '').toLowerCase();
+      const phone = (d.phone || '').toLowerCase();
+      return client.includes(gq) || project.includes(gq) || phone.includes(gq);
+    });
+  }
   renderClosingsKPIs(deals);
   renderClosingsTable(deals);
   renderPaymentGantt(deals);
@@ -4020,11 +4074,21 @@ function botiVisibleLeads() {
   const all = botiLoad();
   const filter = document.getElementById('boti-date-filter')?.value || '30';
   const showRejected = !!document.getElementById('boti-show-rejected')?.checked;
+  const showContacted = !!document.getElementById('boti-show-contacted')?.checked;
+  const search = (document.getElementById('global-search')?.value || '').trim().toLowerCase();
   const cutoff = botiDateCutoff(filter);
   return all.filter(l => {
     if (l.transferred_to_pipeline) return false;
     if (new Date(l.date) < cutoff) return false;
     if (l.rejected && !showRejected) return false;
+    const isContacted = l.status === 'contacted';
+    if (isContacted && !showContacted) return false;
+    if (!isContacted && showContacted) return false;
+    if (search) {
+      const name = (l.name || '').toLowerCase();
+      const phone = (l.phone || '');
+      if (!name.startsWith(search) && !phone.includes(search)) return false;
+    }
     return true;
   });
 }
@@ -4053,7 +4117,11 @@ function renderBotiPage() {
 
   const all = botiLoad().filter(l => !l.transferred_to_pipeline);
   const rejectedCount = all.filter(l => l.rejected).length;
+  const contactedCount = all.filter(l => !l.rejected && l.status === 'contacted').length;
+  const awaitingCount = all.filter(l => !l.rejected && l.status === 'contacted' && l.next_check_at).length;
   document.getElementById('boti-rejected-count').textContent = rejectedCount ? '(' + rejectedCount + ')' : '';
+  document.getElementById('boti-contacted-count').textContent = contactedCount ? '(' + contactedCount + ')' : '';
+  document.getElementById('boti-awaiting-count').textContent = awaitingCount;
   const visible = botiVisibleLeads();
   document.getElementById('boti-count').textContent = visible.length;
   const totalEl = document.getElementById('boti-count-total');
@@ -4085,11 +4153,16 @@ function renderBotiPage() {
     const interest = l.interest ? `<span class="text-xs">${escapeHtml(l.interest)}</span>` : '<span class="text-on-surface-variant text-xs">—</span>';
     const budget = l.budget ? `<span class="text-xs text-tertiary font-bold">${(l.budget/1000000).toFixed(1)}M ₪</span>` : '<span class="text-on-surface-variant text-xs">—</span>';
     const mentions = l.mention_count > 1 ? `<span class="closings-badge cb-gray">×${l.mention_count}</span>` : '<span class="text-on-surface-variant text-xs">—</span>';
+    const isContacted = l.status === 'contacted';
+    const contactedBtn = isContacted
+      ? `<button onclick="resetBotiContacted('${l.id}')" title="חזור לטיפול" class="w-8 h-8 flex items-center justify-center hover:bg-primary/20 text-primary"><span class="material-symbols-outlined text-base">undo</span></button>`
+      : `<button onclick="openBotiContactedModal('${l.id}')" title="סומן כ-טופל" class="w-8 h-8 flex items-center justify-center hover:bg-[#2DD4BF]/20" style="color:#2DD4BF"><span class="material-symbols-outlined text-base">mark_email_read</span></button>`;
     const rejectBtn = l.rejected
-      ? `<button onclick="toggleBotiReject('${l.id}', false)" title="שחזר" class="w-8 h-8 flex items-center justify-center hover:bg-primary/20 text-primary"><span class="material-symbols-outlined text-base">undo</span></button>`
-      : `<button onclick="toggleBotiReject('${l.id}', true)" title="דחה" class="w-8 h-8 flex items-center justify-center hover:bg-error/20 text-error"><span class="material-symbols-outlined text-base">close</span></button>`;
+      ? `<button onclick="toggleBotiReject('${l.id}', false)" title="שחזר" class="w-8 h-8 flex items-center justify-center hover:bg-primary/20 text-primary ml-4"><span class="material-symbols-outlined text-base">undo</span></button>`
+      : `<button onclick="confirmBotiReject('${l.id}')" title="דחה מהרשימה" class="w-8 h-8 flex items-center justify-center hover:bg-error/20 text-error ml-4"><span class="material-symbols-outlined text-base">close</span></button>`;
+    const rowBg = isContacted ? 'style="background:#1A1F2E"' : '';
     return `
-      <tr class="hover:bg-surface-container-high/50 transition-colors ${rowCls}">
+      <tr class="hover:bg-surface-container-high/50 transition-colors ${rowCls}" ${rowBg}>
         <td class="p-3 text-xs text-on-surface-variant">${i+1}</td>
         <td class="p-3">${nameCell}</td>
         <td class="p-3">${phoneCell}</td>
@@ -4099,14 +4172,15 @@ function renderBotiPage() {
         <td class="p-3 text-xs text-on-surface-variant font-mono">${botiFormatDate(l.date)}</td>
         <td class="p-3">${mentions}</td>
         <td class="p-3 text-center">
-          <div class="inline-flex gap-1">
-            <button onclick="openBotiTransferModal('${l.id}')" title="העבר ל-Pipeline" class="w-8 h-8 flex items-center justify-center hover:bg-primary/20 text-primary">
+          <div class="inline-flex items-center gap-1 pr-2">
+            <button onclick="openBotiTransferModal('${l.id}')" title="העבר לפייפליין" class="w-8 h-8 flex items-center justify-center hover:bg-primary/20 text-primary">
               <span class="material-symbols-outlined text-base">person_add</span>
             </button>
-            <button onclick="openBotiEditModal('${l.id}')" title="ערוך" class="w-8 h-8 flex items-center justify-center hover:bg-secondary/20 text-secondary">
+            ${contactedBtn}
+            <button onclick="openBotiEditModal('${l.id}')" title="ערוך ליד" class="w-8 h-8 flex items-center justify-center hover:bg-secondary/20 text-secondary">
               <span class="material-symbols-outlined text-base">edit</span>
             </button>
-            <button onclick="openBotiRawModal('${l.id}')" title="טקסט מקורי" class="w-8 h-8 flex items-center justify-center hover:bg-surface-container-high text-on-surface-variant">
+            <button onclick="openBotiRawModal('${l.id}')" title="הודעה מקורית" class="w-8 h-8 flex items-center justify-center hover:bg-surface-container-high text-on-surface-variant">
               <span class="material-symbols-outlined text-base">visibility</span>
             </button>
             ${rejectBtn}
@@ -4193,6 +4267,32 @@ function toggleBotiReject(id, rejected) {
   botiSave(leads);
   renderBotiPage();
   showToast(rejected ? 'נדחה' : 'שוחזר');
+}
+
+function confirmBotiReject(id) {
+  const leads = botiLoad();
+  const lead = leads.find(l => l.id === id);
+  if (!lead) return;
+  const label = lead.name || lead.phone || 'הליד';
+  if (!confirm(`לדחות את ${label}?\nהליד ייעלם מהרשימה. (ניתן לשחזר דרך פילטר 'דחויים')`)) return;
+  lead.rejected = true;
+  botiSave(leads);
+  renderBotiPage();
+  showToastUndo(`הליד "${label}" נדחה`, () => toggleBotiReject(id, false), 5000);
+}
+
+function showToastUndo(msg, undoFn, durationMs = 5000) {
+  const toast = document.createElement('div');
+  toast.className = 'fixed bottom-6 left-6 px-5 py-3 text-sm font-bold z-[200] bg-surface-container-highest text-on-surface flex items-center gap-4 ghost-border';
+  const txt = document.createElement('span'); txt.textContent = msg;
+  const btn = document.createElement('button');
+  btn.className = 'px-3 py-1 text-xs font-bold bg-primary text-on-primary hover:opacity-90';
+  btn.innerHTML = '↩️ בטל';
+  let used = false;
+  btn.onclick = () => { if (used) return; used = true; undoFn(); toast.remove(); };
+  toast.append(txt, btn);
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), durationMs);
 }
 
 function clearBotiLeads() {
@@ -4296,6 +4396,56 @@ function submitBotiEdit(e) {
   hideBotiEditModal();
   renderBotiPage();
   showToast('עודכן');
+}
+
+// ---- Contacted modal ----
+function openBotiContactedModal(id) {
+  const lead = botiLoad().find(l => l.id === id);
+  if (!lead) return;
+  document.getElementById('boti-c-id').value = id;
+  document.getElementById('boti-c-message').value = '';
+  document.getElementById('boti-c-reminder').checked = false;
+  document.getElementById('boti-c-hours').value = '8';
+  document.getElementById('boti-contacted-modal').classList.remove('hidden');
+}
+function hideBotiContactedModal() { document.getElementById('boti-contacted-modal').classList.add('hidden'); }
+
+function submitBotiContacted(e) {
+  e.preventDefault();
+  const id = document.getElementById('boti-c-id').value;
+  const leads = botiLoad();
+  const lead = leads.find(l => l.id === id);
+  if (!lead) { hideBotiContactedModal(); return; }
+  const msg = document.getElementById('boti-c-message').value.trim();
+  if (!msg) return;
+  const now = new Date();
+  lead.status = 'contacted';
+  lead.contacted_at = now.toISOString();
+  lead.last_message_sent = msg;
+  const wantsReminder = document.getElementById('boti-c-reminder').checked;
+  if (wantsReminder) {
+    const hours = parseInt(document.getElementById('boti-c-hours').value, 10) || 8;
+    lead.next_check_at = new Date(now.getTime() + hours * 3600 * 1000).toISOString();
+  } else {
+    lead.next_check_at = null;
+  }
+  botiSave(leads);
+  hideBotiContactedModal();
+  renderBotiPage();
+  showToast('סומן כ-טופל ✓');
+}
+
+function resetBotiContacted(id) {
+  const leads = botiLoad();
+  const lead = leads.find(l => l.id === id);
+  if (!lead) return;
+  lead.status = null;
+  lead.contacted_at = null;
+  lead.last_message_sent = null;
+  lead.next_check_at = null;
+  botiSave(leads);
+  renderBotiPage();
+  showToast('חזר לטיפול');
 }
 
 // ---- Raw modal ----
@@ -4417,6 +4567,16 @@ document.addEventListener('DOMContentLoaded', () => {
   if (df) df.addEventListener('change', renderBotiPage);
   const sr = document.getElementById('boti-show-rejected');
   if (sr) sr.addEventListener('change', renderBotiPage);
+  const sc = document.getElementById('boti-show-contacted');
+  if (sc) sc.addEventListener('change', renderBotiPage);
+  // Global live search — re-renders active page
+  const gs = document.getElementById('global-search');
+  if (gs) gs.addEventListener('input', () => {
+    if (typeof currentPage === 'undefined') return;
+    if (currentPage === 'boti') renderBotiPage();
+    else if (currentPage === 'pipeline' && typeof renderPipelineTable === 'function') renderPipelineTable();
+    else if (currentPage === 'closings' && typeof renderClosings === 'function') renderClosings();
+  });
   botiRestoreKnownLeads();
 });
 
