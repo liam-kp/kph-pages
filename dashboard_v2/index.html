@@ -238,6 +238,10 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
       <span class="material-symbols-outlined">insert_chart</span>
       <span class="text-sm">Reports</span>
     </div>
+    <div class="nav-item flex items-center gap-3 px-6 py-4 text-[#bccac1] hover:bg-[#181c22] cursor-pointer" data-page="boti">
+      <span class="material-symbols-outlined">smart_toy</span>
+      <span class="text-sm">בוטי</span>
+    </div>
   </nav>
   <div class="p-6 border-t-[0.5px] border-[#3d4943] flex items-center gap-3">
     <div class="w-8 h-8 bg-surface-container-highest flex items-center justify-center">
@@ -257,6 +261,7 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
   <button class="mob-nav-btn" data-page="campaigns"><span class="material-symbols-outlined">campaign</span></button>
   <button class="mob-nav-btn" data-page="projects"><span class="material-symbols-outlined">location_city</span></button>
   <button class="mob-nav-btn" data-page="reports"><span class="material-symbols-outlined">insert_chart</span></button>
+  <button class="mob-nav-btn" data-page="boti"><span class="material-symbols-outlined">smart_toy</span></button>
 </nav>
 
 <!-- ========== MAIN CONTENT ========== -->
@@ -271,6 +276,7 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
         <a class="top-tab text-[#bccac1] text-sm pb-1 cursor-pointer hover:text-white" data-page="campaigns">Campaigns</a>
         <a class="top-tab text-[#bccac1] text-sm pb-1 cursor-pointer hover:text-white" data-page="projects">Projects</a>
         <a class="top-tab text-[#bccac1] text-sm pb-1 cursor-pointer hover:text-white" data-page="reports">Reports</a>
+        <a class="top-tab text-[#bccac1] text-sm pb-1 cursor-pointer hover:text-white" data-page="boti">בוטי</a>
       </nav>
     </div>
     <div class="flex items-center gap-4">
@@ -622,6 +628,68 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
           </div>
           <div class="h-48 w-full flex items-end gap-6 px-4" id="report-chart"></div>
         </div>
+      </div>
+    </div>
+
+    <!-- ==================== BOTI PAGE ==================== -->
+    <div id="page-boti" class="page-content p-6 space-y-5 fade-in">
+      <!-- Top Bar -->
+      <div class="flex flex-wrap items-center gap-3 bg-surface-container p-4 ghost-border">
+        <label class="cursor-pointer bg-primary text-on-primary px-4 py-2 text-sm font-bold active:scale-95 transition-transform flex items-center gap-2">
+          <span class="material-symbols-outlined text-base">upload_file</span>
+          העלה Export
+          <input id="boti-file-input" type="file" accept=".txt,text/plain" class="hidden"/>
+        </label>
+        <select id="boti-date-filter" class="cf-select">
+          <option value="7">7 ימים אחרונים</option>
+          <option value="30" selected>30 יום אחרונים</option>
+          <option value="90">90 יום אחרונים</option>
+          <option value="since">מ-1.1.2026</option>
+          <option value="all">הכל</option>
+        </select>
+        <div class="text-sm text-on-surface-variant flex items-center gap-1">
+          <span>לידים:</span>
+          <span id="boti-count" class="text-primary font-bold">0</span>
+          <span id="boti-count-total" class="text-[10px] opacity-70"></span>
+        </div>
+        <div class="text-xs text-on-surface-variant mr-auto">
+          סונכרן: <span id="boti-sync-date" class="font-mono">--</span>
+        </div>
+        <label class="flex items-center gap-1.5 text-[11px] text-on-surface-variant cursor-pointer">
+          <input type="checkbox" id="boti-show-rejected" class="accent-error w-3.5 h-3.5"/>
+          <span>הצג דחויים</span>
+          <span id="boti-rejected-count" class="text-[10px] opacity-70"></span>
+        </label>
+        <button id="boti-clear-btn" onclick="clearBotiLeads()" class="px-3 py-1.5 text-[11px] border border-outline-variant text-on-surface-variant hover:bg-surface-container-high">
+          נקה הכל
+        </button>
+      </div>
+
+      <!-- Empty State -->
+      <div id="boti-empty" class="bg-surface-container ghost-border p-12 text-center">
+        <span class="material-symbols-outlined text-6xl text-on-surface-variant opacity-40">smart_toy</span>
+        <p class="text-sm text-on-surface-variant mt-3">העלה קובץ TXT של יצוא WhatsApp משיחת בוטי כדי לחלץ לידים</p>
+        <p class="text-[11px] text-on-surface-variant opacity-60 mt-1">WhatsApp → הצ'אט → ⋮ → ייצא שיחה → ללא מדיה</p>
+      </div>
+
+      <!-- Leads Table -->
+      <div id="boti-table-wrap" class="bg-surface-container ghost-border overflow-x-auto hidden">
+        <table class="w-full text-sm">
+          <thead class="bg-surface-container-high text-[10px] uppercase tracking-wider text-on-surface-variant">
+            <tr>
+              <th class="text-right p-3 w-8">#</th>
+              <th class="text-right p-3">שם</th>
+              <th class="text-right p-3">טלפון</th>
+              <th class="text-right p-3">סטטוס</th>
+              <th class="text-right p-3">עניין</th>
+              <th class="text-right p-3">תקציב</th>
+              <th class="text-right p-3">תאריך</th>
+              <th class="text-right p-3">הוזכר</th>
+              <th class="text-center p-3 w-32">פעולות</th>
+            </tr>
+          </thead>
+          <tbody id="boti-tbody" class="divide-y divide-outline-variant/20"></tbody>
+        </table>
       </div>
     </div>
 
@@ -1067,6 +1135,155 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
   </div>
 </div>
 
+<!-- ========== BOTI — TRANSFER TO PIPELINE MODAL ========== -->
+<div id="boti-transfer-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[110] flex items-center justify-center p-4 hidden overflow-y-auto">
+  <div class="bg-surface-container w-full max-w-2xl ghost-border shadow-2xl my-auto">
+    <div class="bg-surface-container-high p-5 border-b-[0.5px] border-outline-variant flex justify-between items-center">
+      <h3 class="text-lg font-bold flex items-center gap-2">
+        <span class="material-symbols-outlined text-primary">person_add</span>
+        העבר ל-Pipeline
+      </h3>
+      <button onclick="hideBotiTransferModal()" class="text-on-surface-variant hover:text-white">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <form id="boti-transfer-form" class="p-6 space-y-4" onsubmit="submitBotiTransfer(event)">
+      <input type="hidden" id="boti-transfer-id"/>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="space-y-1">
+          <label class="text-[10px] text-on-surface-variant uppercase tracking-widest font-bold">שם</label>
+          <input id="boti-t-client" required class="w-full bg-surface-container-low border-b-[0.5px] border-outline-variant focus:border-secondary focus:ring-0 text-sm py-2 px-2" type="text"/>
+        </div>
+        <div class="space-y-1">
+          <label class="text-[10px] text-on-surface-variant uppercase tracking-widest font-bold">טלפון</label>
+          <input id="boti-t-phone" class="w-full bg-surface-container-low border-b-[0.5px] border-outline-variant focus:border-secondary focus:ring-0 text-sm py-2 px-2 font-mono" type="text" placeholder="9725XXXXXXXX"/>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="space-y-1">
+          <label class="text-[10px] text-on-surface-variant uppercase tracking-widest font-bold">פרויקט</label>
+          <select id="boti-t-project" class="w-full bg-surface-container-low border-b-[0.5px] border-outline-variant text-sm py-2 px-2">
+            <option value="">בחר פרויקט…</option>
+            <option value="Red Sunset">Red Sunset</option>
+            <option value="Maduwan">Maduwan</option>
+            <option value="Srithanu">Srithanu</option>
+            <option value="Nai-Wok">Nai-Wok</option>
+            <option value="Battle Beach">Battle Beach</option>
+            <option value="The Surrender">The Surrender</option>
+            <option value="NAM">NAM</option>
+            <option value="Chaloklum">Chaloklum</option>
+            <option value="Beach">Beach</option>
+            <option value="Villa">Villa</option>
+            <option value="אחר">אחר</option>
+          </select>
+        </div>
+        <div class="space-y-1">
+          <label class="text-[10px] text-on-surface-variant uppercase tracking-widest font-bold">Priority</label>
+          <select id="boti-t-temp" class="w-full bg-surface-container-low border-b-[0.5px] border-outline-variant text-sm py-2 px-2">
+            <option value="חם מאוד">חם מאוד</option>
+            <option value="חם">חם</option>
+            <option value="פושר">פושר</option>
+            <option value="קר">קר</option>
+          </select>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="space-y-1">
+          <label class="text-[10px] text-on-surface-variant uppercase tracking-widest font-bold">נוכחות באי</label>
+          <div class="flex gap-4 py-2">
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="radio" name="boti-t-island" value="true" class="accent-primary"/>
+              <span class="text-sm">כן</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="radio" name="boti-t-island" value="false" class="accent-primary" checked/>
+              <span class="text-sm">לא</span>
+            </label>
+          </div>
+        </div>
+        <div class="space-y-1">
+          <label class="text-[10px] text-on-surface-variant uppercase tracking-widest font-bold">תקציב (₪)</label>
+          <input id="boti-t-budget" class="w-full bg-surface-container-low border-b-[0.5px] border-outline-variant focus:border-secondary focus:ring-0 text-sm py-2 px-2" type="number" placeholder="0"/>
+        </div>
+      </div>
+      <div class="space-y-1">
+        <label class="text-[10px] text-on-surface-variant uppercase tracking-widest font-bold">הערות</label>
+        <textarea id="boti-t-notes" class="w-full bg-surface-container-low border-b-[0.5px] border-outline-variant focus:border-secondary focus:ring-0 text-sm py-2 px-2 h-24 resize-none"></textarea>
+      </div>
+      <div class="pt-4 flex gap-3 flex-row-reverse">
+        <button type="submit" class="bg-primary text-on-primary px-8 py-3 text-sm font-bold active:scale-95 transition-transform">שמור</button>
+        <button type="button" onclick="hideBotiTransferModal()" class="px-8 py-3 text-sm border-[0.5px] border-outline-variant text-on-surface-variant hover:bg-surface-container-high">ביטול</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ========== BOTI — EDIT EXTRACTED MODAL ========== -->
+<div id="boti-edit-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[110] flex items-center justify-center p-4 hidden">
+  <div class="bg-surface-container w-full max-w-lg ghost-border shadow-2xl">
+    <div class="bg-surface-container-high p-5 border-b-[0.5px] border-outline-variant flex justify-between items-center">
+      <h3 class="text-lg font-bold flex items-center gap-2">
+        <span class="material-symbols-outlined text-secondary">edit</span>
+        ערוך חילוץ
+      </h3>
+      <button onclick="hideBotiEditModal()" class="text-on-surface-variant hover:text-white">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <form class="p-6 space-y-4" onsubmit="submitBotiEdit(event)">
+      <input type="hidden" id="boti-e-id"/>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="space-y-1">
+          <label class="text-[10px] text-on-surface-variant uppercase tracking-widest font-bold">שם</label>
+          <input id="boti-e-name" class="w-full bg-surface-container-low border-b-[0.5px] border-outline-variant focus:border-secondary focus:ring-0 text-sm py-2 px-2" type="text"/>
+        </div>
+        <div class="space-y-1">
+          <label class="text-[10px] text-on-surface-variant uppercase tracking-widest font-bold">טלפון</label>
+          <input id="boti-e-phone" class="w-full bg-surface-container-low border-b-[0.5px] border-outline-variant focus:border-secondary focus:ring-0 text-sm py-2 px-2 font-mono" type="text"/>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <label class="flex items-center gap-2 text-sm cursor-pointer">
+          <input type="checkbox" id="boti-e-island" class="accent-primary w-4 h-4"/> באי
+        </label>
+        <label class="flex items-center gap-2 text-sm cursor-pointer">
+          <input type="checkbox" id="boti-e-hot" class="accent-primary w-4 h-4"/> חם מאוד
+        </label>
+        <label class="flex items-center gap-2 text-sm cursor-pointer">
+          <input type="checkbox" id="boti-e-arriving" class="accent-primary w-4 h-4"/> מגיע
+        </label>
+        <label class="flex items-center gap-2 text-sm cursor-pointer">
+          <input type="checkbox" id="boti-e-meeting" class="accent-primary w-4 h-4"/> פגישה
+        </label>
+      </div>
+      <div class="pt-3 flex gap-3 flex-row-reverse">
+        <button type="submit" class="bg-secondary text-on-secondary px-6 py-2 text-sm font-bold">שמור</button>
+        <button type="button" onclick="hideBotiEditModal()" class="px-6 py-2 text-sm border-[0.5px] border-outline-variant text-on-surface-variant">ביטול</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ========== BOTI — RAW TEXT VIEW MODAL ========== -->
+<div id="boti-raw-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[110] flex items-center justify-center p-4 hidden">
+  <div class="bg-surface-container w-full max-w-xl ghost-border shadow-2xl">
+    <div class="bg-surface-container-high p-5 border-b-[0.5px] border-outline-variant flex justify-between items-center">
+      <h3 class="text-lg font-bold flex items-center gap-2">
+        <span class="material-symbols-outlined">visibility</span>
+        טקסט מקורי מבוטי
+      </h3>
+      <button onclick="hideBotiRawModal()" class="text-on-surface-variant hover:text-white">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <div class="p-6 space-y-3">
+      <div class="text-[11px] text-on-surface-variant" id="boti-raw-meta"></div>
+      <pre id="boti-raw-text" class="bg-surface-container-low p-4 text-sm whitespace-pre-wrap leading-relaxed" dir="auto"></pre>
+      <div id="boti-raw-all" class="space-y-2"></div>
+    </div>
+  </div>
+</div>
+
 <!-- ========== JAVASCRIPT ========== -->
 <script>
 // ============ CONFIG ============
@@ -1075,9 +1292,12 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
 const NETLIFY_PROXY = 'https://kph-proxy.netlify.app';
 const AIAGENTPRO_API = 'https://api.aiagentpro.online';
 const IS_LOCAL = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+const IS_GH_PAGES = /github\.io$/i.test(window.location.hostname);
 const API_BASE = IS_LOCAL ? `${window.location.protocol}//${window.location.hostname}:8081` : NETLIFY_PROXY;
 const LOCAL_API = IS_LOCAL ? API_BASE : null; // local-only endpoints (pipeline, deals)
-const PIPELINE_URL = IS_LOCAL ? `${API_BASE}/pipeline` : `${NETLIFY_PROXY}/pipeline_data.json`;
+const PIPELINE_URL = IS_LOCAL ? `${API_BASE}/pipeline`
+  : IS_GH_PAGES ? './pipeline_data.json'
+  : `${NETLIFY_PROXY}/pipeline_data.json`;
 const CUSTOMER_ID = '11a3a8c9-d3db-4b32-8c08-35dd7868b959';
 
 // ============ TOKEN ============
@@ -1244,6 +1464,7 @@ async function loadPageData(page) {
       case 'campaigns': await loadCampaigns(); break;
       case 'projects': await loadProjects(); break;
       case 'reports': await loadReports(); break;
+      case 'boti': renderBotiPage(); break;
     }
   } catch(e) {
     console.error('Load error:', e);
@@ -1364,7 +1585,9 @@ function mergeLeadSources(fbLeads, localLeads) {
 
 async function loadPipeline() {
   // Fetch all three sources in parallel
-  const SNAPSHOT_URL = IS_LOCAL ? '/firebase_leads_snapshot.json' : `${NETLIFY_PROXY}/firebase_snapshot.json`;
+  const SNAPSHOT_URL = IS_LOCAL ? '/firebase_leads_snapshot.json'
+    : IS_GH_PAGES ? './firebase_leads_snapshot.json'
+    : `${NETLIFY_PROXY}/firebase_snapshot.json`;
   const [fbResult, localResult, snapResult] = await Promise.allSettled([
     firebaseFetch('Leads'),
     fetch(PIPELINE_URL).then(r => r.json()),
@@ -1388,12 +1611,15 @@ async function loadPipeline() {
     }
   }
 
-  // Local leads
-  if (localResult.status === 'fulfilled') {
+  // Local leads (guard against proxy error responses like usage_exceeded)
+  if (localResult.status === 'fulfilled' && Array.isArray(localResult.value?.leads)) {
     pipelineData = localResult.value;
     localLeadsRaw = pipelineData.leads || [];
   } else {
-    console.warn('Local pipeline unavailable');
+    const errBody = localResult.status === 'fulfilled' ? localResult.value : null;
+    if (errBody?.error) console.warn('Pipeline proxy error:', errBody.error);
+    else console.warn('Pipeline data unavailable');
+    pipelineData = { leads: [], deals: [], payments: [] };
     localLeadsRaw = [];
   }
 
@@ -3560,10 +3786,547 @@ function startAutoRefresh() {
   updateLastUpdatedLabel();
 }
 
+// ============ BOTI TAB ============
+const BOTI_SENDER = 'Koh phangan Investment Hub';
+const BOTI_CUTOFF = new Date(2026, 0, 1); // ignore anything before 2026-01-01
+const BOTI_STORAGE_KEY = 'kph_boti_leads_v1';
+const BOTI_SYNC_KEY = 'kph_boti_sync_v1';
+
+const BOTI_ENGLISH_NAMES = ['Liran','Amir','Dan','Daniel','Niru','Nir','Aaron','Haziza','Yshai',
+  'Itai','Neri','Yaniv','Shlomi','Aviv','Itzik','Dolly','Nadav','Tamir','Uri','Alon',
+  'Anat','Mia','Sharon','Ben','Shir','Adam','Orly','Ilan','Guy','Ran','Shay','Tal',
+  'Yael','Ofer','Gali','Roy','Eden','Ido','Omri','Sagi','Bar','Ron','Eli','Asi',
+  'Meitar','Zvika','Tomer','Ohad','Pini','Udi','Michal','Avi','Yossi','Noa','Roi',
+  'Doron','Moshe','Eran','Ziv','Gal','Gad','Omer','Asaf','Yotam','Oren','Matan',
+  'Ariel','Inbal','Hila','Shira','Tzach','Ya\'akov','Yakov','Maya','Lior','Maor',
+  'Aharon','Aviva','Dana','Gil','Idan','Kfir','Lee','Liat','Mor','Ori','Raz',
+  'Refael','Rotem','Shai','Tomerg','Yuval','Haim','Ilya','Sefi','Asi','Elad','Itay'];
+
+const BOTI_NAME_BLACKLIST = new Set([
+  'הגיע','הגיעה','מגיע','מגיעה','מגיעים',
+  'באי','היום','מחר','אחרי','אתמול',
+  'קוסמטיקס','פגישה','שיחה','זום',
+  'יום','שבוע','חודש','שעה',
+  'בר','אבי','רן',
+  'Beach','Villa','NAM','Sale','The','Red','Surrender','Experiment','Hub','Hotel'
+]);
+
+const BOTI_HEBREW_STOPWORDS = new Set([
+  'היום','מחר','אתמול','שעה','דקות',
+  'שני','שלישי','רביעי','חמישי','שישי','שבת','ראשון',
+  'הגיע','הגיעה','מגיע','מגיעה','יגיע','תגיע','ממש',
+  'אמור','אמורה','צריך','צריכה','רוצה','רוצים','מחפש','מחפשת','ומחפש','ומחפשת',
+  'מתעניין','מתעניינת','להיפגש','יבוא','ליצור','לקבל','לעלות','לחזור',
+  'באי','בארץ','ארץ','פה','שם','לאי','מהאי','באים','בדרך',
+  'מלון','וילה','ביץ','בית','פרויקט','פגישה','שיחה','שיחת','פולואפ','תזכורת',
+  'תקציב','הון','מליון','מיליון','חדרים','חדר','חלקות','חלקה',
+  'בשבוע','לאחרונה','אחרי','לפני','בארץ','בקופנגן','קופנגן',
+  'קוסמטיקס','זום','ציידת','מציאות','ישראל',
+  'הפרויקט','הבית','הוילה','הביץ','המלון','ההון',
+  'שלי','שלו','שלה','עם','של','את','לו','לה','לי','לך','לכם','לנו',
+  'באישי','מערכת','סמס','הודעה','להודיע','לתאם','ליד',
+]);
+
+function botiLoad() {
+  try { return JSON.parse(localStorage.getItem(BOTI_STORAGE_KEY) || '[]'); }
+  catch { return []; }
+}
+function botiSave(leads) {
+  localStorage.setItem(BOTI_STORAGE_KEY, JSON.stringify(leads));
+  localStorage.setItem(BOTI_SYNC_KEY, new Date().toISOString());
+}
+function botiGetSync() { return localStorage.getItem(BOTI_SYNC_KEY); }
+
+function botiParseChat(text) {
+  const lines = text.split(/\r?\n/);
+  const headerRx = /^\u200e?\[(\d{1,2})\/(\d{1,2})\/(\d{2,4}),\s*(\d{1,2}):(\d{2})(?::(\d{2}))?\]\s*(.+?):\s*(.*)$/;
+  const messages = [];
+  let current = null;
+  for (const line of lines) {
+    const m = line.match(headerRx);
+    if (m) {
+      if (current) messages.push(current);
+      const [, mo, da, yr, hh, mm, ss, sender, body] = m;
+      let year = parseInt(yr, 10);
+      if (year < 100) year += 2000;
+      current = {
+        date: new Date(year, parseInt(mo,10)-1, parseInt(da,10), parseInt(hh,10), parseInt(mm,10), parseInt(ss||'0',10)),
+        sender: sender.trim(),
+        body: body,
+      };
+    } else if (current) {
+      current.body += '\n' + line;
+    }
+  }
+  if (current) messages.push(current);
+
+  const filtered = messages.filter(m => m.sender === BOTI_SENDER && m.date >= BOTI_CUTOFF);
+  const raw = filtered.map(botiExtractLead).filter(l => l.name || l.phone);
+  return botiDedupe(raw);
+}
+
+function botiExtractLead(m) {
+  const text = m.body.replace(/\u200e|\u200f|\u202a-\u202e/g, '').trim();
+  const flat = text.replace(/\s+/g, ' ');
+
+  // --- phone ---
+  let phone = null;
+  const phoneRx = /\+?972[\s-]?0?(\d{1,2})[\s-]?(\d{3,4})[\s-]?(\d{3,4})/;
+  const pm = flat.match(phoneRx);
+  if (pm) {
+    const digits = (pm[1] + pm[2] + pm[3]).replace(/\D/g, '');
+    phone = '972' + digits.replace(/^0+/, '');
+  } else {
+    const localRx = /\b0(5\d)[\s-]?(\d{3,4})[\s-]?(\d{3,4})\b/;
+    const lm = flat.match(localRx);
+    if (lm) phone = '972' + lm[1] + lm[2] + lm[3];
+  }
+
+  // --- name (token walk: skip blacklist + stopwords, pick first name-like) ---
+  const hasEngCap = /\b[A-Z][a-z]{2,}/.test(flat);
+  const tokens = flat.split(/[\s,:\-!?.\u2022()'"״׳״\u200e\u200f]+/).filter(Boolean);
+
+  // Build acceptance predicate
+  function botiAcceptName(tok) {
+    if (!tok) return false;
+    if (/^\d/.test(tok) || tok.startsWith('+')) return false;
+    const lc = tok.toLowerCase();
+    if (BOTI_NAME_BLACKLIST.has(tok) || BOTI_NAME_BLACKLIST.has(lc)) return false;
+    if (BOTI_HEBREW_STOPWORDS.has(tok)) return false;
+    // Explicit English name list (case-insensitive)
+    if (BOTI_ENGLISH_NAMES.some(n => n.toLowerCase() === lc)) return true;
+    // Capitalized English 3+ chars
+    if (/^[A-Z][A-Za-z']{2,}$/.test(tok)) return true;
+    // Hebrew 3+ chars (not blacklisted/stopword)
+    if (/^[\u0590-\u05FF]{3,}$/.test(tok)) return true;
+    // Hebrew 1-2 chars — require phone or English capital in message
+    if (/^[\u0590-\u05FF]{1,2}$/.test(tok) && (phone || hasEngCap)) return true;
+    return false;
+  }
+
+  let name = null;
+  for (const tok of tokens) {
+    if (botiAcceptName(tok)) {
+      // Normalize English name to canonical case if it's in the list
+      const canonical = BOTI_ENGLISH_NAMES.find(n => n.toLowerCase() === tok.toLowerCase());
+      name = canonical || tok;
+      break;
+    }
+  }
+  // Final guards
+  if (name && BOTI_NAME_BLACKLIST.has(name)) name = null;
+  if (name && /^[\u0590-\u05FF]{1,2}$/.test(name) && !phone && !hasEngCap) name = null;
+
+  // --- status flags ---
+  // Hebrew word boundary: no Hebrew letter before/after (JS \b doesn't fire on Hebrew)
+  const is_on_island = /(?<![\u0590-\u05FF])באי(?![\u0590-\u05FF])/.test(flat);
+  const is_arriving = /(מגיע לאי|(?<![\u0590-\u05FF])מגיע(?![\u0590-\u05FF])|יגיע|אמור להגיע|עולה לאי)/.test(flat);
+  const is_hot = /(חם מאוד|לקראת קנייה|רוצה לקנות|ליד חם)/.test(flat);
+  const needs_meeting = /(שיחה|פגישה|להיפגש|לתאם פגישה)/.test(flat);
+
+  // --- interest ---
+  let interest = null;
+  if (/The Surrender|Surrender Experiment/i.test(flat)) interest = 'The Surrender';
+  else if (/Red Sunset/i.test(flat)) interest = 'Red Sunset';
+  else if (/(?<![\u0590-\u05FF])נאם(?![\u0590-\u05FF])|\bNAM\b/i.test(flat)) interest = 'NAM';
+  else if (/סריטאנו|Srithanu/i.test(flat)) interest = 'Srithanu';
+  else if (/צלוקלאם|Chaloklum/i.test(flat)) interest = 'Chaloklum';
+  else if (/מאדוואן|Maduwan/i.test(flat)) interest = 'Maduwan';
+  else if (/ביץ|Beach|ביץ\u05BF|ביץ'/i.test(flat)) interest = 'Beach';
+  else if (/וילה|Villa/i.test(flat)) interest = 'Villa';
+  else if (/מלון|Hotel/i.test(flat)) interest = 'Hotel';
+  else if (/מתחם/.test(flat)) interest = 'מתחם';
+
+  // --- budget ---
+  let budget = null;
+  const budRx = /(\d+(?:[\.,]\d+)?)\s*(?:מליון|מיליון|מ[׳']|M\b)/i;
+  const bm = flat.match(budRx);
+  if (bm) {
+    const num = parseFloat(bm[1].replace(',', '.'));
+    if (!isNaN(num) && num > 0 && num < 1000) budget = Math.round(num * 1_000_000);
+  }
+
+  // --- reminder_date / time (bonus, not rendered) ---
+  let reminder_date = null, reminder_time = null;
+  const timeRx = /\b(\d{1,2}):?(\d{2})\b/;
+  const tm = flat.match(timeRx);
+  if (tm) {
+    const hh = parseInt(tm[1],10), mm = parseInt(tm[2],10);
+    if (hh < 24 && mm < 60) reminder_time = String(hh).padStart(2,'0') + ':' + String(mm).padStart(2,'0');
+  }
+
+  const cleanName = name ? name.trim() : null;
+  return {
+    id: 'boti_' + m.date.getTime() + '_' + Math.random().toString(36).slice(2, 7),
+    date: m.date.toISOString(),
+    raw_text: text,
+    phone,
+    name: cleanName,
+    original_name: cleanName,
+    is_on_island,
+    is_arriving,
+    is_hot,
+    needs_meeting,
+    interest,
+    budget,
+    reminder_time,
+    reminder_date,
+    mention_count: 1,
+    all_raw_texts: [{ date: m.date.toISOString(), text }],
+    transferred_to_pipeline: false,
+    rejected: false,
+    user_edited: false,
+  };
+}
+
+function botiDedupe(leads) {
+  const byKey = new Map();
+  for (const lead of leads) {
+    const nameKey = (lead.name || '').toLowerCase().trim();
+    const key = lead.phone ? 'p:' + lead.phone : (nameKey ? 'n:' + nameKey : 'id:' + lead.id);
+    const existing = byKey.get(key);
+    if (!existing) {
+      byKey.set(key, lead);
+    } else {
+      const newerIsLead = new Date(lead.date) > new Date(existing.date);
+      const newer = newerIsLead ? lead : existing;
+      const older = newerIsLead ? existing : lead;
+      newer.is_on_island ||= older.is_on_island;
+      newer.is_arriving ||= older.is_arriving;
+      newer.is_hot ||= older.is_hot;
+      newer.needs_meeting ||= older.needs_meeting;
+      newer.phone ||= older.phone;
+      newer.interest ||= older.interest;
+      newer.budget ||= older.budget;
+      newer.mention_count = (newer.mention_count || 1) + (older.mention_count || 1);
+      newer.all_raw_texts = [...(newer.all_raw_texts || []), ...(older.all_raw_texts || [])]
+        .sort((a,b) => new Date(b.date) - new Date(a.date));
+      byKey.set(key, newer);
+    }
+  }
+  return [...byKey.values()].sort((a,b) => new Date(b.date) - new Date(a.date));
+}
+
+function botiDateCutoff(filter) {
+  const now = new Date();
+  if (filter === '7') return new Date(now.getTime() - 7*864e5);
+  if (filter === '30') return new Date(now.getTime() - 30*864e5);
+  if (filter === '90') return new Date(now.getTime() - 90*864e5);
+  if (filter === 'since') return BOTI_CUTOFF;
+  return BOTI_CUTOFF; // 'all' — still bound by 2026-01-01 rule
+}
+
+function botiVisibleLeads() {
+  const all = botiLoad();
+  const filter = document.getElementById('boti-date-filter')?.value || '30';
+  const showRejected = !!document.getElementById('boti-show-rejected')?.checked;
+  const cutoff = botiDateCutoff(filter);
+  return all.filter(l => {
+    if (l.transferred_to_pipeline) return false;
+    if (new Date(l.date) < cutoff) return false;
+    if (l.rejected && !showRejected) return false;
+    return true;
+  });
+}
+
+function botiFormatDate(iso) {
+  const d = new Date(iso);
+  return String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0') + '/' + String(d.getFullYear()).slice(-2);
+}
+
+function botiStatusBadges(l) {
+  const b = [];
+  if (l.is_on_island) b.push('<span class="closings-badge" style="background:rgba(52,211,153,0.15);color:#34D399">🏝️ באי</span>');
+  if (l.is_hot)       b.push('<span class="closings-badge" style="background:rgba(251,146,60,0.15);color:#FB923C">🔥 חם מאוד</span>');
+  if (l.is_arriving)  b.push('<span class="closings-badge" style="background:rgba(109,213,250,0.15);color:#6DD5FA">✈️ מגיע</span>');
+  if (l.needs_meeting)b.push('<span class="closings-badge" style="background:rgba(167,139,250,0.15);color:#A78BFA">📅 פגישה</span>');
+  return b.join(' ');
+}
+
+function renderBotiPage() {
+  const sync = botiGetSync();
+  document.getElementById('boti-sync-date').textContent = sync ? botiFormatDate(sync) + ' ' + new Date(sync).toTimeString().slice(0,5) : '—';
+
+  const all = botiLoad().filter(l => !l.transferred_to_pipeline);
+  const rejectedCount = all.filter(l => l.rejected).length;
+  document.getElementById('boti-rejected-count').textContent = rejectedCount ? '(' + rejectedCount + ')' : '';
+  const visible = botiVisibleLeads();
+  document.getElementById('boti-count').textContent = visible.length;
+  const totalEl = document.getElementById('boti-count-total');
+  totalEl.textContent = all.length > visible.length ? '(מתוך ' + all.length + ')' : '';
+
+  const tbody = document.getElementById('boti-tbody');
+  const empty = document.getElementById('boti-empty');
+  const wrap = document.getElementById('boti-table-wrap');
+
+  if (all.length === 0) {
+    empty.classList.remove('hidden');
+    wrap.classList.add('hidden');
+    tbody.innerHTML = '';
+    return;
+  }
+  empty.classList.add('hidden');
+  wrap.classList.remove('hidden');
+
+  if (visible.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="9" class="p-6 text-center text-on-surface-variant text-xs">אין לידים בטווח התאריכים הנבחר</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = visible.map((l, i) => {
+    const rowCls = l.rejected ? 'opacity-40 line-through' : '';
+    const nameCell = l.name ? `<span class="font-bold">${escapeHtml(l.name)}</span>` : '<span class="text-on-surface-variant italic">—</span>';
+    const phoneCell = l.phone ? `<a href="https://wa.me/${l.phone}" target="_blank" class="text-[#25D366] font-mono text-xs hover:underline">${l.phone}</a>` : '<span class="text-on-surface-variant">—</span>';
+    const badges = botiStatusBadges(l) || '<span class="text-on-surface-variant text-xs">—</span>';
+    const interest = l.interest ? `<span class="text-xs">${escapeHtml(l.interest)}</span>` : '<span class="text-on-surface-variant text-xs">—</span>';
+    const budget = l.budget ? `<span class="text-xs text-tertiary font-bold">${(l.budget/1000000).toFixed(1)}M ₪</span>` : '<span class="text-on-surface-variant text-xs">—</span>';
+    const mentions = l.mention_count > 1 ? `<span class="closings-badge cb-gray">×${l.mention_count}</span>` : '<span class="text-on-surface-variant text-xs">—</span>';
+    const rejectBtn = l.rejected
+      ? `<button onclick="toggleBotiReject('${l.id}', false)" title="שחזר" class="w-8 h-8 flex items-center justify-center hover:bg-primary/20 text-primary"><span class="material-symbols-outlined text-base">undo</span></button>`
+      : `<button onclick="toggleBotiReject('${l.id}', true)" title="דחה" class="w-8 h-8 flex items-center justify-center hover:bg-error/20 text-error"><span class="material-symbols-outlined text-base">close</span></button>`;
+    return `
+      <tr class="hover:bg-surface-container-high/50 transition-colors ${rowCls}">
+        <td class="p-3 text-xs text-on-surface-variant">${i+1}</td>
+        <td class="p-3">${nameCell}</td>
+        <td class="p-3">${phoneCell}</td>
+        <td class="p-3">${badges}</td>
+        <td class="p-3">${interest}</td>
+        <td class="p-3">${budget}</td>
+        <td class="p-3 text-xs text-on-surface-variant font-mono">${botiFormatDate(l.date)}</td>
+        <td class="p-3">${mentions}</td>
+        <td class="p-3 text-center">
+          <div class="inline-flex gap-1">
+            <button onclick="openBotiTransferModal('${l.id}')" title="העבר ל-Pipeline" class="w-8 h-8 flex items-center justify-center hover:bg-primary/20 text-primary">
+              <span class="material-symbols-outlined text-base">person_add</span>
+            </button>
+            <button onclick="openBotiEditModal('${l.id}')" title="ערוך" class="w-8 h-8 flex items-center justify-center hover:bg-secondary/20 text-secondary">
+              <span class="material-symbols-outlined text-base">edit</span>
+            </button>
+            <button onclick="openBotiRawModal('${l.id}')" title="טקסט מקורי" class="w-8 h-8 flex items-center justify-center hover:bg-surface-container-high text-on-surface-variant">
+              <span class="material-symbols-outlined text-base">visibility</span>
+            </button>
+            ${rejectBtn}
+          </div>
+        </td>
+      </tr>`;
+  }).join('');
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function botiFirstSeen(lead) {
+  if (lead.all_raw_texts && lead.all_raw_texts.length) {
+    const dates = lead.all_raw_texts.map(r => r.date).filter(Boolean).sort();
+    if (dates.length) return dates[0];
+  }
+  return lead.date;
+}
+
+function botiMergeKey(lead) {
+  // Stable identity: original_name (fallback to name) + first-seen day
+  const ident = (lead.original_name || lead.name || '').toLowerCase().trim() || '__noname__';
+  const day = String(botiFirstSeen(lead)).slice(0, 10);
+  return ident + '|' + day;
+}
+
+async function botiHandleFile(file) {
+  if (!file) return;
+  showToast('מעבד קובץ...');
+  const text = await file.text();
+  let parsed;
+  try { parsed = botiParseChat(text); }
+  catch(e) { showToast('שגיאת פרסור: ' + e.message, true); return; }
+  if (!parsed.length) { showToast('לא נמצאו לידים בקובץ (מ-1.1.2026)', true); return; }
+
+  const existing = botiLoad();
+  const existingIndex = new Map();
+  for (const old of existing) existingIndex.set(botiMergeKey(old), old);
+
+  const merged = [];
+  const matchedKeys = new Set();
+  let added = 0, updated = 0, unchanged = 0;
+
+  for (const newLead of parsed) {
+    const key = botiMergeKey(newLead);
+    const match = existingIndex.get(key);
+    if (match) {
+      matchedKeys.add(key);
+      const wasChanged = match.mention_count !== newLead.mention_count
+        || match.raw_text !== newLead.raw_text;
+      // Preserve all existing fields (transferred, rejected, user edits, status flags);
+      // only refresh parser-derived count + raw_text + latest date
+      merged.push({
+        ...match,
+        mention_count: newLead.mention_count,
+        raw_text: newLead.raw_text,
+        all_raw_texts: newLead.all_raw_texts,
+        date: newLead.date,
+      });
+      if (wasChanged) updated++; else unchanged++;
+    } else {
+      merged.push(newLead);
+      added++;
+    }
+  }
+
+  // Keep existing leads that weren't re-extracted (rejected/transferred/orphans)
+  for (const [key, old] of existingIndex.entries()) {
+    if (!matchedKeys.has(key)) merged.push(old);
+  }
+
+  botiSave(merged);
+  renderBotiPage();
+  showToast(`${added} חדשים · ${updated} עודכנו · ${unchanged} ללא שינוי`);
+}
+
+function toggleBotiReject(id, rejected) {
+  const leads = botiLoad();
+  const lead = leads.find(l => l.id === id);
+  if (!lead) return;
+  lead.rejected = rejected;
+  botiSave(leads);
+  renderBotiPage();
+  showToast(rejected ? 'נדחה' : 'שוחזר');
+}
+
+function clearBotiLeads() {
+  if (!confirm('למחוק את כל הלידים מטאב בוטי? (לידים שהועברו ל-Pipeline לא מושפעים)')) return;
+  localStorage.removeItem(BOTI_STORAGE_KEY);
+  localStorage.removeItem(BOTI_SYNC_KEY);
+  renderBotiPage();
+  showToast('נמחק');
+}
+
+// ---- Transfer modal ----
+function openBotiTransferModal(id) {
+  const lead = botiLoad().find(l => l.id === id);
+  if (!lead) return;
+  document.getElementById('boti-transfer-id').value = id;
+  document.getElementById('boti-t-client').value = lead.name || '';
+  document.getElementById('boti-t-phone').value = lead.phone || '';
+  const proj = document.getElementById('boti-t-project');
+  proj.value = [...proj.options].some(o => o.value === lead.interest) ? lead.interest : '';
+  document.getElementById('boti-t-temp').value = lead.is_hot ? 'חם מאוד' : (lead.is_on_island ? 'חם' : 'פושר');
+  document.querySelector(`input[name="boti-t-island"][value="${lead.is_on_island ? 'true' : 'false'}"]`).checked = true;
+  document.getElementById('boti-t-budget').value = lead.budget || '';
+  document.getElementById('boti-t-notes').value = (lead.raw_text || '') + '\n\nמקור: בוטי ' + botiFormatDate(lead.date);
+  document.getElementById('boti-transfer-modal').classList.remove('hidden');
+}
+function hideBotiTransferModal() { document.getElementById('boti-transfer-modal').classList.add('hidden'); }
+
+async function submitBotiTransfer(e) {
+  e.preventDefault();
+  const id = document.getElementById('boti-transfer-id').value;
+  const leads = botiLoad();
+  const lead = leads.find(l => l.id === id);
+  if (!lead) { hideBotiTransferModal(); return; }
+
+  const body = {
+    client: document.getElementById('boti-t-client').value,
+    project: document.getElementById('boti-t-project').value || 'אחר',
+    phone: document.getElementById('boti-t-phone').value,
+    price: parseFloat(document.getElementById('boti-t-budget').value) || 0,
+    temp: document.getElementById('boti-t-temp').value,
+    notes: document.getElementById('boti-t-notes').value,
+    source: 'boti',
+  };
+
+  try {
+    if (LOCAL_API) {
+      const res = await fetch(`${LOCAL_API}/pipeline/add`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      const result = await res.json();
+      if (!result.success) throw new Error(result.error || 'שגיאת שרת');
+      showToast('הליד הועבר ל-Pipeline');
+    } else {
+      // fallback: queue transfer locally
+      const pending = JSON.parse(localStorage.getItem('kph_boti_pending_transfers_v1') || '[]');
+      pending.push({ ...body, queuedAt: new Date().toISOString() });
+      localStorage.setItem('kph_boti_pending_transfers_v1', JSON.stringify(pending));
+      showToast('נשמר בתור מקומי — הפעל שרת לסנכרון');
+    }
+    lead.transferred_to_pipeline = true;
+    botiSave(leads);
+    hideBotiTransferModal();
+    renderBotiPage();
+  } catch(err) {
+    showToast('שגיאה: ' + err.message, true);
+  }
+}
+
+// ---- Edit modal ----
+function openBotiEditModal(id) {
+  const lead = botiLoad().find(l => l.id === id);
+  if (!lead) return;
+  document.getElementById('boti-e-id').value = id;
+  document.getElementById('boti-e-name').value = lead.name || '';
+  document.getElementById('boti-e-phone').value = lead.phone || '';
+  document.getElementById('boti-e-island').checked = !!lead.is_on_island;
+  document.getElementById('boti-e-hot').checked = !!lead.is_hot;
+  document.getElementById('boti-e-arriving').checked = !!lead.is_arriving;
+  document.getElementById('boti-e-meeting').checked = !!lead.needs_meeting;
+  document.getElementById('boti-edit-modal').classList.remove('hidden');
+}
+function hideBotiEditModal() { document.getElementById('boti-edit-modal').classList.add('hidden'); }
+
+function submitBotiEdit(e) {
+  e.preventDefault();
+  const id = document.getElementById('boti-e-id').value;
+  const leads = botiLoad();
+  const lead = leads.find(l => l.id === id);
+  if (!lead) { hideBotiEditModal(); return; }
+  lead.name = document.getElementById('boti-e-name').value.trim() || null;
+  lead.phone = document.getElementById('boti-e-phone').value.trim() || null;
+  lead.is_on_island = document.getElementById('boti-e-island').checked;
+  lead.is_hot = document.getElementById('boti-e-hot').checked;
+  lead.is_arriving = document.getElementById('boti-e-arriving').checked;
+  lead.needs_meeting = document.getElementById('boti-e-meeting').checked;
+  lead.user_edited = true;
+  if (!lead.original_name) lead.original_name = lead.name;
+  botiSave(leads);
+  hideBotiEditModal();
+  renderBotiPage();
+  showToast('עודכן');
+}
+
+// ---- Raw modal ----
+function openBotiRawModal(id) {
+  const lead = botiLoad().find(l => l.id === id);
+  if (!lead) return;
+  document.getElementById('boti-raw-meta').textContent = (lead.name || '—') + ' · ' + botiFormatDate(lead.date);
+  document.getElementById('boti-raw-text').textContent = lead.raw_text || '';
+  const allEl = document.getElementById('boti-raw-all');
+  if (lead.all_raw_texts && lead.all_raw_texts.length > 1) {
+    allEl.innerHTML = '<div class="text-[10px] uppercase tracking-wider text-on-surface-variant mt-4 mb-2">הופעות קודמות</div>' +
+      lead.all_raw_texts.slice(1).map(r =>
+        `<div class="bg-surface-container-low p-3 border-r-2 border-outline-variant/40"><div class="text-[10px] text-on-surface-variant font-mono mb-1">${botiFormatDate(r.date)}</div><div class="text-xs whitespace-pre-wrap" dir="auto">${escapeHtml(r.text)}</div></div>`
+      ).join('');
+  } else {
+    allEl.innerHTML = '';
+  }
+  document.getElementById('boti-raw-modal').classList.remove('hidden');
+}
+function hideBotiRawModal() { document.getElementById('boti-raw-modal').classList.add('hidden'); }
+
+// ---- Boti wiring ----
+document.addEventListener('DOMContentLoaded', () => {
+  const fi = document.getElementById('boti-file-input');
+  if (fi) fi.addEventListener('change', (e) => botiHandleFile(e.target.files[0]));
+  const df = document.getElementById('boti-date-filter');
+  if (df) df.addEventListener('change', renderBotiPage);
+  const sr = document.getElementById('boti-show-rejected');
+  if (sr) sr.addEventListener('change', renderBotiPage);
+});
+
 // ============ INIT ============
 (async function init() {
   // Read URL hash for initial page
-  const validPages = ['pipeline', 'closings', 'campaigns', 'projects', 'reports'];
+  const validPages = ['pipeline', 'closings', 'campaigns', 'projects', 'reports', 'boti'];
   const hash = window.location.hash.replace('#', '');
   const startPage = validPages.includes(hash) ? hash : 'pipeline';
 
