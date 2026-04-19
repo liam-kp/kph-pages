@@ -150,9 +150,19 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
 .sp-action-btn:active { transform:scale(0.97); }
 
 /* Schedule Modal */
-.sched-modal-body { background:#1c2026; border:1px solid #3e4943; padding:20px; max-width:380px; width:100%; }
+.sched-modal-body { background:#1c2026; border:1px solid #3e4943; padding:20px; max-width:440px; width:100%; max-height:90vh; overflow-y:auto; }
 .sched-modal-body select, .sched-modal-body input[type="date"] { width:100%; background:#10141a; color:#dfe2eb; border:1px solid #3e4943; border-radius:6px; padding:8px 10px; font-size:13px; }
 .sched-modal-body label { display:block; font-size:11px; color:#bdcac1; margin-bottom:4px; text-transform:uppercase; letter-spacing:0.5px; font-weight:700; }
+.sched-quick-btn { padding:4px 10px; font-size:11px; background:#10141a; color:#bdcac1; border:1px solid #3e4943; border-radius:6px; cursor:pointer; transition:all 0.12s; }
+.sched-quick-btn:hover { color:#fff; border-color:#6DD5FA; }
+.sched-quick-btn.active { background:#68dbae; color:#003826; border-color:#68dbae; font-weight:700; }
+.sched-fu-row { display:flex; align-items:center; gap:8px; padding:6px 8px; background:#10141a; border:1px solid #3e4943; border-radius:6px; direction:rtl; }
+.sched-fu-row.expired { opacity:0.55; }
+.sched-fu-time { font-weight:700; color:#dfe2eb; min-width:95px; font-family:monospace; font-size:11px; }
+.sched-fu-msg { flex:1; color:#94A3B8; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-size:11px; }
+.sched-fu-cancel { padding:2px 8px; font-size:10px; background:transparent; color:#ef4444; border:1px solid #ef4444aa; border-radius:4px; cursor:pointer; }
+.sched-fu-cancel:hover { background:#ef4444; color:#fff; }
+.sched-fu-cancel:disabled { opacity:0.5; cursor:not-allowed; }
 
 .mob-nav-btn { background:none; border:none; color:#64748b; padding:8px 12px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
 .mob-nav-btn.active { color:#68dbae; }
@@ -1380,6 +1390,12 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
       </div>
     </div>
 
+    <!-- Existing follow-ups for this lead (loaded on open) -->
+    <div id="sched-existing-wrap" class="mb-3 hidden" style="direction:rtl">
+      <div class="text-[10px] text-[#94A3B8] font-bold mb-1">📋 כבר מתוזמן לליד הזה</div>
+      <div id="sched-existing-list" class="space-y-1 text-[11px]"></div>
+    </div>
+
     <div class="space-y-3">
       <div>
         <label>שלח לפי שעון של:</label>
@@ -1387,9 +1403,29 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
           <option value="lead">לקוח (אוטומטי)</option>
           <option value="Asia/Jerusalem">ישראל</option>
           <option value="Asia/Bangkok">בנגקוק</option>
+          <option value="Europe/London">לונדון</option>
+          <option value="Europe/Paris">פריז</option>
+          <option value="Europe/Berlin">ברלין</option>
+          <option value="Europe/Moscow">מוסקבה</option>
+          <option value="America/New_York">ניו יורק</option>
+          <option value="UTC">UTC</option>
           <option value="device">שלי (המכשיר)</option>
         </select>
       </div>
+
+      <!-- Quick time presets (in active tz) -->
+      <div>
+        <label>בחירה מהירה (בזמן הליד):</label>
+        <div id="sched-quick-row" class="flex flex-wrap gap-1.5 mt-1" style="direction:rtl">
+          <button type="button" class="sched-quick-btn" data-quick="in-1h">בעוד שעה</button>
+          <button type="button" class="sched-quick-btn" data-quick="today-evening">היום 18:00</button>
+          <button type="button" class="sched-quick-btn" data-quick="tomorrow-morning">מחר 09:00</button>
+          <button type="button" class="sched-quick-btn" data-quick="tomorrow-noon">מחר 12:00</button>
+          <button type="button" class="sched-quick-btn" data-quick="in-3-days">+3 ימים 10:00</button>
+          <button type="button" class="sched-quick-btn" data-quick="next-week">שבוע הבא 10:00</button>
+        </div>
+      </div>
+
       <div class="grid grid-cols-2 gap-3">
         <div>
           <label>תאריך</label>
@@ -1409,16 +1445,34 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
       </div>
 
       <div>
+        <label>תבנית:</label>
+        <select id="sched-template-select" class="w-full text-[12px]" style="background:#10141a;color:#E2E8F0;border:1px solid #3e4943;border-radius:6px;padding:6px 10px">
+          <option value="">-- בחר תבנית או כתוב חופשי --</option>
+          <option value="meeting_today">נפגשים היום?</option>
+          <option value="meeting_tomorrow">נפגשים מחר?</option>
+          <option value="check_in">איך הולך? יש שאלות?</option>
+          <option value="info_followup">חשבת על מה ששלחתי?</option>
+          <option value="island_arrival">הגעת לאי?</option>
+          <option value="budget_check">תקציב הסתדר?</option>
+          <option value="price_update">עדכון מחירים</option>
+          <option value="hot_inventory">מלאי חדש</option>
+          <option value="last_chance">לפני סגירת ליד</option>
+          <option value="day2">פולואפ יום 2 (קלאסי)</option>
+          <option value="week">פולואפ שבוע</option>
+          <option value="wakeup">התעוררות / מלאי</option>
+        </select>
+      </div>
+
+      <div>
         <label>הודעה</label>
-        <textarea id="sched-message" rows="3" style="background:#10141a;color:#E2E8F0;border:1px solid #3e4943;border-radius:6px;padding:8px 10px;font-size:12px;width:100%;resize:none;direction:rtl" placeholder="כתוב את ההודעה הבאה..."></textarea>
-        <div class="flex gap-2 mt-2">
-          <button type="button" onclick="fillSchedTemplate('day2')" class="text-[10px] px-2 py-1 border border-[#3e4943] text-[#94A3B8] hover:text-white hover:border-[#6DD5FA]">פולואפ יום 2</button>
-          <button type="button" onclick="fillSchedTemplate('week')" class="text-[10px] px-2 py-1 border border-[#3e4943] text-[#94A3B8] hover:text-white hover:border-[#6DD5FA]">פולואפ שבוע</button>
-          <button type="button" onclick="fillSchedTemplate('wakeup')" class="text-[10px] px-2 py-1 border border-[#3e4943] text-[#94A3B8] hover:text-white hover:border-[#6DD5FA]">התעוררות</button>
+        <textarea id="sched-message" rows="4" oninput="updateSchedCharCount()" style="background:#10141a;color:#E2E8F0;border:1px solid #3e4943;border-radius:6px;padding:8px 10px;font-size:12px;width:100%;resize:none;direction:rtl" placeholder="כתוב את ההודעה הבאה..."></textarea>
+        <div class="flex justify-between items-center mt-1" style="direction:rtl">
+          <span id="sched-char-count" class="text-[10px] text-[#64748b]">0 תווים</span>
+          <button type="button" onclick="schedInsertName()" class="text-[10px] px-2 py-0.5 text-[#6DD5FA] hover:text-white">+ הכנס שם</button>
         </div>
       </div>
       <div class="flex gap-3 pt-1">
-        <button onclick="confirmSchedule()" class="flex-1 py-2.5 text-xs font-bold bg-[#68dbae] text-[#003826]">אישור</button>
+        <button id="sched-confirm-btn" onclick="confirmSchedule()" class="flex-1 py-2.5 text-xs font-bold bg-[#68dbae] text-[#003826]">📤 תזמן הודעה</button>
         <button onclick="hideScheduleModal()" class="flex-1 py-2.5 text-xs font-bold border border-[#3e4943] text-[#bdcac1]">ביטול</button>
       </div>
     </div>
@@ -2828,6 +2882,15 @@ function moveToClosings() {
 
 // ============ SCHEDULE MESSAGE ============
 const SCHED_TEMPLATES = {
+  meeting_today: 'הי {name}, נפגשים היום כמו שדיברנו? 🤝',
+  meeting_tomorrow: 'הי {name}, נפגשים מחר? עדכן אותי בזמן שמתאים לך',
+  check_in: 'הי {name}, איך הולך? יש שאלות שאני יכול לענות?',
+  info_followup: 'הי {name}, חשבת על מה ששלחתי? יש משהו שלא ברור?',
+  island_arrival: 'הי {name}, הגעת לאי? אם כן בוא נקבע פגישה השבוע',
+  budget_check: 'הי {name}, נדבר על תקציב? יש לי כמה אופציות שיכולות להתאים',
+  price_update: 'הי {name}, יש עדכון מחירים מעניין — שווה שנדבר',
+  hot_inventory: 'הי {name}, יש פרויקט חדש שמתאים בדיוק למה שחיפשת — מעוניין לשמוע?',
+  last_chance: 'הי {name}, לפני שאני סוגר את הליד — רוצה שנדבר פעם אחרונה?',
   day2: 'מה קורה? הספקת לעבור על מה ששלחתי?\nעדכן אם יש שאלות 🙏',
   week: 'היי! עבר שבוע מאז שדיברנו.\nיש לנו עדכונים חדשים על הפרויקט — אשמח לשתף.\nמתי נוח לך?',
   wakeup: 'היי! יש לנו מלאי חדש שנכנס השבוע 🏡\nחשבתי עליך — רוצה לראות?',
@@ -2837,9 +2900,76 @@ const SCHED_BKK_TZ = 'Asia/Bangkok';
 const SCHED_DEVICE_TZ = (() => { try { return Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'; } catch(e) { return 'UTC'; } })();
 const SCHED_SEND_WINDOW = { start: 10, end: 20 }; // 10:00–20:00 in lead's local time
 let schedClockInterval = null;
+// Unified lead target for the schedule modal. Can be pipeline lead, TOI/BOTI lead,
+// or a synthesized object. Always normalized by normalizeScheduleLead().
+let scheduleMessageLead = null;
 
 function fillSchedTemplate(key) {
-  document.getElementById('sched-message').value = SCHED_TEMPLATES[key] || '';
+  const tpl = SCHED_TEMPLATES[key];
+  if (!tpl) return;
+  const first = (scheduleMessageLead?.display_name || '').split(' ')[0] || '';
+  document.getElementById('sched-message').value = tpl.replace(/\{name\}/g, first);
+  updateSchedCharCount();
+}
+
+function updateSchedCharCount() {
+  const el = document.getElementById('sched-message');
+  const out = document.getElementById('sched-char-count');
+  if (el && out) out.textContent = `${el.value.length} תווים`;
+}
+
+function schedInsertName() {
+  const first = (scheduleMessageLead?.display_name || '').split(' ')[0] || '';
+  if (!first) return;
+  const ta = document.getElementById('sched-message');
+  const pos = ta.selectionStart || ta.value.length;
+  ta.value = ta.value.substring(0, pos) + first + ta.value.substring(ta.selectionEnd || pos);
+  ta.focus();
+  ta.setSelectionRange(pos + first.length, pos + first.length);
+  updateSchedCharCount();
+}
+
+// Phone-prefix → typical IANA timezone fallback (used only when lead has no
+// island flag and no explicit timezone override).
+function schedResolveTzFromPhone(phoneRaw) {
+  const phone = (phoneRaw || '').replace(/\D/g, '');
+  if (!phone) return SCHED_IL_TZ;
+  if (phone.startsWith('972')) return SCHED_IL_TZ;
+  if (phone.startsWith('66'))  return SCHED_BKK_TZ;
+  if (phone.startsWith('44'))  return 'Europe/London';
+  if (phone.startsWith('33'))  return 'Europe/Paris';
+  if (phone.startsWith('49'))  return 'Europe/Berlin';
+  if (phone.startsWith('7'))   return 'Europe/Moscow';
+  if (phone.startsWith('1'))   return 'America/New_York';
+  return SCHED_IL_TZ;
+}
+
+// Merge pipeline-lead and TOI/BOTI-lead shapes into one unified object.
+// Pipeline: { _id, display_name, phone_number, contact_id, channel_id, conversation_id,
+//             on_island, arrival_status, island_presence, timezone, ... }
+// TOI/BOTI: { id, name, phone, is_on_island, arriving_soon, ... }
+function normalizeScheduleLead(raw) {
+  if (!raw) return null;
+  const display_name = raw.display_name || raw.name || '';
+  const phone = raw.phone_number || raw.phone || '';
+  // is_on_island is BOTI's boolean; pipeline uses on_island / arrival_status
+  const on_island_flag = (raw.on_island === true)
+                      || (raw.is_on_island === true)
+                      || ((raw.arrival_status || '').toUpperCase() === 'ON_ISLAND');
+  const arriving_soon_flag = (raw.arriving_soon === true)
+                      || ((raw.arrival_status || '').toUpperCase() === 'ARRIVING_SOON');
+  return {
+    ...raw,
+    _id: raw._id || null,
+    contact_id: raw.contact_id || null,
+    channel_id: raw.channel_id || 'default',
+    conversation_id: raw.conversation_id || null,
+    display_name,
+    phone_number: phone,
+    on_island: on_island_flag,
+    arriving_soon: arriving_soon_flag,
+    timezone: raw.timezone || null,
+  };
 }
 
 // Minutes to add to UTC to get wall-clock in `timeZone` at the given instant.
@@ -2881,7 +3011,15 @@ function schedHourInTz(date, timeZone) {
 }
 
 function schedLeadTz() {
-  return (selectedLead && isOnIsland(selectedLead)) ? SCHED_BKK_TZ : SCHED_IL_TZ;
+  const lead = scheduleMessageLead || selectedLead;
+  if (!lead) return SCHED_IL_TZ;
+  // 1. Explicit timezone set on the lead wins
+  if (lead.timezone) return lead.timezone;
+  // 2. On-island → Bangkok (planning/travel context)
+  if (lead.on_island === true || lead.arriving_soon === true) return SCHED_BKK_TZ;
+  if (typeof isOnIsland === 'function' && isOnIsland(lead)) return SCHED_BKK_TZ;
+  // 3. Phone-prefix heuristic
+  return schedResolveTzFromPhone(lead.phone_number || lead.phone);
 }
 function schedResolveTz(sel) {
   if (sel === 'lead') return schedLeadTz();
@@ -2950,38 +3088,147 @@ function applySendWindowFix() {
   updateSchedPreview();
 }
 
+// Pipeline side-panel entry point — kept for backward compat.
 function showScheduleModal() {
   if (!selectedLead) return;
-  const name = selectedLead.display_name || selectedLead.name || 'Unknown';
-  document.getElementById('sched-lead-name').textContent = `— ${name}`;
+  openScheduleMessageFor(selectedLead);
+}
+
+// Universal opener: works for pipeline leads (with Firebase _id) and for
+// TOI/BOTI leads (localStorage-only, looked up later by phone).
+function openScheduleMessageFor(rawLead) {
+  const lead = normalizeScheduleLead(rawLead);
+  if (!lead) { showToast('ליד לא נמצא', true); return; }
+  scheduleMessageLead = lead;
+
+  const displayName = lead.display_name || 'ללא שם';
+  document.getElementById('sched-lead-name').textContent = `— ${displayName}`;
 
   // Default: follow lead context (auto-timezone)
   document.getElementById('sched-tz').value = 'lead';
-  const leadTz = schedLeadTz();
-  const later = new Date(Date.now() + 30 * 60000);
-  document.getElementById('sched-date').value = schedFormatDateInTz(later, leadTz);
-  document.getElementById('sched-time').value = schedFormatTimeInTz(later, leadTz);
   document.getElementById('sched-message').value = '';
+  const tplSel = document.getElementById('sched-template-select');
+  if (tplSel) tplSel.value = '';
+  document.querySelectorAll('.sched-quick-btn').forEach(b => b.classList.remove('active'));
+
+  // Default time: tomorrow 09:00 in the lead's timezone
+  applySchedQuick('tomorrow-morning', /*silent=*/true);
 
   updateSchedClocks();
   if (schedClockInterval) clearInterval(schedClockInterval);
   schedClockInterval = setInterval(updateSchedClocks, 30000);
 
   updateSchedPreview();
+  updateSchedCharCount();
+  loadExistingFollowups(lead);  // fire-and-forget
+
+  // Reset submit button state (may have been disabled by a previous submit)
+  const btn = document.getElementById('sched-confirm-btn');
+  if (btn) { btn.disabled = false; btn.textContent = '📤 תזמן הודעה'; }
+
   document.getElementById('schedule-modal').classList.remove('hidden');
 }
 
 function hideScheduleModal() {
   document.getElementById('schedule-modal').classList.add('hidden');
   if (schedClockInterval) { clearInterval(schedClockInterval); schedClockInterval = null; }
+  scheduleMessageLead = null;
+}
+
+// ---- Quick time presets ----
+function applySchedQuick(key, silent) {
+  const tz = schedResolveTz(document.getElementById('sched-tz').value);
+  const now = new Date();
+  let target;
+  switch (key) {
+    case 'in-1h':             target = new Date(now.getTime() + 60 * 60 * 1000); break;
+    case 'today-evening':     target = schedWallToUTC(schedFormatDateInTz(now, tz), '18:00', tz);
+                              if (target < now) target = schedWallToUTC(schedFormatDateInTz(new Date(now.getTime()+86400000), tz), '18:00', tz);
+                              break;
+    case 'tomorrow-morning':  target = schedWallToUTC(schedFormatDateInTz(new Date(now.getTime()+86400000), tz), '09:00', tz); break;
+    case 'tomorrow-noon':     target = schedWallToUTC(schedFormatDateInTz(new Date(now.getTime()+86400000), tz), '12:00', tz); break;
+    case 'in-3-days':         target = schedWallToUTC(schedFormatDateInTz(new Date(now.getTime()+3*86400000), tz), '10:00', tz); break;
+    case 'next-week':         target = schedWallToUTC(schedFormatDateInTz(new Date(now.getTime()+7*86400000), tz), '10:00', tz); break;
+    default: return;
+  }
+  document.getElementById('sched-date').value = schedFormatDateInTz(target, tz);
+  document.getElementById('sched-time').value = schedFormatTimeInTz(target, tz);
+  document.querySelectorAll('.sched-quick-btn').forEach(b => b.classList.toggle('active', b.dataset.quick === key));
+  if (!silent) updateSchedPreview();
+}
+
+// ---- Existing follow-ups ----
+async function loadExistingFollowups(lead) {
+  const wrap = document.getElementById('sched-existing-wrap');
+  const list = document.getElementById('sched-existing-list');
+  if (!wrap || !list) return;
+  list.innerHTML = '<div class="text-[11px] text-[#64748b]">טוען...</div>';
+  wrap.classList.remove('hidden');
+  try {
+    const raw = await firebaseFetch('Follow_Ups');
+    const items = Array.isArray(raw) ? raw : (raw && Array.isArray(raw.data) ? raw.data : []);
+    const phoneNorm = normalizePhone(lead.phone_number || lead.phone || '');
+    const matches = items.filter(fu => {
+      if (!fu) return false;
+      if (String(fu.status || '').toUpperCase() !== 'PENDING') return false;
+      const fuPhone = normalizePhone(fu.phone_number || '');
+      const fuContact = fu.contact_id;
+      return (phoneNorm && fuPhone && fuPhone === phoneNorm)
+          || (lead.contact_id && fuContact && fuContact === lead.contact_id)
+          || (lead._id && (fu.lead_id === lead._id));
+    });
+    if (matches.length === 0) {
+      list.innerHTML = '<div class="text-[11px] text-[#64748b]" style="direction:rtl">אין הודעות מתוזמנות לליד הזה</div>';
+      return;
+    }
+    matches.sort((a, b) => String(a.scheduled_date || '').localeCompare(String(b.scheduled_date || '')));
+    const leadTz = schedLeadTz();
+    list.innerHTML = matches.map(fu => {
+      const when = fu.scheduled_date ? new Date(fu.scheduled_date) : null;
+      const expired = when && when.getTime() < Date.now();
+      const timeStr = when ? schedFormatFullInTz(when, leadTz) : '—';
+      const msg = String(fu.custom_message || fu.message || fu.reason || fu.trigger_type || '').slice(0, 70);
+      const fuId = fu._id || fu.id || '';
+      return `
+        <div class="sched-fu-row ${expired ? 'expired' : ''}">
+          <div class="sched-fu-time">${escapeHtml(timeStr)}</div>
+          <div class="sched-fu-msg">${escapeHtml(msg)}</div>
+          <button type="button" class="sched-fu-cancel" data-action="sched-fu-cancel" data-fu-id="${escapeHtml(fuId)}">בטל</button>
+        </div>`;
+    }).join('');
+  } catch (e) {
+    list.innerHTML = `<div class="text-[11px]" style="color:#ef4444;direction:rtl">שגיאה בטעינת follow-ups: ${escapeHtml(String(e.message || e))}</div>`;
+  }
+}
+
+async function cancelExistingFollowup(fuId, btn) {
+  if (!fuId) return;
+  if (!confirm('לבטל את ההודעה המתוזמנת?')) return;
+  if (btn) { btn.disabled = true; btn.textContent = '...'; }
+  try {
+    // PUT-merge: Firebase wrapper has merge semantics, so sending only changed
+    // fields is safe and cheaper than GET → merge → PUT.
+    await firebasePut('Follow_Ups', fuId, {
+      status: 'CANCELLED',
+      cancelled_at: new Date().toISOString(),
+      cancelled_by: 'liam_manual_toi',
+    });
+    showToast('ההודעה בוטלה ✓');
+    if (scheduleMessageLead) await loadExistingFollowups(scheduleMessageLead);
+  } catch (e) {
+    if (!handleAuthError(e.message)) showToast('ביטול נכשל: ' + e.message, true);
+    if (btn) { btn.disabled = false; btn.textContent = 'בטל'; }
+  }
 }
 
 async function confirmSchedule() {
-  if (!selectedLead) return;
+  const lead = scheduleMessageLead || (selectedLead ? normalizeScheduleLead(selectedLead) : null);
+  if (!lead) { showToast('ליד לא נטען', true); return; }
   const date = document.getElementById('sched-date').value;
   const time = document.getElementById('sched-time').value || '10:00';
   const message = document.getElementById('sched-message').value.trim();
   if (!date) { showToast('בחר תאריך', true); return; }
+  if (!message) { showToast('כתוב את תוכן ההודעה', true); return; }
 
   const token = getToken();
   if (!token) {
@@ -2993,40 +3240,86 @@ async function confirmSchedule() {
   const tzSel = document.getElementById('sched-tz').value;
   const tz = schedResolveTz(tzSel);
   const scheduledUTC = schedWallToUTC(date, time, tz);
+  if (scheduledUTC.getTime() < Date.now()) {
+    showToast('הזמן שבחרת בעבר — בחר זמן עתידי', true);
+    return;
+  }
   const scheduledISO = scheduledUTC.toISOString();
-  const firebaseId = selectedLead._id;
-  const phone = selectedLead.phone_number || selectedLead.phone || '';
+  const phone = lead.phone_number || lead.phone || '';
+  const phoneNorm = normalizePhone(phone);
 
-  const followUpData = {
-    scheduled_date: scheduledISO,
-    message: message,
-    created_at: new Date().toISOString(),
-    status: 'PENDING',
-    lead_id: firebaseId,
-    phone_number: phone,
-    timezone: tz,
-  };
-
-  try {
-    const followUpId = `${firebaseId}_${Date.now()}`;
-    await firebasePut('Follow_Ups', followUpId, {
-      ...followUpData,
-      lead_name: selectedLead.display_name || selectedLead.name || '',
-    });
-
-    await firebasePut('Leads', firebaseId, {
-      Follow_Up: followUpData,
-      next_followup_date: scheduledISO,
-    });
-
-    selectedLead.Follow_Up = followUpData;
-    selectedLead.next_followup_date = scheduledISO;
-    showToast(`תוזמן ל-${schedFormatFullInTz(scheduledUTC, tz)} (${schedTzLabel(tz, tzSel)})`);
-  } catch(e) {
-    if (!handleAuthError(e.message)) showToast('תזמון נכשל: ' + e.message, true);
+  // For TOI/BOTI leads without a Firebase _id, try to match a Firebase lead
+  // by phone so we can still do the dual-write. If no match → Follow_Ups only.
+  let firebaseId = lead._id;
+  if (!firebaseId && phoneNorm && Array.isArray(firebaseLeadsRaw)) {
+    const match = firebaseLeadsRaw.find(fl => normalizePhone(fl.phone_number) === phoneNorm);
+    if (match) firebaseId = match._id;
   }
 
-  hideScheduleModal();
+  const nowIso = new Date().toISOString();
+  const followUpRecord = {
+    // Core fields consumed by Adam's SCHEDULE agent
+    scheduled_date: scheduledISO,
+    status: 'PENDING',
+    phone_number: phone,
+    timezone: tz,
+    trigger_type: 'CUSTOM',
+    attempt_number: 0,
+    max_attempts: 1,
+    // Message content — both keys for backward compat
+    message: message,
+    custom_message: message,
+    // Metadata / audit trail
+    contact_id: lead.contact_id || `manual_${Date.now()}`,
+    channel_id: lead.channel_id || 'default',
+    conversation_id: lead.conversation_id || `manual_${Date.now()}`,
+    lead_id: firebaseId || null,
+    lead_name: lead.display_name || '',
+    reason: `Manual schedule by Liam from TOI dashboard at ${nowIso}`,
+    generated_by: 'focus_approved',
+    timezone_used: tz,
+    created_at: nowIso,
+    updated_at: nowIso,
+  };
+
+  const btn = document.getElementById('sched-confirm-btn');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ שולח...'; }
+
+  try {
+    const followUpId = `${firebaseId || 'manual_' + (phoneNorm || 'x')}_${Date.now()}`;
+    await firebasePut('Follow_Ups', followUpId, followUpRecord);
+
+    // Dual-write to /Leads is best-effort. If the lead isn't in Firebase
+    // (TOI-only) or the write fails, the Follow_Ups record is still the
+    // source of truth for the SCHEDULE agent.
+    if (firebaseId) {
+      try {
+        await firebasePut('Leads', firebaseId, {
+          Follow_Up: {
+            scheduled_date: scheduledISO,
+            message: message,
+            status: 'PENDING',
+            timezone: tz,
+            created_at: nowIso,
+          },
+          next_followup_date: scheduledISO,
+          last_manual_schedule_at: nowIso,
+        });
+        if (selectedLead && selectedLead._id === firebaseId) {
+          selectedLead.next_followup_date = scheduledISO;
+        }
+      } catch (e) {
+        console.warn('Lead dual-write failed (non-blocking):', e);
+      }
+    }
+
+    showToast(`תוזמן ל-${schedFormatFullInTz(scheduledUTC, tz)} (${schedTzLabel(tz, tzSel)})`);
+    hideScheduleModal();
+    if (typeof renderTodayOnIsland === 'function' && currentPage === 'today') renderTodayOnIsland();
+  } catch(e) {
+    if (!handleAuthError(e.message)) showToast('תזמון נכשל: ' + e.message, true);
+    if (btn) { btn.disabled = false; btn.textContent = '📤 תזמן הודעה'; }
+  }
 }
 
 // ============ CLOSINGS ============
@@ -5375,6 +5668,7 @@ function renderLeadExpanded(lead, blockType) {
         <button type="button" class="exp-btn exp-primary" data-action="wa" data-phone="${escapeHtml(lead.phone || '')}">💬 WhatsApp</button>
         <button type="button" class="exp-btn" data-action="call" data-phone="${escapeHtml(lead.phone || '')}">📞 התקשר</button>
         <button type="button" class="exp-btn exp-schedule" data-action="schedule" data-lead-id="${lead.id}">📅 תזמן פגישה</button>
+        <button type="button" class="exp-btn" data-action="schedule-msg" data-lead-id="${lead.id}">🕐 תזמן הודעה</button>
         <button type="button" class="exp-btn" data-action="edit" data-lead-id="${lead.id}">✏️ ערוך</button>
         <button type="button" class="exp-btn exp-danger" data-action="delete" data-lead-id="${lead.id}">🗑️ מחק</button>
       </div>
@@ -5605,6 +5899,12 @@ function toiBindActions() {
       }
       if (action === 'edit') { openBotiEditModal(actionBtn.dataset.leadId); return; }
       if (action === 'schedule') { openToiScheduleModal(actionBtn.dataset.leadId); return; }
+      if (action === 'schedule-msg') {
+        const lead = botiLoad().find(l => l.id === actionBtn.dataset.leadId);
+        if (lead) openScheduleMessageFor(lead);
+        else showToast('ליד לא נמצא', true);
+        return;
+      }
       if (action === 'delete') { toiRequestDelete(actionBtn.dataset.leadId); return; }
       if (actionBtn.classList.contains('btn-met')) { openToiOutcomeModal(actionBtn.dataset.meetingId, 'met'); return; }
       if (actionBtn.classList.contains('btn-noshow')) { markToiMeetingOutcome(actionBtn.dataset.meetingId, 'no_show'); return; }
@@ -5851,6 +6151,40 @@ function markToiMeetingOutcome(meetingId, outcome, notes) {
   renderTodayOnIsland();
   showToast(outcome === 'met' ? 'נשמר ✓' : 'נוצר פולואפ למחר');
 }
+
+// ============ SCHEDULE MODAL — event delegation ============
+document.addEventListener('click', (e) => {
+  // Quick-time preset button
+  const quick = e.target.closest('.sched-quick-btn');
+  if (quick) {
+    e.stopPropagation();
+    applySchedQuick(quick.dataset.quick);
+    return;
+  }
+  // Cancel existing follow-up row button
+  const cancelBtn = e.target.closest('[data-action="sched-fu-cancel"]');
+  if (cancelBtn) {
+    e.stopPropagation();
+    cancelExistingFollowup(cancelBtn.dataset.fuId, cancelBtn);
+    return;
+  }
+});
+
+// Template select (populates textarea with {name} substituted)
+document.addEventListener('change', (e) => {
+  if (e.target && e.target.id === 'sched-template-select') {
+    const key = e.target.value;
+    if (key) fillSchedTemplate(key);
+  }
+});
+
+// Close schedule modal with Escape
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    const modal = document.getElementById('schedule-modal');
+    if (modal && !modal.classList.contains('hidden')) hideScheduleModal();
+  }
+});
 
 // ============ INIT ============
 (async function init() {
