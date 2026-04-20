@@ -382,6 +382,17 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
 .row-badge.rb-departure { background:rgba(251,146,60,0.15); color:#FB923C; }
 .row-badge.rb-hot { background:rgba(239,68,68,0.15); color:#ef4444; }
 .row-badge.rb-new { background:rgba(109,213,250,0.15); color:#6DD5FA; }
+.row-badge.rb-no-phone { background:rgba(239,68,68,0.15); color:#ef4444; }
+
+/* TOI-04 — phone validation + enrichment + no-phone badge */
+.required-star { color:#ef4444; margin-right:3px; font-weight:700; }
+.input-error { border-color:#ef4444 !important; box-shadow:0 0 0 1px #ef4444aa !important; }
+.phone-input-row { display:flex; gap:6px; align-items:stretch; }
+.phone-input-row > input { flex:1; min-width:0; }
+.btn-auto-enrich { padding:4px 10px; background:#1c2026; border:1px solid #3e4943; border-radius:4px; color:#bccac1; font-size:12px; cursor:pointer; font-family:inherit; white-space:nowrap; transition:all 0.12s; }
+.btn-auto-enrich:hover { background:#262a31; color:#fff; border-color:#68dbae; }
+.btn-auto-enrich:disabled { opacity:0.5; cursor:wait; }
+.badge-no-phone { display:inline-block; font-size:13px; margin-inline-start:4px; cursor:help; opacity:0.85; vertical-align:middle; }
 
 /* Confirm modal */
 .confirm-modal { position:fixed; inset:0; background:rgba(0,0,0,0.75); backdrop-filter:blur(4px); z-index:300; display:flex; align-items:center; justify-content:center; padding:16px; }
@@ -1590,8 +1601,11 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
           <input id="boti-e-name" class="w-full bg-surface-container-low border-b-[0.5px] border-outline-variant focus:border-secondary focus:ring-0 text-sm py-2 px-2" type="text"/>
         </div>
         <div class="space-y-1">
-          <label class="text-[10px] text-on-surface-variant uppercase tracking-widest font-bold">טלפון</label>
-          <input id="boti-e-phone" class="w-full bg-surface-container-low border-b-[0.5px] border-outline-variant focus:border-secondary focus:ring-0 text-sm py-2 px-2 font-mono" type="text"/>
+          <label class="text-[10px] text-on-surface-variant uppercase tracking-widest font-bold">טלפון <span class="required-star">*</span></label>
+          <div class="phone-input-row">
+            <input id="boti-e-phone" class="bg-surface-container-low border-b-[0.5px] border-outline-variant focus:border-secondary focus:ring-0 text-sm py-2 px-2 font-mono" type="text"/>
+            <button type="button" class="btn-auto-enrich" data-action="enrich-phone" title="חפש מספר לפי השם בפיירבייס">🔍</button>
+          </div>
         </div>
       </div>
       <div class="grid grid-cols-2 gap-4">
@@ -2021,6 +2035,64 @@ async function firebasePut(collection, docId, data) {
   }
   return record;
 }
+
+// ============ TOI-04 — Admin cleanup: cancel PENDING/CUSTOM records with empty phone ============
+// Console-only (intentionally NOT wired to any UI button). Run once after deploy:
+//   kphCleanupBrokenFollowups()
+// Uses GET (via firebaseFetchDirect) + full PUT merge (via firebasePut, which
+// itself GET-verifies), then does an extra value-check GET to confirm the
+// status flipped to CANCELLED. No PATCH — the wrapper returns 401 on PATCH.
+window.kphCleanupBrokenFollowups = async function() {
+  if (!confirm('לבטל את כל ה-Follow_Ups במצב PENDING/CUSTOM ללא phone_number?')) return;
+  const raw = await firebaseFetchDirect('Follow_Ups');
+  // firebaseFetchDirect returns one of: array, {data: array}, or object-map.
+  // Normalize all three into a list of records carrying their Firebase key.
+  let list = [];
+  if (Array.isArray(raw)) {
+    list = raw.map(v => ({ ...v, _key: v._id || v.id }));
+  } else if (raw && Array.isArray(raw.data)) {
+    list = raw.data.map(v => ({ ...v, _key: v._id || v.id }));
+  } else if (raw && typeof raw === 'object' && raw.data && typeof raw.data === 'object') {
+    list = Object.entries(raw.data).map(([k, v]) => ({ ...v, _key: k }));
+  } else if (raw && typeof raw === 'object') {
+    list = Object.entries(raw).map(([k, v]) => ({ ...v, _key: k }));
+  }
+  const broken = list.filter(v => {
+    if (!v) return false;
+    if (String(v.status || '').toUpperCase() !== 'PENDING') return false;
+    if (String(v.trigger_type || '').toUpperCase() !== 'CUSTOM') return false;
+    return !String(v.phone_number || '').trim();
+  });
+  console.log(`[cleanup] Found ${broken.length} broken PENDING/CUSTOM records without phone_number`);
+  if (broken.length === 0) { console.log('[cleanup] Nothing to do.'); return; }
+
+  let ok = 0, fail = 0;
+  for (const r of broken) {
+    const id = r._key || r._id || r.id;
+    if (!id) { console.warn('[cleanup] Skip — no id on record:', r); fail++; continue; }
+    try {
+      const { _key, ...existing } = r;
+      const merged = {
+        ...existing,
+        status: 'CANCELLED',
+        cancelled_at: new Date().toISOString(),
+        cancelled_by: 'liam_cleanup_no_phone',
+        updated_at: new Date().toISOString(),
+      };
+      await firebasePut('Follow_Ups', id, merged);
+      // Value-level GET verify (firebasePut only checks key presence)
+      const verifyRaw = await firebaseFetchDirect(`Follow_Ups/${id}`).catch(() => null);
+      const verified = verifyRaw && (verifyRaw.data || verifyRaw.record || verifyRaw);
+      const status = String(verified?.status || '').toUpperCase();
+      if (status === 'CANCELLED') { console.log(`[cleanup] ✓ CANCELLED ${id}`); ok++; }
+      else { console.error(`[cleanup] ✗ Verify failed for ${id}, status=${status}`); fail++; }
+    } catch (err) {
+      console.error(`[cleanup] ✗ ${id}: ${err.message}`);
+      fail++;
+    }
+  }
+  console.log(`[cleanup] Done. ok=${ok} fail=${fail}. Refresh dashboard to confirm.`);
+};
 
 // ============ PAGE LOADERS ============
 async function loadPageData(page) {
@@ -3112,6 +3184,9 @@ function showScheduleModal() {
 function openScheduleMessageFor(rawLead) {
   const lead = normalizeScheduleLead(rawLead);
   if (!lead) { showToast('ליד לא נמצא', true); return; }
+  // TOI-04 — defensive guard at modal entry (callers should also guard, but
+  // this prevents the modal from opening on bad data regardless of caller)
+  if (!assertLeadHasPhone(lead, 'תזמן הודעה')) return;
   scheduleMessageLead = lead;
 
   const displayName = lead.display_name || 'ללא שם';
@@ -3255,6 +3330,14 @@ async function cancelExistingFollowup(fuId, btn) {
 async function confirmSchedule() {
   const lead = scheduleMessageLead || (selectedLead ? normalizeScheduleLead(selectedLead) : null);
   if (!lead) { showToast('ליד לא נטען', true); return; }
+  // TOI-04 — final write-path guard: never PUT a Follow_Up with empty phone_number.
+  // This is what caused the 2 stuck records last night; repeat prevention.
+  const guardCheck = validatePhoneNumber(lead.phone_number || lead.phone);
+  if (!guardCheck.valid) {
+    showToast('חסר מספר טלפון — התזמון בוטל. ערוך את הליד ונסה שוב.', true);
+    hideScheduleModal();
+    return;
+  }
   const date = document.getElementById('sched-date').value;
   const time = document.getElementById('sched-time').value || '10:00';
   const message = document.getElementById('sched-message').value.trim();
@@ -4689,6 +4772,98 @@ function botiNormalizePhone(raw) {
   return '972' + digits;
 }
 
+// ============ TOI-04: phone validation + enrichment + guards ============
+// Central phone validity check. Accepts any raw shape (null/undef/number/string
+// with separators). Returns {valid, reason, normalized} — `normalized` is
+// digits-only. Storage code should still pass through botiNormalizePhone to
+// apply the 972 country-code default for Israeli-entered numbers; this helper
+// only answers "is this a plausible phone number?".
+function validatePhoneNumber(rawPhone) {
+  if (rawPhone == null) return { valid: false, reason: 'empty' };
+  const str = String(rawPhone).trim();
+  if (!str) return { valid: false, reason: 'empty' };
+  const digits = str.replace(/\D/g, '');
+  if (digits.length === 0) return { valid: false, reason: 'no_digits' };
+  if (digits.length < 9)  return { valid: false, reason: 'too_short' };
+  if (digits.length > 15) return { valid: false, reason: 'too_long' };
+  return { valid: true, normalized: digits };
+}
+
+function formatPhoneError(reason) {
+  const messages = {
+    'empty': 'חובה להזין מספר טלפון',
+    'no_digits': 'המספר חייב להכיל ספרות',
+    'too_short': 'המספר קצר מדי (מינימום 9 ספרות)',
+    'too_long': 'המספר ארוך מדי (מקסימום 15 ספרות)'
+  };
+  return messages[reason] || 'מספר טלפון לא תקין';
+}
+
+// Normalize name to a stable lookup key: trim, collapse whitespace, lowercase,
+// strip punctuation. Keeps Hebrew + Latin letters + digits + single spaces.
+function normalizeNameKey(name) {
+  if (!name) return null;
+  const key = String(name).trim().toLowerCase()
+    .replace(/\s+/g, ' ')
+    .replace(/[^\u0590-\u05FFa-z0-9 ]/g, '')
+    .trim();
+  return key || null;
+}
+
+// Phone-by-name index built lazily from Firebase /Leads. Cached for the life
+// of the page — refresh by setting the var back to null.
+let firebaseLeadsPhoneIndex = null;
+let firebaseLeadsPhoneIndexLoading = null; // in-flight promise (dedupes races)
+
+async function buildFirebaseLeadsIndex() {
+  if (firebaseLeadsPhoneIndex) return firebaseLeadsPhoneIndex;
+  if (firebaseLeadsPhoneIndexLoading) return firebaseLeadsPhoneIndexLoading;
+  firebaseLeadsPhoneIndexLoading = (async () => {
+    try {
+      const raw = await firebaseFetchDirect('Leads');
+      const records = Array.isArray(raw) ? raw
+                    : (raw && Array.isArray(raw.data) ? raw.data
+                    : Object.values(raw || {}));
+      const index = {};
+      for (const lead of records) {
+        if (!lead || typeof lead !== 'object') continue;
+        const key = normalizeNameKey(lead.display_name || lead.name);
+        const phoneDigits = String(lead.phone_number || '').replace(/\D/g, '');
+        if (key && phoneDigits.length >= 9) {
+          if (!index[key]) index[key] = phoneDigits; // first-wins, avoid overwrites
+        }
+      }
+      firebaseLeadsPhoneIndex = index;
+      console.log(`[TOI-04] Firebase phone index built: ${Object.keys(index).length} entries`);
+      return index;
+    } catch (err) {
+      console.warn('[TOI-04] Failed to build Firebase leads index:', err);
+      firebaseLeadsPhoneIndex = {}; // negative cache so we don't re-try endlessly
+      return firebaseLeadsPhoneIndex;
+    } finally {
+      firebaseLeadsPhoneIndexLoading = null;
+    }
+  })();
+  return firebaseLeadsPhoneIndexLoading;
+}
+
+// Guard helper: refuse an action when the lead has no usable phone. Pops a
+// Hebrew toast and auto-opens the edit modal so Liam can fix it without
+// hunting. Returns boolean so call sites can early-return on failure.
+function assertLeadHasPhone(lead, actionLabel) {
+  const phone = lead?.phone_number || lead?.phone;
+  const check = validatePhoneNumber(phone);
+  if (!check.valid) {
+    showToast(`לא ניתן ל${actionLabel} — חסר מספר טלפון. ערוך את הליד תחילה.`, true);
+    const leadId = lead?.id || lead?._id;
+    if (leadId && typeof openBotiEditModal === 'function') {
+      setTimeout(() => openBotiEditModal(leadId), 600);
+    }
+    return false;
+  }
+  return true;
+}
+
 function botiNormalizeAllPhones() {
   const leads = botiLoad();
   let count = 0;
@@ -5234,8 +5409,23 @@ function submitBotiEdit(e) {
   const leads = botiLoad();
   const lead = leads.find(l => l.id === id);
   if (!lead) { hideBotiEditModal(); return; }
+
+  // TOI-04 — hard gate: phone is mandatory. Blocks the silent-null path that
+  // produced un-sendable Follow_Ups last night.
+  const phoneInput = document.getElementById('boti-e-phone');
+  const rawPhone = phoneInput.value.trim();
+  const phoneCheck = validatePhoneNumber(rawPhone);
+  if (!phoneCheck.valid) {
+    showToast(formatPhoneError(phoneCheck.reason), true);
+    phoneInput.classList.add('input-error');
+    phoneInput.focus();
+    return;
+  }
+  phoneInput.classList.remove('input-error');
+
   lead.name = document.getElementById('boti-e-name').value.trim() || null;
-  lead.phone = botiNormalizePhone(document.getElementById('boti-e-phone').value.trim()) || null;
+  // Keep 972-default normalization for Israeli-entered numbers (existing behaviour).
+  lead.phone = botiNormalizePhone(rawPhone) || null;
   lead.is_on_island = document.getElementById('boti-e-island').checked;
   lead.is_hot = document.getElementById('boti-e-hot').checked;
   lead.is_arriving = document.getElementById('boti-e-arriving').checked;
@@ -5468,6 +5658,90 @@ document.addEventListener('DOMContentLoaded', () => {
     botiNormalizeAllPhones();
     localStorage.setItem('kph_phone_normalize_v1_done', new Date().toISOString());
   }
+
+  // TOI-04 — Boti edit modal: phone blur validation (live red border)
+  const botiPhoneInput = document.getElementById('boti-e-phone');
+  if (botiPhoneInput && botiPhoneInput.dataset.toi04Bound !== '1') {
+    botiPhoneInput.dataset.toi04Bound = '1';
+    botiPhoneInput.addEventListener('blur', (e) => {
+      const raw = e.target.value.trim();
+      if (!raw) { e.target.classList.remove('input-error'); return; }
+      const check = validatePhoneNumber(raw);
+      if (!check.valid) e.target.classList.add('input-error');
+      else              e.target.classList.remove('input-error');
+    });
+    botiPhoneInput.addEventListener('input', (e) => {
+      // Clear the error decoration as soon as the user starts correcting
+      if (e.target.classList.contains('input-error')) e.target.classList.remove('input-error');
+    });
+  }
+
+  // TOI-04 — Boti edit modal: auto-enrich phone from Firebase on name blur
+  // (soft — only fills when phone is empty, never overwrites manual input)
+  const botiNameInput = document.getElementById('boti-e-name');
+  if (botiNameInput && botiNameInput.dataset.toi04Bound !== '1') {
+    botiNameInput.dataset.toi04Bound = '1';
+    botiNameInput.addEventListener('blur', async (e) => {
+      const phoneInput = document.getElementById('boti-e-phone');
+      if (!phoneInput || phoneInput.value.trim()) return; // never overwrite
+      const name = e.target.value.trim();
+      if (name.length < 3) return;
+      const index = await buildFirebaseLeadsIndex();
+      const key = normalizeNameKey(name);
+      if (key && index[key]) {
+        phoneInput.value = index[key];
+        phoneInput.classList.remove('input-error');
+        phoneInput.style.background = '#10b98122';
+        setTimeout(() => { phoneInput.style.background = ''; }, 1500);
+      }
+    });
+  }
+
+  // TOI-04 — Global delegated click for enrich button. Bound ONCE on document
+  // so multiple modal opens don't stack listeners.
+  if (!document.body.dataset.toi04EnrichBound) {
+    document.body.dataset.toi04EnrichBound = '1';
+    document.body.addEventListener('click', async (e) => {
+      const btn = e.target.closest('[data-action="enrich-phone"]');
+      if (!btn) return;
+      e.preventDefault();
+      const nameInput = document.getElementById('boti-e-name');
+      const phoneInput = document.getElementById('boti-e-phone');
+      const name = nameInput?.value?.trim() || '';
+      if (!name) {
+        showToast('הזן קודם שם כדי לחפש', true);
+        nameInput?.focus();
+        return;
+      }
+      btn.disabled = true;
+      const originalLabel = btn.textContent;
+      btn.textContent = '⏳';
+      const index = await buildFirebaseLeadsIndex();
+      btn.disabled = false;
+      btn.textContent = originalLabel;
+      const key = normalizeNameKey(name);
+      const exact = key ? index[key] : null;
+      if (exact) {
+        phoneInput.value = exact;
+        phoneInput.classList.remove('input-error');
+        showToast(`נמצא מספר לפי השם: ${exact}`);
+        return;
+      }
+      // Partial-match fallback
+      const partials = key
+        ? Object.keys(index).filter(k => k.includes(key) || key.includes(k))
+        : [];
+      if (partials.length === 1) {
+        phoneInput.value = index[partials[0]];
+        phoneInput.classList.remove('input-error');
+        showToast(`נמצא לפי התאמה חלקית: ${index[partials[0]]}`);
+      } else if (partials.length > 1) {
+        showToast(`נמצאו ${partials.length} התאמות — בדוק ידנית`, true);
+      } else {
+        showToast('לא נמצא מספר בפיירבייס');
+      }
+    });
+  }
 });
 
 // ============ TODAY ON ISLAND ============
@@ -5651,10 +5925,14 @@ function renderLeadRow(lead) {
   const meta = metaBits.join(' · ');
   const source = (lead.source || 'boti').toUpperCase();
   const safeName = escapeHtml(lead.name || 'ללא שם');
-  const safePhone = escapeHtml(lead.phone || '—');
+  const phoneRaw = lead.phone || lead.phone_number || '';
+  const phoneValid = validatePhoneNumber(phoneRaw).valid;
+  const safePhone = phoneValid ? escapeHtml(phoneRaw) : '<span class="badge-no-phone" title="חסר טלפון — לחץ לערוך">📵</span>';
+  const escPhone = escapeHtml(phoneRaw);
+  const escId = escapeHtml(lead.id || '');
 
   return `
-    <div class="lead-row ${isContacted ? 'contacted-row' : ''} ${toiState.expandedLeadId === lead.id ? 'expanded' : ''}" data-lead-id="${lead.id}" data-phone="${escapeHtml(lead.phone || '')}" tabindex="0">
+    <div class="lead-row ${isContacted ? 'contacted-row' : ''} ${toiState.expandedLeadId === lead.id ? 'expanded' : ''}" data-lead-id="${escId}" data-phone="${escPhone}" tabindex="0">
       <div class="row-status-dot ${dotClass}"></div>
       <div class="row-name">${safeName}</div>
       <div class="row-phone">${safePhone}</div>
@@ -5663,10 +5941,10 @@ function renderLeadRow(lead) {
       <div class="row-meta">${escapeHtml(meta)}</div>
       <div class="row-source">${escapeHtml(source)}</div>
       <div class="row-quick-actions">
-        <button type="button" class="qa-btn qa-call" data-action="call" data-phone="${escapeHtml(lead.phone || '')}" title="התקשר">📞</button>
-        <button type="button" class="qa-btn qa-wa" data-action="wa" data-phone="${escapeHtml(lead.phone || '')}" title="WhatsApp">💬</button>
-        <button type="button" class="qa-btn qa-edit" data-action="edit" data-lead-id="${lead.id}" title="ערוך">✏️</button>
-        <button type="button" class="qa-btn qa-delete" data-action="delete" data-lead-id="${lead.id}" title="מחק">🗑️</button>
+        <button type="button" class="qa-btn qa-call" data-action="call" data-phone="${escPhone}" data-lead-id="${escId}" title="התקשר">📞</button>
+        <button type="button" class="qa-btn qa-wa" data-action="wa" data-phone="${escPhone}" data-lead-id="${escId}" title="WhatsApp">💬</button>
+        <button type="button" class="qa-btn qa-edit" data-action="edit" data-lead-id="${escId}" title="ערוך">✏️</button>
+        <button type="button" class="qa-btn qa-delete" data-action="delete" data-lead-id="${escId}" title="מחק">🗑️</button>
       </div>
     </div>`;
 }
@@ -5674,6 +5952,8 @@ function renderLeadRow(lead) {
 function renderLeadExpanded(lead, blockType) {
   const isContacted = lead.status === 'contacted';
   const remaining = toiRemainingHours(lead);
+  const phoneRaw = lead.phone || lead.phone_number || '';
+  const phoneValid = validatePhoneNumber(phoneRaw).valid;
   const badges = [];
   if (lead.is_hot) badges.push('<span class="row-badge rb-hot">🔥 חם</span>');
   if (!lead.status || lead.status === 'new') badges.push('<span class="row-badge rb-new">חדש</span>');
@@ -5683,13 +5963,16 @@ function renderLeadExpanded(lead, blockType) {
       : '<span class="row-badge rb-contacted">📩 טופל</span>');
   }
   if (lead.departure_date) badges.push(`<span class="row-badge rb-departure">✈️ עוזב ${toiFormatShortDate(lead.departure_date)}</span>`);
+  if (!phoneValid) badges.push('<span class="row-badge rb-no-phone" title="חסר טלפון — לחץ ערוך כדי להוסיף">📵 חסר טלפון</span>');
 
   const fullNote = lead.interest || lead.notes || lead.raw_text || 'אין תיאור';
   const budget = lead.budget ? toiFormatBudget(lead.budget, lead.budget_currency || 'THB') : '—';
   const source = (lead.source || 'boti').toUpperCase();
+  const escPhone = escapeHtml(phoneRaw);
+  const escId = escapeHtml(lead.id || '');
 
   return `
-    <div class="lead-expanded" data-expanded-lead-id="${lead.id}">
+    <div class="lead-expanded" data-expanded-lead-id="${escId}">
       ${badges.length ? `<div class="exp-badges">${badges.join('')}</div>` : ''}
       <div class="exp-note">💬 ${escapeHtml(String(fullNote))}</div>
       <div class="exp-meta-row">
@@ -5699,12 +5982,12 @@ function renderLeadExpanded(lead, blockType) {
         <span><b>מקור:</b> ${escapeHtml(source)}</span>
       </div>
       <div class="exp-actions">
-        <button type="button" class="exp-btn exp-primary" data-action="wa" data-phone="${escapeHtml(lead.phone || '')}">💬 WhatsApp</button>
-        <button type="button" class="exp-btn" data-action="call" data-phone="${escapeHtml(lead.phone || '')}">📞 התקשר</button>
-        <button type="button" class="exp-btn exp-schedule" data-action="schedule" data-lead-id="${lead.id}">📅 תזמן פגישה</button>
-        <button type="button" class="exp-btn" data-action="schedule-msg" data-lead-id="${lead.id}">🕐 תזמן הודעה</button>
-        <button type="button" class="exp-btn" data-action="edit" data-lead-id="${lead.id}">✏️ ערוך</button>
-        <button type="button" class="exp-btn exp-danger" data-action="delete" data-lead-id="${lead.id}">🗑️ מחק</button>
+        <button type="button" class="exp-btn exp-primary" data-action="wa" data-phone="${escPhone}" data-lead-id="${escId}">💬 WhatsApp</button>
+        <button type="button" class="exp-btn" data-action="call" data-phone="${escPhone}" data-lead-id="${escId}">📞 התקשר</button>
+        <button type="button" class="exp-btn exp-schedule" data-action="schedule" data-lead-id="${escId}">📅 תזמן פגישה</button>
+        <button type="button" class="exp-btn" data-action="schedule-msg" data-lead-id="${escId}">🕐 תזמן הודעה</button>
+        <button type="button" class="exp-btn" data-action="edit" data-lead-id="${escId}">✏️ ערוך</button>
+        <button type="button" class="exp-btn exp-danger" data-action="delete" data-lead-id="${escId}">🗑️ מחק</button>
       </div>
     </div>`;
 }
@@ -5945,21 +6228,35 @@ function toiBindActions() {
       e.stopPropagation();
       const action = actionBtn.dataset.action;
       if (action === 'call') {
-        const p = (actionBtn.dataset.phone || '').replace(/\D/g, '');
-        if (p) window.open(`tel:+${p}`);
+        // TOI-04 guard — refuse if phone invalid, open edit modal for fix
+        const check = validatePhoneNumber(actionBtn.dataset.phone);
+        if (!check.valid) {
+          showToast('לא ניתן להתקשר — חסר מספר טלפון. ערוך את הליד תחילה.', true);
+          const lid = actionBtn.dataset.leadId;
+          if (lid) setTimeout(() => openBotiEditModal(lid), 600);
+          return;
+        }
+        window.open(`tel:+${check.normalized}`);
         return;
       }
       if (action === 'wa') {
-        const p = (actionBtn.dataset.phone || '').replace(/\D/g, '');
-        if (p) window.open(`https://wa.me/${p}`, '_blank');
+        const check = validatePhoneNumber(actionBtn.dataset.phone);
+        if (!check.valid) {
+          showToast('לא ניתן לפתוח WhatsApp — חסר מספר טלפון. ערוך את הליד תחילה.', true);
+          const lid = actionBtn.dataset.leadId;
+          if (lid) setTimeout(() => openBotiEditModal(lid), 600);
+          return;
+        }
+        window.open(`https://wa.me/${check.normalized}`, '_blank');
         return;
       }
       if (action === 'edit') { openBotiEditModal(actionBtn.dataset.leadId); return; }
       if (action === 'schedule') { openToiScheduleModal(actionBtn.dataset.leadId); return; }
       if (action === 'schedule-msg') {
         const lead = botiLoad().find(l => l.id === actionBtn.dataset.leadId);
-        if (lead) openScheduleMessageFor(lead);
-        else showToast('ליד לא נמצא', true);
+        if (!lead) { showToast('ליד לא נמצא', true); return; }
+        if (!assertLeadHasPhone(lead, 'תזמן הודעה')) return;
+        openScheduleMessageFor(lead);
         return;
       }
       if (action === 'delete') { toiRequestDelete(actionBtn.dataset.leadId); return; }
