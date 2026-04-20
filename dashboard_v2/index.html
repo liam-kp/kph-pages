@@ -425,6 +425,41 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
 /* Legacy: keep for backward compatibility but remove legacy toi-block-toggle behavior */
 .toi-block-toggle { cursor:default; }
 .toi-block-toggle::after { content:""; display:none; }
+
+/* ============================================================ */
+/* ===== TOI-05: copy-name, statuses, followup picker, reminders ===== */
+/* ============================================================ */
+
+/* Click-to-copy on lead name */
+.row-name { cursor:pointer; }
+.row-name:hover { text-decoration:underline; text-decoration-color:#68dbae; text-underline-offset:2px; }
+.row-name:focus { outline:1px dashed #68dbae; outline-offset:2px; }
+
+/* New status badges (TOI tab) */
+.row-badge.rb-simmer            { background:rgba(251,191,36,0.18); color:#FBBF24; }   /* warm amber */
+.row-badge.rb-schedule_meeting  { background:rgba(167,139,250,0.18); color:#A78BFA; }  /* violet */
+.row-badge.rb-in_conversation   { background:rgba(96,165,250,0.18); color:#60A5FA; }   /* blue */
+.row-badge.rb-needs_call        { background:rgba(248,113,113,0.18); color:#F87171; }  /* red-ish */
+.row-badge.rb-arriving          { background:rgba(109,213,250,0.18); color:#6DD5FA; }  /* sky */
+
+/* Followup date picker block (replaces hours pills) */
+#edit-followup-section { margin-top:10px; }
+.followup-quick-row { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px; }
+.fu-quick-btn { padding:5px 12px; font-size:12px; background:#10141a; color:#bccac1; border:1px solid #3e4943; border-radius:6px; cursor:pointer; transition:all 0.12s; font-family:inherit; }
+.fu-quick-btn:hover { color:#fff; border-color:#68dbae; }
+.fu-quick-btn.active { background:#68dbae; color:#003826; border-color:#68dbae; font-weight:700; }
+.followup-custom-row { display:flex; gap:6px; align-items:center; flex-wrap:wrap; }
+.followup-custom-row input[type="date"], .followup-custom-row input[type="time"] {
+  padding:6px 10px; background:#10141a; color:#dfe2eb; border:1px solid #3e4943; border-radius:6px; font-size:12px; font-family:inherit;
+  color-scheme:dark;
+}
+.followup-custom-row input[type="date"]:focus, .followup-custom-row input[type="time"]:focus { outline:none; border-color:#68dbae; }
+.followup-hint { font-size:11px; color:#94A3B8; margin-top:4px; display:block; }
+
+/* Reminders section (top of TOI) */
+.toi-block-reminders { border-right:4px solid #FBBF24; }
+.toi-block-reminders .block-title { color:#fff; }
+.toi-block-reminders .block-count { background:rgba(251,191,36,0.2); color:#FBBF24; }
 </style>
 </head>
 <body class="text-on-surface overflow-hidden h-screen flex flex-row-reverse">
@@ -540,6 +575,11 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
           <button type="button" class="filter-chip" data-filter="hot">חמים <span class="chip-count">0</span></button>
           <button type="button" class="filter-chip" data-filter="no-contact">לא יצרתי קשר <span class="chip-count">0</span></button>
           <button type="button" class="filter-chip" data-filter="no-budget">ללא תקציב <span class="chip-count">0</span></button>
+          <button type="button" class="filter-chip" data-filter="status-simmer">🔥 אש קטנה <span class="chip-count">0</span></button>
+          <button type="button" class="filter-chip" data-filter="status-schedule_meeting">📅 לתאם <span class="chip-count">0</span></button>
+          <button type="button" class="filter-chip" data-filter="status-in_conversation">💬 בשיחה <span class="chip-count">0</span></button>
+          <button type="button" class="filter-chip" data-filter="status-needs_call">📞 להתקשר <span class="chip-count">0</span></button>
+          <button type="button" class="filter-chip" data-filter="status-arriving">✈️ מגיע <span class="chip-count">0</span></button>
         </div>
         <div class="toi-filters-tools">
           <input type="text" id="toi-search" placeholder="🔍 חיפוש (שם / טלפון / הערות)... [/]" class="toi-search" autocomplete="off"/>
@@ -556,6 +596,15 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
           <h3 class="block-title">🔍 תוצאות חיפוש <span class="block-count" id="count-search">0</span></h3>
         </div>
         <div class="toi-cards" id="block-search-cards"></div>
+      </section>
+
+      <!-- Block 0: Reminders for today (TOI-05) -->
+      <section class="toi-block toi-block-reminders" data-block="reminders" id="block-reminders" style="display:none">
+        <div class="toi-block-header">
+          <button type="button" class="block-toggle" data-action="toggle" title="קפל/הרחב"><span class="toggle-icon">▼</span></button>
+          <h3 class="block-title">🔔 תזכורות להיום <span class="block-count" id="count-reminders">0</span></h3>
+        </div>
+        <div class="toi-cards" id="block-reminders-cards"></div>
       </section>
 
       <!-- Block 1: URGENT -->
@@ -1692,17 +1741,28 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
         <select id="edit-status">
           <option value="new">חדש — טרם פניתי</option>
           <option value="contacted">פניתי — ממתין לתגובה</option>
+          <option value="simmer">🔥 אש קטנה</option>
+          <option value="schedule_meeting">📅 לתאם פגישה</option>
+          <option value="in_conversation">💬 בשיחה</option>
+          <option value="needs_call">📞 צריך להתקשר</option>
+          <option value="arriving">✈️ מגיע לאי</option>
           <option value="met">נפגשנו</option>
           <option value="closed">סגור</option>
         </select>
-        <div id="edit-contacted-section" style="display:none; margin-top:10px;">
-          <label style="display:block; margin-bottom:6px;">⏱️ בדיקה חוזרת אחרי</label>
-          <div class="check-hours-pills" id="edit-check-hours-pills">
-            <button type="button" class="hours-pill" data-hours="4">4 שעות</button>
-            <button type="button" class="hours-pill" data-hours="8">8 שעות</button>
-            <button type="button" class="hours-pill" data-hours="24">24 שעות</button>
-            <button type="button" class="hours-pill" data-hours="">ללא</button>
+        <div id="edit-followup-section" style="display:none;">
+          <label style="display:block; margin-bottom:6px;">🔔 תזמון תזכורת לבדיקה חוזרת</label>
+          <div class="followup-quick-row">
+            <button type="button" class="fu-quick-btn" data-fuq="tomorrow">מחר</button>
+            <button type="button" class="fu-quick-btn" data-fuq="2days">עוד יומיים</button>
+            <button type="button" class="fu-quick-btn" data-fuq="3days">עוד 3 ימים</button>
+            <button type="button" class="fu-quick-btn" data-fuq="week">בעוד שבוע</button>
+            <button type="button" class="fu-quick-btn" data-fuq="none">ללא</button>
           </div>
+          <div class="followup-custom-row">
+            <input type="date" id="edit-followup-date" aria-label="תאריך תזכורת"/>
+            <input type="time" id="edit-followup-time" value="10:00" aria-label="שעת תזכורת"/>
+          </div>
+          <small class="followup-hint">הליד יקפוץ בראש Today on Island ביום שנבחר</small>
         </div>
       </div>
 
@@ -5359,9 +5419,41 @@ async function submitBotiTransfer(e) {
 }
 
 // ---- Edit modal ----
+// TOI-05 — statuses that require a follow-up reminder picker
+const TOI_FOLLOWUP_STATUSES = ['contacted', 'simmer', 'schedule_meeting', 'in_conversation', 'needs_call', 'arriving'];
+
+// TOI-05 — explicit reset of every field in the edit modal. Belt-and-suspenders
+// against state bleeding between leads (open A → write notes → close → open B
+// must show empty notes, not A's). Called from BOTH hideBotiEditModal AND at
+// the start of openBotiEditModal so the slate is always clean.
+function resetBotiEditModalFields() {
+  const el = (id) => document.getElementById(id);
+  if (el('boti-e-id'))             el('boti-e-id').value = '';
+  if (el('boti-e-name'))           el('boti-e-name').value = '';
+  if (el('boti-e-phone'))         { el('boti-e-phone').value = ''; el('boti-e-phone').classList.remove('input-error'); }
+  if (el('boti-e-island'))         el('boti-e-island').checked = false;
+  if (el('boti-e-hot'))            el('boti-e-hot').checked = false;
+  if (el('boti-e-arriving'))       el('boti-e-arriving').checked = false;
+  if (el('boti-e-meeting'))        el('boti-e-meeting').checked = false;
+  if (el('edit-budget-amount'))    el('edit-budget-amount').value = '';
+  if (el('edit-budget-currency'))  el('edit-budget-currency').value = 'THB';
+  if (el('edit-departure-date'))   el('edit-departure-date').value = '';
+  if (el('edit-interest'))         el('edit-interest').value = '';
+  if (el('edit-notes'))            el('edit-notes').value = '';
+  if (el('edit-status'))           el('edit-status').value = 'new';
+  if (el('edit-followup-date'))    el('edit-followup-date').value = '';
+  if (el('edit-followup-time'))    el('edit-followup-time').value = '10:00';
+  document.querySelectorAll('#edit-language-pills .lang-pill').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('#edit-followup-section .fu-quick-btn').forEach(p => p.classList.remove('active'));
+  const sec = el('edit-followup-section'); if (sec) sec.style.display = 'none';
+}
+
 function openBotiEditModal(id) {
   const lead = botiLoad().find(l => l.id === id);
   if (!lead) return;
+  // Always start from a clean slate so previous lead state can never leak.
+  resetBotiEditModalFields();
+
   document.getElementById('boti-e-id').value = id;
   document.getElementById('boti-e-name').value = lead.name || '';
   document.getElementById('boti-e-phone').value = lead.phone || '';
@@ -5383,25 +5475,31 @@ function openBotiEditModal(id) {
     p.classList.toggle('active', p.dataset.lang === (lead.language || ''));
   });
 
-  // Hours pills — derive from next_check_hours (or existing next_check_at)
-  let currentHours = lead.next_check_hours;
-  if (currentHours == null && lead.next_check_at && lead.contacted_at) {
-    const diffMs = new Date(lead.next_check_at) - new Date(lead.contacted_at);
-    const hrs = Math.round(diffMs / 3600000);
-    if ([4, 8, 24].includes(hrs)) currentHours = hrs;
+  // Followup picker — show for any active status. Pre-fill from existing
+  // next_followup_date or legacy next_check_at.
+  const showFollowup = TOI_FOLLOWUP_STATUSES.includes(lead.status);
+  document.getElementById('edit-followup-section').style.display = showFollowup ? '' : 'none';
+  const existingISO = lead.next_followup_date || lead.next_check_at || '';
+  if (existingISO) {
+    try {
+      const d = new Date(existingISO);
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth()+1).padStart(2,'0');
+      const dd = String(d.getDate()).padStart(2,'0');
+      const hh = String(d.getHours()).padStart(2,'0');
+      const mn = String(d.getMinutes()).padStart(2,'0');
+      document.getElementById('edit-followup-date').value = `${yyyy}-${mm}-${dd}`;
+      document.getElementById('edit-followup-time').value = `${hh}:${mn}`;
+    } catch(e) { /* leave defaults */ }
   }
-  document.querySelectorAll('#edit-check-hours-pills .hours-pill').forEach(p => {
-    const v = p.dataset.hours;
-    p.classList.toggle('active', String(currentHours ?? '') === v);
-  });
-
-  // Toggle contacted section visibility
-  document.getElementById('edit-contacted-section').style.display =
-    lead.status === 'contacted' ? '' : 'none';
 
   document.getElementById('boti-edit-modal').classList.remove('hidden');
 }
-function hideBotiEditModal() { document.getElementById('boti-edit-modal').classList.add('hidden'); }
+function hideBotiEditModal() {
+  document.getElementById('boti-edit-modal').classList.add('hidden');
+  // TOI-05 — defensive reset on close so reopens never show stale state.
+  resetBotiEditModalFields();
+}
 
 function submitBotiEdit(e) {
   e.preventDefault();
@@ -5445,33 +5543,117 @@ function submitBotiEdit(e) {
   const newStatus = document.getElementById('edit-status').value || 'new';
   lead.status = newStatus === 'new' ? null : newStatus;
 
-  if (newStatus === 'contacted') {
-    if (prevStatus !== 'contacted' || !lead.contacted_at) {
+  // Track first touch for any active status (including the new TOI-05 ones)
+  const isActiveStatus = TOI_FOLLOWUP_STATUSES.includes(newStatus);
+  if (isActiveStatus) {
+    if (!TOI_FOLLOWUP_STATUSES.includes(prevStatus) || !lead.contacted_at) {
       lead.contacted_at = new Date().toISOString();
-    }
-    const hoursActive = document.querySelector('#edit-check-hours-pills .hours-pill.active');
-    const hoursVal = hoursActive ? hoursActive.dataset.hours : '';
-    if (hoursVal) {
-      lead.next_check_hours = parseInt(hoursVal, 10);
-      lead.next_check_at = new Date(new Date(lead.contacted_at).getTime() + lead.next_check_hours * 3600 * 1000).toISOString();
-    } else {
-      lead.next_check_hours = null;
-      lead.next_check_at = null;
     }
   } else if (newStatus === 'new') {
     lead.status = null;
     lead.contacted_at = null;
     lead.next_check_at = null;
     lead.next_check_hours = null;
+    lead.next_followup_date = null;
+  }
+
+  // TOI-05 — followup date picker (replaces the legacy 4/8/24 hours pills)
+  let followupISO = null;
+  if (isActiveStatus) {
+    const dateVal = document.getElementById('edit-followup-date').value;
+    const timeVal = document.getElementById('edit-followup-time').value || '10:00';
+    if (dateVal) {
+      const candidate = new Date(`${dateVal}T${timeVal}:00`);
+      if (!isNaN(candidate.getTime())) {
+        followupISO = candidate.toISOString();
+      }
+    }
+    if (followupISO) {
+      lead.next_followup_date = followupISO;
+      lead.next_check_at = followupISO; // backwards compat with bucketize sort
+      const diffH = Math.max(1, Math.round((new Date(followupISO).getTime() - new Date(lead.contacted_at).getTime()) / 3600000));
+      lead.next_check_hours = diffH;
+    } else {
+      lead.next_followup_date = null;
+      lead.next_check_at = null;
+      lead.next_check_hours = null;
+    }
   }
 
   lead.user_edited = true;
   if (!lead.original_name) lead.original_name = lead.name;
   botiSave(leads);
+
+  // TOI-05 — Dual-write reminder to Firebase /Leads + /Follow_Ups (CLAUDE.md
+  // rule). Best-effort: failure does not block the local save. Only fires
+  // when a followup date was set and a Firebase counterpart can be matched.
+  if (followupISO) {
+    toiDualWriteReminder(lead, followupISO).catch(err => console.warn('[TOI-05] reminder dual-write failed (non-blocking):', err));
+  }
+
   hideBotiEditModal();
   renderBotiPage();
   if (typeof renderTodayOnIsland === 'function' && currentPage === 'today') renderTodayOnIsland();
   showToast('עודכן');
+}
+
+// TOI-05 — Dual-write a manual reminder to Firebase. Matches the local
+// BOTI/TOI lead to a Firebase lead by phone (firebaseLeadsRaw) and writes:
+//   /Leads/<id>          → next_followup_date, last_manual_reminder_at
+//   /Follow_Ups/<newId>  → trigger_type=MANUAL, status=PENDING, scheduled_date
+// Pure visibility — the SCHEDULE agent treats MANUAL as a no-send marker.
+async function toiDualWriteReminder(lead, scheduledISO) {
+  const token = getToken();
+  if (!token) {
+    showToast('הטוקן פג תוקף — התזכורת נשמרה מקומית בלבד', true);
+    return;
+  }
+  const phone = lead.phone || lead.phone_number || '';
+  const phoneNorm = normalizePhone(phone);
+  if (!phoneNorm) return; // no phone → cannot dual-write; local save already done
+
+  let firebaseId = lead._id || null;
+  if (!firebaseId && Array.isArray(firebaseLeadsRaw)) {
+    const match = firebaseLeadsRaw.find(fl => normalizePhone(fl.phone_number) === phoneNorm);
+    if (match) firebaseId = match._id;
+  }
+
+  const nowIso = new Date().toISOString();
+  const followUpRecord = {
+    scheduled_date: scheduledISO,
+    status: 'PENDING',
+    phone_number: phone,
+    trigger_type: 'MANUAL',
+    attempt_number: 0,
+    max_attempts: 1,
+    contact_id: lead.contact_id || `manual_${phoneNorm}`,
+    channel_id: lead.channel_id || 'default',
+    conversation_id: lead.conversation_id || `manual_${phoneNorm}`,
+    reason: `Manual reminder by Liam from TOI dashboard at ${nowIso}`,
+    created_at: nowIso,
+    updated_at: nowIso,
+  };
+  if (firebaseId) followUpRecord.lead_id = firebaseId;
+  if (lead.name) followUpRecord.lead_name = lead.name;
+
+  try {
+    const followUpId = `${firebaseId || 'manual_' + phoneNorm}_reminder_${Date.now()}`;
+    await firebasePut('Follow_Ups', followUpId, followUpRecord);
+    if (firebaseId) {
+      try {
+        await firebasePut('Leads', firebaseId, {
+          next_followup_date: scheduledISO,
+          last_manual_reminder_at: nowIso,
+        });
+      } catch (e) {
+        console.warn('[TOI-05] /Leads dual-write failed:', e);
+      }
+    }
+  } catch (e) {
+    if (!handleAuthError(e.message)) {
+      console.warn('[TOI-05] /Follow_Ups write failed:', e);
+    }
+  }
 }
 
 // ---- Contacted modal ----
@@ -5870,7 +6052,12 @@ function toiIsLeadVisible(lead) {
   }
   const today = toiTodayISO();
   const oneWeekOut = toiAddDays(today, 7);
-  switch (toiState.activeFilter) {
+  const f = toiState.activeFilter || 'all';
+  // TOI-05 — generic status filter: chips named "status-<value>" filter by lead.status
+  if (f.startsWith('status-')) {
+    return lead.status === f.slice(7);
+  }
+  switch (f) {
     case 'all': return true;
     case 'on-island-today': return !!lead.is_on_island;
     case 'leaving-this-week':
@@ -5897,6 +6084,12 @@ function toiUpdateFilterCounts(allLeads) {
     'hot': pool.filter(l => l.is_hot).length,
     'no-contact': pool.filter(l => !l.status || l.status === 'new').length,
     'no-budget': pool.filter(l => !l.budget).length,
+    // TOI-05 — counts for the new status chips
+    'status-simmer': pool.filter(l => l.status === 'simmer').length,
+    'status-schedule_meeting': pool.filter(l => l.status === 'schedule_meeting').length,
+    'status-in_conversation': pool.filter(l => l.status === 'in_conversation').length,
+    'status-needs_call': pool.filter(l => l.status === 'needs_call').length,
+    'status-arriving': pool.filter(l => l.status === 'arriving').length,
   };
   document.querySelectorAll('.filter-chip').forEach(chip => {
     const c = counts[chip.dataset.filter];
@@ -5934,7 +6127,7 @@ function renderLeadRow(lead) {
   return `
     <div class="lead-row ${isContacted ? 'contacted-row' : ''} ${toiState.expandedLeadId === lead.id ? 'expanded' : ''}" data-lead-id="${escId}" data-phone="${escPhone}" tabindex="0">
       <div class="row-status-dot ${dotClass}"></div>
-      <div class="row-name">${safeName}</div>
+      <div class="row-name" data-action="copy-name" data-phone="${escPhone}" title="לחץ להעתיק טלפון">${safeName}</div>
       <div class="row-phone">${safePhone}</div>
       <div class="row-budget ${budgetCls}">${escapeHtml(budget)}</div>
       <div class="row-arrival">${arrivalLabel}</div>
@@ -5962,6 +6155,15 @@ function renderLeadExpanded(lead, blockType) {
       ? `<span class="row-badge rb-contacted">📩 טופל · ${remaining}h</span>`
       : '<span class="row-badge rb-contacted">📩 טופל</span>');
   }
+  // TOI-05 — Badge per new status
+  const statusLabel = ({
+    simmer: '🔥 אש קטנה',
+    schedule_meeting: '📅 לתאם פגישה',
+    in_conversation: '💬 בשיחה',
+    needs_call: '📞 צריך להתקשר',
+    arriving: '✈️ מגיע לאי',
+  })[lead.status];
+  if (statusLabel) badges.push(`<span class="row-badge rb-${lead.status}">${statusLabel}</span>`);
   if (lead.departure_date) badges.push(`<span class="row-badge rb-departure">✈️ עוזב ${toiFormatShortDate(lead.departure_date)}</span>`);
   if (!phoneValid) badges.push('<span class="row-badge rb-no-phone" title="חסר טלפון — לחץ ערוך כדי להוסיף">📵 חסר טלפון</span>');
 
@@ -6021,6 +6223,7 @@ function renderBlockCards(blockName, items) {
       meetings: 'אין פגישות קבועות היום',
       arriving: 'אין לידים מגיעים השבוע',
       engaged: 'אין לידים בשיחה פעילה',
+      reminders: 'אין תזכורות מתוזמנות להיום',
     }[blockName] || '—';
     return `<div class="text-xs text-on-surface-variant opacity-70 p-2">${empty}</div>`;
   }
@@ -6030,6 +6233,49 @@ function renderBlockCards(blockName, items) {
     const expanded = (toiState.expandedLeadId === l.id) ? renderLeadExpanded(l, blockName) : '';
     return row + expanded;
   }).join('');
+}
+
+// TOI-05 — Copy a lead's phone to the clipboard with a green Hebrew toast.
+// Uses navigator.clipboard when available, falls back to a hidden textarea
+// (covers older browsers / non-secure contexts).
+function toiCopyPhone(phoneRaw) {
+  const phone = String(phoneRaw || '').trim();
+  if (!phone) { showToast('אין מספר טלפון להעתקה', true); return; }
+  const display = '+' + phone.replace(/^\+/, '');
+  const onSuccess = () => showToast(`הועתק: ${display}`);
+  const onFail   = () => showToast('העתקה נכשלה', true);
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(display).then(onSuccess).catch(() => {
+      try { toiClipboardFallback(display); onSuccess(); } catch(_) { onFail(); }
+    });
+  } else {
+    try { toiClipboardFallback(display); onSuccess(); } catch(_) { onFail(); }
+  }
+}
+function toiClipboardFallback(text) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.left = '-9999px';
+  document.body.appendChild(ta);
+  ta.select();
+  document.execCommand('copy');
+  ta.remove();
+}
+
+// TOI-05 — Reminders: leads with next_followup_date scheduled for today.
+function toiTodayReminders(leads) {
+  const today = toiTodayISO();
+  const startMs = new Date(today + 'T00:00:00').getTime();
+  const endMs   = new Date(today + 'T23:59:59').getTime();
+  return leads.filter(l => {
+    if (l.transferred_to_pipeline || l.rejected) return false;
+    if (l.status === 'closed' || l.status === 'met') return false;
+    if (!l.next_followup_date) return false;
+    const ms = new Date(l.next_followup_date).getTime();
+    if (isNaN(ms)) return false;
+    return ms >= startMs && ms <= endMs;
+  });
 }
 
 function renderTodayOnIsland() {
@@ -6098,6 +6344,25 @@ function renderTodayOnIsland() {
     const countEl = document.getElementById(`count-${blockName}`);
     if (countEl) countEl.textContent = blocks[blockName].length;
   });
+
+  // TOI-05 — Reminders block: leads scheduled for today via next_followup_date.
+  // Sourced from the full pool (independent of active chip filter so the user
+  // never loses sight of a reminder while filtering on, e.g. "באי היום").
+  const remindersSection = document.getElementById('block-reminders');
+  if (remindersSection) {
+    const reminders = toiTodayReminders(toiFilterableLeads(allLeads));
+    if (hasSearch || (toiState.soloBlock && toiState.soloBlock !== 'reminders')) {
+      remindersSection.style.display = 'none';
+    } else {
+      remindersSection.style.display = reminders.length ? '' : 'none';
+    }
+    const remContainer = document.getElementById('block-reminders-cards');
+    if (remContainer) remContainer.innerHTML = renderBlockCards('reminders', reminders);
+    const remCount = document.getElementById('count-reminders');
+    if (remCount) remCount.textContent = reminders.length;
+    // Default-open is provided by the HTML (no .collapsed class on first paint).
+    // User-driven collapse is preserved across re-renders — do not force-open here.
+  }
 
   // Solo indicator pill
   const soloEl = document.getElementById('toi-solo-indicator');
@@ -6219,6 +6484,15 @@ function toiBindActions() {
     if (soloBtn) {
       const block = soloBtn.closest('.toi-block');
       if (block) toiSetSolo(block.dataset.block);
+      return;
+    }
+
+    // TOI-05 — Click on lead name copies its phone to clipboard.
+    // Handled BEFORE the row-toggle path so it doesn't expand the card.
+    const nameEl = e.target.closest('.row-name[data-action="copy-name"]');
+    if (nameEl) {
+      e.stopPropagation();
+      toiCopyPhone(nameEl.dataset.phone);
       return;
     }
 
@@ -6387,7 +6661,8 @@ function toiBindEditModalExtras() {
   if (statusSel && statusSel.dataset.bound !== '1') {
     statusSel.dataset.bound = '1';
     statusSel.addEventListener('change', () => {
-      document.getElementById('edit-contacted-section').style.display = statusSel.value === 'contacted' ? '' : 'none';
+      const sec = document.getElementById('edit-followup-section');
+      if (sec) sec.style.display = TOI_FOLLOWUP_STATUSES.includes(statusSel.value) ? '' : 'none';
     });
   }
   document.querySelectorAll('#edit-language-pills .lang-pill').forEach(p => {
@@ -6399,13 +6674,40 @@ function toiBindEditModalExtras() {
       if (!wasActive) p.classList.add('active');
     });
   });
-  document.querySelectorAll('#edit-check-hours-pills .hours-pill').forEach(p => {
+  // TOI-05 — Followup quick-preset buttons (replaces the legacy hours pills)
+  document.querySelectorAll('#edit-followup-section .fu-quick-btn').forEach(p => {
     if (p.dataset.bound === '1') return;
     p.dataset.bound = '1';
     p.addEventListener('click', () => {
-      document.querySelectorAll('#edit-check-hours-pills .hours-pill').forEach(x => x.classList.remove('active'));
+      document.querySelectorAll('#edit-followup-section .fu-quick-btn').forEach(x => x.classList.remove('active'));
       p.classList.add('active');
+      const dateInput = document.getElementById('edit-followup-date');
+      const timeInput = document.getElementById('edit-followup-time');
+      if (!dateInput || !timeInput) return;
+      const today = toiTodayISO();
+      let targetISO = '';
+      switch (p.dataset.fuq) {
+        case 'tomorrow': targetISO = toiAddDays(today, 1); break;
+        case '2days':   targetISO = toiAddDays(today, 2); break;
+        case '3days':   targetISO = toiAddDays(today, 3); break;
+        case 'week':    targetISO = toiAddDays(today, 7); break;
+        case 'none':
+          dateInput.value = '';
+          return;
+      }
+      dateInput.value = targetISO;
+      if (!timeInput.value) timeInput.value = '10:00';
     });
+  });
+  // Clearing the active quick-preset highlight when user manually edits date/time
+  ['edit-followup-date','edit-followup-time'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el && el.dataset.bound !== '1') {
+      el.dataset.bound = '1';
+      el.addEventListener('input', () => {
+        document.querySelectorAll('#edit-followup-section .fu-quick-btn').forEach(x => x.classList.remove('active'));
+      });
+    }
   });
 }
 
