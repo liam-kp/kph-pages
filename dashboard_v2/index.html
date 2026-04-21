@@ -427,20 +427,59 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
 .toi-block-toggle::after { content:""; display:none; }
 
 /* ============================================================ */
-/* ===== TOI-05: copy-name, statuses, followup picker, reminders ===== */
+/* ===== TOI-05: statuses, followup picker, reminders ===== */
 /* ============================================================ */
 
-/* Click-to-copy on lead name */
-.row-name { cursor:pointer; }
-.row-name:hover { text-decoration:underline; text-decoration-color:#68dbae; text-underline-offset:2px; }
-.row-name:focus { outline:1px dashed #68dbae; outline-offset:2px; }
+/* Lead-name leading mini buttons (TOI-06: 📋 copy + 📌 pin) */
+.row-name { display:flex; align-items:center; gap:6px; }
+.row-mini-btn { width:22px; height:22px; padding:0; display:inline-flex; align-items:center; justify-content:center;
+  background:transparent; border:1px solid transparent; border-radius:4px; font-size:12px; line-height:1;
+  cursor:pointer; color:#94A3B8; transition:all 0.12s; flex-shrink:0; font-family:inherit; }
+.row-mini-btn:hover { background:#262a31; color:#dfe2eb; border-color:#3e4943; }
+.row-mini-btn.row-pin.pinned { background:rgba(251,191,36,0.18); color:#FBBF24; border-color:rgba(251,191,36,0.4); }
+.row-mini-btn.row-pin.pinned:hover { background:rgba(251,191,36,0.28); }
+.row-name-text { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; min-width:0; flex:1; }
+.lead-row.is-pinned { box-shadow: inset 4px 0 0 #FBBF24; }
 
 /* New status badges (TOI tab) */
 .row-badge.rb-simmer            { background:rgba(251,191,36,0.18); color:#FBBF24; }   /* warm amber */
-.row-badge.rb-schedule_meeting  { background:rgba(167,139,250,0.18); color:#A78BFA; }  /* violet */
 .row-badge.rb-in_conversation   { background:rgba(96,165,250,0.18); color:#60A5FA; }   /* blue */
 .row-badge.rb-needs_call        { background:rgba(248,113,113,0.18); color:#F87171; }  /* red-ish */
 .row-badge.rb-arriving          { background:rgba(109,213,250,0.18); color:#6DD5FA; }  /* sky */
+.row-badge.rb-pinned            { background:rgba(251,191,36,0.18); color:#FBBF24; }   /* pin marker */
+.row-badge.rb-meeting-booked    { background:rgba(167,139,250,0.18); color:#A78BFA; }  /* violet */
+.row-badge.rb-meeting-toschedule{ background:rgba(251,191,36,0.18); color:#FBBF24; }
+.row-badge.rb-meeting-completed { background:rgba(52,211,153,0.18); color:#34D399; }   /* green */
+.row-badge.rb-meeting-tosummarize{ background:rgba(248,113,113,0.18); color:#F87171; } /* alert */
+
+/* Meeting fields layout (edit modal) */
+.meeting-datetime-row { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+#edit-meeting-status, #edit-meeting-outcome { width:100%; }
+#meeting-fields-to-schedule input, #meeting-fields-date input,
+#meeting-fields-booked input, #meeting-fields-completed input,
+#meeting-fields-completed textarea, #meeting-fields-completed select {
+  width:100%; padding:6px 10px; background:#10141a; color:#dfe2eb;
+  border:1px solid #3e4943; border-radius:6px; font-size:12px;
+  font-family:inherit; color-scheme:dark; box-sizing:border-box;
+}
+#meeting-fields-completed textarea { resize:vertical; min-height:64px; }
+.meeting-section-label { display:block; font-size:11px; color:#94A3B8; margin-bottom:4px; margin-top:6px; }
+
+/* Two new TOI blocks (TOI-06) */
+.toi-block-meetings-week        { border-right:4px solid #A78BFA; }
+.toi-block-meetings-tosummarize { border-right:4px solid #F87171; }
+
+/* Pipeline focus + table — pin button + pinned badge */
+.focus-row.is-pinned { box-shadow: inset 4px 0 0 #FBBF24; }
+.pipeline-pin-btn { width:28px; height:28px; padding:0; background:transparent; border:1px solid #3e4943; border-radius:6px;
+  cursor:pointer; color:#94A3B8; font-size:13px; transition:all 0.12s; line-height:1;
+  display:inline-flex; align-items:center; justify-content:center; font-family:inherit; }
+.pipeline-pin-btn:hover { background:#262a31; color:#dfe2eb; border-color:#68dbae; }
+.pipeline-pin-btn.pinned { background:rgba(251,191,36,0.18); color:#FBBF24; border-color:rgba(251,191,36,0.4); }
+.pipeline-pin-btn.pinned:hover { background:rgba(251,191,36,0.28); }
+tr.pipeline-row-pinned td:first-child { box-shadow: inset 4px 0 0 #FBBF24; }
+.focus-pin-badge { background:rgba(251,191,36,0.18); color:#FBBF24; font-size:9px; font-weight:700;
+  padding:1px 6px; border-radius:8px; margin-left:6px; vertical-align:middle; }
 
 /* Followup date picker block (replaces hours pills) */
 #edit-followup-section { margin-top:10px; }
@@ -575,8 +614,8 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
           <button type="button" class="filter-chip" data-filter="hot">חמים <span class="chip-count">0</span></button>
           <button type="button" class="filter-chip" data-filter="no-contact">לא יצרתי קשר <span class="chip-count">0</span></button>
           <button type="button" class="filter-chip" data-filter="no-budget">ללא תקציב <span class="chip-count">0</span></button>
+          <button type="button" class="filter-chip" data-filter="pinned">📌 מוצמדים <span class="chip-count">0</span></button>
           <button type="button" class="filter-chip" data-filter="status-simmer">🔥 אש קטנה <span class="chip-count">0</span></button>
-          <button type="button" class="filter-chip" data-filter="status-schedule_meeting">📅 לתאם <span class="chip-count">0</span></button>
           <button type="button" class="filter-chip" data-filter="status-in_conversation">💬 בשיחה <span class="chip-count">0</span></button>
           <button type="button" class="filter-chip" data-filter="status-needs_call">📞 להתקשר <span class="chip-count">0</span></button>
           <button type="button" class="filter-chip" data-filter="status-arriving">✈️ מגיע <span class="chip-count">0</span></button>
@@ -605,6 +644,24 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
           <h3 class="block-title">🔔 תזכורות להיום <span class="block-count" id="count-reminders">0</span></h3>
         </div>
         <div class="toi-cards" id="block-reminders-cards"></div>
+      </section>
+
+      <!-- Block 0b: Meetings to summarize (TOI-06) -->
+      <section class="toi-block toi-block-meetings-tosummarize" data-block="meetings-tosummarize" id="block-meetings-tosummarize" style="display:none">
+        <div class="toi-block-header">
+          <button type="button" class="block-toggle" data-action="toggle" title="קפל/הרחב"><span class="toggle-icon">▼</span></button>
+          <h3 class="block-title">✅ פגישות לסיכום <span class="block-count" id="count-meetings-tosummarize">0</span></h3>
+        </div>
+        <div class="toi-cards" id="block-meetings-tosummarize-cards"></div>
+      </section>
+
+      <!-- Block 0c: Meetings this week (TOI-06) -->
+      <section class="toi-block toi-block-meetings-week" data-block="meetings-week" id="block-meetings-week" style="display:none">
+        <div class="toi-block-header">
+          <button type="button" class="block-toggle" data-action="toggle" title="קפל/הרחב"><span class="toggle-icon">▼</span></button>
+          <h3 class="block-title">📅 פגישות השבוע <span class="block-count" id="count-meetings-week">0</span></h3>
+        </div>
+        <div class="toi-cards" id="block-meetings-week-cards"></div>
       </section>
 
       <!-- Block 1: URGENT -->
@@ -1668,7 +1725,7 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
           <input type="checkbox" id="boti-e-arriving" class="accent-primary w-4 h-4"/> מגיע
         </label>
         <label class="flex items-center gap-2 text-sm cursor-pointer">
-          <input type="checkbox" id="boti-e-meeting" class="accent-primary w-4 h-4"/> פגישה
+          <input type="checkbox" id="boti-e-pin" class="accent-primary w-4 h-4"/> 📌 מוצמד
         </label>
       </div>
 
@@ -1742,7 +1799,6 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
           <option value="new">חדש — טרם פניתי</option>
           <option value="contacted">פניתי — ממתין לתגובה</option>
           <option value="simmer">🔥 אש קטנה</option>
-          <option value="schedule_meeting">📅 לתאם פגישה</option>
           <option value="in_conversation">💬 בשיחה</option>
           <option value="needs_call">📞 צריך להתקשר</option>
           <option value="arriving">✈️ מגיע לאי</option>
@@ -1763,6 +1819,51 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
             <input type="time" id="edit-followup-time" value="10:00" aria-label="שעת תזכורת"/>
           </div>
           <small class="followup-hint">הליד יקפוץ בראש Today on Island ביום שנבחר</small>
+        </div>
+      </div>
+
+      <!-- Section: Meeting status (TOI-06) -->
+      <div class="modal-section">
+        <label>📅 סטטוס פגישה</label>
+        <select id="edit-meeting-status">
+          <option value="">— אין פגישה</option>
+          <option value="to_schedule">📅 לתאם פגישה</option>
+          <option value="booked">⏳ פגישה נקבעה</option>
+          <option value="completed">✅ נפגשנו</option>
+        </select>
+
+        <!-- to_schedule: optional target date -->
+        <div id="meeting-fields-to-schedule" style="display:none; margin-top:8px;">
+          <label class="meeting-section-label">תאריך יעד לתיאום (אופציונלי)</label>
+          <input type="date" id="edit-meeting-target-date" aria-label="תאריך יעד לתיאום"/>
+        </div>
+
+        <!-- shared date+time row (booked + completed) -->
+        <div id="meeting-fields-date" style="display:none; margin-top:8px;">
+          <label class="meeting-section-label">תאריך + שעת הפגישה</label>
+          <div class="meeting-datetime-row">
+            <input type="date" id="edit-meeting-date" aria-label="תאריך פגישה"/>
+            <input type="time" id="edit-meeting-time" value="10:00" aria-label="שעת פגישה"/>
+          </div>
+        </div>
+
+        <!-- booked-only: location -->
+        <div id="meeting-fields-booked" style="display:none; margin-top:8px;">
+          <label class="meeting-section-label">מיקום פגישה</label>
+          <input type="text" id="edit-meeting-location" placeholder="Red Sunset / קפה Maduwan / סריטאנו..." aria-label="מיקום פגישה"/>
+        </div>
+
+        <!-- completed-only: summary + outcome -->
+        <div id="meeting-fields-completed" style="display:none; margin-top:8px;">
+          <label class="meeting-section-label">סיכום הפגישה</label>
+          <textarea id="edit-meeting-summary" rows="3" placeholder="מה דובר? הסכמות? פולואפ?"></textarea>
+          <label class="meeting-section-label" style="margin-top:8px;">תוצאה</label>
+          <select id="edit-meeting-outcome">
+            <option value="">— בחר תוצאה</option>
+            <option value="hot">🔥 חם — להמשיך</option>
+            <option value="cold">❄️ קר — לסגור</option>
+            <option value="continue">⏳ המשך פולואפ</option>
+          </select>
         </div>
       </div>
 
@@ -2487,6 +2588,9 @@ function renderPipelineTable() {
     leads.sort((a, b) => (b.score || 0) - (a.score || 0));
   }
 
+  // TOI-06 — Pinned leads always float to the top regardless of chosen sort.
+  leads.sort((a, b) => (b.manual_pin ? 1 : 0) - (a.manual_pin ? 1 : 0));
+
   if (leads.length === 0) {
     const msg = !getToken() && firebaseLeadsRaw.length === 0 ? 'No token set — click <b>Token</b> in the top bar'
       : 'No leads match current filters';
@@ -2507,10 +2611,11 @@ function renderPipelineTable() {
     const phoneDisplay = formatPhoneDisplay(lead.phone_number);
     const scoreDisplay = lead.score != null ? lead.score : '--';
 
-    return `<tr class="hover:bg-surface-container-high transition-colors cursor-pointer" onclick="openLeadDetail('${firebaseId}')">
+    const pinnedClass = lead.manual_pin ? 'pipeline-row-pinned' : '';
+    return `<tr class="hover:bg-surface-container-high transition-colors cursor-pointer ${pinnedClass}" onclick="openLeadDetail('${firebaseId}')">
       <td class="px-4 py-3">${getTierBadge(lead)}</td>
       <td class="px-4 py-3">
-        <div class="font-semibold text-secondary">${nameHtml}${getIslandDot(lead)}</div>
+        <div class="font-semibold text-secondary">${nameHtml}${getIslandDot(lead)}${lead.manual_pin ? '<span class="focus-pin-badge">📌</span>' : ''}</div>
         ${phoneDisplay ? `<div class="text-[10px] text-on-surface-variant font-mono mt-0.5">${phoneDisplay}</div>` : ''}
         <div class="flex items-center gap-1 mt-0.5">
           ${getSourceBadge(lead)}
@@ -2526,6 +2631,7 @@ function renderPipelineTable() {
       <td class="px-4 py-3 text-sm hide-mobile">${scoreDisplay}</td>
       <td class="px-4 py-3 text-left" onclick="event.stopPropagation()">
         <div class="flex items-center gap-2">
+          <button type="button" class="pipeline-pin-btn ${lead.manual_pin ? 'pinned' : ''}" onclick="pipelineTogglePin('${firebaseId}', event)" title="${lead.manual_pin ? 'בטל הצמדה' : 'הצמד ליד'}">📌</button>
           ${phone ? `<a href="https://wa.me/${phone}" target="_blank" class="wa-btn" title="WhatsApp">📱</a>` : ''}
           <button class="arrow-btn" onclick="openLeadDetail('${firebaseId}')" title="פרטים">&rarr;</button>
         </div>
@@ -2947,12 +3053,20 @@ function renderDailyFocus() {
   const todayStr = new Date().toISOString().slice(0, 10);
   const leads = firebaseLeads.filter(l => !isRemoved(l));
   const focusLeads = [];
+  const seen = new Set();
+
+  // TOI-06 — Pinned leads always go to focus first (regardless of silent / followup rules).
+  leads.forEach(l => {
+    if (!l.manual_pin || seen.has(l._id)) return;
+    seen.add(l._id);
+    focusLeads.push({ lead: l, reason: '📌 מוצמד ידנית', pinned: true });
+  });
 
   leads.forEach(l => {
+    if (seen.has(l._id)) return;
     const tier = l._unified_tier || firebaseTierToUnified(l.temp || l.tier);
     const lastMsg = new Date(l.last_message_at || l.updated_at || 0).getTime();
     const silent = (now - lastMsg) > h48;
-    const updatedToday = (l.updated_at || '').slice(0, 10) === todayStr;
 
     let reason = '';
     // Rule 1: Hot/Very Hot + silent 48h
@@ -2963,7 +3077,10 @@ function renderDailyFocus() {
     else if (l.Follow_Up && (l.Follow_Up.scheduled_date || '').slice(0, 10) === todayStr) {
       reason = '📅 פולואפ מתוזמן להיום';
     }
-    if (reason) focusLeads.push({ lead: l, reason });
+    if (reason) {
+      seen.add(l._id);
+      focusLeads.push({ lead: l, reason, pinned: false });
+    }
   });
 
   // Cap at 5
@@ -2978,19 +3095,53 @@ function renderDailyFocus() {
   }
 
   countEl.textContent = `(${display.length})`;
-  bodyEl.innerHTML = display.map(({ lead, reason }) => {
+  bodyEl.innerHTML = display.map(({ lead, reason, pinned }) => {
     const nameHtml = getLeadDisplayName(lead);
     const project = lead.active_project || lead.project_id || '';
     const phone = normalizePhone(lead.phone_number);
-    return `<div class="focus-row">
+    const fid = lead._id || '';
+    return `<div class="focus-row ${pinned ? 'is-pinned' : ''}">
       <div>
         <span class="text-sm font-bold text-secondary">${nameHtml}</span>
+        ${pinned ? '<span class="focus-pin-badge">📌 מוצמד</span>' : ''}
         <span class="text-xs text-on-surface-variant mr-2">${esc(project)}</span>
         <div class="text-[10px] text-on-surface-variant">${reason}</div>
       </div>
-      ${phone ? `<a href="https://wa.me/${phone}" target="_blank" class="wa-btn" title="WhatsApp">📱</a>` : ''}
+      <div style="display:flex; gap:6px; align-items:center;">
+        <button type="button" class="pipeline-pin-btn ${lead.manual_pin ? 'pinned' : ''}" onclick="pipelineTogglePin('${fid}', event)" title="${lead.manual_pin ? 'בטל הצמדה' : 'הצמד ליד'}">📌</button>
+        ${phone ? `<a href="https://wa.me/${phone}" target="_blank" class="wa-btn" title="WhatsApp">📱</a>` : ''}
+      </div>
     </div>`;
   }).join('');
+}
+
+// TOI-06 — Pipeline pin toggle. Optimistic local update, then dual-write
+// to Firebase. Hebrew toast on null token (no crash).
+async function pipelineTogglePin(firebaseId, ev) {
+  if (ev) ev.stopPropagation();
+  const lead = firebaseLeads.find(l => l._id === firebaseId);
+  if (!lead) { showToast('הליד לא נמצא', true); return; }
+  const next = !lead.manual_pin;
+  const token = getToken();
+  if (!token) { showToast('יש לרענן את הטוקן — לחץ על כפתור Token', true); showTokenModal(); return; }
+  // Optimistic update
+  lead.manual_pin = next;
+  // Mirror to firebaseLeadsRaw so the next render sees the new value
+  const raw = Array.isArray(firebaseLeadsRaw) ? firebaseLeadsRaw.find(r => r._id === firebaseId) : null;
+  if (raw) raw.manual_pin = next;
+  renderPipelineTable();
+  renderDailyFocus();
+  try {
+    await firebasePut('Leads', firebaseId, { manual_pin: next, updated_at: new Date().toISOString() });
+    showToast(next ? '📌 הוצמד' : 'הצמדה בוטלה');
+  } catch (e) {
+    // Revert on failure
+    lead.manual_pin = !next;
+    if (raw) raw.manual_pin = !next;
+    renderPipelineTable();
+    renderDailyFocus();
+    if (!handleAuthError(e.message)) showToast('עדכון הצמדה נכשל: ' + e.message, true);
+  }
 }
 
 function toggleFocusWidget() {
@@ -5419,13 +5570,27 @@ async function submitBotiTransfer(e) {
 }
 
 // ---- Edit modal ----
-// TOI-05 — statuses that require a follow-up reminder picker
-const TOI_FOLLOWUP_STATUSES = ['contacted', 'simmer', 'schedule_meeting', 'in_conversation', 'needs_call', 'arriving'];
+// TOI-05 — statuses that require a follow-up reminder picker.
+// NOTE: 'schedule_meeting' was removed in TOI-06 — it became a meeting_status value.
+const TOI_FOLLOWUP_STATUSES = ['contacted', 'simmer', 'in_conversation', 'needs_call', 'arriving'];
+
+// TOI-06 — meeting_status enum + helper utilities
+const MEETING_STATUS_LABELS = {
+  to_schedule: '📅 לתאם פגישה',
+  booked:      '⏳ פגישה נקבעה',
+  completed:   '✅ נפגשנו',
+};
+const MEETING_OUTCOME_LABELS = {
+  hot:      '🔥 חם',
+  cold:     '❄️ קר',
+  continue: '⏳ המשך',
+};
 
 // TOI-05 — explicit reset of every field in the edit modal. Belt-and-suspenders
 // against state bleeding between leads (open A → write notes → close → open B
 // must show empty notes, not A's). Called from BOTH hideBotiEditModal AND at
 // the start of openBotiEditModal so the slate is always clean.
+// TOI-06 — Extended to cover all meeting_status fields and the pin checkbox.
 function resetBotiEditModalFields() {
   const el = (id) => document.getElementById(id);
   if (el('boti-e-id'))             el('boti-e-id').value = '';
@@ -5434,7 +5599,7 @@ function resetBotiEditModalFields() {
   if (el('boti-e-island'))         el('boti-e-island').checked = false;
   if (el('boti-e-hot'))            el('boti-e-hot').checked = false;
   if (el('boti-e-arriving'))       el('boti-e-arriving').checked = false;
-  if (el('boti-e-meeting'))        el('boti-e-meeting').checked = false;
+  if (el('boti-e-pin'))            el('boti-e-pin').checked = false;
   if (el('edit-budget-amount'))    el('edit-budget-amount').value = '';
   if (el('edit-budget-currency'))  el('edit-budget-currency').value = 'THB';
   if (el('edit-departure-date'))   el('edit-departure-date').value = '';
@@ -5443,9 +5608,35 @@ function resetBotiEditModalFields() {
   if (el('edit-status'))           el('edit-status').value = 'new';
   if (el('edit-followup-date'))    el('edit-followup-date').value = '';
   if (el('edit-followup-time'))    el('edit-followup-time').value = '10:00';
+  // TOI-06 — meeting fields
+  if (el('edit-meeting-status'))      el('edit-meeting-status').value = '';
+  if (el('edit-meeting-target-date')) el('edit-meeting-target-date').value = '';
+  if (el('edit-meeting-date'))        el('edit-meeting-date').value = '';
+  if (el('edit-meeting-time'))        el('edit-meeting-time').value = '10:00';
+  if (el('edit-meeting-location'))    el('edit-meeting-location').value = '';
+  if (el('edit-meeting-summary'))     el('edit-meeting-summary').value = '';
+  if (el('edit-meeting-outcome'))     el('edit-meeting-outcome').value = '';
+  ['meeting-fields-to-schedule','meeting-fields-date','meeting-fields-booked','meeting-fields-completed']
+    .forEach(id => { const e = el(id); if (e) e.style.display = 'none'; });
   document.querySelectorAll('#edit-language-pills .lang-pill').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('#edit-followup-section .fu-quick-btn').forEach(p => p.classList.remove('active'));
   const sec = el('edit-followup-section'); if (sec) sec.style.display = 'none';
+}
+
+// TOI-06 — Show/hide meeting sub-fields by selected meeting_status.
+function toiUpdateMeetingFieldsVisibility(status) {
+  const map = {
+    '':           [],
+    'to_schedule':['meeting-fields-to-schedule'],
+    'booked':     ['meeting-fields-date','meeting-fields-booked'],
+    'completed':  ['meeting-fields-date','meeting-fields-completed'],
+  };
+  const visible = map[status] || [];
+  ['meeting-fields-to-schedule','meeting-fields-date','meeting-fields-booked','meeting-fields-completed']
+    .forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = visible.includes(id) ? '' : 'none';
+    });
 }
 
 function openBotiEditModal(id) {
@@ -5460,7 +5651,8 @@ function openBotiEditModal(id) {
   document.getElementById('boti-e-island').checked = !!lead.is_on_island;
   document.getElementById('boti-e-hot').checked = !!lead.is_hot;
   document.getElementById('boti-e-arriving').checked = !!lead.is_arriving;
-  document.getElementById('boti-e-meeting').checked = !!lead.needs_meeting;
+  // TOI-06 — pin checkbox replaces the legacy "פגישה" checkbox; meeting goes via meeting_status section
+  document.getElementById('boti-e-pin').checked = !!lead.manual_pin;
 
   // Extended fields (v2)
   document.getElementById('edit-budget-amount').value = lead.budget != null ? lead.budget : '';
@@ -5468,7 +5660,10 @@ function openBotiEditModal(id) {
   document.getElementById('edit-departure-date').value = lead.departure_date || '';
   document.getElementById('edit-interest').value = lead.interest || '';
   document.getElementById('edit-notes').value = lead.notes || '';
-  document.getElementById('edit-status').value = lead.status || 'new';
+  // TOI-06 — migrate deprecated 'schedule_meeting' status (now lives under meeting_status)
+  let statusForSelect = lead.status || 'new';
+  if (statusForSelect === 'schedule_meeting') statusForSelect = 'new';
+  document.getElementById('edit-status').value = statusForSelect;
 
   // Language pills
   document.querySelectorAll('#edit-language-pills .lang-pill').forEach(p => {
@@ -5492,6 +5687,32 @@ function openBotiEditModal(id) {
       document.getElementById('edit-followup-time').value = `${hh}:${mn}`;
     } catch(e) { /* leave defaults */ }
   }
+
+  // TOI-06 — meeting_status pre-fill (and migration of legacy needs_meeting=true → 'to_schedule')
+  let meetingStatus = lead.meeting_status || '';
+  if (!meetingStatus && lead.needs_meeting === true) meetingStatus = 'to_schedule';
+  document.getElementById('edit-meeting-status').value = meetingStatus;
+  toiUpdateMeetingFieldsVisibility(meetingStatus);
+
+  // Pre-fill the meeting date/time inputs from lead.meeting_date (ISO datetime)
+  if (lead.meeting_date) {
+    try {
+      const md = new Date(lead.meeting_date);
+      if (!isNaN(md.getTime())) {
+        const dY = md.getFullYear();
+        const dM = String(md.getMonth()+1).padStart(2,'0');
+        const dD = String(md.getDate()).padStart(2,'0');
+        const tH = String(md.getHours()).padStart(2,'0');
+        const tM = String(md.getMinutes()).padStart(2,'0');
+        document.getElementById('edit-meeting-date').value = `${dY}-${dM}-${dD}`;
+        document.getElementById('edit-meeting-time').value = `${tH}:${tM}`;
+      }
+    } catch(e) { /* leave defaults */ }
+  }
+  if (lead.meeting_target_date) document.getElementById('edit-meeting-target-date').value = lead.meeting_target_date;
+  document.getElementById('edit-meeting-location').value = lead.meeting_location || '';
+  document.getElementById('edit-meeting-summary').value  = lead.meeting_summary  || '';
+  document.getElementById('edit-meeting-outcome').value  = lead.meeting_outcome  || '';
 
   document.getElementById('boti-edit-modal').classList.remove('hidden');
 }
@@ -5527,7 +5748,8 @@ function submitBotiEdit(e) {
   lead.is_on_island = document.getElementById('boti-e-island').checked;
   lead.is_hot = document.getElementById('boti-e-hot').checked;
   lead.is_arriving = document.getElementById('boti-e-arriving').checked;
-  lead.needs_meeting = document.getElementById('boti-e-meeting').checked;
+  // TOI-06 — pin (replaces legacy needs_meeting checkbox)
+  lead.manual_pin = document.getElementById('boti-e-pin').checked;
 
   // Extended fields
   const budgetAmount = document.getElementById('edit-budget-amount').value.trim();
@@ -5580,6 +5802,41 @@ function submitBotiEdit(e) {
     }
   }
 
+  // TOI-06 — Meeting fields (replaces the legacy needs_meeting boolean)
+  const meetingStatus = document.getElementById('edit-meeting-status').value || '';
+  lead.meeting_status = meetingStatus || null;
+  // Backwards compat: derive needs_meeting from new field so existing bucketize/KPI logic still works
+  lead.needs_meeting = (meetingStatus === 'to_schedule' || meetingStatus === 'booked');
+
+  let meetingISO = null;
+  let meetingTargetDate = null;
+  let meetingLocation = '';
+  let meetingSummary = '';
+  let meetingOutcome = '';
+
+  if (meetingStatus === 'to_schedule') {
+    meetingTargetDate = document.getElementById('edit-meeting-target-date').value || null;
+  } else if (meetingStatus === 'booked' || meetingStatus === 'completed') {
+    const mDate = document.getElementById('edit-meeting-date').value;
+    const mTime = document.getElementById('edit-meeting-time').value || '10:00';
+    if (mDate) {
+      const candidate = new Date(`${mDate}T${mTime}:00`);
+      if (!isNaN(candidate.getTime())) meetingISO = candidate.toISOString();
+    }
+    if (meetingStatus === 'booked') {
+      meetingLocation = document.getElementById('edit-meeting-location').value.trim();
+    } else {
+      meetingSummary = document.getElementById('edit-meeting-summary').value.trim();
+      meetingOutcome = document.getElementById('edit-meeting-outcome').value || '';
+    }
+  }
+
+  lead.meeting_target_date = meetingTargetDate;
+  lead.meeting_date     = meetingISO;
+  lead.meeting_location = meetingLocation || null;
+  lead.meeting_summary  = meetingSummary  || null;
+  lead.meeting_outcome  = meetingOutcome  || null;
+
   lead.user_edited = true;
   if (!lead.original_name) lead.original_name = lead.name;
   botiSave(leads);
@@ -5590,6 +5847,17 @@ function submitBotiEdit(e) {
   if (followupISO) {
     toiDualWriteReminder(lead, followupISO).catch(err => console.warn('[TOI-05] reminder dual-write failed (non-blocking):', err));
   }
+
+  // TOI-06 — Dual-write meeting state + pin to Firebase /Leads (best-effort).
+  toiDualWriteLeadFields(lead, {
+    meeting_status:      lead.meeting_status,
+    meeting_target_date: lead.meeting_target_date,
+    meeting_date:        lead.meeting_date,
+    meeting_location:    lead.meeting_location,
+    meeting_summary:     lead.meeting_summary,
+    meeting_outcome:     lead.meeting_outcome,
+    manual_pin:          lead.manual_pin,
+  }).catch(err => console.warn('[TOI-06] lead-fields dual-write failed (non-blocking):', err));
 
   hideBotiEditModal();
   renderBotiPage();
@@ -5653,6 +5921,32 @@ async function toiDualWriteReminder(lead, scheduledISO) {
     if (!handleAuthError(e.message)) {
       console.warn('[TOI-05] /Follow_Ups write failed:', e);
     }
+  }
+}
+
+// TOI-06 — Generic field dual-write to Firebase /Leads. Used by edit-modal
+// submit (meeting fields, manual_pin) and by the inline pin toggle. Best-
+// effort: silent on no-token / no-firebase-counterpart so local-only leads
+// continue to work without a token.
+async function toiDualWriteLeadFields(lead, fields) {
+  const token = getToken();
+  if (!token) return; // silent — local save already happened, fields will sync next time token is fresh
+  const phone = lead.phone || lead.phone_number || '';
+  const phoneNorm = normalizePhone(phone);
+  let firebaseId = lead._id || null;
+  if (!firebaseId && phoneNorm && Array.isArray(firebaseLeadsRaw)) {
+    const match = firebaseLeadsRaw.find(fl => normalizePhone(fl.phone_number) === phoneNorm);
+    if (match) firebaseId = match._id;
+  }
+  if (!firebaseId) return; // no counterpart in Firebase — local-only lead, skip
+  // Strip undefined to keep the wrapper happy (it preserves nulls but rejects undefineds in some shapes)
+  const payload = {};
+  Object.keys(fields || {}).forEach(k => { if (fields[k] !== undefined) payload[k] = fields[k]; });
+  payload.updated_at = new Date().toISOString();
+  try {
+    await firebasePut('Leads', firebaseId, payload);
+  } catch (e) {
+    if (!handleAuthError(e.message)) console.warn('[TOI-06] /Leads write failed:', e);
   }
 }
 
@@ -6065,6 +6359,7 @@ function toiIsLeadVisible(lead) {
     case 'hot': return !!lead.is_hot;
     case 'no-contact': return !lead.status || lead.status === 'new';
     case 'no-budget': return !lead.budget;
+    case 'pinned': return !!lead.manual_pin; // TOI-06
     default: return true;
   }
 }
@@ -6084,12 +6379,12 @@ function toiUpdateFilterCounts(allLeads) {
     'hot': pool.filter(l => l.is_hot).length,
     'no-contact': pool.filter(l => !l.status || l.status === 'new').length,
     'no-budget': pool.filter(l => !l.budget).length,
-    // TOI-05 — counts for the new status chips
+    // TOI-05/06 — counts for the status chips and the pinned chip
     'status-simmer': pool.filter(l => l.status === 'simmer').length,
-    'status-schedule_meeting': pool.filter(l => l.status === 'schedule_meeting').length,
     'status-in_conversation': pool.filter(l => l.status === 'in_conversation').length,
     'status-needs_call': pool.filter(l => l.status === 'needs_call').length,
     'status-arriving': pool.filter(l => l.status === 'arriving').length,
+    'pinned': pool.filter(l => !!l.manual_pin).length,
   };
   document.querySelectorAll('.filter-chip').forEach(chip => {
     const c = counts[chip.dataset.filter];
@@ -6124,10 +6419,16 @@ function renderLeadRow(lead) {
   const escPhone = escapeHtml(phoneRaw);
   const escId = escapeHtml(lead.id || '');
 
+  const isPinned = !!lead.manual_pin;
+  const escName = escapeHtml(lead.name || '');
   return `
-    <div class="lead-row ${isContacted ? 'contacted-row' : ''} ${toiState.expandedLeadId === lead.id ? 'expanded' : ''}" data-lead-id="${escId}" data-phone="${escPhone}" tabindex="0">
+    <div class="lead-row ${isContacted ? 'contacted-row' : ''} ${isPinned ? 'is-pinned' : ''} ${toiState.expandedLeadId === lead.id ? 'expanded' : ''}" data-lead-id="${escId}" data-phone="${escPhone}" tabindex="0">
       <div class="row-status-dot ${dotClass}"></div>
-      <div class="row-name" data-action="copy-name" data-phone="${escPhone}" title="לחץ להעתיק טלפון">${safeName}</div>
+      <div class="row-name">
+        <button type="button" class="row-mini-btn row-pin ${isPinned ? 'pinned' : ''}" data-action="pin" data-lead-id="${escId}" title="${isPinned ? 'בטל הצמדה' : 'הצמד ליד'}">📌</button>
+        <button type="button" class="row-mini-btn row-copy" data-action="copy" data-name="${escName}" data-phone="${escPhone}" title="העתק שם וטלפון">📋</button>
+        <span class="row-name-text">${safeName}</span>
+      </div>
       <div class="row-phone">${safePhone}</div>
       <div class="row-budget ${budgetCls}">${escapeHtml(budget)}</div>
       <div class="row-arrival">${arrivalLabel}</div>
@@ -6155,15 +6456,30 @@ function renderLeadExpanded(lead, blockType) {
       ? `<span class="row-badge rb-contacted">📩 טופל · ${remaining}h</span>`
       : '<span class="row-badge rb-contacted">📩 טופל</span>');
   }
-  // TOI-05 — Badge per new status
+  // TOI-06 — Pin badge
+  if (lead.manual_pin) badges.push('<span class="row-badge rb-pinned">📌 מוצמד</span>');
+  // TOI-05/06 — Badge per general status (schedule_meeting moved to meeting_status)
   const statusLabel = ({
     simmer: '🔥 אש קטנה',
-    schedule_meeting: '📅 לתאם פגישה',
     in_conversation: '💬 בשיחה',
     needs_call: '📞 צריך להתקשר',
     arriving: '✈️ מגיע לאי',
   })[lead.status];
   if (statusLabel) badges.push(`<span class="row-badge rb-${lead.status}">${statusLabel}</span>`);
+  // TOI-06 — Meeting badges
+  if (lead.meeting_status === 'to_schedule') {
+    badges.push('<span class="row-badge rb-meeting-toschedule">📅 לתאם פגישה</span>');
+  } else if (lead.meeting_status === 'booked' && lead.meeting_date) {
+    let when = '';
+    try { when = ' · ' + toiFormatShortDate(String(lead.meeting_date).slice(0, 10)); } catch(_) {}
+    badges.push(`<span class="row-badge rb-meeting-booked">⏳ פגישה${when}</span>`);
+  } else if (lead.meeting_status === 'completed') {
+    if (!(lead.meeting_summary || '').trim()) {
+      badges.push('<span class="row-badge rb-meeting-tosummarize">📝 לסכם פגישה</span>');
+    } else {
+      badges.push('<span class="row-badge rb-meeting-completed">✅ נפגשנו</span>');
+    }
+  }
   if (lead.departure_date) badges.push(`<span class="row-badge rb-departure">✈️ עוזב ${toiFormatShortDate(lead.departure_date)}</span>`);
   if (!phoneValid) badges.push('<span class="row-badge rb-no-phone" title="חסר טלפון — לחץ ערוך כדי להוסיף">📵 חסר טלפון</span>');
 
@@ -6224,6 +6540,8 @@ function renderBlockCards(blockName, items) {
       arriving: 'אין לידים מגיעים השבוע',
       engaged: 'אין לידים בשיחה פעילה',
       reminders: 'אין תזכורות מתוזמנות להיום',
+      'meetings-week': 'אין פגישות קבועות לשבוע הקרוב',
+      'meetings-tosummarize': 'אין פגישות שממתינות לסיכום',
     }[blockName] || '—';
     return `<div class="text-xs text-on-surface-variant opacity-70 p-2">${empty}</div>`;
   }
@@ -6235,22 +6553,31 @@ function renderBlockCards(blockName, items) {
   }).join('');
 }
 
-// TOI-05 — Copy a lead's phone to the clipboard with a green Hebrew toast.
-// Uses navigator.clipboard when available, falls back to a hidden textarea
-// (covers older browsers / non-secure contexts).
-function toiCopyPhone(phoneRaw) {
-  const phone = String(phoneRaw || '').trim();
-  if (!phone) { showToast('אין מספר טלפון להעתקה', true); return; }
-  const display = '+' + phone.replace(/^\+/, '');
-  const onSuccess = () => showToast(`הועתק: ${display}`);
+// TOI-06 — Copy arbitrary text to clipboard with a green Hebrew toast.
+// (Generalized from TOI-05's phone-only copy.) Uses navigator.clipboard when
+// available, falls back to a hidden textarea for older browsers / non-secure
+// contexts (e.g. local file:// loads).
+function toiCopyText(text) {
+  const t = String(text || '').trim();
+  if (!t) { showToast('אין מה להעתיק', true); return; }
+  const onSuccess = () => showToast(`הועתק: ${t}`);
   const onFail   = () => showToast('העתקה נכשלה', true);
   if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(display).then(onSuccess).catch(() => {
-      try { toiClipboardFallback(display); onSuccess(); } catch(_) { onFail(); }
+    navigator.clipboard.writeText(t).then(onSuccess).catch(() => {
+      try { toiClipboardFallback(t); onSuccess(); } catch(_) { onFail(); }
     });
   } else {
-    try { toiClipboardFallback(display); onSuccess(); } catch(_) { onFail(); }
+    try { toiClipboardFallback(t); onSuccess(); } catch(_) { onFail(); }
   }
+}
+// TOI-06 — Build the copy payload for a lead: "Name +972…", or one of them
+// alone if the other is missing. Phone gets a leading '+' so it's WhatsApp-
+// search-ready when the user pastes.
+function toiBuildCopyPayload({ name, phone }) {
+  const n = String(name || '').trim();
+  const p = String(phone || '').trim();
+  const pDisplay = p ? ('+' + p.replace(/^\+/, '')) : '';
+  return [n, pDisplay].filter(Boolean).join(' ');
 }
 function toiClipboardFallback(text) {
   const ta = document.createElement('textarea');
@@ -6261,6 +6588,20 @@ function toiClipboardFallback(text) {
   ta.select();
   document.execCommand('copy');
   ta.remove();
+}
+
+// TOI-06 — Toggle manual_pin on a TOI/BOTI lead and persist (local + dual-write).
+function toiTogglePin(leadId) {
+  const leads = botiLoad();
+  const lead = leads.find(l => l.id === leadId);
+  if (!lead) { showToast('הליד לא נמצא', true); return; }
+  lead.manual_pin = !lead.manual_pin;
+  botiSave(leads);
+  toiDualWriteLeadFields(lead, { manual_pin: lead.manual_pin })
+    .catch(err => console.warn('[TOI-06] pin dual-write failed (non-blocking):', err));
+  showToast(lead.manual_pin ? '📌 הוצמד' : 'הצמדה בוטלה');
+  renderTodayOnIsland();
+  if (typeof renderBotiPage === 'function' && currentPage === 'boti') renderBotiPage();
 }
 
 // TOI-05 — Reminders: leads with next_followup_date scheduled for today.
@@ -6275,6 +6616,42 @@ function toiTodayReminders(leads) {
     const ms = new Date(l.next_followup_date).getTime();
     if (isNaN(ms)) return false;
     return ms >= startMs && ms <= endMs;
+  });
+}
+
+// TOI-06 — Meetings booked in the next 7 days (inclusive of today).
+function toiMeetingsThisWeek(leads) {
+  const today = toiTodayISO();
+  const startMs = new Date(today + 'T00:00:00').getTime();
+  const endMs   = new Date(toiAddDays(today, 7) + 'T23:59:59').getTime();
+  return leads.filter(l => {
+    if (l.transferred_to_pipeline || l.rejected) return false;
+    if (l.meeting_status !== 'booked') return false;
+    if (!l.meeting_date) return false;
+    const ms = new Date(l.meeting_date).getTime();
+    if (isNaN(ms)) return false;
+    return ms >= startMs && ms <= endMs;
+  }).sort((a, b) => String(a.meeting_date).localeCompare(String(b.meeting_date)));
+}
+
+// TOI-06 — Completed meetings still missing a summary (call to action).
+function toiMeetingsToSummarize(leads) {
+  return leads.filter(l => {
+    if (l.transferred_to_pipeline || l.rejected) return false;
+    if (l.meeting_status !== 'completed') return false;
+    const summary = (l.meeting_summary || '').trim();
+    return summary === '';
+  }).sort((a, b) => String(b.meeting_date || '').localeCompare(String(a.meeting_date || '')));
+}
+
+// TOI-06 — Pinned-first sort. Stable: preserves the input order within each
+// pinned/non-pinned group so existing per-bucket sorts (urgent, arriving, etc.)
+// keep their meaning.
+function toiSortPinnedFirst(leads) {
+  return leads.slice().sort((a, b) => {
+    const ap = a.manual_pin ? 1 : 0;
+    const bp = b.manual_pin ? 1 : 0;
+    return bp - ap;
   });
 }
 
@@ -6340,7 +6717,12 @@ function renderTodayOnIsland() {
     }
 
     const container = section.querySelector('.toi-cards');
-    if (container) container.innerHTML = renderBlockCards(blockName, blocks[blockName]);
+    // TOI-06 — pin-first sort applied to every bucket (meetings = today's
+    // calendar items; sort by pin too in case the meeting lead is pinned).
+    const items = blockName === 'meetings'
+      ? blocks[blockName]
+      : toiSortPinnedFirst(blocks[blockName]);
+    if (container) container.innerHTML = renderBlockCards(blockName, items);
     const countEl = document.getElementById(`count-${blockName}`);
     if (countEl) countEl.textContent = blocks[blockName].length;
   });
@@ -6350,7 +6732,7 @@ function renderTodayOnIsland() {
   // never loses sight of a reminder while filtering on, e.g. "באי היום").
   const remindersSection = document.getElementById('block-reminders');
   if (remindersSection) {
-    const reminders = toiTodayReminders(toiFilterableLeads(allLeads));
+    const reminders = toiSortPinnedFirst(toiTodayReminders(toiFilterableLeads(allLeads)));
     if (hasSearch || (toiState.soloBlock && toiState.soloBlock !== 'reminders')) {
       remindersSection.style.display = 'none';
     } else {
@@ -6362,6 +6744,36 @@ function renderTodayOnIsland() {
     if (remCount) remCount.textContent = reminders.length;
     // Default-open is provided by the HTML (no .collapsed class on first paint).
     // User-driven collapse is preserved across re-renders — do not force-open here.
+  }
+
+  // TOI-06 — Meetings to summarize block (completed meetings, empty summary).
+  const tosummSection = document.getElementById('block-meetings-tosummarize');
+  if (tosummSection) {
+    const tosumm = toiSortPinnedFirst(toiMeetingsToSummarize(toiFilterableLeads(allLeads)));
+    if (hasSearch || (toiState.soloBlock && toiState.soloBlock !== 'meetings-tosummarize')) {
+      tosummSection.style.display = 'none';
+    } else {
+      tosummSection.style.display = tosumm.length ? '' : 'none';
+    }
+    const c = document.getElementById('block-meetings-tosummarize-cards');
+    if (c) c.innerHTML = renderBlockCards('meetings-tosummarize', tosumm);
+    const cnt = document.getElementById('count-meetings-tosummarize');
+    if (cnt) cnt.textContent = tosumm.length;
+  }
+
+  // TOI-06 — Meetings booked this week (next 7 days).
+  const weekSection = document.getElementById('block-meetings-week');
+  if (weekSection) {
+    const weekItems = toiSortPinnedFirst(toiMeetingsThisWeek(toiFilterableLeads(allLeads)));
+    if (hasSearch || (toiState.soloBlock && toiState.soloBlock !== 'meetings-week')) {
+      weekSection.style.display = 'none';
+    } else {
+      weekSection.style.display = weekItems.length ? '' : 'none';
+    }
+    const c = document.getElementById('block-meetings-week-cards');
+    if (c) c.innerHTML = renderBlockCards('meetings-week', weekItems);
+    const cnt = document.getElementById('count-meetings-week');
+    if (cnt) cnt.textContent = weekItems.length;
   }
 
   // Solo indicator pill
@@ -6487,20 +6899,22 @@ function toiBindActions() {
       return;
     }
 
-    // TOI-05 — Click on lead name copies its phone to clipboard.
-    // Handled BEFORE the row-toggle path so it doesn't expand the card.
-    const nameEl = e.target.closest('.row-name[data-action="copy-name"]');
-    if (nameEl) {
-      e.stopPropagation();
-      toiCopyPhone(nameEl.dataset.phone);
-      return;
-    }
-
-    // Action buttons (quick-actions + expanded + meeting row)
+    // Action buttons (quick-actions + expanded + meeting row + TOI-06 mini btns)
     const actionBtn = e.target.closest('button[data-action], .btn-met, .btn-noshow, .btn-log');
     if (actionBtn) {
       e.stopPropagation();
       const action = actionBtn.dataset.action;
+      // TOI-06 — explicit 📋 copy button (replaces TOI-05's click-on-name)
+      if (action === 'copy') {
+        const payload = toiBuildCopyPayload({ name: actionBtn.dataset.name, phone: actionBtn.dataset.phone });
+        toiCopyText(payload);
+        return;
+      }
+      // TOI-06 — explicit 📌 pin toggle
+      if (action === 'pin') {
+        toiTogglePin(actionBtn.dataset.leadId);
+        return;
+      }
       if (action === 'call') {
         // TOI-04 guard — refuse if phone invalid, open edit modal for fix
         const check = validatePhoneNumber(actionBtn.dataset.phone);
@@ -6709,6 +7123,12 @@ function toiBindEditModalExtras() {
       });
     }
   });
+  // TOI-06 — Meeting status select drives conditional sub-field visibility
+  const mSel = document.getElementById('edit-meeting-status');
+  if (mSel && mSel.dataset.bound !== '1') {
+    mSel.dataset.bound = '1';
+    mSel.addEventListener('change', () => toiUpdateMeetingFieldsVisibility(mSel.value));
+  }
 }
 
 // ---- Schedule modal ----
