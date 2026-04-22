@@ -6,6 +6,7 @@
 <title>KPH Sales OS — Admin Dashboard v2</title>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@100;300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script>
@@ -499,6 +500,167 @@ tr.pipeline-row-pinned td:first-child { box-shadow: inset 4px 0 0 #FBBF24; }
 .toi-block-reminders { border-right:4px solid #FBBF24; }
 .toi-block-reminders .block-title { color:#fff; }
 .toi-block-reminders .block-count { background:rgba(251,191,36,0.2); color:#FBBF24; }
+
+/* =================================================================
+   REPORTS TAB — Meta Ads dashboard (scoped under #page-reports)
+   ================================================================= */
+#page-reports {
+  --bg-black: #000000;
+  --bg-1: #0a0a0a;
+  --bg-2: #111111;
+  --bg-3: #161616;
+  --bg-hover: #1c1c1c;
+  --line: #1f1f1f;
+  --line-bright: #2a2a2a;
+  --text-1: #ffffff;
+  --text-2: #999999;
+  --text-3: #5a5a5a;
+  --text-4: #333333;
+  --green: #00d68f;
+  --green-bright: #00ff9d;
+  --green-dim: rgba(0, 214, 143, 0.08);
+  --green-bg: rgba(0, 214, 143, 0.04);
+  --red: #ff3358;
+  --red-bright: #ff4d6e;
+  --red-dim: rgba(255, 51, 88, 0.08);
+  --red-bg: rgba(255, 51, 88, 0.04);
+  --gold: #d4a843;
+  --gold-bright: #f5c84b;
+  --gold-dim: rgba(212, 168, 67, 0.1);
+  --gold-bg: rgba(212, 168, 67, 0.04);
+  background: var(--bg-black);
+  color: var(--text-1);
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  background-image:
+    radial-gradient(ellipse at top right, rgba(212, 168, 67, 0.04) 0%, transparent 50%),
+    radial-gradient(ellipse at bottom left, rgba(0, 214, 143, 0.025) 0%, transparent 50%);
+}
+#page-reports * { margin:0; padding:0; box-sizing:border-box; }
+#page-reports .mono { font-family: 'JetBrains Mono', monospace; font-feature-settings: 'tnum', 'zero'; }
+
+#page-reports .terminal { max-width:1400px; margin:0 auto; padding:24px 28px; }
+
+#page-reports .topbar { display:flex; justify-content:space-between; align-items:center; padding-bottom:20px; border-bottom:1px solid var(--line); margin-bottom:24px; }
+#page-reports .topbar-left { display:flex; align-items:baseline; gap:16px; }
+#page-reports .terminal-id { font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--text-3); letter-spacing:2px; text-transform:uppercase; }
+#page-reports .topbar h1 { font-family:'JetBrains Mono', monospace; font-size:22px; font-weight:800; letter-spacing:-0.5px; }
+#page-reports .topbar h1 .gold { color:var(--gold-bright); }
+#page-reports .topbar-right { display:flex; align-items:center; gap:20px; }
+#page-reports .live-indicator { display:flex; align-items:center; gap:8px; font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--green); text-transform:uppercase; letter-spacing:1.5px; }
+#page-reports .live-dot { width:8px; height:8px; background:var(--green); border-radius:50%; box-shadow:0 0 8px var(--green); animation: reportsLivePulse 1.5s infinite; }
+@keyframes reportsLivePulse { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:0.5; transform:scale(0.85); } }
+#page-reports .timestamp { font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--text-3); letter-spacing:1px; }
+
+#page-reports .filter-bar { display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; padding:12px 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+#page-reports .filter-tabs { display:flex; gap:0; }
+#page-reports .filter-tab { padding:8px 16px; background:transparent; border:none; border-right:1px solid var(--line); color:var(--text-3); font-family:'JetBrains Mono', monospace; font-size:11px; text-transform:uppercase; letter-spacing:1.5px; cursor:pointer; transition:all 0.15s; font-weight:500; }
+#page-reports .filter-tab:last-child { border-right:none; }
+#page-reports .filter-tab:hover { color:var(--text-1); background:var(--bg-2); }
+#page-reports .filter-tab.active { color:var(--gold-bright); background:var(--gold-bg); }
+#page-reports .filter-info { font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--text-3); letter-spacing:1px; }
+#page-reports .filter-info span { color:var(--gold); }
+
+#page-reports .headline-grid { display:grid; grid-template-columns:repeat(4,1fr); border:1px solid var(--line); margin-bottom:24px; background:var(--bg-1); }
+#page-reports .headline-cell { padding:24px 28px; border-right:1px solid var(--line); position:relative; transition:background 0.2s; }
+#page-reports .headline-cell:last-child { border-right:none; }
+#page-reports .headline-cell:hover { background:var(--bg-2); }
+#page-reports .headline-label { font-family:'JetBrains Mono', monospace; font-size:10px; color:var(--text-3); text-transform:uppercase; letter-spacing:2.5px; margin-bottom:14px; font-weight:500; }
+#page-reports .headline-value { font-family:'JetBrains Mono', monospace; font-size:38px; font-weight:800; line-height:1; letter-spacing:-1.5px; margin-bottom:10px; }
+#page-reports .headline-value.green { color:var(--green-bright); }
+#page-reports .headline-value.red { color:var(--red-bright); }
+#page-reports .headline-value.gold { color:var(--gold-bright); }
+#page-reports .headline-value.white { color:var(--text-1); }
+#page-reports .headline-meta { display:flex; align-items:baseline; gap:8px; font-family:'JetBrains Mono', monospace; font-size:11px; }
+#page-reports .delta { display:inline-flex; align-items:center; gap:3px; padding:2px 6px; font-weight:700; font-size:10px; letter-spacing:0.5px; }
+#page-reports .delta.up { color:var(--green-bright); background:var(--green-dim); }
+#page-reports .delta.down { color:var(--red-bright); background:var(--red-dim); }
+#page-reports .delta-label { color:var(--text-3); font-size:10px; }
+
+#page-reports .chart-row { display:grid; grid-template-columns:2fr 1fr; gap:16px; margin-bottom:24px; }
+#page-reports .panel { background:var(--bg-1); border:1px solid var(--line); overflow:hidden; }
+#page-reports .panel-header { display:flex; justify-content:space-between; align-items:center; padding:14px 20px; border-bottom:1px solid var(--line); background:var(--bg-2); }
+#page-reports .panel-title { font-family:'JetBrains Mono', monospace; font-size:11px; text-transform:uppercase; letter-spacing:2px; color:var(--text-2); font-weight:600; }
+#page-reports .panel-title .gold { color:var(--gold-bright); }
+#page-reports .panel-actions { display:flex; gap:16px; font-family:'JetBrains Mono', monospace; font-size:10px; color:var(--text-3); text-transform:uppercase; letter-spacing:1.5px; }
+#page-reports .legend-item { display:inline-flex; align-items:center; gap:6px; }
+#page-reports .legend-square { width:10px; height:10px; display:inline-block; }
+#page-reports .panel-body { padding:24px; }
+
+#page-reports .chart-svg { width:100%; height:280px; display:block; }
+#page-reports .grid-line { stroke:var(--line); stroke-width:0.5; stroke-dasharray:2 4; }
+#page-reports .axis-label { fill:var(--text-3); font-family:'JetBrains Mono', monospace; font-size:9px; }
+
+#page-reports .month-list { display:flex; flex-direction:column; }
+#page-reports .month-row { display:grid; grid-template-columns:1fr auto auto; align-items:center; gap:12px; padding:14px 20px; border-bottom:1px solid var(--line); transition:background 0.15s; }
+#page-reports .month-row:hover { background:var(--bg-2); }
+#page-reports .month-row:last-child { border-bottom:none; }
+#page-reports .month-name { font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--text-1); font-weight:500; text-transform:uppercase; letter-spacing:1px; }
+#page-reports .month-name .sub { color:var(--text-3); font-size:10px; margin-right:6px; }
+#page-reports .month-value { font-family:'JetBrains Mono', monospace; font-size:14px; font-weight:700; text-align:left; }
+#page-reports .month-value.spend { color:var(--gold-bright); }
+#page-reports .month-value.leads { color:var(--green-bright); }
+#page-reports .month-bar { width:60px; height:4px; background:var(--bg-3); position:relative; overflow:hidden; }
+#page-reports .month-bar-fill { height:100%; transition:width 0.6s ease; }
+
+#page-reports .insights { display:grid; grid-template-columns:repeat(4,1fr); gap:0; border:1px solid var(--line); background:var(--bg-1); margin-bottom:24px; }
+#page-reports .insight { padding:16px 20px; border-right:1px solid var(--line); transition:background 0.2s; }
+#page-reports .insight:last-child { border-right:none; }
+#page-reports .insight:hover { background:var(--bg-2); }
+#page-reports .insight-header { display:flex; align-items:center; gap:8px; margin-bottom:6px; }
+#page-reports .insight-tag { font-family:'JetBrains Mono', monospace; font-size:9px; padding:2px 6px; text-transform:uppercase; letter-spacing:1.5px; font-weight:700; }
+#page-reports .insight-tag.alert { color:var(--red); background:var(--red-dim); }
+#page-reports .insight-tag.warn { color:var(--gold); background:var(--gold-dim); }
+#page-reports .insight-tag.good { color:var(--green); background:var(--green-dim); }
+#page-reports .insight-tag.info { color:var(--text-2); background:var(--bg-3); }
+#page-reports .insight-date { font-family:'JetBrains Mono', monospace; font-size:9px; color:var(--text-3); margin-right:auto; }
+#page-reports .insight-text { font-size:12px; color:var(--text-1); line-height:1.5; font-weight:500; }
+#page-reports .insight-text .num { font-family:'JetBrains Mono', monospace; font-weight:700; }
+#page-reports .insight-text .num.up { color:var(--green-bright); }
+#page-reports .insight-text .num.down { color:var(--red-bright); }
+#page-reports .insight-text .num.gold { color:var(--gold-bright); }
+
+#page-reports .table-panel { background:var(--bg-1); border:1px solid var(--line); }
+#page-reports .table-wrap { overflow-x:auto; }
+#page-reports .table-panel table { width:100%; border-collapse:collapse; font-family:'JetBrains Mono', monospace; }
+#page-reports .table-panel thead th { padding:12px 20px; text-align:left; font-size:10px; color:var(--text-3); text-transform:uppercase; letter-spacing:2px; font-weight:600; background:var(--bg-2); border-bottom:1px solid var(--line); white-space:nowrap; }
+#page-reports .table-panel thead th:first-child { text-align:right; }
+#page-reports .table-panel tbody td { padding:14px 20px; font-size:12px; border-bottom:1px solid var(--line); color:var(--text-1); font-weight:500; }
+#page-reports .table-panel tbody td:first-child { text-align:right; color:var(--text-2); }
+#page-reports .table-panel tbody tr:hover td { background:var(--bg-2); }
+#page-reports .table-panel tbody tr:last-child td { border-bottom:none; }
+#page-reports .table-panel td.green { color:var(--green-bright); font-weight:700; }
+#page-reports .table-panel td.red { color:var(--red-bright); font-weight:700; }
+#page-reports .table-panel td.gold { color:var(--gold-bright); font-weight:700; }
+#page-reports .row-bar { display:inline-block; width:40px; height:4px; background:var(--bg-3); margin-left:8px; vertical-align:middle; }
+#page-reports .row-bar-fill { height:100%; background:var(--green); }
+
+#page-reports .loading { text-align:center; padding:100px 40px; color:var(--text-3); font-family:'JetBrains Mono', monospace; font-size:12px; letter-spacing:2px; text-transform:uppercase; }
+#page-reports .loading::after { content:'_'; animation: reportsBlink 1s infinite; }
+@keyframes reportsBlink { 0%,50% { opacity:1; } 51%,100% { opacity:0; } }
+
+#page-reports .fade-in { opacity:0; animation: reportsFade 0.4s ease forwards; }
+#page-reports .delay-1 { animation-delay:0.05s; }
+#page-reports .delay-2 { animation-delay:0.1s; }
+#page-reports .delay-3 { animation-delay:0.15s; }
+#page-reports .delay-4 { animation-delay:0.2s; }
+#page-reports .delay-5 { animation-delay:0.25s; }
+@keyframes reportsFade { to { opacity:1; } }
+
+@media (max-width: 1100px) {
+  #page-reports .headline-grid { grid-template-columns:repeat(2,1fr); }
+  #page-reports .chart-row { grid-template-columns:1fr; }
+  #page-reports .insights { grid-template-columns:repeat(2,1fr); }
+}
+@media (max-width: 600px) {
+  #page-reports .headline-grid { grid-template-columns:1fr; }
+  #page-reports .insights { grid-template-columns:1fr; }
+  #page-reports .insight { border-right:none; border-bottom:1px solid var(--line); }
+  #page-reports .filter-tabs { flex-wrap:wrap; }
+  #page-reports .terminal { padding:16px; }
+  #page-reports .headline-value { font-size:28px; }
+}
 </style>
 </head>
 <body class="text-on-surface overflow-hidden h-screen flex flex-row-reverse">
@@ -969,82 +1131,9 @@ tr.pipeline-row-pinned td:first-child { box-shadow: inset 4px 0 0 #FBBF24; }
     </div>
 
     <!-- ==================== REPORTS PAGE ==================== -->
-    <div id="page-reports" class="page-content p-8 space-y-8 fade-in">
-      <div class="max-w-[1280px] mx-auto w-full space-y-8">
-        <!-- Metrics Row -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div class="bg-surface-container p-5 ghost-border">
-            <div class="text-[10px] uppercase tracking-wider text-on-surface-variant font-bold mb-2">Pipeline Leads</div>
-            <div class="text-3xl font-bold text-primary" id="report-pipeline-leads">--</div>
-          </div>
-          <div class="bg-surface-container p-5 ghost-border">
-            <div class="text-[10px] uppercase tracking-wider text-on-surface-variant font-bold mb-2">On Island</div>
-            <div class="text-3xl font-bold text-[#2dd4bf]" id="report-on-island">--</div>
-          </div>
-          <div class="bg-surface-container p-5 ghost-border border-r-2 border-error/50">
-            <div class="text-[10px] uppercase tracking-wider text-on-surface-variant font-bold mb-2">Missed Follow-ups</div>
-            <div class="text-3xl font-bold text-error" id="report-missed">--</div>
-          </div>
-          <div class="bg-surface-container p-5 ghost-border">
-            <div class="text-[10px] uppercase tracking-wider text-on-surface-variant font-bold mb-2">Total Deals</div>
-            <div class="text-3xl font-bold text-secondary" id="report-deals">--</div>
-          </div>
-        </div>
-
-        <!-- Report Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div class="bg-surface-container ghost-border flex flex-col group">
-            <div class="p-4 flex-1">
-              <div class="w-10 h-10 bg-error/10 text-error flex items-center justify-center mb-4">
-                <span class="material-symbols-outlined">history</span>
-              </div>
-              <h3 class="text-sm font-bold mb-1">Missed Follow-ups 48h+</h3>
-              <p class="text-xs text-on-surface-variant leading-relaxed">Leads without response for over 2 business days.</p>
-            </div>
-          </div>
-          <div class="bg-surface-container ghost-border flex flex-col group">
-            <div class="p-4 flex-1">
-              <div class="w-10 h-10 bg-primary/10 text-primary flex items-center justify-center mb-4">
-                <span class="material-symbols-outlined">insert_chart_outlined</span>
-              </div>
-              <h3 class="text-sm font-bold mb-1">Pipeline Snapshot</h3>
-              <p class="text-xs text-on-surface-variant leading-relaxed">Weekly overview of all sales pipeline stages.</p>
-            </div>
-          </div>
-          <div class="bg-surface-container ghost-border flex flex-col group">
-            <div class="p-4 flex-1">
-              <div class="w-10 h-10 bg-[#2dd4bf]/10 text-[#2dd4bf] flex items-center justify-center mb-4">
-                <span class="material-symbols-outlined">flight_land</span>
-              </div>
-              <h3 class="text-sm font-bold mb-1">On Island This Week</h3>
-              <p class="text-xs text-on-surface-variant leading-relaxed">Hot leads currently visiting the island.</p>
-            </div>
-          </div>
-          <div class="bg-surface-container ghost-border flex flex-col group">
-            <div class="p-4 flex-1">
-              <div class="w-10 h-10 bg-secondary/10 text-secondary flex items-center justify-center mb-4">
-                <span class="material-symbols-outlined">payments</span>
-              </div>
-              <h3 class="text-sm font-bold mb-1">This Month's Deals</h3>
-              <p class="text-xs text-on-surface-variant leading-relaxed">Signed deals and contract values this month.</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Chart -->
-        <div class="bg-surface-container ghost-border p-6">
-          <div class="flex items-center justify-between mb-8">
-            <div>
-              <h2 class="text-lg font-bold">Incoming vs Converted Leads</h2>
-              <p class="text-xs text-on-surface-variant">6 Month Performance</p>
-            </div>
-            <div class="flex items-center gap-4 text-[10px] font-bold">
-              <div class="flex items-center gap-1.5"><span class="w-2 h-2 bg-primary"></span> Incoming</div>
-              <div class="flex items-center gap-1.5"><span class="w-2 h-2 bg-primary-container"></span> Converted</div>
-            </div>
-          </div>
-          <div class="h-48 w-full flex items-end gap-6 px-4" id="report-chart"></div>
-        </div>
+    <div id="page-reports" class="page-content fade-in">
+      <div class="terminal" id="reports-app">
+        <div class="loading">LOADING DATA</div>
       </div>
     </div>
 
@@ -4706,66 +4795,415 @@ function renderProjects(radarProjects) {
 }
 
 // ============ REPORTS ============
-async function loadReports() {
-  // Pipeline data for deals
-  if (!pipelineData) {
-    try {
-      const res = await fetch(PIPELINE_URL);
-      pipelineData = await res.json();
-    } catch(e) {}
+// ============ REPORTS — Meta Ads (Google Sheets CSV) ============
+// IIFE-sandboxed to keep helper names (fmtDate, sum, render, etc.) from
+// colliding with dashboard-wide helpers. Only window.loadReports is exported.
+(function() {
+  const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTWpl4sruFm8yUB80jOQa9CFYK6Wn7LErWI8b9N3X7kvt1PgZnu2XHWVnYuWKpMIsYPwfsWl7nV6Y-z/pub?gid=0&single=true&output=csv';
+
+  const FALLBACK = [
+    {date:'2026-02-24',impressions:5444,clicks:289,leads:11,spend:56.86},
+    {date:'2026-02-27',impressions:6534,clicks:331,leads:9,spend:91.97},
+    {date:'2026-03-02',impressions:8668,clicks:436,leads:12,spend:81.47},
+    {date:'2026-03-05',impressions:15674,clicks:543,leads:22,spend:97.81},
+    {date:'2026-03-08',impressions:11528,clicks:444,leads:26,spend:90.66},
+    {date:'2026-03-11',impressions:15254,clicks:454,leads:14,spend:91.95},
+    {date:'2026-03-14',impressions:13148,clicks:403,leads:9,spend:85.43},
+    {date:'2026-03-17',impressions:15389,clicks:307,leads:11,spend:93.53},
+    {date:'2026-03-20',impressions:11257,clicks:257,leads:8,spend:86.83},
+    {date:'2026-03-23',impressions:15480,clicks:436,leads:18,spend:102.94},
+    {date:'2026-03-26',impressions:9884,clicks:338,leads:12,spend:65.56},
+    {date:'2026-03-29',impressions:2205,clicks:78,leads:2,spend:11.72},
+    {date:'2026-04-01',impressions:16889,clicks:540,leads:23,spend:107.08},
+    {date:'2026-04-04',impressions:16725,clicks:427,leads:18,spend:91.01},
+    {date:'2026-04-07',impressions:17739,clicks:345,leads:7,spend:85.28},
+    {date:'2026-04-10',impressions:9145,clicks:129,leads:7,spend:38.44},
+    {date:'2026-04-13',impressions:8285,clicks:117,leads:7,spend:52.42},
+    {date:'2026-04-16',impressions:17653,clicks:328,leads:10,spend:101.46},
+    {date:'2026-04-19',impressions:11102,clicks:285,leads:10,spend:80.69}
+  ];
+
+  let allData = [];
+  let currentFilter = 'all';
+  let loaded = false;
+  let usingFallback = false;
+
+  const monthNames = {
+    '01':'ינואר','02':'פברואר','03':'מרץ','04':'אפריל','05':'מאי','06':'יוני',
+    '07':'יולי','08':'אוגוסט','09':'ספטמבר','10':'אוקטובר','11':'נובמבר','12':'דצמבר'
+  };
+
+  function parseCSV(text) {
+    const lines = text.trim().split('\n');
+    return lines.slice(1).map(line => {
+      const v = line.split(',').map(x => x.trim().replace(/"/g, ''));
+      return {
+        date: v[0],
+        impressions: parseInt(v[1]) || 0,
+        clicks: parseInt(v[2]) || 0,
+        leads: parseInt(v[3]) || 0,
+        spend: parseFloat(v[4]) || 0
+      };
+    }).filter(r => r.date && r.date.match(/\d{4}-\d{2}-\d{2}/));
   }
-  if (!pipelineData) pipelineData = { leads: [], deals: [] };
 
-  // Firebase leads for counts
-  if (firebaseLeads.length === 0) {
-    try { firebaseLeads = await firebaseFetch('Leads'); } catch(e) { firebaseLeads = []; }
-    if (!Array.isArray(firebaseLeads)) firebaseLeads = [];
+  const sum = (a, k) => a.reduce((s, r) => s + r[k], 0);
+  const fmtMoney = n => '$' + n.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  const fmtMoneyDec = n => '$' + n.toFixed(2);
+  const fmtNum = n => n.toLocaleString('en-US');
+  const fmtDate = d => { const p = d.split('-'); return p[2] + '/' + p[1]; };
+  const fmtDateLong = d => { const p = d.split('-'); return p[2] + '.' + p[1] + '.' + p[0].slice(2); };
+
+  function getDelta(curr, prev) {
+    if (!prev || prev === 0) return null;
+    const pct = ((curr - prev) / prev * 100);
+    return { value: Math.abs(pct).toFixed(1), dir: pct >= 0 ? 'up' : 'down' };
   }
 
-  renderReportKPIs();
-  renderReportChart();
-}
+  function filterData(data, filter) {
+    if (filter === 'all') return data;
+    const sorted = [...data].sort((a, b) => a.date.localeCompare(b.date));
+    if (sorted.length === 0) return [];
+    const lastDate = new Date(sorted[sorted.length - 1].date);
+    if (filter === '7d') {
+      const cutoff = new Date(lastDate); cutoff.setDate(cutoff.getDate() - 7);
+      return sorted.filter(d => new Date(d.date) >= cutoff);
+    }
+    if (filter === '30d') {
+      const cutoff = new Date(lastDate); cutoff.setDate(cutoff.getDate() - 30);
+      return sorted.filter(d => new Date(d.date) >= cutoff);
+    }
+    if (filter === 'this_month') {
+      const ym = sorted[sorted.length - 1].date.substring(0, 7);
+      return sorted.filter(d => d.date.startsWith(ym));
+    }
+    if (filter === 'last_month') {
+      const lastYM = sorted[sorted.length - 1].date.substring(0, 7);
+      const [y, m] = lastYM.split('-').map(Number);
+      const prevM = m === 1 ? 12 : m - 1;
+      const prevY = m === 1 ? y - 1 : y;
+      const target = `${prevY}-${String(prevM).padStart(2, '0')}`;
+      return sorted.filter(d => d.date.startsWith(target));
+    }
+    return sorted;
+  }
 
-function renderReportKPIs() {
-  const leads = firebaseLeads.filter(l => !isRemoved(l));
-  const deals = pipelineData?.deals || [];
+  function getComparisonData(data, filter, allRaw) {
+    if (filter === 'all' || data.length === 0) return null;
+    if (filter === '7d' || filter === '30d') {
+      const days = filter === '7d' ? 7 : 30;
+      const sorted = [...allRaw].sort((a, b) => a.date.localeCompare(b.date));
+      const lastDate = new Date(sorted[sorted.length - 1].date);
+      const startCurrent = new Date(lastDate); startCurrent.setDate(startCurrent.getDate() - days);
+      const startPrev = new Date(startCurrent); startPrev.setDate(startPrev.getDate() - days);
+      return sorted.filter(d => { const dt = new Date(d.date); return dt >= startPrev && dt < startCurrent; });
+    }
+    if (filter === 'this_month') {
+      const ym = data[data.length - 1].date.substring(0, 7);
+      const [y, m] = ym.split('-').map(Number);
+      const prevM = m === 1 ? 12 : m - 1;
+      const prevY = m === 1 ? y - 1 : y;
+      const target = `${prevY}-${String(prevM).padStart(2, '0')}`;
+      return allRaw.filter(d => d.date.startsWith(target));
+    }
+    if (filter === 'last_month') {
+      const ym = data[0].date.substring(0, 7);
+      const [y, m] = ym.split('-').map(Number);
+      const prevM = m === 1 ? 12 : m - 1;
+      const prevY = m === 1 ? y - 1 : y;
+      const target = `${prevY}-${String(prevM).padStart(2, '0')}`;
+      return allRaw.filter(d => d.date.startsWith(target));
+    }
+    return null;
+  }
 
-  document.getElementById('report-pipeline-leads').textContent = leads.length.toLocaleString();
+  function detectInsights(data) {
+    const insights = [];
+    if (data.length === 0) return insights;
+    const best = [...data].sort((a, b) => b.leads - a.leads)[0];
+    insights.push({ tag:'good', tagText:'TOP', date:fmtDate(best.date),
+      text:`הדוח החזק: <span class="num gold">${best.leads} לידים</span> ב-${fmtDate(best.date)} עם ${fmtMoney(best.spend)} ספנד` });
+    const worst = [...data].filter(d => d.leads > 0).sort((a, b) => (b.spend/b.leads) - (a.spend/a.leads))[0];
+    if (worst) {
+      const cpl = worst.spend / worst.leads;
+      insights.push({ tag:'alert', tagText:'WORST', date:fmtDate(worst.date),
+        text:`יום הכי יקר: <span class="num down">${fmtMoneyDec(cpl)}</span> לליד ב-${fmtDate(worst.date)}` });
+    }
+    if (data.length >= 4) {
+      const half = Math.floor(data.length / 2);
+      const recent = data.slice(half);
+      const prev = data.slice(0, half);
+      const recentCPL = sum(recent, 'spend') / Math.max(sum(recent, 'leads'), 1);
+      const prevCPL = sum(prev, 'spend') / Math.max(sum(prev, 'leads'), 1);
+      const change = ((recentCPL - prevCPL) / prevCPL * 100);
+      if (Math.abs(change) > 15) {
+        insights.push({ tag: change > 0 ? 'warn' : 'good', tagText:'TREND', date:'בתקופה',
+          text:`עלות לליד <span class="num ${change > 0 ? 'down' : 'up'}">${change > 0 ? '+' : ''}${change.toFixed(0)}%</span> במחצית האחרונה` });
+      } else {
+        insights.push({ tag:'info', tagText:'STABLE', date:'בתקופה',
+          text:`עלות לליד יציבה — תנודה של <span class="num">${Math.abs(change).toFixed(0)}%</span> בלבד` });
+      }
+    }
+    const avgLeads = sum(data, 'leads') / data.length;
+    insights.push({ tag:'info', tagText:'AVG', date:`${data.length} דוחות`,
+      text:`ממוצע <span class="num gold">${avgLeads.toFixed(1)}</span> לידים לדוח, <span class="num">${fmtMoney(sum(data, 'spend')/data.length)}</span> ספנד` });
+    return insights.slice(0, 4);
+  }
 
-  const onIsland = leads.filter(isOnIsland).length;
-  document.getElementById('report-on-island').textContent = onIsland;
+  function renderChart(data) {
+    if (data.length === 0) return '<div style="padding:40px;text-align:center;color:var(--text-3)">אין נתונים בטווח הזה</div>';
+    const w = 800, h = 280;
+    const pad = { t: 20, r: 50, b: 30, l: 50 };
+    const cw = w - pad.l - pad.r;
+    const ch = h - pad.t - pad.b;
+    const maxLeads = Math.max(...data.map(d => d.leads), 1);
+    const maxSpend = Math.max(...data.map(d => d.spend), 1);
+    const barW = Math.min(28, (cw / data.length) * 0.55);
+    const step = cw / data.length;
+    let bars = '', linePts = [], dots = '', labels = '', gridLines = '';
+    for (let i = 0; i <= 4; i++) {
+      const y = pad.t + (ch / 4) * i;
+      gridLines += `<line x1="${pad.l}" y1="${y}" x2="${w - pad.r}" y2="${y}" class="grid-line"/>`;
+      const leadsVal = Math.round(maxLeads - (maxLeads / 4) * i);
+      const spendVal = Math.round(maxSpend - (maxSpend / 4) * i);
+      gridLines += `<text x="${pad.l - 8}" y="${y + 3}" text-anchor="end" class="axis-label" style="fill:var(--green-bright);opacity:0.6">${leadsVal}</text>`;
+      gridLines += `<text x="${w - pad.r + 8}" y="${y + 3}" text-anchor="start" class="axis-label" style="fill:var(--gold-bright);opacity:0.6">$${spendVal}</text>`;
+    }
+    data.forEach((d, i) => {
+      const x = pad.l + step * i + step / 2;
+      const barH = (d.leads / maxLeads) * ch;
+      const barY = pad.t + ch - barH;
+      bars += `<rect x="${x - barW/2}" y="${barY}" width="${barW}" height="${barH}" fill="url(#reportsGreenGrad)">
+        <animate attributeName="height" from="0" to="${barH}" dur="0.5s" fill="freeze" begin="${i * 0.025}s"/>
+        <animate attributeName="y" from="${pad.t + ch}" to="${barY}" dur="0.5s" fill="freeze" begin="${i * 0.025}s"/>
+      </rect>`;
+      const ly = pad.t + ch - (d.spend / maxSpend) * ch;
+      linePts.push(`${x},${ly}`);
+      dots += `<circle cx="${x}" cy="${ly}" r="3" fill="var(--gold-bright)" stroke="var(--bg-black)" stroke-width="1.5"/>`;
+      if (data.length <= 10 || i % Math.ceil(data.length / 10) === 0) {
+        labels += `<text x="${x}" y="${h - 8}" text-anchor="middle" class="axis-label">${fmtDate(d.date)}</text>`;
+      }
+    });
+    const linePath = `<polyline points="${linePts.join(' ')}" fill="none" stroke="var(--gold-bright)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>`;
+    return `<svg viewBox="0 0 ${w} ${h}" class="chart-svg" preserveAspectRatio="xMidYMid meet">
+      <defs>
+        <linearGradient id="reportsGreenGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="var(--green-bright)" stop-opacity="0.9"/>
+          <stop offset="100%" stop-color="var(--green)" stop-opacity="0.4"/>
+        </linearGradient>
+      </defs>
+      ${gridLines}${bars}${linePath}${dots}${labels}
+    </svg>`;
+  }
 
-  // Missed follow-ups: leads not updated in 48h+
-  const now = Date.now();
-  const missed = leads.filter(l => {
-    const updated = new Date(l.updated_at || l.updatedAt || 0).getTime();
-    return (now - updated) > 48 * 60 * 60 * 1000 && (l.temp === 'HOT' || l.tier === 'HOT' || l.temp === 'WARM' || l.tier === 'WARM');
-  }).length;
-  document.getElementById('report-missed').textContent = missed;
+  function renderMonths(allRaw) {
+    const months = {};
+    allRaw.forEach(d => {
+      const ym = d.date.substring(0, 7);
+      if (!months[ym]) months[ym] = { spend: 0, leads: 0, clicks: 0, impressions: 0, ym };
+      months[ym].spend += d.spend;
+      months[ym].leads += d.leads;
+      months[ym].clicks += d.clicks;
+      months[ym].impressions += d.impressions;
+    });
+    const arr = Object.values(months).sort((a, b) => b.ym.localeCompare(a.ym));
+    const maxSpend = Math.max(...arr.map(m => m.spend), 1);
+    return arr.map(m => {
+      const monthName = monthNames[m.ym.split('-')[1]];
+      const year = m.ym.split('-')[0].slice(2);
+      const cpl = m.leads > 0 ? m.spend / m.leads : 0;
+      const barPct = (m.spend / maxSpend * 100).toFixed(0);
+      return `<div class="month-row">
+        <div class="month-name">${monthName} <span class="sub">'${year}</span></div>
+        <div>
+          <div class="month-value spend">${fmtMoney(m.spend)}</div>
+          <div style="font-size:10px;color:var(--text-3);font-family:'JetBrains Mono',monospace;text-align:left;margin-top:2px">${m.leads} לידים · ${fmtMoneyDec(cpl)}/ליד</div>
+        </div>
+        <div class="month-bar"><div class="month-bar-fill" style="width:${barPct}%;background:var(--gold-bright)"></div></div>
+      </div>`;
+    }).join('');
+  }
 
-  document.getElementById('report-deals').textContent = deals.length;
-}
+  function render() {
+    const app = document.getElementById('reports-app');
+    if (!app) return;
+    const filtered = filterData(allData, currentFilter);
+    const comparison = getComparisonData(filtered, currentFilter, allData);
+    const totalSpend = sum(filtered, 'spend');
+    const totalLeads = sum(filtered, 'leads');
+    const totalClicks = sum(filtered, 'clicks');
+    const totalImpressions = sum(filtered, 'impressions');
+    const avgCPL = totalLeads > 0 ? totalSpend / totalLeads : 0;
+    const avgCTR = totalImpressions > 0 ? (totalClicks / totalImpressions * 100) : 0;
+    let dSpend = null, dLeads = null, dCPL = null, dCTR = null;
+    if (comparison && comparison.length > 0) {
+      dSpend = getDelta(totalSpend, sum(comparison, 'spend'));
+      dLeads = getDelta(totalLeads, sum(comparison, 'leads'));
+      const compCPL = sum(comparison, 'leads') > 0 ? sum(comparison, 'spend') / sum(comparison, 'leads') : 0;
+      dCPL = getDelta(avgCPL, compCPL);
+      const compCTR = sum(comparison, 'impressions') > 0 ? sum(comparison, 'clicks') / sum(comparison, 'impressions') * 100 : 0;
+      dCTR = getDelta(avgCTR, compCTR);
+    }
+    const insights = detectInsights(filtered);
+    const now = new Date();
+    const timestampStr = `${String(now.getDate()).padStart(2,'0')}.${String(now.getMonth()+1).padStart(2,'0')}.${now.getFullYear()} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+    const filterLabels = { 'all':'כל הזמנים', '7d':'7 ימים אחרונים', '30d':'30 ימים אחרונים', 'this_month':'החודש', 'last_month':'חודש שעבר' };
+    const sourceNote = usingFallback ? ' · <span style="color:var(--red)">FALLBACK</span>' : '';
 
-function renderReportChart() {
-  const chart = document.getElementById('report-chart');
-  const deals = pipelineData?.deals || [];
-  const leads = pipelineData?.leads || [];
-
-  // Simple 6-month mock chart based on actual data
-  const months = ['NOV', 'DEC', 'JAN', 'FEB', 'MAR', 'APR'];
-  const incoming = [leads.length > 20 ? 15 : 8, 12, 18, 22, leads.length, Math.round(leads.length * 0.8)];
-  const converted = [2, 3, 4, 5, deals.length, Math.round(deals.length * 0.7)];
-  const maxVal = Math.max(...incoming, ...converted, 1);
-
-  chart.innerHTML = months.map((m, i) => `
-    <div class="flex-1 flex flex-col items-center gap-2 group">
-      <div class="w-full flex items-end justify-center gap-1 h-full">
-        <div class="w-4 bg-primary transition-all group-hover:opacity-80" style="height:${(incoming[i] / maxVal) * 100}%"></div>
-        <div class="w-4 bg-primary-container transition-all group-hover:opacity-80" style="height:${(converted[i] / maxVal) * 100}%"></div>
+    app.innerHTML = `
+      <div class="topbar fade-in">
+        <div class="topbar-left">
+          <div class="terminal-id">KPH/REPORTS//META</div>
+          <h1>Reports <span class="gold">▸ KPH OS</span></h1>
+        </div>
+        <div class="topbar-right">
+          <div class="live-indicator"><span class="live-dot"></span><span>LIVE SYNC</span></div>
+          <div class="timestamp">${timestampStr}${sourceNote}</div>
+        </div>
       </div>
-      <span class="text-[10px] font-bold text-on-surface-variant">${m}</span>
-    </div>`).join('');
-}
+      <div class="filter-bar fade-in delay-1">
+        <div class="filter-tabs">
+          <button class="filter-tab ${currentFilter === 'all' ? 'active' : ''}" data-f="all">All Time</button>
+          <button class="filter-tab ${currentFilter === '30d' ? 'active' : ''}" data-f="30d">30D</button>
+          <button class="filter-tab ${currentFilter === '7d' ? 'active' : ''}" data-f="7d">7D</button>
+          <button class="filter-tab ${currentFilter === 'this_month' ? 'active' : ''}" data-f="this_month">החודש</button>
+          <button class="filter-tab ${currentFilter === 'last_month' ? 'active' : ''}" data-f="last_month">חודש שעבר</button>
+        </div>
+        <div class="filter-info">
+          מציג <span>${filtered.length} רשומות</span> · ${filterLabels[currentFilter]}
+          ${comparison && comparison.length ? ` · השוואה ל-${comparison.length} רשומות קודמות` : ''}
+        </div>
+      </div>
+      <div class="headline-grid fade-in delay-2">
+        <div class="headline-cell">
+          <div class="headline-label">Total Spend</div>
+          <div class="headline-value gold">${fmtMoney(totalSpend)}</div>
+          <div class="headline-meta">
+            ${dSpend ? `<span class="delta ${dSpend.dir === 'up' ? 'up' : 'down'}">${dSpend.dir === 'up' ? '▲' : '▼'} ${dSpend.value}%</span>` : ''}
+            <span class="delta-label">${dSpend ? 'מול תקופה קודמת' : ''}</span>
+          </div>
+        </div>
+        <div class="headline-cell">
+          <div class="headline-label">Total Leads</div>
+          <div class="headline-value green">${totalLeads}</div>
+          <div class="headline-meta">
+            ${dLeads ? `<span class="delta ${dLeads.dir === 'up' ? 'up' : 'down'}">${dLeads.dir === 'up' ? '▲' : '▼'} ${dLeads.value}%</span>` : ''}
+            <span class="delta-label">${dLeads ? 'מול תקופה קודמת' : `${(totalLeads/Math.max(filtered.length,1)).toFixed(1)} לדוח`}</span>
+          </div>
+        </div>
+        <div class="headline-cell">
+          <div class="headline-label">Avg Cost / Lead</div>
+          <div class="headline-value white">${fmtMoneyDec(avgCPL)}</div>
+          <div class="headline-meta">
+            ${dCPL ? `<span class="delta ${dCPL.dir === 'down' ? 'up' : 'down'}">${dCPL.dir === 'up' ? '▲' : '▼'} ${dCPL.value}%</span>` : ''}
+            <span class="delta-label">${dCPL ? 'מול תקופה קודמת' : ''}</span>
+          </div>
+        </div>
+        <div class="headline-cell">
+          <div class="headline-label">CTR</div>
+          <div class="headline-value white">${avgCTR.toFixed(2)}%</div>
+          <div class="headline-meta">
+            ${dCTR ? `<span class="delta ${dCTR.dir === 'up' ? 'up' : 'down'}">${dCTR.dir === 'up' ? '▲' : '▼'} ${dCTR.value}%</span>` : ''}
+            <span class="delta-label">${dCTR ? 'מול תקופה קודמת' : `${fmtNum(totalImpressions)} חשיפות`}</span>
+          </div>
+        </div>
+      </div>
+      <div class="chart-row fade-in delay-3">
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">PERFORMANCE <span class="gold">▸</span> זמן</div>
+            <div class="panel-actions">
+              <span class="legend-item"><span class="legend-square" style="background:var(--green-bright)"></span>לידים</span>
+              <span class="legend-item"><span class="legend-square" style="background:var(--gold-bright)"></span>ספנד</span>
+            </div>
+          </div>
+          <div class="panel-body">${renderChart(filtered)}</div>
+        </div>
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">חודשים <span class="gold">▸</span> ALL TIME</div>
+          </div>
+          <div class="month-list">${renderMonths(allData)}</div>
+        </div>
+      </div>
+      <div class="insights fade-in delay-4">
+        ${insights.map(i => `
+          <div class="insight">
+            <div class="insight-header">
+              <span class="insight-tag ${i.tag}">${i.tagText}</span>
+              <span class="insight-date">${i.date}</span>
+            </div>
+            <div class="insight-text">${i.text}</div>
+          </div>
+        `).join('')}
+      </div>
+      <div class="table-panel fade-in delay-5">
+        <div class="panel-header">
+          <div class="panel-title">RAW DATA <span class="gold">▸</span> ${filtered.length} רשומות</div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th>תאריך</th><th>חשיפות</th><th>קליקים</th><th>לידים</th>
+              <th>ספנד</th><th>$/קליק</th><th>$/ליד</th><th>CTR</th>
+            </tr></thead>
+            <tbody>
+              ${[...filtered].reverse().map(d => {
+                const cpl = d.leads > 0 ? d.spend / d.leads : 0;
+                const cpc = d.clicks > 0 ? d.spend / d.clicks : 0;
+                const ctr = d.impressions > 0 ? (d.clicks / d.impressions * 100) : 0;
+                const cplClass = avgCPL > 0 ? (cpl > avgCPL * 1.3 ? 'red' : cpl < avgCPL * 0.7 ? 'green' : '') : '';
+                const maxL = Math.max(...filtered.map(x => x.leads), 1);
+                const barPct = (d.leads / maxL * 100).toFixed(0);
+                return `<tr>
+                  <td>${fmtDateLong(d.date)}</td>
+                  <td>${fmtNum(d.impressions)}</td>
+                  <td>${fmtNum(d.clicks)}</td>
+                  <td>${d.leads}<span class="row-bar"><span class="row-bar-fill" style="width:${barPct}%"></span></span></td>
+                  <td class="gold">${fmtMoneyDec(d.spend)}</td>
+                  <td>${fmtMoneyDec(cpc)}</td>
+                  <td class="${cplClass}">${fmtMoneyDec(cpl)}</td>
+                  <td>${ctr.toFixed(2)}%</td>
+                </tr>`;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    `;
+    app.querySelectorAll('.filter-tab').forEach(btn => {
+      btn.addEventListener('click', () => { currentFilter = btn.dataset.f; render(); });
+    });
+  }
+
+  async function init() {
+    if (loaded) { render(); return; }
+    const app = document.getElementById('reports-app');
+    if (app) app.innerHTML = '<div class="loading">LOADING DATA</div>';
+    let data = null;
+    try {
+      const resp = await fetch(CSV_URL);
+      if (resp.ok) {
+        const text = await resp.text();
+        data = parseCSV(text);
+      }
+    } catch (e) {
+      console.log('[reports] CSV fetch blocked (CORS?), using fallback:', e.message);
+    }
+    if (data && data.length > 0) {
+      allData = data;
+      usingFallback = false;
+    } else {
+      allData = [...FALLBACK];
+      usingFallback = true;
+    }
+    allData.sort((a, b) => a.date.localeCompare(b.date));
+    loaded = true;
+    render();
+  }
+
+  window.loadReports = init;
+})();
 
 // ============ SEARCH (global bar — delegates to pipeline search when on pipeline page) ============
 document.getElementById('global-search').addEventListener('input', (e) => {
