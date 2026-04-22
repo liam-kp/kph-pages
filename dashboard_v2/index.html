@@ -681,7 +681,12 @@ tr.pipeline-row-pinned td:first-child { box-shadow: inset 4px 0 0 #FBBF24; }
   border:1px solid rgba(45,212,168,0.25);
   display:inline-flex; align-items:center; justify-content:center;
   font-size:14px; cursor:pointer; transition:all 0.15s ease;
-  font-family:inherit; z-index:2;
+  font-family:inherit;
+  /* KPR-83 micro-patch 1 — CTA must sit ABOVE .row-quick-actions (z-index:5)
+     or hover clicks on ⏰ fall through to the overlay's delete button and
+     trigger an accidental delete flow. */
+  z-index:10;
+  pointer-events:auto;
 }
 #page-today .toi-primary-cta:hover {
   background:rgba(45,212,168,0.18);
@@ -690,10 +695,9 @@ tr.pipeline-row-pinned td:first-child { box-shadow: inset 4px 0 0 #FBBF24; }
   color:#2dd4a8;
 }
 #page-today .toi-primary-cta:focus-visible { outline:2px solid #68dbae; outline-offset:1px; }
-#page-today .lead-row.expanded .toi-primary-cta { display:none; }
-/* Hover-overlay (row-quick-actions) still sits at left:12px z:5 — it covers the
-   CTA when the row is hovered. That is intentional: on hover the 4 quick
-   actions take over; when not hovered, the ⏰ is the single visible CTA. */
+/* Hard-hide on expanded rows: display:none removes it from the hit-test tree
+   entirely, not just visually. */
+#page-today .lead-row.expanded .toi-primary-cta { display:none !important; }
 
 /* Change 3 — Focus mode on expansion */
 #page-today.toi-tab--focused .lead-row:not(.expanded),
@@ -721,7 +725,7 @@ tr.pipeline-row-pinned td:first-child { box-shadow: inset 4px 0 0 #FBBF24; }
 }
 #page-today .toi-block[data-block="reminders"] {
   border-left-color:#2dd4a8;
-  box-shadow:0 0 20px rgba(45,212,168,0.08);
+  box-shadow:0 0 20px rgba(45,212,168,0.18); /* KPR-83 micro-patch 1 — stronger glow */
 }
 #page-today .toi-block[data-block="urgent"] { border-left-color:#ef4444; }
 #page-today .toi-block[data-block="meetings-tosummarize"] { border-left-color:#f59e0b; }
