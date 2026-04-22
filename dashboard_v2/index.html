@@ -173,7 +173,8 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
 .modal-divider { border:none; border-top:1px solid rgba(135,148,140,0.2); margin:12px 0 4px; }
 .modal-section { display:flex; flex-direction:column; gap:6px; }
 .modal-section > label { font-size:11px; font-weight:700; color:#bccac1; text-transform:uppercase; letter-spacing:0.5px; }
-.modal-section input[type="number"], .modal-section input[type="date"], .modal-section textarea, .modal-section select { background:#10141a; color:#dfe2eb; border:1px solid #3e4943; border-radius:6px; padding:8px 10px; font-size:13px; width:100%; }
+.modal-section input[type="number"], .modal-section input[type="date"], .modal-section input[type="text"], .modal-section input[type="time"], .modal-section textarea, .modal-section select { background:#10141a; color:#dfe2eb; border:1px solid #3e4943; border-radius:6px; padding:8px 10px; font-size:13px; width:100%; color-scheme:dark; box-sizing:border-box; }
+.modal-section input::placeholder, .modal-section textarea::placeholder { color:#6b7280; }
 .modal-section input:focus, .modal-section textarea:focus, .modal-section select:focus { outline:none; border-color:#68dbae; }
 .modal-section textarea { resize:vertical; font-family:inherit; }
 .modal-hint { font-size:10px; color:#94A3B8; margin-top:2px; }
@@ -370,7 +371,9 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; }
 .meeting-row .mr-time { color:#A78BFA; font-size:12px; white-space:nowrap; }
 .meeting-row .mr-loc { color:#bccac1; font-size:11px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .meeting-row .mr-actions { display:flex; gap:4px; }
-.meeting-row .mr-actions button { background:#1c2026; color:#bccac1; border:1px solid #3e4943; border-radius:6px; padding:5px 9px; font-size:11px; font-weight:600; cursor:pointer; font-family:inherit; }
+.meeting-row .mr-actions button, .meeting-row .mr-actions .btn-cal { background:#1c2026; color:#bccac1; border:1px solid #3e4943; border-radius:6px; padding:5px 9px; font-size:11px; font-weight:600; cursor:pointer; font-family:inherit; display:inline-flex; align-items:center; justify-content:center; text-decoration:none; line-height:1; }
+.meeting-row .mr-actions .btn-cal { color:#A78BFA; border-color:rgba(167,139,250,0.3); }
+.meeting-row .mr-actions .btn-cal:hover { background:rgba(167,139,250,0.1); border-color:#A78BFA; }
 .meeting-row .mr-actions .btn-met { color:#34D399; border-color:rgba(52,211,153,0.3); }
 .meeting-row .mr-actions .btn-met:hover { background:rgba(52,211,153,0.1); border-color:#34D399; }
 .meeting-row .mr-actions .btn-noshow { color:#ef4444; border-color:rgba(239,68,68,0.3); }
@@ -2238,6 +2241,7 @@ tr.pipeline-row-pinned td:first-child { box-shadow: inset 4px 0 0 #FBBF24; }
       </div>
       <div class="pt-3 flex gap-3 flex-row-reverse">
         <button type="submit" class="bg-secondary text-on-secondary px-6 py-2 text-sm font-bold">שמור פגישה</button>
+        <button type="button" id="toi-s-add-to-calendar" onclick="onClickAddToCalendarFromModal()" class="px-6 py-2 text-sm border-[0.5px] border-outline-variant" style="color:#A78BFA; border-color:rgba(167,139,250,0.4)">📅 Google Calendar</button>
         <button type="button" onclick="hideToiScheduleModal()" class="px-6 py-2 text-sm border-[0.5px] border-outline-variant text-on-surface-variant">ביטול</button>
       </div>
     </form>
@@ -6890,13 +6894,41 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // ============ TODAY ON ISLAND ============
 const TOI_MEETINGS_KEY = 'kph_toi_meetings_v1';
+const TOI_MEETINGS_SCHEMA = 'v2_meeting_places';
+const TOI_MEETINGS_SCHEMA_KEY = 'kph_toi_meetings_schema';
+
+// KPR-MEET V0 — convert legacy `location: "<string>"` meetings into
+// `location: {name, formatted_address, lat, lng, place_id, google_maps_url}`.
+// Also seeds `calendar_event_id: null` (V1 will populate this). Idempotent.
+function toiMigrateMeeting(m) {
+  if (!m || typeof m !== 'object') return m;
+  if (typeof m.location === 'string') {
+    const txt = m.location.trim();
+    m.location = txt
+      ? { name: txt, formatted_address: txt, lat: null, lng: null, place_id: null,
+          google_maps_url: `https://maps.google.com/?q=${encodeURIComponent(txt)}` }
+      : { name: null, formatted_address: null, lat: null, lng: null, place_id: null, google_maps_url: null };
+  } else if (m.location == null) {
+    m.location = { name: null, formatted_address: null, lat: null, lng: null, place_id: null, google_maps_url: null };
+  }
+  if (!('calendar_event_id' in m)) m.calendar_event_id = null;
+  return m;
+}
 
 function toiMeetingsLoad() {
-  try { return JSON.parse(localStorage.getItem(TOI_MEETINGS_KEY) || '[]'); }
+  let arr;
+  try { arr = JSON.parse(localStorage.getItem(TOI_MEETINGS_KEY) || '[]'); }
   catch { return []; }
+  if (localStorage.getItem(TOI_MEETINGS_SCHEMA_KEY) !== TOI_MEETINGS_SCHEMA) {
+    arr = arr.map(toiMigrateMeeting);
+    localStorage.setItem(TOI_MEETINGS_KEY, JSON.stringify(arr));
+    localStorage.setItem(TOI_MEETINGS_SCHEMA_KEY, TOI_MEETINGS_SCHEMA);
+  }
+  return arr;
 }
 function toiMeetingsSave(arr) {
   localStorage.setItem(TOI_MEETINGS_KEY, JSON.stringify(arr));
+  localStorage.setItem(TOI_MEETINGS_SCHEMA_KEY, TOI_MEETINGS_SCHEMA);
 }
 
 function toiTodayISO() {
@@ -7195,16 +7227,25 @@ function renderMeetingRow(meeting) {
   const lead = leads.find(l => normalizePhone(l.phone) === normalizePhone(meeting.phone))
             || { id: meeting.leadId, name: meeting.leadName, phone: meeting.phone };
   const time = meeting.time || '—';
+  const locName = (typeof meeting.location === 'string')
+    ? meeting.location
+    : (meeting.location && (meeting.location.name || meeting.location.formatted_address)) || '';
   const locBits = [];
-  if (meeting.location) locBits.push(meeting.location);
+  if (locName) locBits.push(locName);
   if (meeting.project) locBits.push(meeting.project);
   const loc = locBits.join(' · ');
+  const calHref = buildGoogleCalendarLink({
+    ...meeting,
+    lead_name: lead.name || meeting.leadName || '',
+    lead_phone: lead.phone || meeting.phone || ''
+  });
   return `
     <div class="meeting-row" data-meeting-id="${meeting.id}" data-lead-id="${lead.id || ''}" data-phone="${escapeHtml(lead.phone || meeting.phone || '')}">
       <div class="mr-name">${escapeHtml(lead.name || 'ללא שם')} <small>· ${escapeHtml(lead.phone || meeting.phone || '—')}</small></div>
       <div class="mr-time">🕐 ${escapeHtml(time)}</div>
       <div class="mr-loc">${loc ? '📍 ' + escapeHtml(loc) : ''}</div>
       <div class="mr-actions">
+        <a href="${calHref}" target="_blank" rel="noopener" class="btn-cal" title="Google Calendar" onclick="event.stopPropagation()">📅</a>
         <button type="button" class="btn-met" data-meeting-id="${meeting.id}" title="נפגשנו">✅</button>
         <button type="button" class="btn-noshow" data-meeting-id="${meeting.id}" title="לא הגיע">❌</button>
         <button type="button" class="btn-log" data-meeting-id="${meeting.id}" title="סיכום">📝</button>
@@ -7859,6 +7900,131 @@ function toiBindEditModalExtras() {
   }
 }
 
+// ---- Google Calendar link builder ----
+// Accepts a meeting with shape {lead_name|leadName, lead_phone|phone, date (YYYY-MM-DD),
+// time (HH:MM), location (object or legacy string), notes, project}.
+// Returns a Google Calendar "create event" URL in Asia/Bangkok TZ, 60 min duration.
+function buildGoogleCalendarLink(meeting) {
+  if (!meeting || !meeting.date) return '#';
+  const startDate = String(meeting.date).replace(/-/g, '');
+  const [hh, mm] = String(meeting.time || '13:00').split(':');
+  const h = Number(hh), m = Number(mm);
+  if (isNaN(h) || isNaN(m)) return '#';
+  const startTime = `${String(h).padStart(2,'0')}${String(m).padStart(2,'0')}00`;
+  let endH = h + 1, endD = 0;
+  if (endH >= 24) { endH -= 24; endD = 1; }
+  const endDateStr = endD ? toiAddDays(meeting.date, 1).replace(/-/g, '') : startDate;
+  const endTime = `${String(endH).padStart(2,'0')}${String(m).padStart(2,'0')}00`;
+  const startISO = `${startDate}T${startTime}`;
+  const endISO = `${endDateStr}T${endTime}`;
+
+  const name = meeting.lead_name || meeting.leadName || 'ליד';
+  const project = meeting.project || '';
+  const title = `פגישה — ${name}${project ? ' · ' + project : ''}`;
+
+  const loc = meeting.location || {};
+  const locStr = (typeof loc === 'string') ? loc : (loc.name || loc.formatted_address || '');
+  const mapsUrl = (typeof loc === 'string')
+    ? (loc ? `https://maps.google.com/?q=${encodeURIComponent(loc)}` : '')
+    : (loc.google_maps_url || '');
+  const phone = meeting.lead_phone || meeting.phone || '';
+
+  const details = [
+    phone ? `📞 ${phone}` : '',
+    project ? `🏠 פרויקט: ${project}` : '',
+    mapsUrl ? `📍 ${mapsUrl}` : '',
+    meeting.notes ? `📝 ${meeting.notes}` : '',
+    '---',
+    'נוצר מ-KPH Sales OS'
+  ].filter(Boolean).join('\n');
+
+  const params = new URLSearchParams({
+    action: 'TEMPLATE',
+    text: title,
+    dates: `${startISO}/${endISO}`,
+    details,
+    location: locStr,
+    ctz: 'Asia/Bangkok'
+  });
+  return `https://calendar.google.com/calendar/render?${params.toString()}`;
+}
+
+function onClickAddToCalendarFromModal() {
+  const draft = collectMeetingFromForm();
+  if (!draft.date || !draft.time) {
+    showToast('הוסף תאריך ושעה לפני שמירה ביומן', true);
+    return;
+  }
+  const url = buildGoogleCalendarLink(draft);
+  window.open(url, '_blank', 'noopener,noreferrer');
+}
+
+// ---- Google Places Autocomplete (meeting location) ----
+// Key lives here so it can be rotated without touching the <head>. Restricted
+// to HTTP referrers on the Google Cloud side.
+const GOOGLE_MAPS_API_KEY = 'AIzaSyDAVFUw0D4tKES1fDYl-qw2TaZI4LX7w0Q';
+let placesAutocomplete = null;
+let selectedPlace = null;
+let placesScriptInjected = false;
+
+function loadGoogleMapsScript() {
+  if (placesScriptInjected) return;
+  placesScriptInjected = true;
+  const s = document.createElement('script');
+  s.async = true;
+  s.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places&callback=initPlacesAutocomplete`;
+  s.onerror = () => {
+    console.warn('[KPR-MEET] Google Maps script failed to load — autocomplete disabled.');
+    placesScriptInjected = false;
+  };
+  document.head.appendChild(s);
+}
+
+function initPlacesAutocomplete() {
+  const input = document.getElementById('toi-s-location');
+  if (!input || !window.google || !google.maps || !google.maps.places) return;
+  if (placesAutocomplete) return;
+  placesAutocomplete = new google.maps.places.Autocomplete(input, {
+    bounds: new google.maps.LatLngBounds(
+      new google.maps.LatLng(9.68, 99.95),
+      new google.maps.LatLng(9.82, 100.08)
+    ),
+    strictBounds: false,
+    fields: ['name', 'formatted_address', 'geometry', 'place_id', 'url']
+  });
+  placesAutocomplete.addListener('place_changed', () => {
+    const p = placesAutocomplete.getPlace();
+    if (!p || !p.geometry) { selectedPlace = null; return; }
+    selectedPlace = {
+      name: p.name || '',
+      formatted_address: p.formatted_address || '',
+      lat: p.geometry.location.lat(),
+      lng: p.geometry.location.lng(),
+      place_id: p.place_id || null,
+      google_maps_url: p.url || (p.place_id ? `https://maps.google.com/?q=place_id:${p.place_id}` : '')
+    };
+  });
+}
+window.initPlacesAutocomplete = initPlacesAutocomplete;
+
+// Build a location object from whatever is in the form (autocomplete selection
+// or free-typed fallback). Pure helper — never writes state.
+function buildLocationFromForm(rawText) {
+  const txt = (rawText || '').trim();
+  if (selectedPlace && selectedPlace.name && (selectedPlace.name === txt || selectedPlace.formatted_address === txt || txt.includes(selectedPlace.name))) {
+    return { ...selectedPlace };
+  }
+  if (!txt) return { name: null, formatted_address: null, lat: null, lng: null, place_id: null, google_maps_url: null };
+  return {
+    name: txt,
+    formatted_address: txt,
+    lat: null,
+    lng: null,
+    place_id: null,
+    google_maps_url: `https://maps.google.com/?q=${encodeURIComponent(txt)}`
+  };
+}
+
 // ---- Schedule modal ----
 function openToiScheduleModal(leadId) {
   const lead = botiLoad().find(l => l.id === leadId);
@@ -7870,9 +8036,32 @@ function openToiScheduleModal(leadId) {
   document.getElementById('toi-s-location').value = '';
   document.getElementById('toi-s-project').value = lead.interest || '';
   document.getElementById('toi-s-notes').value = '';
+  selectedPlace = null;
+  loadGoogleMapsScript();
+  if (window.google && google.maps && google.maps.places) initPlacesAutocomplete();
   document.getElementById('toi-schedule-modal').classList.remove('hidden');
 }
 function hideToiScheduleModal() { document.getElementById('toi-schedule-modal').classList.add('hidden'); }
+
+function collectMeetingFromForm() {
+  const leadId = document.getElementById('toi-s-lead-id').value;
+  const leads = botiLoad();
+  const lead = leads.find(l => l.id === leadId) || {};
+  const locText = document.getElementById('toi-s-location').value;
+  return {
+    id: null,
+    leadId,
+    leadName: lead.name || '',
+    lead_name: lead.name || '',
+    phone: lead.phone || '',
+    lead_phone: lead.phone || '',
+    date: document.getElementById('toi-s-date').value,
+    time: document.getElementById('toi-s-time').value,
+    location: buildLocationFromForm(locText),
+    project: document.getElementById('toi-s-project').value,
+    notes: document.getElementById('toi-s-notes').value.trim(),
+  };
+}
 
 function submitToiSchedule(e) {
   e.preventDefault();
@@ -7880,17 +8069,19 @@ function submitToiSchedule(e) {
   const leads = botiLoad();
   const lead = leads.find(l => l.id === leadId);
   if (!lead) { hideToiScheduleModal(); return; }
+  const draft = collectMeetingFromForm();
   const meeting = {
     id: 'meet_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7),
     leadId,
     leadName: lead.name || '',
     phone: lead.phone || '',
-    date: document.getElementById('toi-s-date').value,
-    time: document.getElementById('toi-s-time').value,
-    location: document.getElementById('toi-s-location').value.trim(),
-    project: document.getElementById('toi-s-project').value,
-    notes: document.getElementById('toi-s-notes').value.trim(),
+    date: draft.date,
+    time: draft.time,
+    location: draft.location,
+    project: draft.project,
+    notes: draft.notes,
     outcome: null,
+    calendar_event_id: null,
     createdAt: new Date().toISOString(),
   };
   const meetings = toiMeetingsLoad();
