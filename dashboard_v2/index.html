@@ -661,6 +661,160 @@ tr.pipeline-row-pinned td:first-child { box-shadow: inset 4px 0 0 #FBBF24; }
   #page-reports .terminal { padding:16px; }
   #page-reports .headline-value { font-size:28px; }
 }
+
+/* ============================================================ */
+/* ===== KPR-83 v2 — Today on Island visual polish (6 ch.) ==== */
+/* Scoped to #page-today only. Non-destructive overrides.       */
+/* ============================================================ */
+
+/* Change 1 — Lead name hierarchy (row anchor) */
+#page-today .lead-row { font-size:14px; }
+#page-today .row-name .row-name-text { font-size:15px; font-weight:600; color:#fff; line-height:1.3; }
+#page-today .row-phone { font-size:12px; color:#94A3B8; font-family:'JetBrains Mono', monospace, ui-monospace; letter-spacing:-0.01em; }
+
+/* Change 2 — Persistent primary CTA (⏰ schedule message) on collapsed rows */
+#page-today .lead-row { padding-left:52px; } /* reserve space for CTA at visually-left */
+#page-today .toi-primary-cta {
+  position:absolute; left:12px; top:50%; transform:translateY(-50%);
+  width:28px; height:28px; border-radius:50%; padding:0; line-height:1;
+  background:rgba(45,212,168,0.08); color:#68dbae;
+  border:1px solid rgba(45,212,168,0.25);
+  display:inline-flex; align-items:center; justify-content:center;
+  font-size:14px; cursor:pointer; transition:all 0.15s ease;
+  font-family:inherit; z-index:2;
+}
+#page-today .toi-primary-cta:hover {
+  background:rgba(45,212,168,0.18);
+  box-shadow:0 0 10px rgba(45,212,168,0.25);
+  transform:translateY(-50%) scale(1.06);
+  color:#2dd4a8;
+}
+#page-today .toi-primary-cta:focus-visible { outline:2px solid #68dbae; outline-offset:1px; }
+#page-today .lead-row.expanded .toi-primary-cta { display:none; }
+/* Hover-overlay (row-quick-actions) still sits at left:12px z:5 — it covers the
+   CTA when the row is hovered. That is intentional: on hover the 4 quick
+   actions take over; when not hovered, the ⏰ is the single visible CTA. */
+
+/* Change 3 — Focus mode on expansion */
+#page-today.toi-tab--focused .lead-row:not(.expanded),
+#page-today.toi-tab--focused .meeting-row {
+  opacity:0.35; transition:opacity 0.2s ease;
+}
+#page-today.toi-tab--focused .lead-row.expanded { opacity:1; }
+#page-today.toi-tab--focused .lead-expanded { opacity:1; }
+#page-today.toi-tab--focused .toi-block-header { opacity:0.6; transition:opacity 0.2s ease; }
+#page-today.toi-tab--focused .toi-block:has(.lead-row.expanded) .toi-block-header { opacity:1; }
+/* Filter strip dims too, to keep focus on the expanded lead */
+#page-today.toi-tab--focused .toi-filters { opacity:0.55; transition:opacity 0.2s ease; }
+#page-today.toi-tab--focused .toi-filters:hover,
+#page-today.toi-tab--focused .toi-filters:focus-within { opacity:1; }
+
+/* Change 4 — Section visual priority via left border */
+/* Default neutral for blocks not otherwise specified. The existing
+   .toi-block-urgent / .toi-block-meetings / .toi-block-arriving etc. still
+   carry their original right-border accents (RTL visual-left). We add a true
+   left-border (visually-right in RTL) per data-block for priority, avoiding
+   collision with the legacy accent which is logical `border-right`. */
+#page-today .toi-block {
+  border-left:4px solid rgba(62,73,67,0.5);
+  transition:box-shadow 0.2s ease, border-left-color 0.2s ease;
+}
+#page-today .toi-block[data-block="reminders"] {
+  border-left-color:#2dd4a8;
+  box-shadow:0 0 20px rgba(45,212,168,0.08);
+}
+#page-today .toi-block[data-block="urgent"] { border-left-color:#ef4444; }
+#page-today .toi-block[data-block="meetings-tosummarize"] { border-left-color:#f59e0b; }
+#page-today .toi-block[data-block="meetings"] { border-left-color:#60a5fa; }
+#page-today .toi-block[data-block="meetings"].has-items {
+  border-left-color:#2dd4a8;
+  box-shadow:0 0 20px rgba(45,212,168,0.08);
+}
+#page-today .toi-block[data-block="meetings-week"],
+#page-today .toi-block[data-block="arriving"],
+#page-today .toi-block[data-block="engaged"],
+#page-today .toi-block[data-block="search"] {
+  border-left-color:rgba(62,73,67,0.7);
+}
+
+/* Change 5 — Empty conversation / history state in expanded row
+   NOTE: the current code does NOT render a literal "Unknown 💬" bubble. The
+   closest surface is .exp-note which defaults to 'אין תיאור' when interest/
+   notes/raw_text are all missing. We style that empty state to look
+   intentional rather than broken. Retry state is wired via class below. */
+#page-today .exp-note.exp-note-empty {
+  color:#94A3B8;
+  font-style:italic;
+  font-size:12px;
+  border-right-color:#3e4943;
+  background:transparent;
+  padding:8px 12px;
+}
+#page-today .exp-note.exp-note-error {
+  color:#fca5a5;
+  font-style:italic;
+  font-size:12px;
+  border-right-color:rgba(239,68,68,0.45);
+  background:rgba(239,68,68,0.06);
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+}
+#page-today .exp-note-retry {
+  padding:4px 10px;
+  background:transparent;
+  border:1px solid rgba(239,68,68,0.45);
+  color:#fca5a5;
+  font-size:11px; font-weight:600; border-radius:4px; cursor:pointer;
+  font-family:inherit; transition:all 0.12s;
+}
+#page-today .exp-note-retry:hover { background:rgba(239,68,68,0.15); color:#fff; }
+
+/* Change 6 — Two-tier filter strip (declutter) */
+#page-today .toi-filters-row.toi-filters-tier2 {
+  max-height:0;
+  overflow:hidden;
+  opacity:0;
+  padding-block:0;
+  margin:0;
+  transition:max-height 0.22s ease, opacity 0.18s ease, padding-block 0.2s ease;
+}
+#page-today .toi-filters.tier2-open .toi-filters-row.toi-filters-tier2 {
+  max-height:180px; /* fits wrapping across common widths */
+  opacity:1;
+  padding-block:6px 2px;
+}
+#page-today .toi-filters-toggle {
+  padding:6px 12px;
+  background:transparent;
+  border:1px dashed #3e4943;
+  border-radius:999px;
+  color:#94A3B8;
+  font-size:12px; font-weight:600; cursor:pointer;
+  display:inline-flex; align-items:center; gap:6px;
+  font-family:inherit; transition:all 0.15s;
+}
+#page-today .toi-filters-toggle:hover { color:#dfe2eb; border-color:#68dbae; }
+#page-today .toi-filters-toggle .toi-filters-toggle-caret {
+  display:inline-block; font-size:9px; transition:transform 0.2s ease;
+}
+#page-today .toi-filters.tier2-open .toi-filters-toggle .toi-filters-toggle-caret {
+  transform:rotate(180deg);
+}
+#page-today .toi-filters-toggle-badge {
+  display:none;
+  background:#68dbae; color:#003826;
+  font-size:10px; font-weight:800;
+  padding:1px 6px; border-radius:999px;
+  min-width:18px; text-align:center;
+}
+#page-today .toi-filters-toggle.has-active .toi-filters-toggle-badge { display:inline-block; }
+
+/* Mobile adjustments */
+@media (max-width:767px) {
+  #page-today .lead-row { padding-left:40px; }
+  #page-today .toi-primary-cta { width:24px; height:24px; font-size:12px; left:8px; }
+  #page-today .row-name .row-name-text { font-size:14px; }
+  #page-today .row-phone { font-size:11px; }
+}
 </style>
 </head>
 <body class="text-on-surface overflow-hidden h-screen flex flex-row-reverse">
@@ -767,13 +921,20 @@ tr.pipeline-row-pinned td:first-child { box-shadow: inset 4px 0 0 #FBBF24; }
         </div>
       </div>
 
-      <!-- Filter chips + search -->
+      <!-- Filter chips + search (KPR-83 Change 6: two-tier) -->
       <div class="toi-filters" id="toi-filters">
-        <div class="toi-filters-row">
+        <div class="toi-filters-row toi-filters-tier1">
           <button type="button" class="filter-chip active" data-filter="all">הכל <span class="chip-count">0</span></button>
           <button type="button" class="filter-chip" data-filter="on-island-today">באי היום <span class="chip-count">0</span></button>
-          <button type="button" class="filter-chip" data-filter="leaving-this-week">עוזב השבוע <span class="chip-count">0</span></button>
           <button type="button" class="filter-chip" data-filter="hot">חמים <span class="chip-count">0</span></button>
+          <button type="button" class="toi-filters-toggle" id="toi-filters-toggle" aria-expanded="false" aria-controls="toi-filters-tier2">
+            <span>סינונים נוספים</span>
+            <span class="toi-filters-toggle-badge" id="toi-filters-toggle-badge">1</span>
+            <span class="toi-filters-toggle-caret">▼</span>
+          </button>
+        </div>
+        <div class="toi-filters-row toi-filters-tier2" id="toi-filters-tier2">
+          <button type="button" class="filter-chip" data-filter="leaving-this-week">עוזב השבוע <span class="chip-count">0</span></button>
           <button type="button" class="filter-chip" data-filter="no-contact">לא יצרתי קשר <span class="chip-count">0</span></button>
           <button type="button" class="filter-chip" data-filter="no-budget">ללא תקציב <span class="chip-count">0</span></button>
           <button type="button" class="filter-chip" data-filter="pinned">📌 מוצמדים <span class="chip-count">0</span></button>
@@ -6861,6 +7022,7 @@ function renderLeadRow(lead) {
   const escName = escapeHtml(lead.name || '');
   return `
     <div class="lead-row ${isContacted ? 'contacted-row' : ''} ${isPinned ? 'is-pinned' : ''} ${toiState.expandedLeadId === lead.id ? 'expanded' : ''}" data-lead-id="${escId}" data-phone="${escPhone}" tabindex="0">
+      <button type="button" class="toi-primary-cta" data-action="schedule-msg" data-lead-id="${escId}" title="תזמן הודעה" aria-label="תזמן הודעה">⏰</button>
       <div class="row-status-dot ${dotClass}"></div>
       <div class="row-name">
         <button type="button" class="row-mini-btn row-pin ${isPinned ? 'pinned' : ''}" data-action="pin" data-lead-id="${escId}" title="${isPinned ? 'בטל הצמדה' : 'הצמד ליד'}">📌</button>
@@ -6921,7 +7083,18 @@ function renderLeadExpanded(lead, blockType) {
   if (lead.departure_date) badges.push(`<span class="row-badge rb-departure">✈️ עוזב ${toiFormatShortDate(lead.departure_date)}</span>`);
   if (!phoneValid) badges.push('<span class="row-badge rb-no-phone" title="חסר טלפון — לחץ ערוך כדי להוסיף">📵 חסר טלפון</span>');
 
-  const fullNote = lead.interest || lead.notes || lead.raw_text || 'אין תיאור';
+  // KPR-83 Change 5 — empty conversation state. Current code has no literal
+  // "Unknown 💬" surface, so the closest affordance is the note bubble. When
+  // all of interest/notes/raw_text are missing we render an intentional empty
+  // placeholder instead of a generic 'אין תיאור' string with a mint border.
+  // OPEN QUESTION: once the Postgres /api/conversations fetch is wired into
+  // the expanded area (Phase 2), wrap it with class `exp-note-error` on fetch
+  // failure (the retry button is already styled — see CSS for `.exp-note-retry`).
+  const noteBody = lead.interest || lead.notes || lead.raw_text || '';
+  const hasNoteBody = !!noteBody;
+  const noteHtml = hasNoteBody
+    ? `<div class="exp-note">💬 ${escapeHtml(String(noteBody))}</div>`
+    : `<div class="exp-note exp-note-empty">אין היסטוריית שיחה עדיין</div>`;
   const budget = lead.budget ? toiFormatBudget(lead.budget, lead.budget_currency || 'THB') : '—';
   const source = (lead.source || 'boti').toUpperCase();
   const escPhone = escapeHtml(phoneRaw);
@@ -6930,7 +7103,7 @@ function renderLeadExpanded(lead, blockType) {
   return `
     <div class="lead-expanded" data-expanded-lead-id="${escId}">
       ${badges.length ? `<div class="exp-badges">${badges.join('')}</div>` : ''}
-      <div class="exp-note">💬 ${escapeHtml(String(fullNote))}</div>
+      ${noteHtml}
       <div class="exp-meta-row">
         <span><b>תקציב:</b> ${escapeHtml(budget)}</span>
         <span><b>הגעה:</b> ${escapeHtml(toiArrivalLabel(lead))}</span>
@@ -7240,6 +7413,14 @@ function renderTodayOnIsland() {
   const total = blocks.urgent.length + blocks.meetings.length + blocks.arriving.length + blocks.engaged.length;
   const empty = document.getElementById('toi-empty');
   if (empty) empty.style.display = total === 0 ? '' : 'none';
+
+  // KPR-83 Change 3 — focus mode: dim non-expanded rows when any row is open.
+  const pageEl = document.getElementById('page-today');
+  if (pageEl) pageEl.classList.toggle('toi-tab--focused', !!toiState.expandedLeadId);
+
+  // KPR-83 Change 4 — meetings block mint-glow when it actually has items.
+  const meetingsSection = document.querySelector('#page-today .toi-block[data-block="meetings"]');
+  if (meetingsSection) meetingsSection.classList.toggle('has-items', blocks.meetings.length > 0);
 }
 
 function toiToggleExpand(leadId) {
@@ -7247,11 +7428,35 @@ function toiToggleExpand(leadId) {
   renderTodayOnIsland();
 }
 
+// KPR-83 Change 6 — tier-2 filter list (used for auto-expand + badge)
+const TOI_TIER2_FILTERS = new Set([
+  'leaving-this-week', 'no-contact', 'no-budget', 'pinned',
+  'status-simmer', 'status-in_conversation', 'status-needs_call', 'status-arriving'
+]);
+const TOI_TIER2_STORAGE_KEY = 'toi_advanced_filters_expanded';
+
+function toiApplyTier2State() {
+  const container = document.getElementById('toi-filters');
+  if (!container) return;
+  let expanded = false;
+  try { expanded = localStorage.getItem(TOI_TIER2_STORAGE_KEY) === '1'; } catch(_) {}
+  // Auto-expand when the active filter lives in tier-2 so the chip is always
+  // reachable/visible.
+  if (TOI_TIER2_FILTERS.has(toiState.activeFilter)) expanded = true;
+  container.classList.toggle('tier2-open', expanded);
+  const toggle = document.getElementById('toi-filters-toggle');
+  if (toggle) {
+    toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+    toggle.classList.toggle('has-active', TOI_TIER2_FILTERS.has(toiState.activeFilter));
+  }
+}
+
 function toiSetFilter(filter) {
   toiState.activeFilter = filter;
   document.querySelectorAll('.filter-chip').forEach(c => {
     c.classList.toggle('active', c.dataset.filter === filter);
   });
+  toiApplyTier2State();
   renderTodayOnIsland();
 }
 
@@ -7314,7 +7519,23 @@ function toiBindActions() {
   if (!page || page.dataset.bound === '1') return;
   page.dataset.bound = '1';
 
+  // KPR-83 Change 6 — apply persisted tier-2 state on first bind.
+  toiApplyTier2State();
+
   page.addEventListener('click', (e) => {
+    // KPR-83 Change 6 — "סינונים נוספים" toggle. Must be checked BEFORE the
+    // generic .filter-chip branch since the toggle button is itself clickable
+    // and could otherwise swallow clicks on chips inside tier-2.
+    const filtersToggle = e.target.closest('#toi-filters-toggle');
+    if (filtersToggle) {
+      const container = document.getElementById('toi-filters');
+      if (!container) return;
+      const isOpen = container.classList.toggle('tier2-open');
+      try { localStorage.setItem(TOI_TIER2_STORAGE_KEY, isOpen ? '1' : '0'); } catch(_) {}
+      filtersToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      return;
+    }
+
     // Filter chip
     const chip = e.target.closest('.filter-chip');
     if (chip) { toiSetFilter(chip.dataset.filter); return; }
