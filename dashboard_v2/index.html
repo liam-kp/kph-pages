@@ -1778,7 +1778,7 @@ tr.pipeline-row-pinned td:first-child { box-shadow: inset 4px 0 0 #FBBF24; }
     <div class="space-y-3">
       <div>
         <label>שלח לפי שעון של:</label>
-        <select id="sched-tz" onchange="updateSchedPreview()">
+        <select id="sched-tz" onchange="onSchedTzChange()">
           <option value="lead">לקוח (אוטומטי)</option>
           <option value="Asia/Jerusalem">ישראל</option>
           <option value="Asia/Bangkok">בנגקוק</option>
@@ -1797,10 +1797,7 @@ tr.pipeline-row-pinned td:first-child { box-shadow: inset 4px 0 0 #FBBF24; }
         <label>בחירה מהירה (בזמן הליד):</label>
         <div id="sched-quick-row" class="flex flex-wrap gap-1.5 mt-1" style="direction:rtl">
           <button type="button" class="sched-quick-btn" data-quick="in-1h">בעוד שעה</button>
-          <button type="button" class="sched-quick-btn" data-quick="today-evening">היום 18:00</button>
-          <button type="button" class="sched-quick-btn" data-quick="tomorrow-morning">מחר 09:00</button>
-          <button type="button" class="sched-quick-btn" data-quick="tomorrow-noon">מחר 12:00</button>
-          <button type="button" class="sched-quick-btn" data-quick="in-3-days">+3 ימים 10:00</button>
+          <!-- 4 rolling presets injected here by renderRollingSchedPresets() -->
           <button type="button" class="sched-quick-btn" data-quick="next-week">שבוע הבא 10:00</button>
         </div>
       </div>
@@ -3662,10 +3659,19 @@ function openScheduleMessageFor(rawLead) {
   document.getElementById('sched-message').value = '';
   const tplSel = document.getElementById('sched-template-select');
   if (tplSel) tplSel.value = '';
+  // Render rolling presets first (they depend on current time + selected tz)
+  renderRollingSchedPresets();
   document.querySelectorAll('.sched-quick-btn').forEach(b => b.classList.remove('active'));
 
-  // Default time: tomorrow 09:00 in the lead's timezone
-  applySchedQuick('tomorrow-morning', /*silent=*/true);
+  // Default time: first rolling preset (the nearest future-meaningful slot)
+  const firstRolling = document.querySelector('#sched-quick-row [data-quick="rolling"]');
+  if (firstRolling) {
+    applySchedRolling(
+      parseInt(firstRolling.dataset.offset, 10),
+      parseInt(firstRolling.dataset.hour, 10),
+      /*silent=*/true
+    );
+  }
 
   updateSchedClocks();
   if (schedClockInterval) clearInterval(schedClockInterval);
@@ -3694,20 +3700,79 @@ function applySchedQuick(key, silent) {
   const now = new Date();
   let target;
   switch (key) {
-    case 'in-1h':             target = new Date(now.getTime() + 60 * 60 * 1000); break;
-    case 'today-evening':     target = schedWallToUTC(schedFormatDateInTz(now, tz), '18:00', tz);
-                              if (target < now) target = schedWallToUTC(schedFormatDateInTz(new Date(now.getTime()+86400000), tz), '18:00', tz);
-                              break;
-    case 'tomorrow-morning':  target = schedWallToUTC(schedFormatDateInTz(new Date(now.getTime()+86400000), tz), '09:00', tz); break;
-    case 'tomorrow-noon':     target = schedWallToUTC(schedFormatDateInTz(new Date(now.getTime()+86400000), tz), '12:00', tz); break;
-    case 'in-3-days':         target = schedWallToUTC(schedFormatDateInTz(new Date(now.getTime()+3*86400000), tz), '10:00', tz); break;
-    case 'next-week':         target = schedWallToUTC(schedFormatDateInTz(new Date(now.getTime()+7*86400000), tz), '10:00', tz); break;
+    case 'in-1h':     target = new Date(now.getTime() + 60 * 60 * 1000); break;
+    case 'next-week': target = schedWallToUTC(schedFormatDateInTz(new Date(now.getTime()+7*86400000), tz), '10:00', tz); break;
     default: return;
   }
   document.getElementById('sched-date').value = schedFormatDateInTz(target, tz);
   document.getElementById('sched-time').value = schedFormatTimeInTz(target, tz);
   document.querySelectorAll('.sched-quick-btn').forEach(b => b.classList.toggle('active', b.dataset.quick === key));
   if (!silent) updateSchedPreview();
+}
+
+// ---- Rolling presets (KPR-84) — 4 slots, shift by time-of-day ----
+// Candidates still in the future in the selected tz, with a 30-min safety buffer.
+// Determination uses the selected tz so labels stay consistent with sched-date/time;
+// default tz ("lead") resolves to Asia/Bangkok for on-island leads — Liam's 99% case.
+function computeRollingSchedPresets(tz) {
+  const now = new Date();
+  const tzNow = new Date(now.toLocaleString('en-US', { timeZone: tz }));
+  const nowMinutes = tzNow.getHours() * 60 + tzNow.getMinutes();
+  const MIN_LEAD_MINUTES = 30;
+  const candidates = [
+    { label: 'היום 09:00',    offsetDays: 0, hour: 9  },
+    { label: 'היום 12:00',    offsetDays: 0, hour: 12 },
+    { label: 'היום 18:00',    offsetDays: 0, hour: 18 },
+    { label: 'מחר 09:00',     offsetDays: 1, hour: 9  },
+    { label: 'מחר 12:00',     offsetDays: 1, hour: 12 },
+    { label: 'מחר 18:00',     offsetDays: 1, hour: 18 },
+    { label: '+3 ימים 10:00', offsetDays: 3, hour: 10 },
+  ];
+  return candidates.filter(c => {
+    if (c.offsetDays > 0) return true;
+    return c.hour * 60 > nowMinutes + MIN_LEAD_MINUTES;
+  }).slice(0, 4);
+}
+
+function renderRollingSchedPresets() {
+  const row = document.getElementById('sched-quick-row');
+  if (!row) return;
+  row.querySelectorAll('[data-quick="rolling"]').forEach(b => b.remove());
+  const tz = schedResolveTz(document.getElementById('sched-tz').value);
+  const nextWeekBtn = row.querySelector('[data-quick="next-week"]');
+  computeRollingSchedPresets(tz).forEach(p => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'sched-quick-btn';
+    btn.dataset.quick = 'rolling';
+    btn.dataset.offset = String(p.offsetDays);
+    btn.dataset.hour = String(p.hour);
+    btn.textContent = p.label;
+    row.insertBefore(btn, nextWeekBtn);
+  });
+}
+
+function applySchedRolling(offsetDays, hour, silent) {
+  const tz = schedResolveTz(document.getElementById('sched-tz').value);
+  const now = new Date();
+  const base = new Date(now.getTime() + offsetDays * 86400000);
+  const dateStr = schedFormatDateInTz(base, tz);
+  const timeStr = String(hour).padStart(2, '0') + ':00';
+  const target = schedWallToUTC(dateStr, timeStr, tz);
+  document.getElementById('sched-date').value = schedFormatDateInTz(target, tz);
+  document.getElementById('sched-time').value = schedFormatTimeInTz(target, tz);
+  document.querySelectorAll('.sched-quick-btn').forEach(b => {
+    const match = b.dataset.quick === 'rolling'
+      && parseInt(b.dataset.offset, 10) === offsetDays
+      && parseInt(b.dataset.hour, 10) === hour;
+    b.classList.toggle('active', match);
+  });
+  if (!silent) updateSchedPreview();
+}
+
+function onSchedTzChange() {
+  renderRollingSchedPresets();
+  updateSchedPreview();
 }
 
 // ---- Existing follow-ups ----
@@ -7897,7 +7962,11 @@ document.addEventListener('click', (e) => {
   const quick = e.target.closest('.sched-quick-btn');
   if (quick) {
     e.stopPropagation();
-    applySchedQuick(quick.dataset.quick);
+    if (quick.dataset.quick === 'rolling') {
+      applySchedRolling(parseInt(quick.dataset.offset, 10), parseInt(quick.dataset.hour, 10));
+    } else {
+      applySchedQuick(quick.dataset.quick);
+    }
     return;
   }
   // Cancel existing follow-up row button
