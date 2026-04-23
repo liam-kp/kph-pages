@@ -5,71 +5,138 @@ The segment determines:
 - USP tags
 - Image classification criteria (which `prompts/image_classification_*.md` to use)
 - Firebase payload template
+- **Price tier expectation** — anchors what we tell Liam in step 9 if a price looks off
 
-## Active segments
+---
 
-### `sea_view` (resale, ID prefix `RSL`)
+## 🗺️ Official KPH Segment Map
 
-**Definition:** Private resale villa with primary USP being unobstructed sea view. Typically furnished, often with active short-term rental, owner is a private seller (not a developer with a multi-villa project).
+This is the canonical price/segment map. Use it during interview (step 1) to help Liam place the new project in the right bucket.
+
+| # | Segment | Price Range (THB) | Examples | ID Prefix | Track |
+|---|---------|-------------------|----------|-----------|-------|
+| 1 | **Beachfront** | 26M+ | Red Sunset (BCH-011) | `BCH` | Full Campaign |
+| 2 | **Sea View** | 16-25M | Sea La Villa, Tomorrow X (Villa Anne), חן ואסף | `RSL` | Lean |
+| 3 | **Private Villa 800sqm** | 14-16M | 3-4 BR, large garden, expansion option | `PVL` | Lean |
+| 4 | **Premium Compact 500sqm** | 14-16M | Heavily invested, smaller plot | `PCM` | Lean |
+| 5 | **Second Line Sea** | 9-13M | 2-4 min from beach, 3BR + pool | `SL2` | Lean |
+| 6 | **Pre-sale Compounds** | 5-7M | Red Sunset, Maduwan, Srithanu (active campaigns) | `BCH` / `ZEN` / `SRI` | Full Campaign |
+| 7 | **Studios / 1BR** | 3.5-6M | Depends on sea view | `STU` | Lean |
+| 8 | **Bundles** | 11-22M | 2+ villas together | `BND` | Lean |
+| 9 | **Resorts / Hotels** | Highest tier | Separate category | `HTL` | Lean |
+| 10 | **Land** | Variable | Land plots only | `LND` | Lean |
+
+### Track decision rule
+
+- **Full Campaign** = Active Facebook Ads + bubble flow + decision tree → use `playbooks/campaign-onboarding/` from GitHub. NOT this skill.
+- **Lean** = inventory entry, no active campaign, primarily for pivot / feature-match → THIS skill.
+
+---
+
+## When the price doesn't match the segment
+
+If Liam says "Sea View" but the price is 9M — flag it. Either:
+- The segment is actually `Second Line Sea` (price-led classification)
+- Or there's something atypical (renovation needed, far from amenities, etc.)
+
+Ask Liam: "המחיר נראה נמוך לסגמנט הזה — זו עסקה מיוחדת או שהסגמנט שונה?"
+
+---
+
+## Segment-specific guidance
+
+### `Beachfront` (BCH) — Full Campaign only
+**Skip this skill.** Direct Liam to GitHub playbook.
+
+### `Sea View` (RSL) — Lean
+Standard sea_view onboarding. Use `prompts/image_classification_seaview.md`.
 
 **Identifying signals:**
-- Single villa, not part of a multi-unit project
-- Hill / elevated position
-- Already built and finished
-- Has Airbnb / Booking listing
-- Owner = individual or small holding company
+- Hill / elevated position with unobstructed sea view
+- Built and finished (not pre-sale)
+- Often furnished, often with active short-term rental
+- Owner = individual or small holding company (not a multi-villa developer)
 
-**USP tags to set:** `["sea_view", ...]` plus any combination of:
-- `boutique_neighborhood` — if location is a known luxury micro-area (e.g., Haad Salad / Haad Yao tops)
-- `airbnb_active` — if currently generating rental income
-- `dual_option` — if there are 2+ purchase configurations (e.g., villa only / villa + plot)
-- `infinity_pool` — if the pool is infinity-style with sea view
-- `furnished_turnkey` — fully furnished, ready to move in
+**USP tags:** `["sea_view", ...]` plus any of:
+- `boutique_neighborhood`, `airbnb_active`, `dual_option`, `infinity_pool`, `furnished_turnkey`
 
-**Image priority for PING1:**
-1. Hero exterior with sea + pool + house in one frame
-2. Pool with infinity edge + sea horizon
-3. Master bedroom with sea-facing window/door
-4. Living/terrace with open sea view from inside
+### `Private Villa 800sqm` (PVL) — Lean
+**Identifying signals:**
+- Plot size 700-1000sqm
+- 3-4 bedrooms
+- Large garden, often with expansion potential (room for 2nd villa or pool extension)
+- Resale or recent build
 
-### `beachfront` (campaign, ID prefix `BCH`)
+**USP tags:** `["large_plot", "expansion_potential", ...]` plus situational:
+- `garden`, `family_size`, `chanote` (if applicable)
 
-**Definition:** Multi-villa project directly on or steps from the beach. Active Facebook Ads campaign. Pre-sale or under construction.
+### `Premium Compact 500sqm` (PCM) — Lean
+**Identifying signals:**
+- Plot size 300-600sqm
+- High-end finishes (designer interiors, premium fixtures)
+- Smaller footprint but maximum investment per sqm
+- 2-3 bedrooms typically
 
-**Use Full Campaign track, not Lean.** This skill only handles Lean entries — for beachfront, redirect to the campaign onboarding playbook on GitHub.
+**USP tags:** `["premium_finish", "compact_luxury", ...]` plus:
+- `turnkey`, `designer_interior`, `low_maintenance`
 
-### `center_island` / `zennith` (campaign, ID prefix `ZEN`)
+### `Second Line Sea` (SL2) — Lean
+**Identifying signals:**
+- 2-5 minute walk/scooter to beach
+- 3 bedrooms + private pool typical
+- Better price-per-sqm than Sea View tier
+- Often newer construction
 
-**Definition:** Inland villas (Maduwan, Zennith). Pre-sale, custom-build flexibility. Entry-level pricing. Active campaign.
+**USP tags:** `["near_beach", "value_pool", ...]` plus:
+- `walking_distance_beach`, `family_layout`
 
-**Use Full Campaign track.**
+### `Pre-sale Compounds` (BCH/ZEN/SRI) — Full Campaign
+**Skip this skill.** Pre-sale compounds need full campaign infrastructure — bubble flow, decision tree, pivot logic. Use GitHub playbook.
 
-### `srithanu` (catalog, ID prefix `SRI`)
+### `Studios / 1BR` (STU) — Lean
+**Identifying signals:**
+- 1 bedroom or open-plan studio
+- Often in mixed-use or condo developments
+- Investment-focused (high rental yield, low entry price)
+- Sea view dramatically affects pricing
 
-**Definition:** Srithanu / Hin Kong area villas. Catalog mode (no active campaign).
+**USP tags:** `["entry_level", "rental_focus", ...]` plus:
+- `sea_view` (if applicable — major price driver)
+- `condo_amenities` (gym, pool, security)
 
-**Lean track applies.** Use this skill.
+### `Bundles` (BND) — Lean
+**Identifying signals:**
+- 2 or more villas sold as a package
+- Often by same developer/owner
+- Discounted vs sum of individual prices
+- Investment plays — buy-to-rent both, or one-to-live-one-to-rent
 
-### `nai_wok` (campaign in progress, ID prefix `NAI`)
+**USP tags:** `["bundle", "investor_play", ...]`
 
-**Definition:** Nai-Wok area. Currently being onboarded as full campaign.
+**Special handling:** Each villa in the bundle may need its own image set. In `purchase_options`, list both the bundle and individual purchase paths.
 
-### `land` (future, ID prefix `LND`)
+### `Resorts / Hotels` (HTL) — Lean (special)
+**Identifying signals:**
+- Multiple rooms/units operating as hotel/resort
+- Existing licenses (TBL, alcohol, etc.)
+- Operational business with revenue history
+- Highest price tier — often 50M+
 
-**Definition:** Land plots without a built villa. Often sold as investment + custom-build packages.
+**USP tags:** `["operating_business", "license_included", ...]`
 
-**USP tags:** `["land", "buildable", ...]`
+**Special handling:** Add a `business_metrics` section to the payload — annual revenue, occupancy, license types. Treat differently from villa onboarding.
 
-**Lean track applies.**
+### `Land` (LND) — Lean
+**Identifying signals:**
+- Empty land, no built structures
+- Sold as buildable plot
+- Chanote or Nor Sor 3 land title
+- Often sold with construction package option
 
-## Adding a new segment
+**USP tags:** `["land", "buildable", ...]` plus:
+- `chanote`, `road_access`, `utility_access`
 
-If Liam introduces a category that doesn't fit:
-1. Ask: 2-letter code? full name? typical USP?
-2. Add a row to this file
-3. Create `prompts/image_classification_{newseg}.md` with criteria
-4. Decide track: Lean (this skill) or Full Campaign (GitHub playbook)
-5. Confirm with Liam before proceeding
+---
 
 ## Cross-segment USP tags (always available)
 
@@ -88,3 +155,16 @@ If Liam introduces a category that doesn't fit:
 - `chanote` — has Chanote land title (the gold standard)
 - `blue_book` — has registered blue book (Thai house registration)
 - `thai_company_structure` — owned through Thai holding company (foreign-owner workaround)
+- `expansion_potential` — room for 2nd villa or extension
+
+---
+
+## Adding a new segment
+
+If Liam introduces a category that doesn't fit:
+1. Ask: name? typical price range? identifying signals?
+2. Propose ID prefix (3 letters)
+3. Add a row to the official map above
+4. Create `prompts/image_classification_{newseg}.md` with criteria
+5. Decide track: Lean (this skill) or Full Campaign (GitHub playbook)
+6. Confirm with Liam, then commit + push to GitHub
