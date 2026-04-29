@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maduwan ZENNITH Villas - Pre-Sale Koh Phangan</title>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --green-dark: #2D5016;
+            --green-mid: #4A7C59;
+            --green-light: #7FB069;
+            --bamboo: #8B7355;
+            --beige: #D4C5B0;
+            --beige-light: #F0EBE3;
+            --white: #FFFFFF;
+            --text-dark: #1A2E10;
+            --text-mid: #4A5A3A;
+            --text-soft: #7A8A6A;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Heebo', sans-serif;
+            background: #1A2E10;
+            min-height: 100vh;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(160deg, #2D5016 0%, #1A2E10 60%, #3D6B28 100%);
+            color: white;
+            padding: 40px 20px 50px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -60px; right: -60px;
+            width: 300px; height: 300px;
+            background: radial-gradient(circle, rgba(127,176,105,0.15) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: -40px; left: -40px;
+            width: 200px; height: 200px;
+            background: radial-gradient(circle, rgba(212,197,176,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .presale-badge {
+            background: var(--green-light);
+            color: var(--green-dark);
+            padding: 6px 18px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            display: inline-block;
+            margin-bottom: 18px;
+            text-transform: uppercase;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 900;
+            margin-bottom: 6px;
+            letter-spacing: -0.5px;
+        }
+
+        .header h1 span { color: var(--beige); }
+
+        .header .location {
+            font-size: 15px;
+            opacity: 0.8;
+            margin-bottom: 24px;
+            font-weight: 300;
+        }
+
+        .price-pill {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            padding: 14px 28px;
+            border-radius: 50px;
+            display: inline-block;
+        }
+
+        .price-pill .amount {
+            font-size: 26px;
+            font-weight: 900;
+            color: var(--beige);
+        }
+
+        .price-pill .label {
+            font-size: 13px;
+            opacity: 0.75;
+            margin-top: 2px;
+        }
+
+        .container {
+            max-width: 680px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 24px 24px 0 0;
+            margin-top: -20px;
+            padding: 30px 20px 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .tagline-box {
+            background: linear-gradient(135deg, var(--beige-light) 0%, #E8F0E0 100%);
+            border-left: 4px solid var(--green-light);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .tagline-box .title {
+            color: var(--green-dark);
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .tagline-item {
+            padding: 5px 0;
+            color: #4A4A4A;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tagline-item::before {
+            content: "✓";
+            color: var(--green-light);
+            font-weight: 900;
+            font-size: 15px;
+            flex-shrink: 0;
+        }
+
+        .section { margin-bottom: 32px; }
+
+        .section-title {
+            color: var(--green-dark);
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 18px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--beige);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .info-item {
+            background: var(--beige-light);
+            padding: 15px 12px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .info-icon { font-size: 22px; margin-bottom: 6px; }
+        .info-label { font-size: 12px; color: var(--bamboo); margin-bottom: 4px; }
+        .info-value { font-size: 15px; font-weight: 700; color: var(--green-dark); }
+
+        .villa-cards { display: flex; flex-direction: column; gap: 16px; }
+
+        .villa-card {
+            border: 2px solid #E8E3DB;
+            border-radius: 16px;
+            padding: 22px;
+            background: #FAFAF8;
+            transition: all 0.25s ease;
+            position: relative;
+        }
+
+        .villa-card:hover {
+            border-color: var(--green-light);
+            box-shadow: 0 8px 24px rgba(45,80,22,0.12);
+            transform: translateY(-2px);
+        }
+
+        .villa-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 14px;
+        }
+
+        .villa-name { font-size: 18px; font-weight: 800; color: var(--green-dark); }
+        .villa-subtitle { font-size: 13px; color: var(--bamboo); margin-top: 2px; }
+
+        .villa-price-tag {
+            background: var(--green-dark);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 15px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .villa-specs {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+
+        .spec-item {
+            background: white;
+            border: 1px solid #E8E3DB;
+            padding: 9px 10px;
+            border-radius: 8px;
+            font-size: 13px;
+        }
+
+        .spec-label {
+            font-weight: 700;
+            color: var(--green-mid);
+            display: block;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 2px;
+        }
+
+        .spec-value { color: #3A3A3A; font-weight: 500; }
+
+        .villa-card.custom {
+            background: linear-gradient(135deg, var(--green-dark) 0%, #3D6B28 100%);
+            border-color: transparent;
+            color: white;
+        }
+
+        .villa-card.custom .villa-name { color: var(--beige); }
+        .villa-card.custom .villa-subtitle { color: rgba(255,255,255,0.7); }
+        .villa-card.custom .spec-item {
+            background: rgba(255,255,255,0.1);
+            border-color: rgba(255,255,255,0.15);
+        }
+        .villa-card.custom .spec-label { color: var(--beige); }
+        .villa-card.custom .spec-value { color: white; }
+        .villa-card.custom .villa-price-tag { background: var(--beige); color: var(--green-dark); }
+
+        .timeline {
+            background: var(--beige-light);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid var(--beige);
+        }
+
+        .timeline-row {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--beige);
+            gap: 16px;
+        }
+
+        .timeline-row:last-child { border-bottom: none; }
+
+        .timeline-dot {
+            width: 10px; height: 10px;
+            background: var(--green-light);
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .timeline-date { font-weight: 700; color: var(--green-dark); min-width: 110px; font-size: 14px; }
+        .timeline-text { color: #5A5A5A; font-size: 14px; }
+
+        .payment-steps { display: flex; gap: 6px; margin-top: 16px; }
+
+        .pay-step {
+            flex: 1;
+            background: var(--green-light);
+            color: white;
+            padding: 8px 4px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .pay-step .pct { font-size: 16px; display: block; }
+
+        .location-items { display: flex; flex-direction: column; gap: 8px; }
+
+        .location-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            background: var(--beige-light);
+            border-radius: 10px;
+            font-size: 14px;
+            color: #3A3A3A;
+        }
+
+        .loc-time {
+            margin-left: auto;
+            background: var(--green-dark);
+            color: white;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .yield-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+        .yield-card {
+            background: var(--beige-light);
+            border-radius: 12px;
+            padding: 18px;
+            text-align: center;
+        }
+
+        .yield-type { font-size: 12px; color: var(--bamboo); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+        .yield-amount { font-size: 18px; font-weight: 900; color: var(--green-dark); }
+        .yield-unit { font-size: 12px; color: var(--text-soft); margin-top: 2px; }
+
+        .ownership-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+        .own-card {
+            border: 2px solid var(--beige);
+            border-radius: 12px;
+            padding: 18px;
+            text-align: center;
+        }
+
+        .own-title { font-size: 15px; font-weight: 700; color: var(--green-dark); margin-bottom: 6px; }
+        .own-detail { font-size: 13px; color: #5A5A5A; line-height: 1.5; }
+
+        /* Investment Summary CTA */
+        .invest-btn {
+            display: block;
+            text-align: center;
+            background: linear-gradient(135deg, var(--bamboo) 0%, #6B5B45 100%);
+            color: white;
+            padding: 14px 20px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 15px;
+            margin-top: 16px;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .invest-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+
+        .map-btn {
+            display: block;
+            text-align: center;
+            background: var(--bamboo);
+            color: white;
+            padding: 13px 20px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 15px;
+            margin-top: 16px;
+            transition: all 0.2s;
+        }
+
+        .map-btn:hover { background: #6B5B45; }
+
+        .cta-section {
+            background: linear-gradient(135deg, var(--green-dark) 0%, #3D6B28 100%);
+            padding: 32px 24px;
+            border-radius: 18px;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .cta-section h3 { color: white; font-size: 22px; font-weight: 800; margin-bottom: 8px; }
+        .cta-section p { color: rgba(255,255,255,0.8); font-size: 14px; margin-bottom: 22px; }
+
+        .whatsapp-btn {
+            display: inline-block;
+            background: #25D366;
+            color: white;
+            padding: 16px 36px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 16px;
+            box-shadow: 0 4px 20px rgba(37,211,102,0.4);
+            transition: all 0.25s;
+        }
+
+        .whatsapp-btn:hover {
+            background: #1ebe5a;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(37,211,102,0.5);
+        }
+
+        .note-box {
+            background: #FFFBF0;
+            border-left: 4px solid #F0C040;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #7A6020;
+            margin-top: 16px;
+        }
+
+        @media (max-width: 480px) {
+            .header h1 { font-size: 26px; }
+            .villa-specs { grid-template-columns: repeat(2, 1fr); }
+            .info-grid { grid-template-columns: repeat(2, 1fr); }
+            .payment-steps { flex-wrap: wrap; }
+            .pay-step { min-width: calc(20% - 6px); }
+        }
+    </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+    <div class="presale-badge">🏗️ PRE-SALE</div>
+    <h1>Maduwan <span>ZENNITH</span> Villas</h1>
+    <p class="location">📍 Maduwan, Central Koh Phangan • Thailand</p>
+    <div class="price-pill">
+        <div class="amount">5.5M – 6.9M ฿</div>
+        <div class="label">Private Pool Villas</div>
+    </div>
+</div>
+
+<!-- MAIN CARD -->
+<div class="container">
+
+    <!-- TAGLINE -->
+    <div class="tagline-box">
+        <div class="title">🌟 Why Maduwan ZENNITH?</div>
+        <div class="tagline-item">Central & peaceful — 5 min from Sri Thanu & Hin Kong beach</div>
+        <div class="tagline-item">Only 8 boutique plots — exclusive & limited</div>
+        <div class="tagline-item">Local developer = landowner + contractor = maximum flexibility</div>
+        <div class="tagline-item">Infrastructure ready — concrete road, 3-phase power, private well</div>
+        <div class="tagline-item">Full design flexibility — build the villa you've dreamed of</div>
+    </div>
+
+    <!-- PROJECT INFO -->
+    <div class="section">
+        <h2 class="section-title">📋 Project Details</h2>
+        <div class="info-grid">
+            <div class="info-item">
+                <div class="info-icon">🏝️</div>
+                <div class="info-label">Total Plots</div>
+                <div class="info-value">8 Villas</div>
+            </div>
+            <div class="info-item">
+                <div class="info-icon">📏</div>
+                <div class="info-label">Plot Size</div>
+                <div class="info-value">194–211 m²</div>
+            </div>
+            <div class="info-item">
+                <div class="info-icon">🏗️</div>
+                <div class="info-label">Construction Start</div>
+                <div class="info-value">January 2026</div>
+            </div>
+            <div class="info-item">
+                <div class="info-icon">🔑</div>
+                <div class="info-label">Expected Handover</div>
+                <div class="info-value">Q1–Q2 2027</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- VILLA OPTIONS -->
+    <div class="section">
+        <h2 class="section-title">🏡 Villa Options</h2>
+        <div class="villa-cards">
+
+            <!-- Villa 1 -->
+            <div class="villa-card">
+                <div class="villa-header">
+                    <div>
+                        <div class="villa-name">2BR Villa, 1.5 Floors</div>
+                        <div class="villa-subtitle">2 Master Bedrooms • 1.5 Floors • Private Pool</div>
+                    </div>
+                    <div class="villa-price-tag">5.5M ฿</div>
+                </div>
+                <div class="villa-specs">
+                    <div class="spec-item">
+                        <span class="spec-label">Built Area</span>
+                        <span class="spec-value">79 m²</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Terrace</span>
+                        <span class="spec-value">21 m²</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Pool</span>
+                        <span class="spec-value">31 m² 💦</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Total</span>
+                        <span class="spec-value">136 m²</span>
+                    </div>
+                </div>
+                <div style="margin-top:10px; font-size:12px; color:#4A7C59; font-weight:600;">
+                    ₪522,500
+                </div>
+            </div>
+
+            <!-- Villa 2 -->
+            <div class="villa-card">
+                <div class="villa-header">
+                    <div>
+                        <div class="villa-name">2BR Luxury Villa, Single Level</div>
+                        <div class="villa-subtitle">2 Large Master Bedrooms • Single Level • Private Pool</div>
+                    </div>
+                    <div class="villa-price-tag">6.7M ฿</div>
+                </div>
+                <div class="villa-specs">
+                    <div class="spec-item">
+                        <span class="spec-label">Built Area</span>
+                        <span class="spec-value">118 m²</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Terraces</span>
+                        <span class="spec-value">41 m²</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Pool</span>
+                        <span class="spec-value">14 m²</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Total</span>
+                        <span class="spec-value">171 m²</span>
+                    </div>
+                </div>
+                <div style="margin-top:10px; font-size:12px; color:#4A7C59; font-weight:600;">
+                    ₪636,500
+                </div>
+            </div>
+
+            <!-- Villa 3 -->
+            <div class="villa-card">
+                <div class="villa-header">
+                    <div>
+                        <div class="villa-name">4BR Villa, 2 Floors</div>
+                        <div class="villa-subtitle">4 Master Bedrooms • 2 Floors • Private Pool</div>
+                    </div>
+                    <div class="villa-price-tag">6.9M ฿</div>
+                </div>
+                <div class="villa-specs">
+                    <div class="spec-item">
+                        <span class="spec-label">Ground Floor</span>
+                        <span class="spec-value">54 m²</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Upper Floor</span>
+                        <span class="spec-value">52 m²</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Terrace</span>
+                        <span class="spec-value">18 m²</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Pool</span>
+                        <span class="spec-value">24 m²</span>
+                    </div>
+                </div>
+                <div style="margin-top:10px; font-size:12px; color:#4A7C59; font-weight:600;">
+                    ₪655,500
+                </div>
+            </div>
+
+            <!-- Custom -->
+            <div class="villa-card custom">
+                <div class="villa-header">
+                    <div>
+                        <div class="villa-name">💡 Custom Design — Your Vision</div>
+                        <div class="villa-subtitle">Build exactly what you envisioned</div>
+                    </div>
+                    <div class="villa-price-tag">By Design</div>
+                </div>
+                <div class="villa-specs">
+                    <div class="spec-item">
+                        <span class="spec-label">Bedrooms</span>
+                        <span class="spec-value">Your choice</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Floors</span>
+                        <span class="spec-value">1 / 1.5 / 2</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Pool + Terrace</span>
+                        <span class="spec-value">Flexible</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Architect</span>
+                        <span class="spec-value">Bring your own</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="note-box">
+            💡 All renders are for illustration purposes only. Full flexibility — price is determined by the actual built area.<br>
+            All villas include basic furniture & kitchen (฿200,000 value). Upgrades available at additional cost.
+        </div>
+    </div>
+
+    <!-- INVESTMENT SUMMARY -->
+    <div class="section">
+        <h2 class="section-title">📊 Investment Summary</h2>
+        <a href="https://liam-kp.github.io/kph-pages/maduwan-zennith/investment-summary-en.html" target="_blank" class="invest-btn">
+            📄 View Full Investment Summary →
+        </a>
+    </div>
+
+    <!-- TIMELINE & PAYMENT -->
+    <div class="section">
+        <h2 class="section-title">📅 Timeline & Payment</h2>
+        <div class="timeline">
+            <div class="timeline-row">
+                <div class="timeline-dot"></div>
+                <div class="timeline-date">December 2025</div>
+                <div class="timeline-text">Infrastructure installed (power + well)</div>
+            </div>
+            <div class="timeline-row">
+                <div class="timeline-dot"></div>
+                <div class="timeline-date">January 2026</div>
+                <div class="timeline-text">Construction begins</div>
+            </div>
+            <div class="timeline-row">
+                <div class="timeline-dot"></div>
+                <div class="timeline-date">12 + 3 months</div>
+                <div class="timeline-text">Build duration + grace period</div>
+            </div>
+            <div class="timeline-row">
+                <div class="timeline-dot"></div>
+                <div class="timeline-date">Q1–Q2 2027</div>
+                <div class="timeline-text">Expected handover</div>
+            </div>
+        </div>
+        <div class="payment-steps">
+            <div class="pay-step"><span class="pct">20%</span>Signing</div>
+            <div class="pay-step"><span class="pct">20%</span>Frame</div>
+            <div class="pay-step"><span class="pct">20%</span>Roof</div>
+            <div class="pay-step"><span class="pct">20%</span>Finish</div>
+            <div class="pay-step"><span class="pct">20%</span>Keys</div>
+        </div>
+    </div>
+
+    <!-- LOCATION -->
+    <div class="section">
+        <h2 class="section-title">📍 Location</h2>
+        <div class="location-items">
+            <div class="location-row">🏖️ Hin Kong Beach <span class="loc-time">5 min</span></div>
+            <div class="location-row">🌴 Sri Thanu <span class="loc-time">5 min</span></div>
+            <div class="location-row">🏫 Arki Kid School <span class="loc-time">5 min</span></div>
+            <div class="location-row">🏢 Thong Sala (town center) <span class="loc-time">7 min</span></div>
+            <div class="location-row">🛒 7/11 + Tops Daily <span class="loc-time">Walk</span></div>
+            <div class="location-row">🏋️ Podium Gym <span class="loc-time">6 min</span></div>
+        </div>
+        <a href="https://maps.app.goo.gl/WwD6Lj9G7uoEyUGD7" target="_blank" class="map-btn">
+            📍 Open in Google Maps
+        </a>
+    </div>
+
+    <!-- RENTAL YIELD -->
+    <div class="section">
+        <h2 class="section-title">💰 Expected Rental Yield (2BR)</h2>
+        <div class="yield-grid">
+            <div class="yield-card">
+                <div class="yield-type">Long-Term Rental</div>
+                <div class="yield-amount">45K–60K ฿</div>
+                <div class="yield-unit">per month</div>
+            </div>
+            <div class="yield-card">
+                <div class="yield-type">Short-Term Rental</div>
+                <div class="yield-amount">2,500–4,000 ฿</div>
+                <div class="yield-unit">per night</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- OWNERSHIP -->
+    <div class="section">
+        <h2 class="section-title">📜 Ownership Options</h2>
+        <div class="ownership-grid">
+            <div class="own-card">
+                <div class="own-title">Leasehold</div>
+                <div class="own-detail">30+30+30 years<br>Personal registration<br>Land Office</div>
+            </div>
+            <div class="own-card">
+                <div class="own-title">Company</div>
+                <div class="own-detail">Freehold<br>Thai company structure<br>10% local partner</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-section">
+        <h3>Interested in more details?</h3>
+        <p>Message us on WhatsApp — we'll get back to you with everything you need</p>
+        <a href="https://wa.me/66967907754?text=Hi%20👋%20I'm%20interested%20in%20Maduwan%20ZENNITH%20Villas" class="whatsapp-btn">
+            💬 Message on WhatsApp
+        </a>
+    </div>
+
+</div>
+</body>
+</html>
