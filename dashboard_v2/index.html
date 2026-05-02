@@ -2303,8 +2303,7 @@ const IS_LOCAL = ['localhost', '127.0.0.1'].includes(window.location.hostname);
 const IS_GH_PAGES = /github\.io$/i.test(window.location.hostname);
 const API_BASE = IS_LOCAL ? `${window.location.protocol}//${window.location.hostname}:8081` : NETLIFY_PROXY;
 const LOCAL_API = IS_LOCAL ? API_BASE : null; // local-only endpoints (pipeline, deals)
-const PIPELINE_URL = IS_LOCAL ? `${API_BASE}/pipeline`
-  : IS_GH_PAGES ? './pipeline_data.json'
+const PIPELINE_URL = (IS_LOCAL || IS_GH_PAGES) ? './pipeline_data.json'
   : `${NETLIFY_PROXY}/pipeline_data.json`;
 const CUSTOMER_ID = '11a3a8c9-d3db-4b32-8c08-35dd7868b959';
 
@@ -2315,8 +2314,8 @@ const GITHUB_FILE_PATH = 'dashboard_v2/pipeline_data.json';
 const GITHUB_BRANCH = 'gh-pages';
 const GITHUB_TOKEN_KEY = 'kph_github_token';
 
-function getGitHubToken() { return localStorage.getItem(GITHUB_TOKEN_KEY) || ''; }
-function setGitHubToken(t) { localStorage.setItem(GITHUB_TOKEN_KEY, t); }
+function getGitHubToken() { return (localStorage.getItem(GITHUB_TOKEN_KEY) || '').trim(); }
+function setGitHubToken(t) { localStorage.setItem(GITHUB_TOKEN_KEY, (t || '').trim()); }
 function clearGitHubToken() { localStorage.removeItem(GITHUB_TOKEN_KEY); }
 
 function showGitHubTokenModal() {
@@ -2337,13 +2336,14 @@ function saveGitHubTokenFromModal() {
 async function githubGetPipelineFile() {
   const token = getGitHubToken();
   if (!token) throw Object.assign(new Error('No GitHub token'), { needsToken: true });
-  const url = `${GITHUB_API}/repos/${GITHUB_REPO}/contents/${GITHUB_FILE_PATH}?ref=${GITHUB_BRANCH}`;
+  const url = `${GITHUB_API}/repos/${GITHUB_REPO}/contents/${GITHUB_FILE_PATH}?ref=${GITHUB_BRANCH}&t=${Date.now()}`;
   const res = await fetch(url, {
     headers: {
       'Authorization': `Bearer ${token}`,
       'Accept': 'application/vnd.github+json',
       'X-GitHub-Api-Version': '2022-11-28',
     },
+    cache: 'no-store',
   });
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
