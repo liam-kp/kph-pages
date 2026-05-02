@@ -2479,7 +2479,7 @@
     }
   ],
   "meetings": [],
-  "lastUpdated": "2026-05-02T10:48:42.458Z",
+  "lastUpdated": "2026-05-02T10:49:39.446Z",
   "deals": [
     {
       "id": 1,
@@ -2871,7 +2871,7 @@
       "arrival": "2025-01-16",
       "cycle": 376,
       "payStatus": "לא שולם",
-      "notes": "חצי שולם - חצי צפוי בשבוע הראשון של מאי. ",
+      "notes": "חצי שולם - חצי השבוע. ",
       "developer_name": "מוטי",
       "deal_price": 8500000,
       "gross_commission": 340000,
@@ -2886,8 +2886,8 @@
       "upcoming": true,
       "next_payment_date": "2026-05-05",
       "next_payment_amount": 0,
-      "updated_at": "2026-05-02T06:44:33.683Z",
-      "updatedAt": "2026-05-02T06:44:33.683Z"
+      "updated_at": "2026-05-02T10:49:39.446Z",
+      "updatedAt": "2026-05-02T10:49:39.446Z"
     },
     {
       "id": 12,
