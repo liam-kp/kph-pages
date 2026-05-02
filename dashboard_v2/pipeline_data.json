@@ -2479,7 +2479,7 @@
     }
   ],
   "meetings": [],
-  "lastUpdated": "2026-05-02T06:38:49.101Z",
+  "lastUpdated": "2026-05-02T06:44:33.683Z",
   "deals": [
     {
       "id": 1,
@@ -2862,7 +2862,7 @@
       "partnerAmt": 0,
       "devProfit": 0,
       "net": 340000,
-      "paidAmount": 0,
+      "paidAmount": 170000,
       "closeDate": "Feb 2026",
       "closeSort": "2026-02",
       "status": "Closed Won",
@@ -2871,7 +2871,7 @@
       "arrival": "2025-01-16",
       "cycle": 376,
       "payStatus": "לא שולם",
-      "notes": "חתם. תשלום צפוי 15/3/26",
+      "notes": "חצי שולם - חצי צפוי בשבוע הראשון של מאי. ",
       "developer_name": "מוטי",
       "deal_price": 8500000,
       "gross_commission": 340000,
@@ -2880,8 +2880,14 @@
       "partner_pct": 0,
       "partner_role": "",
       "net_to_liran": 340000,
-      "paid": 0,
-      "remaining": 340000
+      "paid": 170000,
+      "remaining": 170000,
+      "lastPayDate": "2026-04-15",
+      "upcoming": true,
+      "next_payment_date": "2026-05-05",
+      "next_payment_amount": 0,
+      "updated_at": "2026-05-02T06:44:33.683Z",
+      "updatedAt": "2026-05-02T06:44:33.683Z"
     },
     {
       "id": 12,
