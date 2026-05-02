@@ -2479,7 +2479,7 @@
     }
   ],
   "meetings": [],
-  "lastUpdated": "2026-05-02T06:44:33.683Z",
+  "lastUpdated": "2026-05-02T10:48:42.458Z",
   "deals": [
     {
       "id": 1,
@@ -2793,8 +2793,8 @@
       "arrival": "2025-09-15",
       "cycle": 75,
       "payStatus": "שולם חלקי",
-      "notes": "הכל שולם",
-      "updatedAt": "2026-05-02T06:38:49.101Z",
+      "notes": "שולם 600K. נותר 500K ב-31/3/26",
+      "updatedAt": "2026-05-02T10:48:42.458Z",
       "developer_name": "רן",
       "deal_price": 12500000,
       "gross_commission": 1200000,
@@ -2809,7 +2809,7 @@
       "upcoming": false,
       "next_payment_date": "",
       "next_payment_amount": 0,
-      "updated_at": "2026-05-02T06:38:49.101Z"
+      "updated_at": "2026-05-02T10:48:42.458Z"
     },
     {
       "id": 10,
