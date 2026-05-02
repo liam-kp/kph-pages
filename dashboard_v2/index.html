@@ -1720,6 +1720,22 @@ tr.pipeline-row-pinned td:first-child { box-shadow: inset 4px 0 0 #FBBF24; }
   </div>
 </div>
 
+<!-- ==================== GITHUB TOKEN MODAL ==================== -->
+<div id="github-token-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[110] flex items-center justify-center p-4 hidden">
+  <div class="bg-surface-container max-w-md w-full p-6 space-y-4" dir="rtl">
+    <h3 class="text-lg font-bold">GitHub Token</h3>
+    <p class="text-xs text-on-surface-variant leading-relaxed">
+      כדי לשמור עדכוני Closings נדרש GitHub PAT (fine-grained, מוגבל ל-<code>kph-pages</code>, הרשאת Contents: Read and write).
+      <br><a href="https://github.com/settings/personal-access-tokens/new" target="_blank" class="text-secondary underline">צור PAT חדש</a>
+    </p>
+    <input id="github-token-input" type="password" placeholder="github_pat_..." class="w-full bg-surface-container-low border-none text-sm py-3 px-3 font-mono"/>
+    <div class="flex gap-3 pt-2 flex-row-reverse">
+      <button onclick="saveGitHubTokenFromModal()" class="bg-secondary text-on-secondary px-6 py-2 text-sm font-bold">שמור</button>
+      <button onclick="hideGitHubTokenModal()" class="px-6 py-2 text-sm border-[0.5px] border-outline-variant text-on-surface-variant">ביטול</button>
+    </div>
+  </div>
+</div>
+
 <!-- ========== PRIORITY PICKER MODAL ========== -->
 <div id="priority-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[110] flex items-center justify-center p-4 hidden">
   <div class="bg-surface-container w-full max-w-xs ghost-border shadow-2xl p-6 space-y-4">
@@ -2291,6 +2307,85 @@ const PIPELINE_URL = IS_LOCAL ? `${API_BASE}/pipeline`
   : IS_GH_PAGES ? './pipeline_data.json'
   : `${NETLIFY_PROXY}/pipeline_data.json`;
 const CUSTOMER_ID = '11a3a8c9-d3db-4b32-8c08-35dd7868b959';
+
+// ============ GITHUB PERSISTENCE (Closings → pipeline_data.json) ============
+const GITHUB_API = 'https://api.github.com';
+const GITHUB_REPO = 'liam-kp/kph-pages';
+const GITHUB_FILE_PATH = 'dashboard_v2/pipeline_data.json';
+const GITHUB_BRANCH = 'gh-pages';
+const GITHUB_TOKEN_KEY = 'kph_github_token';
+
+function getGitHubToken() { return localStorage.getItem(GITHUB_TOKEN_KEY) || ''; }
+function setGitHubToken(t) { localStorage.setItem(GITHUB_TOKEN_KEY, t); }
+function clearGitHubToken() { localStorage.removeItem(GITHUB_TOKEN_KEY); }
+
+function showGitHubTokenModal() {
+  document.getElementById('github-token-modal').classList.remove('hidden');
+  document.getElementById('github-token-input').value = getGitHubToken();
+}
+function hideGitHubTokenModal() {
+  document.getElementById('github-token-modal').classList.add('hidden');
+}
+function saveGitHubTokenFromModal() {
+  const t = document.getElementById('github-token-input').value.trim();
+  if (!t) return;
+  setGitHubToken(t);
+  hideGitHubTokenModal();
+  showToast('GitHub token נשמר', false);
+}
+
+async function githubGetPipelineFile() {
+  const token = getGitHubToken();
+  if (!token) throw Object.assign(new Error('No GitHub token'), { needsToken: true });
+  const url = `${GITHUB_API}/repos/${GITHUB_REPO}/contents/${GITHUB_FILE_PATH}?ref=${GITHUB_BRANCH}`;
+  const res = await fetch(url, {
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Accept': 'application/vnd.github+json',
+      'X-GitHub-Api-Version': '2022-11-28',
+    },
+  });
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw Object.assign(new Error(body.message || `GitHub GET ${res.status}`), { status: res.status });
+  }
+  const meta = await res.json();
+  const decoded = atob(meta.content.replace(/\n/g, ''));
+  const bytes = Uint8Array.from(decoded, c => c.charCodeAt(0));
+  const text = new TextDecoder('utf-8').decode(bytes);
+  return { sha: meta.sha, data: JSON.parse(text) };
+}
+
+async function githubPutPipelineFile(sha, data, commitMessage) {
+  const token = getGitHubToken();
+  if (!token) throw Object.assign(new Error('No GitHub token'), { needsToken: true });
+  const url = `${GITHUB_API}/repos/${GITHUB_REPO}/contents/${GITHUB_FILE_PATH}`;
+  const text = JSON.stringify(data, null, 2);
+  const bytes = new TextEncoder().encode(text);
+  let binary = '';
+  for (const b of bytes) binary += String.fromCharCode(b);
+  const contentB64 = btoa(binary);
+  const res = await fetch(url, {
+    method: 'PUT',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Accept': 'application/vnd.github+json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      message: commitMessage,
+      content: contentB64,
+      sha: sha,
+      branch: GITHUB_BRANCH,
+    }),
+  });
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw Object.assign(new Error(body.message || `GitHub PUT ${res.status}`), { status: res.status });
+  }
+  const result = await res.json();
+  return result.content.sha;
+}
 
 // ============ TOKEN ============
 function getToken() {
@@ -3996,7 +4091,8 @@ const PAYMENTS = [
 ];
 
 async function loadClosings() {
-  const res = await fetch(PIPELINE_URL);
+  const sep = PIPELINE_URL.includes('?') ? '&' : '?';
+  const res = await fetch(`${PIPELINE_URL}${sep}t=${Date.now()}`);
   pipelineData = await res.json();
   renderClosings();
 }
@@ -4667,6 +4763,7 @@ async function submitDealEdit(e) {
   const netToLiran = Math.max(0, gross - partnerAmt);
   const paidAmount = parseFloat(document.getElementById('edit-paid-amount').value) || 0;
   const remaining = Math.max(0, netToLiran - paidAmount);
+  const nowIso = new Date().toISOString();
 
   const updates = {
     status: document.getElementById('edit-deal-status').value,
@@ -4696,46 +4793,91 @@ async function submitDealEdit(e) {
     upcoming: document.getElementById('edit-upcoming').checked,
     next_payment_date: document.getElementById('edit-next-pay-date').value,
     next_payment_amount: parseFloat(document.getElementById('edit-next-pay-amount').value) || 0,
-    updated_at: new Date().toISOString(),
+    updated_at: nowIso,
+    updatedAt: nowIso,
   };
 
-  // Update local state immediately
-  const deal = (pipelineData?.deals || []).find(d => d.id === dealId);
-  if (deal) Object.assign(deal, updates);
+  const upcomingChecked = document.getElementById('edit-upcoming').checked;
+  const nextDate = document.getElementById('edit-next-pay-date').value;
+  const nextAmt = parseFloat(document.getElementById('edit-next-pay-amount').value) || 0;
+  const newUpcomingPayment = (upcomingChecked && nextDate && nextAmt > 0)
+    ? { date: nextDate, amount: nextAmt, paid: false, addedAt: nowIso }
+    : null;
 
-  // Persist via server, then GET readback to verify
-  let serverOk = false;
-  if (LOCAL_API) {
-    try {
-      const res = await fetch(`${LOCAL_API}/pipeline/update`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ deal_id: dealId, ...updates })
-      });
-      const result = await res.json();
-      if (!result.success) {
-        showToast('שמירה נכשלה: ' + (result.error || 'שגיאת שרת'), true);
-      } else {
-        serverOk = true;
-        // Readback: verify canonical fields persisted correctly
-        const verify = result.deal || {};
-        const mismatches = [];
-        if ((verify.gross_commission ?? verify.gross ?? 0) !== gross) mismatches.push('gross_commission');
-        if ((verify.partner_amount ?? verify.partnerAmt ?? 0) !== partnerAmt) mismatches.push('partner_amount');
-        if ((verify.net_to_liran ?? verify.net ?? 0) !== netToLiran) mismatches.push('net_to_liran');
-        if ((verify.partner || '') !== partner) mismatches.push('partner');
-        if (mismatches.length) {
-          showToast('אי התאמה אחרי שמירה: ' + mismatches.join(', '), true);
-        }
-      }
-    } catch(err) {
-      showToast('השרת לא זמין — נשמר מקומית בלבד', true);
-    }
+  if (!getGitHubToken()) {
+    showGitHubTokenModal();
+    return;
   }
 
-  hideEditDealModal();
-  renderClosings();
-  if (serverOk) showToast('העסקה עודכנה ✓');
+  const submitBtn = e.target.querySelector('button[type="submit"]');
+  const originalBtnText = submitBtn ? submitBtn.textContent : '';
+  if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'שומר...'; }
+
+  async function persistOnce() {
+    const { sha, data } = await githubGetPipelineFile();
+    const idx = (data.deals || []).findIndex(d => d.id === dealId);
+    if (idx === -1) throw new Error(`Deal id=${dealId} לא נמצא בקובץ`);
+    const fresh = data.deals[idx];
+    Object.assign(fresh, updates);
+    if (newUpcomingPayment) {
+      if (!Array.isArray(fresh.upcoming_payments)) fresh.upcoming_payments = [];
+      fresh.upcoming_payments.push(newUpcomingPayment);
+      const firstUnpaid = fresh.upcoming_payments.find(p => !p.paid);
+      fresh.next_payment_date = firstUnpaid ? firstUnpaid.date : '';
+      fresh.next_payment_amount = firstUnpaid ? firstUnpaid.amount : 0;
+    }
+    data.deals[idx] = fresh;
+    data.lastUpdated = nowIso;
+    const msg = `KPR-114: Closings: ${fresh.client} (paid=${fresh.paidAmount}${newUpcomingPayment ? ', +upcoming' : ''})`;
+    await githubPutPipelineFile(sha, data, msg);
+  }
+
+  try {
+    try {
+      await persistOnce();
+    } catch (err) {
+      if (err.status === 409) {
+        await persistOnce();
+      } else {
+        throw err;
+      }
+    }
+
+    // Verify: re-fetch and confirm paidAmount + upcoming_payments landed
+    const { data: verifyData } = await githubGetPipelineFile();
+    const verifyDeal = (verifyData.deals || []).find(d => d.id === dealId);
+    if (!verifyDeal) throw new Error('אימות אחרי שמירה נכשל — deal לא נמצא');
+    if (verifyDeal.paidAmount !== updates.paidAmount) {
+      throw new Error('אימות אחרי שמירה נכשל — paidAmount לא תואם');
+    }
+    if (newUpcomingPayment) {
+      const found = (verifyDeal.upcoming_payments || []).some(p =>
+        p.date === newUpcomingPayment.date && p.amount === newUpcomingPayment.amount
+      );
+      if (!found) throw new Error('אימות אחרי שמירה נכשל — upcoming_payment לא נמצא');
+    }
+
+    const localDeal = (pipelineData?.deals || []).find(d => d.id === dealId);
+    if (localDeal) Object.assign(localDeal, verifyDeal);
+    hideEditDealModal();
+    renderClosings();
+    showToast('✓ נשמר ל-GitHub', false);
+  } catch (err) {
+    console.error('[submitDealEdit] failed:', err);
+    if (err.needsToken || err.status === 401) {
+      clearGitHubToken();
+      showGitHubTokenModal();
+      showToast('❌ Token לא תקף — הזן מחדש', true);
+    } else if (err.status === 403) {
+      showToast('❌ אין הרשאת כתיבה (403)', true);
+    } else if (err.status === 422) {
+      showToast('❌ שגיאת תוכן (422): ' + err.message, true);
+    } else {
+      showToast('❌ שמירה נכשלה: ' + err.message, true);
+    }
+  } finally {
+    if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = originalBtnText || 'Save'; }
+  }
 }
 
 // ============ CANCEL / RETURN TO PIPELINE ============
