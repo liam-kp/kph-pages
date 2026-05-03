@@ -2479,7 +2479,7 @@
     }
   ],
   "meetings": [],
-  "lastUpdated": "2026-05-02T10:49:39.446Z",
+  "lastUpdated": "2026-05-03T00:07:08.000Z",
   "deals": [
     {
       "id": 1,
@@ -2784,7 +2784,7 @@
       "partnerAmt": 99960,
       "devProfit": 0,
       "net": 1100040,
-      "paidAmount": 1100040,
+      "paidAmount": 1100000,
       "closeDate": "Nov 2025",
       "closeSort": "2025-11",
       "status": "Closed Won",
@@ -2794,7 +2794,7 @@
       "cycle": 75,
       "payStatus": "שולם חלקי",
       "notes": "שולם 600K. נותר 500K ב-31/3/26",
-      "updatedAt": "2026-05-02T10:48:42.458Z",
+      "updatedAt": "2026-05-03T00:07:08.000Z",
       "developer_name": "רן",
       "deal_price": 12500000,
       "gross_commission": 1200000,
@@ -2803,13 +2803,13 @@
       "partner_pct": 8.33,
       "partner_role": "",
       "net_to_liran": 1100040,
-      "paid": 1100040,
+      "paid": 1100000,
       "remaining": 0,
       "lastPayDate": "2026-04-15",
       "upcoming": false,
       "next_payment_date": "",
       "next_payment_amount": 0,
-      "updated_at": "2026-05-02T10:48:42.458Z"
+      "updated_at": "2026-05-03T00:07:08.000Z"
     },
     {
       "id": 10,
@@ -2885,9 +2885,17 @@
       "lastPayDate": "2026-04-15",
       "upcoming": true,
       "next_payment_date": "2026-05-05",
-      "next_payment_amount": 0,
-      "updated_at": "2026-05-02T10:49:39.446Z",
-      "updatedAt": "2026-05-02T10:49:39.446Z"
+      "next_payment_amount": 170000,
+      "updated_at": "2026-05-03T00:07:08.000Z",
+      "updatedAt": "2026-05-03T00:07:08.000Z",
+      "upcoming_payments": [
+        {
+          "date": "2026-05-05",
+          "amount": 170000,
+          "paid": false,
+          "addedAt": "2026-05-03T00:07:08.000Z"
+        }
+      ]
     },
     {
       "id": 12,
