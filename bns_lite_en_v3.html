@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BNS — Ban Nai Suan | Investment Summary</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    font-family: 'Inter', sans-serif;
+    background: #faf8f5;
+    color: #1a1a1a;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .container {
+    max-width: 480px;
+    margin: 0 auto;
+    background: #ffffff;
+    min-height: 100vh;
+    box-shadow: 0 0 40px rgba(0,0,0,0.05);
+  }
+
+  .hero {
+    position: relative;
+    background: linear-gradient(135deg, #0F766E 0%, #115E59 100%);
+    color: white;
+    padding: 32px 24px 28px;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -40px;
+    left: -40px;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .scarcity-badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.2);
+    backdrop-filter: blur(10px);
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 6px 12px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+    letter-spacing: 0.5px;
+  }
+  .hero h1 {
+    font-size: 32px;
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 8px;
+    position: relative;
+    z-index: 1;
+  }
+  .hero .subtitle {
+    font-size: 16px;
+    font-weight: 400;
+    opacity: 0.9;
+    position: relative;
+    z-index: 1;
+  }
+
+  section {
+    padding: 28px 24px;
+    border-bottom: 1px solid #f0ede7;
+  }
+  section:last-child { border-bottom: none; }
+
+  h2 {
+    font-size: 13px;
+    font-weight: 700;
+    color: #0F766E;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    margin-bottom: 16px;
+  }
+
+  .highlights {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  .highlight {
+    background: #faf8f5;
+    border-radius: 12px;
+    padding: 16px 14px;
+    text-align: center;
+  }
+  .highlight .number {
+    font-size: 26px;
+    font-weight: 800;
+    color: #0F766E;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .highlight .label {
+    font-size: 12px;
+    color: #666;
+    font-weight: 500;
+  }
+
+  .options { display: flex; flex-direction: column; gap: 16px; }
+  .option-card {
+    background: white;
+    border: 2px solid #e8e4dd;
+    border-radius: 16px;
+    padding: 20px;
+    transition: all 0.3s;
+  }
+  .option-card.featured {
+    border-color: #0F766E;
+    background: linear-gradient(180deg, #f0fdfa 0%, #ffffff 100%);
+  }
+  .option-tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+  }
+  .option-card .option-tag {
+    background: #fef3c7;
+    color: #92400e;
+  }
+  .option-card.featured .option-tag {
+    background: #0F766E;
+    color: white;
+  }
+  .option-card.bundle .option-tag {
+    background: #1e293b;
+    color: white;
+  }
+  .option-name {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .option-meta {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 14px;
+  }
+  .option-price-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding-top: 12px;
+    border-top: 1px solid #eee;
+  }
+  .price-thb {
+    font-size: 22px;
+    font-weight: 800;
+    color: #0F766E;
+  }
+  .price-alt {
+    font-size: 13px;
+    color: #888;
+    font-weight: 500;
+    text-align: right;
+  }
+  .bundle-savings {
+    background: #fff7ed;
+    color: #c2410c;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 12px;
+    border-radius: 8px;
+    margin-top: 10px;
+    text-align: center;
+  }
+
+  .studio-layout {
+    background: #f8f6f1;
+    border-radius: 12px;
+    padding: 18px;
+    margin-top: 14px;
+  }
+  .studio-layout h4 {
+    font-size: 14px;
+    font-weight: 700;
+    color: #0F766E;
+    margin-bottom: 12px;
+  }
+  .layout-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px 12px;
+  }
+  .layout-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    padding: 6px 0;
+    border-bottom: 1px solid #eae6df;
+  }
+  .layout-item:last-child,
+  .layout-item:nth-last-child(2) {
+    border-bottom: none;
+  }
+  .layout-label { color: #666; }
+  .layout-value { font-weight: 600; color: #1a1a1a; }
+  .layout-total {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 2px solid #0F766E;
+    display: flex;
+    justify-content: space-between;
+    font-weight: 700;
+    color: #0F766E;
+    font-size: 14px;
+  }
+
+  /* WHO IT FITS — buyer profiles */
+  .profiles-grid {
+    display: grid;
+    gap: 10px;
+  }
+  .profile {
+    display: flex;
+    gap: 12px;
+    padding: 14px;
+    background: #faf8f5;
+    border-radius: 10px;
+    align-items: flex-start;
+  }
+  .profile-icon {
+    font-size: 24px;
+    flex-shrink: 0;
+    line-height: 1;
+  }
+  .profile-text { flex: 1; }
+  .profile-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 2px;
+  }
+  .profile-desc {
+    font-size: 13px;
+    color: #666;
+    line-height: 1.4;
+  }
+
+  /* MANAGEMENT BANNER */
+  .management-banner {
+    background: linear-gradient(135deg, #ecfeff 0%, #f0fdfa 100%);
+    border: 1px solid #67e8f9;
+    border-radius: 14px;
+    padding: 18px;
+    margin-top: 16px;
+  }
+  .management-banner .mgmt-badge {
+    display: inline-block;
+    background: #0891b2;
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+  }
+  .management-banner h4 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #155e75;
+    margin-bottom: 8px;
+  }
+  .management-banner p {
+    font-size: 14px;
+    color: #164e63;
+    line-height: 1.6;
+  }
+  .management-banner strong { color: #0891b2; }
+
+  .amenities {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .amenity {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    background: #faf8f5;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .amenity-icon { font-size: 20px; }
+
+  .info-grid { display: grid; gap: 14px; }
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 12px 0;
+    border-bottom: 1px solid #f0ede7;
+  }
+  .info-row:last-child { border-bottom: none; }
+  .info-label {
+    color: #666;
+    font-size: 14px;
+    font-weight: 500;
+    flex-shrink: 0;
+    margin-right: 16px;
+  }
+  .info-value {
+    font-weight: 600;
+    text-align: right;
+    font-size: 14px;
+  }
+
+  .yield-disclaimer {
+    background: #fef9c3;
+    border-left: 4px solid #ca8a04;
+    padding: 12px 14px;
+    font-size: 13px;
+    color: #713f12;
+    border-radius: 6px;
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+  .yield-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #f0ede7;
+    font-size: 14px;
+  }
+  .yield-row:last-child { border-bottom: none; }
+  .yield-row.total {
+    background: #f0fdfa;
+    margin: 8px -14px -8px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    border: none;
+    font-weight: 700;
+  }
+  .yield-row .y-label { color: #555; }
+  .yield-row .y-value { font-weight: 700; color: #0F766E; }
+
+  .developer-card {
+    background: linear-gradient(135deg, #f0fdfa 0%, #ffffff 100%);
+    border: 1px solid #ccfbf1;
+    border-radius: 12px;
+    padding: 18px;
+  }
+  .developer-card .dev-name {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .developer-card .dev-desc {
+    font-size: 14px;
+    color: #555;
+    line-height: 1.6;
+  }
+
+  .cta-section {
+    background: linear-gradient(135deg, #0F766E 0%, #115E59 100%);
+    color: white;
+    padding: 32px 24px;
+    text-align: center;
+  }
+  .cta-section h2 {
+    color: rgba(255,255,255,0.8);
+    margin-bottom: 8px;
+  }
+  .cta-section .cta-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 20px;
+  }
+  .cta-button {
+    display: block;
+    background: white;
+    color: #0F766E;
+    text-decoration: none;
+    padding: 16px 24px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 16px;
+    margin-bottom: 10px;
+    transition: transform 0.2s;
+  }
+  .cta-button:hover { transform: translateY(-2px); }
+  .cta-button.secondary {
+    background: transparent;
+    color: white;
+    border: 2px solid rgba(255,255,255,0.4);
+  }
+  .signature {
+    margin-top: 20px;
+    font-size: 13px;
+    opacity: 0.7;
+  }
+
+  .map-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #faf8f5;
+    border-radius: 12px;
+    padding: 16px;
+    text-decoration: none;
+    color: #1a1a1a;
+    border: 1px solid #f0ede7;
+  }
+  .map-card .map-text { font-size: 14px; }
+  .map-card .map-text strong { display: block; font-size: 16px; margin-bottom: 2px; }
+  .map-card .map-arrow { color: #0F766E; font-size: 20px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="scarcity-badge">🔥 95% SOLD · LAST UNITS</div>
+    <h1>BNS — Ban Nai Suan</h1>
+    <div class="subtitle">A boutique compound of 40 villas in the heart of Koh Phangan</div>
+  </div>
+
+  <!-- HIGHLIGHTS -->
+  <section>
+    <div class="highlights">
+      <div class="highlight">
+        <div class="number">40</div>
+        <div class="label">Villas in compound</div>
+      </div>
+      <div class="highlight">
+        <div class="number">95%</div>
+        <div class="label">Already sold</div>
+      </div>
+      <div class="highlight">
+        <div class="number">7</div>
+        <div class="label">Last units</div>
+      </div>
+      <div class="highlight">
+        <div class="number">~6</div>
+        <div class="label">Months to handover</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- OPTIONS -->
+  <section>
+    <h2>The two options</h2>
+    <div class="options">
+
+      <!-- STUDIO+ -->
+      <div class="option-card featured">
+        <div class="option-tag">⭐ AFFORDABLE ENTRY POINT</div>
+        <div class="option-name">Studio+ · Investment Unit</div>
+        <div class="option-meta">45.5 sqm (35 interior + 10.5 terrace) · Shared compound pool · Just 4 units in 2-story building</div>
+        <div class="option-price-row">
+          <span class="price-thb">฿2,950,000</span>
+          <span class="price-alt">~$87K · €78K</span>
+        </div>
+
+        <div class="studio-layout">
+          <h4>📐 Interior layout per unit</h4>
+          <div class="layout-grid">
+            <div class="layout-item">
+              <span class="layout-label">Bedroom</span>
+              <span class="layout-value">15 sqm</span>
+            </div>
+            <div class="layout-item">
+              <span class="layout-label">Living room</span>
+              <span class="layout-value">11 sqm</span>
+            </div>
+            <div class="layout-item">
+              <span class="layout-label">Kitchen + dining</span>
+              <span class="layout-value">4 sqm</span>
+            </div>
+            <div class="layout-item">
+              <span class="layout-label">Bathroom</span>
+              <span class="layout-value">2.4 sqm</span>
+            </div>
+            <div class="layout-item">
+              <span class="layout-label">Covered terrace</span>
+              <span class="layout-value">10.5 sqm</span>
+            </div>
+            <div class="layout-item">
+              <span class="layout-label">Private parking</span>
+              <span class="layout-value">✓</span>
+            </div>
+          </div>
+          <div class="layout-total">
+            <span>Total</span>
+            <span>45.5 sqm</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- DUPLEX -->
+      <div class="option-card">
+        <div class="option-tag">PRIVATE HOUSE</div>
+        <div class="option-name">Duplex — Private 2-Story</div>
+        <div class="option-meta">84 sqm (42+42) · Private pool · Garden · 2 floors</div>
+        <div class="option-price-row">
+          <span class="price-thb">฿6,700,000</span>
+          <span class="price-alt">~$199K · €175K</span>
+        </div>
+      </div>
+
+      <!-- BUNDLE -->
+      <div class="option-card bundle">
+        <div class="option-tag">📦 INVESTMENT BUNDLE</div>
+        <div class="option-name">Bundle — 3 Duplexes</div>
+        <div class="option-meta">3 separate units · Portfolio acquisition · Optimal for investors</div>
+        <div class="option-price-row">
+          <span class="price-thb">฿18,000,000</span>
+          <span class="price-alt">~$533K · €470K</span>
+        </div>
+        <div class="bundle-savings">💰 Save ฿2.1M vs buying separately</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- WHO IT FITS — Studio+ buyer profiles -->
+  <section>
+    <h2>Who is the Studio+ for?</h2>
+    <div class="profiles-grid">
+      <div class="profile">
+        <div class="profile-icon">🌴</div>
+        <div class="profile-text">
+          <div class="profile-title">Digital nomads</div>
+          <div class="profile-desc">Long-term monthly rentals — from 15 days to 3 months</div>
+        </div>
+      </div>
+      <div class="profile">
+        <div class="profile-icon">🏖️</div>
+        <div class="profile-text">
+          <div class="profile-title">Singles</div>
+          <div class="profile-desc">Personal residence / vacation home in KP · Suitable for single or couple</div>
+        </div>
+      </div>
+      <div class="profile">
+        <div class="profile-icon">👨‍👩‍👧</div>
+        <div class="profile-text">
+          <div class="profile-title">Young families</div>
+          <div class="profile-desc">Affordable entry point into the Koh Phangan lifestyle</div>
+        </div>
+      </div>
+      <div class="profile">
+        <div class="profile-icon">🏠</div>
+        <div class="profile-text">
+          <div class="profile-title">Existing compound owners</div>
+          <div class="profile-desc">Additional unit for guest hosting / side rentals</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AMENITIES + MANAGEMENT -->
+  <section>
+    <h2>Compound amenities</h2>
+    <div class="amenities">
+      <div class="amenity"><span class="amenity-icon">🏊</span><span>Shared pool</span></div>
+      <div class="amenity"><span class="amenity-icon">☕</span><span>Café</span></div>
+      <div class="amenity"><span class="amenity-icon">🏛️</span><span>Clubhouse</span></div>
+      <div class="amenity"><span class="amenity-icon">🏋️</span><span>Gym</span></div>
+    </div>
+    <p style="font-size:12px; color:#888; margin-top:12px;">Public buildings under active construction — several villas in the compound are already occupied.</p>
+
+    <!-- MANAGEMENT BANNER -->
+    <div class="management-banner">
+      <div class="mgmt-badge">🏢 ON-SITE MANAGEMENT</div>
+      <h4>Developer's management company — a right, not an obligation</h4>
+      <p>The compound is operated by an on-site management company run by the developer. Owners can <strong>engage their services</strong> — for rentals, cleaning, maintenance, or oversight. Or self-manage independently. Or work with another company. <strong>It's your right, not a requirement.</strong></p>
+    </div>
+  </section>
+
+  <!-- LOCATION -->
+  <section>
+    <h2>Location</h2>
+    <a href="https://maps.app.goo.gl/KCvY5LeRC7u6pxeLA" target="_blank" class="map-card">
+      <div class="map-text">
+        <strong>📍 Ban Nai Suan</strong>
+        <span>Heart of Koh Phangan · Direct main road access</span>
+      </div>
+      <span class="map-arrow">→</span>
+    </a>
+  </section>
+
+  <!-- DEVELOPER -->
+  <section>
+    <h2>The developer</h2>
+    <div class="developer-card">
+      <div class="dev-name">Nam — Namwarn</div>
+      <div class="dev-desc">Local Thai developer · Landowner + contractor + operator of the on-site management company · Multiple proven projects on the island. No Western middleman — direct from the source.</div>
+    </div>
+  </section>
+
+  <!-- OWNERSHIP -->
+  <section>
+    <h2>Ownership structure</h2>
+    <div class="info-grid">
+      <div class="info-row">
+        <span class="info-label">Registration type</span>
+        <span class="info-value">Lease 30+30+30 years</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Land Office registration</span>
+        <span class="info-value">In your name</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Extension option</span>
+        <span class="info-value">Up to 90 years</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">3rd party transfer</span>
+        <span class="info-value">Allowed at any stage</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- PAYMENT -->
+  <section>
+    <h2>Payment structure</h2>
+    <div class="info-grid">
+      <div class="info-row">
+        <span class="info-label">Studio+ (off-plan)</span>
+        <span class="info-value">30% / 20% / 30% / 20%</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Duplex (near completion)</span>
+        <span class="info-value">50% signing / 50% handover</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- YIELD -->
+  <section>
+    <h2>Yield potential — Duplex</h2>
+    <div class="yield-disclaimer">
+      ⚠️ Estimates provided by the original duplex seller. Not a guarantee.
+    </div>
+    <div class="yield-row">
+      <span class="y-label">Lower unit (with pool)</span>
+      <span class="y-value">฿4,400/night</span>
+    </div>
+    <div class="yield-row">
+      <span class="y-label">Upper unit</span>
+      <span class="y-value">฿2,800/night</span>
+    </div>
+    <div class="yield-row">
+      <span class="y-label">Estimated occupancy</span>
+      <span class="y-value">70%</span>
+    </div>
+    <div class="yield-row total">
+      <span class="y-label">Estimated annual income</span>
+      <span class="y-value">~฿1.84M</span>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <div class="cta-section">
+    <h2>Next step</h2>
+    <div class="cta-title">Let's talk details</div>
+    <a href="https://wa.me/66967907754" class="cta-button">💬 Chat on WhatsApp</a>
+    <a href="https://maps.app.goo.gl/KCvY5LeRC7u6pxeLA" class="cta-button secondary" target="_blank">📍 View on map</a>
+    <div class="signature">Liran · KPH Investment Hub</div>
+  </div>
+
+</div>
+</body>
+</html>

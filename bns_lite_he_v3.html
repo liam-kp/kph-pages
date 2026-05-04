@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BNS — באן נאי סוואן | תקציר השקעה</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    font-family: 'Heebo', sans-serif;
+    background: #faf8f5;
+    color: #1a1a1a;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .container {
+    max-width: 480px;
+    margin: 0 auto;
+    background: #ffffff;
+    min-height: 100vh;
+    box-shadow: 0 0 40px rgba(0,0,0,0.05);
+  }
+
+  .hero {
+    position: relative;
+    background: linear-gradient(135deg, #0F766E 0%, #115E59 100%);
+    color: white;
+    padding: 32px 24px 28px;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -40px;
+    right: -40px;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .scarcity-badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.2);
+    backdrop-filter: blur(10px);
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 6px 12px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+    letter-spacing: 0.5px;
+  }
+  .hero h1 {
+    font-size: 32px;
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 8px;
+    position: relative;
+    z-index: 1;
+  }
+  .hero .subtitle {
+    font-size: 16px;
+    font-weight: 400;
+    opacity: 0.9;
+    position: relative;
+    z-index: 1;
+  }
+
+  section {
+    padding: 28px 24px;
+    border-bottom: 1px solid #f0ede7;
+  }
+  section:last-child { border-bottom: none; }
+
+  h2 {
+    font-size: 14px;
+    font-weight: 700;
+    color: #0F766E;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+  }
+
+  .highlights {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  .highlight {
+    background: #faf8f5;
+    border-radius: 12px;
+    padding: 16px 14px;
+    text-align: center;
+  }
+  .highlight .number {
+    font-size: 26px;
+    font-weight: 800;
+    color: #0F766E;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .highlight .label {
+    font-size: 12px;
+    color: #666;
+    font-weight: 500;
+  }
+
+  .options { display: flex; flex-direction: column; gap: 16px; }
+  .option-card {
+    background: white;
+    border: 2px solid #e8e4dd;
+    border-radius: 16px;
+    padding: 20px;
+    transition: all 0.3s;
+  }
+  .option-card.featured {
+    border-color: #0F766E;
+    background: linear-gradient(180deg, #f0fdfa 0%, #ffffff 100%);
+  }
+  .option-tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+  }
+  .option-card .option-tag {
+    background: #fef3c7;
+    color: #92400e;
+  }
+  .option-card.featured .option-tag {
+    background: #0F766E;
+    color: white;
+  }
+  .option-card.bundle .option-tag {
+    background: #1e293b;
+    color: white;
+  }
+  .option-name {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .option-meta {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 14px;
+  }
+  .option-price-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding-top: 12px;
+    border-top: 1px solid #eee;
+  }
+  .price-thb {
+    font-size: 22px;
+    font-weight: 800;
+    color: #0F766E;
+  }
+  .price-ils {
+    font-size: 14px;
+    color: #888;
+    font-weight: 500;
+  }
+  .bundle-savings {
+    background: #fff7ed;
+    color: #c2410c;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 12px;
+    border-radius: 8px;
+    margin-top: 10px;
+    text-align: center;
+  }
+
+  .studio-layout {
+    background: #f8f6f1;
+    border-radius: 12px;
+    padding: 18px;
+    margin-top: 14px;
+  }
+  .studio-layout h4 {
+    font-size: 14px;
+    font-weight: 700;
+    color: #0F766E;
+    margin-bottom: 12px;
+  }
+  .layout-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px 12px;
+  }
+  .layout-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    padding: 6px 0;
+    border-bottom: 1px solid #eae6df;
+  }
+  .layout-item:last-child,
+  .layout-item:nth-last-child(2) {
+    border-bottom: none;
+  }
+  .layout-label { color: #666; }
+  .layout-value { font-weight: 600; color: #1a1a1a; }
+  .layout-total {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 2px solid #0F766E;
+    display: flex;
+    justify-content: space-between;
+    font-weight: 700;
+    color: #0F766E;
+    font-size: 14px;
+  }
+
+  /* WHO IT FITS — buyer profiles */
+  .profiles-grid {
+    display: grid;
+    gap: 10px;
+  }
+  .profile {
+    display: flex;
+    gap: 12px;
+    padding: 14px;
+    background: #faf8f5;
+    border-radius: 10px;
+    align-items: flex-start;
+  }
+  .profile-icon {
+    font-size: 24px;
+    flex-shrink: 0;
+    line-height: 1;
+  }
+  .profile-text { flex: 1; }
+  .profile-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 2px;
+  }
+  .profile-desc {
+    font-size: 13px;
+    color: #666;
+    line-height: 1.4;
+  }
+
+  /* MANAGEMENT BANNER — new v3 */
+  .management-banner {
+    background: linear-gradient(135deg, #ecfeff 0%, #f0fdfa 100%);
+    border: 1px solid #67e8f9;
+    border-radius: 14px;
+    padding: 18px;
+    margin-top: 16px;
+  }
+  .management-banner .mgmt-badge {
+    display: inline-block;
+    background: #0891b2;
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+  }
+  .management-banner h4 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #155e75;
+    margin-bottom: 8px;
+  }
+  .management-banner p {
+    font-size: 14px;
+    color: #164e63;
+    line-height: 1.6;
+  }
+  .management-banner strong { color: #0891b2; }
+
+  .amenities {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .amenity {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    background: #faf8f5;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .amenity-icon { font-size: 20px; }
+
+  .info-grid { display: grid; gap: 14px; }
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 12px 0;
+    border-bottom: 1px solid #f0ede7;
+  }
+  .info-row:last-child { border-bottom: none; }
+  .info-label {
+    color: #666;
+    font-size: 14px;
+    font-weight: 500;
+    flex-shrink: 0;
+    margin-left: 16px;
+  }
+  .info-value {
+    font-weight: 600;
+    text-align: left;
+    font-size: 14px;
+  }
+
+  .yield-disclaimer {
+    background: #fef9c3;
+    border-right: 4px solid #ca8a04;
+    padding: 12px 14px;
+    font-size: 13px;
+    color: #713f12;
+    border-radius: 6px;
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+  .yield-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #f0ede7;
+    font-size: 14px;
+  }
+  .yield-row:last-child { border-bottom: none; }
+  .yield-row.total {
+    background: #f0fdfa;
+    margin: 8px -14px -8px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    border: none;
+    font-weight: 700;
+  }
+  .yield-row .y-label { color: #555; }
+  .yield-row .y-value { font-weight: 700; color: #0F766E; }
+
+  .developer-card {
+    background: linear-gradient(135deg, #f0fdfa 0%, #ffffff 100%);
+    border: 1px solid #ccfbf1;
+    border-radius: 12px;
+    padding: 18px;
+  }
+  .developer-card .dev-name {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .developer-card .dev-desc {
+    font-size: 14px;
+    color: #555;
+    line-height: 1.6;
+  }
+
+  .cta-section {
+    background: linear-gradient(135deg, #0F766E 0%, #115E59 100%);
+    color: white;
+    padding: 32px 24px;
+    text-align: center;
+  }
+  .cta-section h2 {
+    color: rgba(255,255,255,0.8);
+    margin-bottom: 8px;
+  }
+  .cta-section .cta-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 20px;
+  }
+  .cta-button {
+    display: block;
+    background: white;
+    color: #0F766E;
+    text-decoration: none;
+    padding: 16px 24px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 16px;
+    margin-bottom: 10px;
+    transition: transform 0.2s;
+  }
+  .cta-button:hover { transform: translateY(-2px); }
+  .cta-button.secondary {
+    background: transparent;
+    color: white;
+    border: 2px solid rgba(255,255,255,0.4);
+  }
+  .signature {
+    margin-top: 20px;
+    font-size: 13px;
+    opacity: 0.7;
+  }
+
+  .map-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #faf8f5;
+    border-radius: 12px;
+    padding: 16px;
+    text-decoration: none;
+    color: #1a1a1a;
+    border: 1px solid #f0ede7;
+  }
+  .map-card .map-text { font-size: 14px; }
+  .map-card .map-text strong { display: block; font-size: 16px; margin-bottom: 2px; }
+  .map-card .map-arrow { color: #0F766E; font-size: 20px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="scarcity-badge">🔥 95% מכור · יחידות אחרונות</div>
+    <h1>BNS — באן נאי סוואן</h1>
+    <div class="subtitle">מתחם בוטיק של 40 וילות בלב קופנגן</div>
+  </div>
+
+  <!-- HIGHLIGHTS -->
+  <section>
+    <div class="highlights">
+      <div class="highlight">
+        <div class="number">40</div>
+        <div class="label">וילות במתחם</div>
+      </div>
+      <div class="highlight">
+        <div class="number">95%</div>
+        <div class="label">כבר נמכר</div>
+      </div>
+      <div class="highlight">
+        <div class="number">7</div>
+        <div class="label">יחידות אחרונות</div>
+      </div>
+      <div class="highlight">
+        <div class="number">~6</div>
+        <div class="label">חודשים למסירה</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- OPTIONS -->
+  <section>
+    <h2>שתי האופציות</h2>
+    <div class="options">
+
+      <!-- STUDIO+ -->
+      <div class="option-card featured">
+        <div class="option-tag">⭐ נקודת כניסה במחיר נוח</div>
+        <div class="option-name">Studio+ · יחידת השקעה</div>
+        <div class="option-meta">45.5 מ"ר (35 פנים + 10.5 מרפסת) · בריכה משותפת · 4 יחידות בלבד בבניין דו-קומתי</div>
+        <div class="option-price-row">
+          <span class="price-thb">₿2,950,000</span>
+          <span class="price-ils">~₪281,000</span>
+        </div>
+
+        <!-- INTERIOR LAYOUT -->
+        <div class="studio-layout">
+          <h4>📐 חלוקה פנימית של היחידה</h4>
+          <div class="layout-grid">
+            <div class="layout-item">
+              <span class="layout-label">חדר שינה</span>
+              <span class="layout-value">15 מ"ר</span>
+            </div>
+            <div class="layout-item">
+              <span class="layout-label">סלון</span>
+              <span class="layout-value">11 מ"ר</span>
+            </div>
+            <div class="layout-item">
+              <span class="layout-label">מטבח + פינת אוכל</span>
+              <span class="layout-value">4 מ"ר</span>
+            </div>
+            <div class="layout-item">
+              <span class="layout-label">חדר רחצה</span>
+              <span class="layout-value">2.4 מ"ר</span>
+            </div>
+            <div class="layout-item">
+              <span class="layout-label">מרפסת מקורה</span>
+              <span class="layout-value">10.5 מ"ר</span>
+            </div>
+            <div class="layout-item">
+              <span class="layout-label">חניה פרטית</span>
+              <span class="layout-value">✓</span>
+            </div>
+          </div>
+          <div class="layout-total">
+            <span>סה"כ</span>
+            <span>45.5 מ"ר</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- DUPLEX -->
+      <div class="option-card">
+        <div class="option-tag">בית פרטי</div>
+        <div class="option-name">Duplex — דופלקס פרטי</div>
+        <div class="option-meta">84 מ"ר (42+42) · בריכה פרטית · גינה · 2 קומות</div>
+        <div class="option-price-row">
+          <span class="price-thb">₿6,700,000</span>
+          <span class="price-ils">~₪638,000</span>
+        </div>
+      </div>
+
+      <!-- BUNDLE -->
+      <div class="option-card bundle">
+        <div class="option-tag">📦 חבילת השקעה</div>
+        <div class="option-name">Bundle — 3 דופלקסים</div>
+        <div class="option-meta">3 יחידות נפרדות · רכישה כפורטפוליו · אופטימלי להשקעה</div>
+        <div class="option-price-row">
+          <span class="price-thb">₿18,000,000</span>
+          <span class="price-ils">~₪1,714,000</span>
+        </div>
+        <div class="bundle-savings">💰 חיסכון ₿2.1M מול רכישה נפרדת</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- WHO IT FITS — Studio+ buyer profiles -->
+  <section>
+    <h2>למי מתאים ה-Studio+?</h2>
+    <div class="profiles-grid">
+      <div class="profile">
+        <div class="profile-icon">🌴</div>
+        <div class="profile-text">
+          <div class="profile-title">נוודים דיגיטליים</div>
+          <div class="profile-desc">השכרה חודשית לטווח ארוך — מ-15 ימים עד 3 חודשים</div>
+        </div>
+      </div>
+      <div class="profile">
+        <div class="profile-icon">🏖️</div>
+        <div class="profile-text">
+          <div class="profile-title">רווקים</div>
+          <div class="profile-desc">דירת חופשה / מגורים בקופנגן · מספיק לאיש פרטי או זוג</div>
+        </div>
+      </div>
+      <div class="profile">
+        <div class="profile-icon">👨‍👩‍👧</div>
+        <div class="profile-text">
+          <div class="profile-title">משפחות צעירות</div>
+          <div class="profile-desc">נקודת כניסה במחיר נוח לאורח חיים בקופנגן</div>
+        </div>
+      </div>
+      <div class="profile">
+        <div class="profile-icon">🏠</div>
+        <div class="profile-text">
+          <div class="profile-title">משקיעים שכבר במתחם</div>
+          <div class="profile-desc">יחידה נוספת לאירוח אורחים / השכרה צידית</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AMENITIES -->
+  <section>
+    <h2>במתחם</h2>
+    <div class="amenities">
+      <div class="amenity"><span class="amenity-icon">🏊</span><span>בריכה משותפת</span></div>
+      <div class="amenity"><span class="amenity-icon">☕</span><span>בית קפה</span></div>
+      <div class="amenity"><span class="amenity-icon">🏛️</span><span>קלאבהאוס</span></div>
+      <div class="amenity"><span class="amenity-icon">🏋️</span><span>חדר כושר</span></div>
+    </div>
+    <p style="font-size:12px; color:#888; margin-top:12px;">המבנים הציבוריים בעיצומה של בנייה — חלק מהוילות במתחם כבר מאוכלסות.</p>
+
+    <!-- MANAGEMENT BANNER — new v3 -->
+    <div class="management-banner">
+      <div class="mgmt-badge">🏢 חברת ניהול במתחם</div>
+      <h4>חברת ניהול של היזמית — אופציה, לא חובה</h4>
+      <p>במתחם פועלת חברת ניהול מטעם היזמית. הבעלים יכולים <strong>לשכור את שירותיה</strong> — להשכרה, ניקיון, תחזוקה, פיקוח. אפשר גם לנהל בעצמכם או לעבוד עם חברה אחרת. <strong>זאת זכות, לא הכרח.</strong></p>
+    </div>
+  </section>
+
+  <!-- LOCATION -->
+  <section>
+    <h2>מיקום</h2>
+    <a href="https://maps.app.goo.gl/KCvY5LeRC7u6pxeLA" target="_blank" class="map-card">
+      <div class="map-text">
+        <strong>📍 באן נאי סוואן</strong>
+        <span>לב קופנגן · גישה ישירה לכביש ראשי</span>
+      </div>
+      <span class="map-arrow">←</span>
+    </a>
+  </section>
+
+  <!-- DEVELOPER -->
+  <section>
+    <h2>היזמית</h2>
+    <div class="developer-card">
+      <div class="dev-name">נאם — Namwarn</div>
+      <div class="dev-desc">תאילנדית מקומית · בעלת קרקע + קבלנית מבצעת + מפעילה את חברת הניהול במתחם · עם פרויקטים נוספים על האי. בלי מתווך מערבי באמצע — ישיר מהיזמית.</div>
+    </div>
+  </section>
+
+  <!-- OWNERSHIP -->
+  <section>
+    <h2>מבנה בעלות</h2>
+    <div class="info-grid">
+      <div class="info-row">
+        <span class="info-label">סוג רישום</span>
+        <span class="info-value">Lease 30+30+30 שנה</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">רישום בלשכת קרקעות</span>
+        <span class="info-value">בשמך הפרטי</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">אופציית הארכה</span>
+        <span class="info-value">עד 90 שנה</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">מכירה לצד ג'</span>
+        <span class="info-value">אפשרית בכל שלב</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- PAYMENT -->
+  <section>
+    <h2>מבנה תשלומים</h2>
+    <div class="info-grid">
+      <div class="info-row">
+        <span class="info-label">Studio+ (פריסייל)</span>
+        <span class="info-value">30% / 20% / 30% / 20%</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Duplex (קרוב לגמר)</span>
+        <span class="info-value">50% חתימה / 50% מפתח</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- YIELD -->
+  <section>
+    <h2>פוטנציאל תשואה — Duplex</h2>
+    <div class="yield-disclaimer">
+      ⚠️ הנתונים מבוססים על הערכת המוכרת המקורית של הדופלקס. אינם ערבות.
+    </div>
+    <div class="yield-row">
+      <span class="y-label">יחידה תחתונה (עם בריכה)</span>
+      <span class="y-value">฿4,400/לילה</span>
+    </div>
+    <div class="yield-row">
+      <span class="y-label">יחידה עליונה</span>
+      <span class="y-value">฿2,800/לילה</span>
+    </div>
+    <div class="yield-row">
+      <span class="y-label">תפוסה משוערת</span>
+      <span class="y-value">70%</span>
+    </div>
+    <div class="yield-row total">
+      <span class="y-label">הכנסה שנתית משוערת</span>
+      <span class="y-value">~฿1.84M</span>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <div class="cta-section">
+    <h2>הצעד הבא</h2>
+    <div class="cta-title">בוא נדבר על הפרטים</div>
+    <a href="https://wa.me/66967907754" class="cta-button">💬 שיחה ב-WhatsApp</a>
+    <a href="https://maps.app.goo.gl/KCvY5LeRC7u6pxeLA" class="cta-button secondary" target="_blank">📍 ראה מיקום במפה</a>
+    <div class="signature">לירן · KPH Investment Hub</div>
+  </div>
+
+</div>
+</body>
+</html>
