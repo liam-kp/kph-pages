@@ -5302,7 +5302,7 @@ function renderProjects(radarProjects) {
         <div class="portfolio-footer">תקציב ${budget} · ${fmtNum(c.impressions || 0)} חשיפות · CPM ${fmtMoneyDec(c.cpm || 0)}</div>
       </div>`;
     }).join('');
-    return `<div class="portfolio-panel fade-in delay-3">
+    return `<div class="portfolio-panel fade-in delay-3" id="campaign-portfolio">
       <div class="panel-header">
         <div class="panel-title">CAMPAIGN PORTFOLIO <span class="gold">▸</span> META · 30D</div>
         <div class="panel-actions"><span style="font-size:10px;color:var(--text-3)">${snap.campaigns.length} קמפיינים</span></div>
@@ -5381,7 +5381,7 @@ function renderProjects(radarProjects) {
         </div>
         <div class="headline-cell">
           <div class="headline-label">Conversations <span style="opacity:0.5;font-size:9px">(30d)</span></div>
-          <div class="headline-value gold">${metaSnapshot ? metaSnapshot.totals.total_conversations : '—'}</div>
+          <div class="headline-value gold" id="metric-conversations">${metaSnapshot ? metaSnapshot.totals.total_conversations : '—'}</div>
           <div class="headline-meta">
             <span class="delta-label">${metaSnapshot ? `${fmtMoneyDec(metaSnapshot.totals.avg_cost_per_conversation)} / שיחה` : 'Meta snapshot N/A'}</span>
           </div>
