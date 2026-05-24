@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Campaigns — KPH Marketing Brain</title>
+<style>
+  :root {
+    --trust-teal: #0F766E;
+    --trust-teal-dark: #134E4A;
+    --phangan-sunset: #C2410C;
+    --near-black: #0A0A0A;
+    --off-white: #FAFAF7;
+    --gray-50: #F9FAFB;
+    --gray-100: #F3F4F6;
+    --gray-200: #E5E7EB;
+    --gray-300: #D1D5DB;
+    --gray-500: #6B7280;
+    --gray-700: #374151;
+    --gray-900: #111827;
+    --green: #059669;
+    --yellow: #D97706;
+    --red: #DC2626;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--gray-50);
+    color: var(--gray-900);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+
+  /* ─── Header ─── */
+  header {
+    background: linear-gradient(135deg, var(--trust-teal) 0%, var(--trust-teal-dark) 100%);
+    color: white;
+    padding: 16px 20px;
+    box-shadow: var(--shadow-md);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .header-title { font-size: 18px; font-weight: 600; letter-spacing: -0.01em; }
+  .header-title .brand { opacity: 0.7; font-weight: 400; font-size: 13px; }
+  .header-meta { font-size: 12px; opacity: 0.85; text-align: left; direction: ltr; }
+  .header-meta .stale { color: #FED7AA; }
+
+  /* ─── Container ─── */
+  .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+
+  /* ─── Banner ─── */
+  .banner {
+    background: #FEF3C7;
+    border: 1px solid #FBBF24;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    font-size: 13px;
+    color: #78350F;
+  }
+  .banner strong { display: block; margin-bottom: 2px; }
+
+  /* ─── KPI Cards ─── */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  @media (min-width: 640px) { .kpi-grid { grid-template-columns: repeat(4, 1fr); gap: 16px; } }
+
+  .kpi {
+    background: white;
+    border-radius: 10px;
+    padding: 14px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--gray-200);
+  }
+  .kpi-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--gray-500); font-weight: 600; margin-bottom: 6px; }
+  .kpi-value { font-size: 22px; font-weight: 700; color: var(--gray-900); letter-spacing: -0.02em; }
+  .kpi-value .currency { font-size: 14px; font-weight: 500; color: var(--gray-500); margin-left: 2px; }
+  .kpi-sub { font-size: 11px; color: var(--gray-500); margin-top: 4px; }
+  @media (min-width: 640px) { .kpi-value { font-size: 28px; } }
+
+  /* ─── Section ─── */
+  .section-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--gray-700);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .section-title .count { background: var(--gray-200); color: var(--gray-700); font-size: 11px; padding: 2px 8px; border-radius: 10px; }
+
+  /* ─── Campaign Cards (mobile-first) ─── */
+  .campaigns { display: flex; flex-direction: column; gap: 12px; }
+
+  .campaign-card {
+    background: white;
+    border-radius: 12px;
+    border: 1px solid var(--gray-200);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow 0.15s ease;
+  }
+  .campaign-card:hover { box-shadow: var(--shadow-md); }
+
+  .cc-header {
+    padding: 14px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    border-bottom: 1px solid var(--gray-100);
+  }
+  .cc-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--gray-900);
+    line-height: 1.3;
+    flex: 1;
+  }
+  .cc-status {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+  .cc-status.ACTIVE { background: #D1FAE5; color: #065F46; }
+  .cc-status.PAUSED { background: var(--gray-200); color: var(--gray-700); }
+
+  .cc-metrics {
+    padding: 14px 16px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+  @media (min-width: 640px) { .cc-metrics { grid-template-columns: repeat(6, 1fr); } }
+
+  .metric { display: flex; flex-direction: column; gap: 2px; }
+  .metric-label { font-size: 10px; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.03em; font-weight: 600; }
+  .metric-value { font-size: 14px; font-weight: 600; color: var(--gray-900); }
+  .metric-value.excellent { color: var(--green); }
+  .metric-value.good { color: var(--green); }
+  .metric-value.warning { color: var(--yellow); }
+  .metric-value.kill { color: var(--red); }
+
+  .cc-footer {
+    padding: 12px 16px;
+    background: var(--gray-50);
+    border-top: 1px solid var(--gray-100);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .verdict {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--gray-700);
+  }
+  .verdict-pill {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .verdict-pill.scale, .verdict-pill.hold { background: #D1FAE5; color: #065F46; }
+  .verdict-pill.monitor, .verdict-pill.investigate { background: #FEF3C7; color: #92400E; }
+  .verdict-pill.kill_immediately { background: #FEE2E2; color: #991B1B; }
+  .verdict-pill.no_conversations, .verdict-pill.creative_fatigue, .verdict-pill.inventory_saturated { background: var(--gray-200); color: var(--gray-700); }
+
+  .cc-actions { display: flex; gap: 8px; }
+  .btn {
+    border: 1px solid var(--gray-300);
+    background: white;
+    color: var(--gray-700);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-family: inherit;
+  }
+  .btn:hover { background: var(--gray-100); border-color: var(--gray-500); }
+  .btn-primary { background: var(--trust-teal); color: white; border-color: var(--trust-teal); }
+  .btn-primary:hover { background: var(--trust-teal-dark); }
+  .btn-danger { color: var(--red); border-color: #FCA5A5; }
+  .btn-danger:hover { background: #FEE2E2; }
+
+  /* ─── Modal ─── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 100;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    max-width: 420px;
+    width: 100%;
+    box-shadow: 0 20px 25px -5px rgba(0,0,0,0.15);
+  }
+  .modal h3 { font-size: 17px; margin-bottom: 8px; color: var(--gray-900); }
+  .modal p { font-size: 14px; color: var(--gray-700); margin-bottom: 16px; line-height: 1.5; }
+  .modal .modal-btn { background: var(--trust-teal); color: white; border: none; padding: 10px 16px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; width: 100%; }
+
+  /* ─── Footer ─── */
+  footer {
+    text-align: center;
+    padding: 30px 20px;
+    color: var(--gray-500);
+    font-size: 12px;
+  }
+  footer code { background: var(--gray-100); padding: 2px 6px; border-radius: 4px; font-size: 11px; }
+
+  /* ─── Empty/Error states ─── */
+  .empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--gray-500);
+    background: white;
+    border-radius: 12px;
+    border: 1px dashed var(--gray-300);
+  }
+  .empty .icon { font-size: 32px; margin-bottom: 8px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="header-title">
+      Campaigns <span class="brand">· KPH Marketing Brain</span>
+    </div>
+    <div class="header-meta" id="header-meta">Loading…</div>
+  </div>
+</header>
+
+<div class="container">
+
+  <div class="banner" id="mock-banner" style="display:none">
+    <strong>⚠️ Demo data</strong>
+    <span>זה mock לתצוגה. הרץ <code>python3 fetch_snapshot.py</code> לרענון מ-Meta API.</span>
+  </div>
+
+  <!-- KPI Cards -->
+  <div class="kpi-grid" id="kpi-grid"></div>
+
+  <!-- Active Campaigns -->
+  <div class="section-title">
+    Active Campaigns
+    <span class="count" id="active-count">0</span>
+  </div>
+  <div class="campaigns" id="active-campaigns"></div>
+
+  <!-- Paused Campaigns -->
+  <div class="section-title" style="margin-top: 28px">
+    Paused Campaigns
+    <span class="count" id="paused-count">0</span>
+  </div>
+  <div class="campaigns" id="paused-campaigns"></div>
+
+</div>
+
+<footer>
+  KPH Marketing Brain · v1.0 · Data: <code id="footer-source">data.json</code> ·
+  Next: Live actions via api.aiagentpro.online (KPR-171 v2)
+</footer>
+
+<!-- Action Modal (placeholder for v1) -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <h3 id="modal-title">Action coming in v2</h3>
+    <p id="modal-body">
+      ה-action הזה ידרוש backend wrapper ב-<code>api.aiagentpro.online</code>.
+      תוכנן ל-KPR-171 v2 (חודש הבא).
+    </p>
+    <button class="modal-btn" onclick="closeModal()">הבנתי</button>
+  </div>
+</div>
+
+<script>
+  // ─── Format helpers ──────────────────────────────────────────────────
+  const fmt = {
+    money: (v) => v == null ? '—' : '$' + Number(v).toFixed(2),
+    num: (v) => v == null ? '—' : Number(v).toLocaleString(),
+    pct: (v) => v == null ? '—' : Number(v).toFixed(2) + '%',
+    timeAgo: (iso) => {
+      const then = new Date(iso);
+      const mins = Math.floor((Date.now() - then.getTime()) / 60000);
+      if (mins < 1) return 'now';
+      if (mins < 60) return mins + 'm ago';
+      const hrs = Math.floor(mins / 60);
+      if (hrs < 24) return hrs + 'h ago';
+      return Math.floor(hrs / 24) + 'd ago';
+    },
+  };
+
+  // ─── Modal ───────────────────────────────────────────────────────────
+  function openModal(title, body) {
+    document.getElementById('modal-title').textContent = title;
+    document.getElementById('modal-body').innerHTML = body;
+    document.getElementById('modal-overlay').classList.add('show');
+  }
+  function closeModal(e) {
+    if (e && e.target.id !== 'modal-overlay' && e.currentTarget !== e.target) return;
+    document.getElementById('modal-overlay').classList.remove('show');
+  }
+
+  // ─── Action handlers (v1 = placeholder, v2 = real API calls) ──────────
+  function actionPause(id, name) {
+    openModal(
+      'Pause campaign — v2',
+      `<strong>${name}</strong><br><br>
+       בגרסה v2 הכפתור יקרא ל:<br>
+       <code>POST /marketing-brain/pause/${id}</code><br><br>
+       כרגע — קח את ה-ID והרץ ב-Meta Ads Manager או בצ'אט: <em>"כבה קמפיין ${id}"</em>.`
+    );
+  }
+  function actionActivate(id, name) {
+    openModal(
+      'Activate campaign — v2',
+      `<strong>${name}</strong><br><br>
+       בגרסה v2 הכפתור יקרא ל:<br>
+       <code>POST /marketing-brain/activate/${id}</code><br><br>
+       כרגע — בצ'אט: <em>"הדלק קמפיין ${id}"</em>.`
+    );
+  }
+  function actionOptimize(id, name) {
+    openModal(
+      'AI Optimize — v3',
+      `<strong>${name}</strong><br><br>
+       בגרסה v3 Claude ינתח את הקמפיין ויציע אופטימיזציה ל:<br>
+       • Creative refresh<br>• Budget allocation<br>• Audience targeting<br>• Bid strategy<br><br>
+       <code>POST /marketing-brain/analyze/${id}</code> → Claude API → המלצות JSON.`
+    );
+  }
+
+  // ─── Render ──────────────────────────────────────────────────────────
+  function renderKPIs(t) {
+    const grid = document.getElementById('kpi-grid');
+    const cards = [
+      { label: 'Total Spend (30d)', value: fmt.money(t.total_spend), sub: `${t.active_campaigns} active · ${t.paused_campaigns} paused` },
+      { label: 'Conversations', value: fmt.num(t.total_conversations), sub: `Avg CpC: ${fmt.money(t.avg_cost_per_conversation)}` },
+      { label: 'Impressions', value: fmt.num(t.total_impressions), sub: `${fmt.num(t.total_clicks)} clicks · ${fmt.pct(t.avg_ctr)} CTR` },
+      { label: 'Avg CPM', value: fmt.money(t.avg_cpm), sub: `Avg CPC: ${fmt.money(t.avg_cpc)}` },
+    ];
+    grid.innerHTML = cards.map(c => `
+      <div class="kpi">
+        <div class="kpi-label">${c.label}</div>
+        <div class="kpi-value">${c.value}</div>
+        <div class="kpi-sub">${c.sub}</div>
+      </div>
+    `).join('');
+  }
+
+  function renderCampaign(c) {
+    const healthClass = c.health || '';
+    const verdictClass = (c.verdict || '').replace(/\s+/g, '_');
+    const verdictLabel = (c.verdict || '—').replace(/_/g, ' ');
+    const cpcDisplay = c.cost_per_conversation != null ? fmt.money(c.cost_per_conversation) : '—';
+    const isActive = c.status === 'ACTIVE';
+
+    return `
+      <div class="campaign-card">
+        <div class="cc-header">
+          <div class="cc-name">${c.name}</div>
+          <span class="cc-status ${c.status}">${c.status}</span>
+        </div>
+        <div class="cc-metrics">
+          <div class="metric">
+            <span class="metric-label">Spend</span>
+            <span class="metric-value">${fmt.money(c.spend)}</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">Convs</span>
+            <span class="metric-value">${c.conversations || 0}</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">Cost/Conv</span>
+            <span class="metric-value ${healthClass}">${cpcDisplay}</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">CTR</span>
+            <span class="metric-value">${fmt.pct(c.ctr)}</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">CPC</span>
+            <span class="metric-value">${fmt.money(c.cpc)}</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">Freq</span>
+            <span class="metric-value">${c.frequency != null ? c.frequency.toFixed(2) : '—'}</span>
+          </div>
+        </div>
+        <div class="cc-footer">
+          <div class="verdict">
+            Verdict: <span class="verdict-pill ${verdictClass}">${verdictLabel}</span>
+          </div>
+          <div class="cc-actions">
+            <button class="btn" onclick="actionOptimize('${c.id}', ${JSON.stringify(c.name)})">🧠 Optimize</button>
+            ${isActive
+              ? `<button class="btn btn-danger" onclick="actionPause('${c.id}', ${JSON.stringify(c.name)})">Pause</button>`
+              : `<button class="btn btn-primary" onclick="actionActivate('${c.id}', ${JSON.stringify(c.name)})">Activate</button>`}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderEmpty(container, message) {
+    container.innerHTML = `<div class="empty"><div class="icon">📭</div>${message}</div>`;
+  }
+
+  // ─── Main load ───────────────────────────────────────────────────────
+  async function load() {
+    try {
+      // KEY ABSTRACTION: this is the only line that changes in v2.
+      // v1: fetch('./data.json')
+      // v2: fetch('https://api.aiagentpro.online/marketing-brain/snapshot?cid=...')
+      const res = await fetch('./data.json?_t=' + Date.now());
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+
+      // Header meta
+      const ageMin = Math.floor((Date.now() - new Date(data.meta.snapshot_at).getTime()) / 60000);
+      const ageClass = ageMin > 1440 ? ' class="stale"' : '';
+      document.getElementById('header-meta').innerHTML =
+        `Account ${data.meta.ad_account_id}<br>` +
+        `<span${ageClass}>Updated ${fmt.timeAgo(data.meta.snapshot_at)} · ${data.meta.date_range}</span>`;
+
+      // Mock banner
+      if (data.meta.is_mock) document.getElementById('mock-banner').style.display = 'block';
+
+      // KPIs
+      renderKPIs(data.totals);
+
+      // Campaigns split
+      const active = data.campaigns.filter(c => c.status === 'ACTIVE');
+      const paused = data.campaigns.filter(c => c.status === 'PAUSED');
+      document.getElementById('active-count').textContent = active.length;
+      document.getElementById('paused-count').textContent = paused.length;
+
+      const activeEl = document.getElementById('active-campaigns');
+      const pausedEl = document.getElementById('paused-campaigns');
+
+      if (active.length) activeEl.innerHTML = active.map(renderCampaign).join('');
+      else renderEmpty(activeEl, 'אין קמפיינים פעילים כרגע.');
+
+      if (paused.length) pausedEl.innerHTML = paused.map(renderCampaign).join('');
+      else renderEmpty(pausedEl, 'אין קמפיינים pause.');
+
+    } catch (err) {
+      document.getElementById('kpi-grid').innerHTML =
+        `<div class="empty" style="grid-column: 1 / -1">
+          <div class="icon">⚠️</div>
+          <strong>Failed to load data.json</strong><br>
+          <span style="color: var(--gray-500); font-size: 13px">${err.message}</span><br><br>
+          <code style="font-size: 11px">python3 fetch_snapshot.py</code> ליצירת קובץ.
+        </div>`;
+    }
+  }
+
+  load();
+</script>
+
+</body>
+</html>
