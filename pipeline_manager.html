@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html class="dark" dir="rtl" lang="he">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>KPH Pipeline Manager</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@100;300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+<script>
+tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        "primary":"#74daae","on-primary":"#003826",
+        "primary-container":"#39a27a","on-primary-container":"#003120",
+        "secondary":"#e9c349","on-secondary":"#3c2f00",
+        "tertiary":"#ffb95d","on-tertiary":"#462a00",
+        "error":"#ffb4ab","on-error":"#690005",
+        "error-container":"#93000a","on-error-container":"#ffdad6",
+        "background":"#10141a","on-background":"#dfe2eb",
+        "surface":"#10141a","on-surface":"#dfe2eb",
+        "surface-dim":"#10141a","surface-bright":"#353940",
+        "surface-container-lowest":"#0a0e14","surface-container-low":"#181c22",
+        "surface-container":"#1c2026","surface-container-high":"#262a31",
+        "surface-container-highest":"#31353c",
+        "outline":"#87948c","outline-variant":"#3e4943",
+        "on-surface-variant":"#bdcac1"
+      },
+      borderRadius: { DEFAULT:"0px", lg:"0px", xl:"0px", full:"9999px" },
+      fontFamily: { headline:["Be Vietnam Pro"], body:["Be Vietnam Pro"] }
+    }
+  }
+};
+</script>
+<style>
+body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; color:#dfe2eb; }
+.material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; display:inline-block; line-height:1; vertical-align: middle; }
+::-webkit-scrollbar { width:6px; height:6px; }
+::-webkit-scrollbar-track { background:#10141a; }
+::-webkit-scrollbar-thumb { background:#3e4943; }
+.ghost-border { outline:0.5px solid rgba(135,148,140,0.2); }
+.spinner { animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.fade-in { animation: fadeIn 0.25s ease-in; }
+@keyframes fadeIn { from { opacity:0; transform: translateY(4px); } to { opacity:1; transform: translateY(0); } }
+
+.kanban-board {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(260px, 1fr));
+  gap: 8px;
+  overflow-x: auto;
+  align-items: start;
+}
+@media (max-width: 1280px) {
+  .kanban-board { grid-template-columns: repeat(8, 280px); }
+}
+
+.kanban-col {
+  background: #181c22;
+  outline: 0.5px solid rgba(135,148,140,0.18);
+  display: flex;
+  flex-direction: column;
+  min-height: 320px;
+  max-height: calc(100vh - 220px);
+}
+.kanban-col-header {
+  padding: 10px 12px;
+  border-bottom: 0.5px solid #3e4943;
+  background: #1c2026;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+.kanban-col-body {
+  padding: 8px;
+  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.lead-card {
+  background: #1c2026;
+  outline: 0.5px solid #3e4943;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: outline-color 0.15s, transform 0.15s;
+}
+.lead-card:hover { outline-color: #74daae; }
+.lead-card .name { font-weight: 700; font-size: 13px; color: #dfe2eb; }
+.lead-card .phone { font-size: 11px; color: #bdcac1; font-variant-numeric: tabular-nums; direction: ltr; text-align: right; }
+.lead-card .meta-row { display: flex; justify-content: space-between; align-items: center; font-size: 10px; color: #87948c; }
+.lead-card .hot-signal { font-size: 10px; color: #87948c; font-style: italic; border-top: 0.5px dashed #3e4943; padding-top: 4px; }
+.lead-card .actions { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 4px; }
+.lead-card .actions button {
+  flex: 1;
+  font-size: 11px;
+  padding: 6px 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.1s, background 0.15s;
+}
+.lead-card .actions button:active { transform: scale(0.96); }
+.btn-primary { background: #74daae; color: #003826; border: none; }
+.btn-primary:hover { background: #90f6c9; }
+.btn-danger { background: transparent; color: #ffb4ab; border: 0.5px solid #93000a; }
+.btn-danger:hover { background: #93000a22; }
+.btn-locked { background: #262a31; color: #87948c; border: 0.5px solid #3e4943; cursor: not-allowed; }
+
+.tier-badge {
+  display: inline-flex; align-items: center; gap: 2px;
+  font-size: 10px; font-weight: 700;
+  padding: 1px 6px; border-radius: 9999px;
+}
+.tier-HOT, .tier-VERY_HOT { background: rgba(255,84,73,0.18); color: #ff8a7e; }
+.tier-WARM { background: rgba(233,195,73,0.18); color: #e9c349; }
+.tier-COLD { background: rgba(116,218,174,0.15); color: #74daae; }
+.tier-unknown { background: rgba(135,148,140,0.18); color: #87948c; }
+
+.code-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: #87948c;
+}
+
+.opted-out-warn {
+  background: rgba(255,180,93,0.12);
+  color: #ffb95d;
+  font-size: 10px;
+  padding: 3px 6px;
+  border-right: 2px solid #ffb95d;
+  margin-top: 4px;
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #1c2026 0%, #262a31 50%, #1c2026 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+  height: 84px;
+}
+@keyframes shimmer { to { background-position: -200% 0; } }
+
+.kpi-strip { display: flex; gap: 0; outline: 0.5px solid #3e4943; }
+.kpi-cell { flex: 1; padding: 12px 16px; border-left: 0.5px solid #3e4943; }
+.kpi-cell:last-child { border-left: none; }
+.kpi-cell .label { font-size: 10px; color: #87948c; text-transform: uppercase; letter-spacing: 0.06em; }
+.kpi-cell .value { font-size: 22px; font-weight: 700; color: #dfe2eb; }
+.kpi-cell .value.accent { color: #74daae; }
+.kpi-cell .value.warn { color: #ff8a7e; }
+
+.modal-backdrop {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px);
+  z-index: 100; display: flex; align-items: center; justify-content: center; padding: 16px;
+}
+.modal-backdrop.hidden { display: none; }
+.modal-card { background: #1c2026; outline: 0.5px solid #3e4943; max-width: 480px; width: 100%; }
+.modal-header { background: #262a31; padding: 16px 20px; border-bottom: 0.5px solid #3e4943; display: flex; justify-content: space-between; align-items: center; }
+.modal-body { padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+.modal-footer { padding: 16px 20px; border-top: 0.5px solid #3e4943; display: flex; gap: 8px; flex-direction: row-reverse; }
+.form-label { font-size: 10px; color: #bdcac1; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; }
+.form-input, .form-select, .form-textarea {
+  width: 100%; background: #10141a; border: none; border-bottom: 0.5px solid #3e4943;
+  padding: 10px 0; font-size: 13px; color: #dfe2eb;
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  outline: none; border-bottom-color: #e9c349;
+}
+.form-textarea { resize: vertical; min-height: 60px; }
+
+.radio-group { display: flex; gap: 8px; }
+.radio-pill {
+  flex: 1; padding: 10px 12px; font-size: 12px; text-align: center;
+  border: 0.5px solid #3e4943; cursor: pointer; transition: all 0.15s;
+  background: #10141a; color: #bdcac1;
+}
+.radio-pill input { display: none; }
+.radio-pill:hover { border-color: #74daae; }
+.radio-pill.selected { background: #74daae; color: #003826; border-color: #74daae; font-weight: 700; }
+
+@media (max-width: 768px) {
+  .kanban-board { gap: 6px; }
+  .kpi-strip { flex-wrap: wrap; }
+  .kpi-cell { flex: 1 1 50%; border-left: 0.5px solid #3e4943; border-top: 0.5px solid #3e4943; }
+  header h1 { font-size: 16px !important; }
+  .header-actions button span.label { display: none; }
+}
+</style>
+</head>
+<body>
+
+<header class="bg-surface-container border-b-[0.5px] border-outline-variant px-4 py-3 flex items-center justify-between sticky top-0 z-30">
+  <div class="flex items-center gap-3">
+    <span class="material-symbols-outlined text-primary text-3xl">view_kanban</span>
+    <h1 class="text-lg font-bold">KPH Pipeline Manager</h1>
+  </div>
+  <div class="header-actions flex items-center gap-2">
+    <button onclick="reloadLeads()" class="bg-primary text-on-primary px-4 py-2 text-xs font-bold flex items-center gap-2 active:scale-95 transition-transform">
+      <span class="material-symbols-outlined text-base">refresh</span>
+      <span class="label">רענן</span>
+    </button>
+    <button onclick="showTokenModal()" class="bg-surface-container-high text-on-surface px-4 py-2 text-xs font-bold flex items-center gap-2 active:scale-95 transition-transform border-[0.5px] border-outline-variant">
+      <span class="material-symbols-outlined text-base">key</span>
+      <span class="label">Token</span>
+    </button>
+  </div>
+</header>
+
+<div class="px-4 pt-3">
+  <div class="kpi-strip bg-surface-container-low">
+    <div class="kpi-cell">
+      <div class="label">סך הכל</div>
+      <div class="value" id="kpi-total">—</div>
+    </div>
+    <div class="kpi-cell">
+      <div class="label">משפך פעיל</div>
+      <div class="value accent" id="kpi-active">—</div>
+    </div>
+    <div class="kpi-cell">
+      <div class="label">חמים</div>
+      <div class="value warn" id="kpi-hot">—</div>
+    </div>
+    <div class="kpi-cell">
+      <div class="label">עדכון אחרון</div>
+      <div class="value" id="kpi-updated" style="font-size:13px;">—</div>
+    </div>
+  </div>
+</div>
+
+<main class="px-4 py-3">
+  <div id="board-loading" class="text-center py-12 text-on-surface-variant">
+    <span class="material-symbols-outlined spinner text-4xl text-primary">progress_activity</span>
+    <div class="text-xs mt-3">טוען לידים...</div>
+  </div>
+  <div id="board-empty" class="hidden text-center py-12 text-on-surface-variant">
+    <span class="material-symbols-outlined text-4xl">inbox</span>
+    <div class="text-sm mt-3" id="board-empty-msg">אין לידים</div>
+  </div>
+  <div id="board" class="kanban-board hidden"></div>
+</main>
+
+<div id="token-modal" class="modal-backdrop hidden">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3 class="text-base font-bold flex items-center gap-2">
+        <span class="material-symbols-outlined text-primary">key</span>
+        Firebase API Token
+      </h3>
+      <button onclick="hideTokenModal()" class="text-on-surface-variant hover:text-white">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p class="text-xs text-on-surface-variant">הטוקן נשמר ב-localStorage של הדפדפן. השג אותו מ-AI Agent Pro → DevTools → <code class="text-secondary">JSON.parse(localStorage.getItem('auth-storage')).state.token</code></p>
+      <input id="token-input" class="form-input" placeholder="Paste Bearer token..." type="password"/>
+    </div>
+    <div class="modal-footer">
+      <button onclick="saveToken()" class="bg-primary text-on-primary px-6 py-2 text-xs font-bold active:scale-95 transition-transform">שמור</button>
+      <button onclick="hideTokenModal()" class="px-6 py-2 text-xs border-[0.5px] border-outline-variant text-on-surface-variant hover:bg-surface-container-high">ביטול</button>
+    </div>
+  </div>
+</div>
+
+<div id="meeting-modal" class="modal-backdrop hidden">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3 class="text-base font-bold flex items-center gap-2">
+        <span class="material-symbols-outlined text-primary">event</span>
+        קביעת פגישה
+      </h3>
+      <button onclick="hideMeetingModal()" class="text-on-surface-variant hover:text-white">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div>
+        <div class="form-label mb-2">ליד</div>
+        <div id="meeting-lead-info" class="text-sm text-on-surface"></div>
+      </div>
+      <div>
+        <div class="form-label mb-2">תאריך הפגישה</div>
+        <input id="meeting-date" type="date" class="form-input"/>
+      </div>
+      <div>
+        <div class="form-label mb-2">סוג פגישה</div>
+        <div class="radio-group" id="meeting-type-group">
+          <label class="radio-pill selected" data-value="zoom"><input type="radio" name="meeting-type" value="zoom" checked/>Zoom</label>
+          <label class="radio-pill" data-value="in_person_island"><input type="radio" name="meeting-type" value="in_person_island"/>פגישה באי</label>
+          <label class="radio-pill" data-value="in_person_remote"><input type="radio" name="meeting-type" value="in_person_remote"/>פגישה מרחוק</label>
+        </div>
+      </div>
+      <div>
+        <div class="form-label mb-2">הערה (אופציונלי)</div>
+        <textarea id="meeting-note" class="form-textarea" placeholder="הערות לפגישה..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button onclick="confirmMeeting()" class="bg-primary text-on-primary px-6 py-2 text-xs font-bold active:scale-95 transition-transform">שמור פגישה</button>
+      <button onclick="hideMeetingModal()" class="px-6 py-2 text-xs border-[0.5px] border-outline-variant text-on-surface-variant hover:bg-surface-container-high">ביטול</button>
+    </div>
+  </div>
+</div>
+
+<div id="closed-modal" class="modal-backdrop hidden">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3 class="text-base font-bold flex items-center gap-2">
+        <span class="material-symbols-outlined text-primary">paid</span>
+        סגירת עסקה
+      </h3>
+      <button onclick="hideClosedModal()" class="text-on-surface-variant hover:text-white">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div>
+        <div class="form-label mb-2">ליד</div>
+        <div id="closed-lead-info" class="text-sm text-on-surface"></div>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <div class="form-label mb-2">סכום</div>
+          <input id="closed-value" type="number" class="form-input" placeholder="0" min="0"/>
+        </div>
+        <div>
+          <div class="form-label mb-2">מטבע</div>
+          <select id="closed-currency" class="form-select">
+            <option value="THB" selected>THB</option>
+            <option value="USD">USD</option>
+            <option value="ILS">ILS</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <div class="form-label mb-2">תאריך סגירה</div>
+        <input id="closed-date" type="date" class="form-input"/>
+      </div>
+      <label class="flex items-center gap-2 text-xs text-on-surface cursor-pointer">
+        <input id="closed-confirm" type="checkbox" class="accent-primary w-4 h-4"/>
+        אני מאשר שהעסקה נסגרה רשמית
+      </label>
+    </div>
+    <div class="modal-footer">
+      <button onclick="confirmClosed()" class="bg-primary text-on-primary px-6 py-2 text-xs font-bold active:scale-95 transition-transform">סגור עסקה</button>
+      <button onclick="hideClosedModal()" class="px-6 py-2 text-xs border-[0.5px] border-outline-variant text-on-surface-variant hover:bg-surface-container-high">ביטול</button>
+    </div>
+  </div>
+</div>
+
+<div id="lost-modal" class="modal-backdrop hidden">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3 class="text-base font-bold flex items-center gap-2">
+        <span class="material-symbols-outlined text-error">block</span>
+        <span id="lost-title">איבוד ליד</span>
+      </h3>
+      <button onclick="hideLostModal()" class="text-on-surface-variant hover:text-white">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div>
+        <div class="form-label mb-2">ליד</div>
+        <div id="lost-lead-info" class="text-sm text-on-surface"></div>
+      </div>
+      <div>
+        <div class="form-label mb-2">סיבה (חובה)</div>
+        <textarea id="lost-reason" class="form-textarea" placeholder="הסבר קצר למה הליד אבד (לפחות 5 תווים)..." minlength="5"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button onclick="confirmLost()" class="bg-error text-on-error px-6 py-2 text-xs font-bold active:scale-95 transition-transform">סמן כאבוד</button>
+      <button onclick="hideLostModal()" class="px-6 py-2 text-xs border-[0.5px] border-outline-variant text-on-surface-variant hover:bg-surface-container-high">ביטול</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// CONFIG
+const AIAGENTPRO_API = 'https://api.aiagentpro.online';
+const CUSTOMER_ID = '11a3a8c9-d3db-4b32-8c08-35dd7868b959';
+const PAGE_SIZE = 50;
+
+const COLUMNS = [
+  { id: 'NEW',         label: 'NEW',     stages: ['NEW'] },
+  { id: 'CONTACTED',   label: 'CONTACT', stages: ['CONTACTED'] },
+  { id: 'ENGAGED',     label: 'ENGAGED', stages: ['ENGAGED'] },
+  { id: 'MEETING',     label: 'MEETING', stages: ['MEETING_BOOKED', 'MEETING_HELD'] },
+  { id: 'NEGOTIATION', label: 'NEGOT.',  stages: ['NEGOTIATION'] },
+  { id: 'CLOSED',      label: 'CLOSED',  stages: ['CLOSED'] },
+  { id: 'LOST',        label: 'LOST',    stages: ['LOST'] },
+  { id: 'OTHER',       label: 'OTHER',   stages: ['OPTED_OUT', 'UNKNOWN'] }
+];
+
+const STAGE_ACTIONS = {
+  NEW:             { primary: { label: '📞 התקשרתי',        target: 'CONTACTED',      modal: null } },
+  CONTACTED:       { primary: { label: '💬 בשיחה',          target: 'ENGAGED',        modal: null } },
+  ENGAGED:         { primary: { label: '📅 קבעתי פגישה',     target: 'MEETING_BOOKED', modal: 'meeting' },
+                     secondary:{ label: '🚫 איבדתי',         target: 'LOST',           modal: 'lost' } },
+  MEETING_BOOKED:  { primary: { label: '✅ הפגישה התקיימה',  target: 'MEETING_HELD',   modal: null },
+                     secondary:{ label: '🚫 לא הגיע',        target: 'LOST',           modal: 'lost', lostTitle: 'לא הגיע לפגישה' } },
+  MEETING_HELD:    { primary: { label: '💬 במשא ומתן',       target: 'NEGOTIATION',    modal: null },
+                     secondary:{ label: '🚫 איבדתי',         target: 'LOST',           modal: 'lost' } },
+  NEGOTIATION:     { primary: { label: '💰 סגרתי עסקה',      target: 'CLOSED',         modal: 'closed' },
+                     secondary:{ label: '🚫 איבדתי',         target: 'LOST',           modal: 'lost' } },
+  CLOSED:          { locked: '🔒 סגור' },
+  LOST:            { primary: { label: '🔄 חזרה ל-ENGAGED',  target: 'ENGAGED',        modal: null } },
+  OPTED_OUT:       { locked: '⚠️ Opted out' },
+  UNKNOWN:         {}
+};
+
+const STATUS_TO_STAGE = {
+  'NEW': 'NEW',
+  'CONTACTED': 'CONTACTED',
+  'ENGAGED': 'ENGAGED',
+  'MEETING_BOOKED': 'MEETING_BOOKED',
+  'MEETING_HELD': 'MEETING_HELD',
+  'NEGOTIATION': 'NEGOTIATION',
+  'CLOSED': 'CLOSED',
+  'CLOSED_WON': 'CLOSED',
+  'CLOSED_LOST': 'LOST',
+  'LOST': 'LOST'
+};
+
+// STATE
+let leads = [];
+let leadsById = {};
+let columnPages = {};
+let lastFetchAt = null;
+let pendingAction = null;
+
+// TOKEN (matches dashboard_v2 pattern)
+function getToken() {
+  const s = sessionStorage.getItem('kph_token'); if (s) return s;
+  const l = localStorage.getItem('kph_token'); if (l) return l;
+  try {
+    const a = JSON.parse(localStorage.getItem('auth-storage') || '{}');
+    if (a && a.state && a.state.token) return a.state.token;
+  } catch(e) {}
+  return '';
+}
+function setToken(t) {
+  sessionStorage.setItem('kph_token', t);
+  localStorage.setItem('kph_token', t);
+}
+function showTokenModal() {
+  document.getElementById('token-modal').classList.remove('hidden');
+  document.getElementById('token-input').value = getToken();
+}
+function hideTokenModal() {
+  document.getElementById('token-modal').classList.add('hidden');
+}
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (t) { setToken(t); hideTokenModal(); reloadLeads(); }
+}
+function isAuthError(err) {
+  return /401|auth|token|unauthorized|migration/i.test(String(err));
+}
+function handleAuthError(err) {
+  if (isAuthError(err)) {
+    toast('הטוקן פג תוקף — לחץ Token לעדכון', true);
+    showTokenModal();
+    return true;
+  }
+  return false;
+}
+
+// TOAST
+function toast(msg, isError) {
+  const el = document.createElement('div');
+  el.className = 'fixed bottom-6 left-6 px-5 py-3 text-xs font-bold z-[200] fade-in ' +
+    (isError ? 'bg-error text-on-error' : 'bg-primary text-on-primary');
+  el.style.maxWidth = '380px';
+  el.textContent = msg;
+  document.body.appendChild(el);
+  setTimeout(function(){ el.remove(); }, 3500);
+}
+
+// API
+async function apiGet(path) {
+  const token = getToken();
+  if (!token) throw new Error('No token');
+  const sep = path.indexOf('?') >= 0 ? '&' : '?';
+  const url = AIAGENTPRO_API + '/api/firebase-data/' + path + sep + 'customerId=' + CUSTOMER_ID;
+  const res = await fetch(url, { headers: { 'Authorization': 'Bearer ' + token } });
+  if (!res.ok) {
+    const body = await res.text().catch(function(){ return ''; });
+    throw new Error('GET ' + path + ' ' + res.status + (body ? ': ' + body.slice(0, 160) : ''));
+  }
+  return res.json();
+}
+
+async function apiPut(path, payload) {
+  const token = getToken();
+  if (!token) throw new Error('No token');
+  const url = AIAGENTPRO_API + '/api/firebase-data/' + path + '?customerId=' + CUSTOMER_ID;
+  const res = await fetch(url, {
+    method: 'PUT',
+    headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+  if (!res.ok) {
+    const body = await res.text().catch(function(){ return ''; });
+    throw new Error('PUT ' + path + ' ' + res.status + (body ? ': ' + body.slice(0, 160) : ''));
+  }
+  return res.json().catch(function(){ return {}; });
+}
+
+function normalizeList(raw) {
+  if (Array.isArray(raw)) return raw.map(function(v){ return Object.assign({}, v, { _id: v._id || v.id }); });
+  if (raw && Array.isArray(raw.data)) return raw.data.map(function(v){ return Object.assign({}, v, { _id: v._id || v.id }); });
+  if (raw && typeof raw === 'object' && raw.data && typeof raw.data === 'object') {
+    return Object.entries(raw.data).map(function(pair){
+      const k = pair[0], v = pair[1] || {};
+      return Object.assign({}, v, { _id: v._id || v.id || k });
+    });
+  }
+  if (raw && typeof raw === 'object') {
+    return Object.entries(raw).map(function(pair){
+      const k = pair[0], v = pair[1] || {};
+      return Object.assign({}, v, { _id: v._id || v.id || k });
+    });
+  }
+  return [];
+}
+
+function normalizeSingle(raw) {
+  if (!raw || typeof raw !== 'object') return null;
+  if (raw.data && typeof raw.data === 'object' && !Array.isArray(raw.data)) return raw.data;
+  if (raw.record && typeof raw.record === 'object') return raw.record;
+  return raw;
+}
+
+// LEAD HELPERS
+function effectiveStage(lead) {
+  const ps = lead.pipeline_stage;
+  if (ps && typeof ps === 'string') {
+    const up = ps.toUpperCase();
+    if (STAGE_ACTIONS[up] || COLUMNS.some(function(c){ return c.stages.indexOf(up) >= 0; })) return up;
+  }
+  const st = String(lead.status || '').trim();
+  if (/^OPTED[_ ]?OUT/i.test(st)) return 'OPTED_OUT';
+  const upStatus = st.toUpperCase();
+  if (STATUS_TO_STAGE[upStatus]) return STATUS_TO_STAGE[upStatus];
+  return 'UNKNOWN';
+}
+
+function columnFor(stage) {
+  for (let i = 0; i < COLUMNS.length; i++) {
+    if (COLUMNS[i].stages.indexOf(stage) >= 0) return COLUMNS[i].id;
+  }
+  return 'OTHER';
+}
+
+function leadDisplayName(lead) {
+  return (lead.name && String(lead.name).trim()) || '?';
+}
+
+function formatPhone(p) {
+  if (!p) return '';
+  const digits = String(p).replace(/\D/g, '');
+  if (digits.length >= 11 && digits.indexOf('66') === 0) {
+    return '+66 ' + digits.slice(2,4) + ' ' + digits.slice(4,7) + ' ' + digits.slice(7,11);
+  }
+  if (digits.length >= 11 && digits.indexOf('972') === 0) {
+    return '+972 ' + digits.slice(3,5) + ' ' + digits.slice(5,8) + ' ' + digits.slice(8,12);
+  }
+  return '+' + digits;
+}
+
+function relativeTime(iso) {
+  if (!iso) return '';
+  const t = new Date(iso).getTime();
+  if (!t || isNaN(t)) return '';
+  const diff = Date.now() - t;
+  const m = Math.floor(diff / 60000);
+  if (m < 1) return 'עכשיו';
+  if (m < 60) return m + 'm';
+  const h = Math.floor(m / 60);
+  if (h < 24) return h + 'h';
+  const d = Math.floor(h / 24);
+  if (d < 7) return d + 'd';
+  const w = Math.floor(d / 7);
+  if (w < 5) return w + 'w';
+  const mo = Math.floor(d / 30);
+  if (mo < 12) return mo + 'mo';
+  return Math.floor(d / 365) + 'y';
+}
+
+function parseHotSignal(lead) {
+  const raw = lead.hot_signals_json;
+  if (!raw) return null;
+  try {
+    const arr = typeof raw === 'string' ? JSON.parse(raw) : raw;
+    if (!Array.isArray(arr) || arr.length === 0) return null;
+    const last = arr[arr.length - 1];
+    return (last.type || '') + (last.message_excerpt ? ' — ' + String(last.message_excerpt).slice(0, 60) : '');
+  } catch(e) { return null; }
+}
+
+function optedOutProse(lead) {
+  const st = String(lead.status || '').trim();
+  const m = st.match(/^OPTED[_ ]?OUT[:\s]+(.+)$/i);
+  return m ? m[1].trim() : null;
+}
+
+// DOM construction helper
+function el(tag, attrs, children) {
+  const node = document.createElement(tag);
+  if (attrs) {
+    for (const k in attrs) {
+      if (k === 'class') node.className = attrs[k];
+      else if (k === 'onClick' || k === 'onclick') node.addEventListener('click', attrs[k]);
+      else if (k === 'data') { for (const dk in attrs.data) node.dataset[dk] = attrs.data[dk]; }
+      else if (k === 'style' && typeof attrs[k] === 'object') Object.assign(node.style, attrs[k]);
+      else if (k === 'disabled' && attrs[k]) node.disabled = true;
+      else if (k === 'title') node.title = attrs[k];
+      else node.setAttribute(k, attrs[k]);
+    }
+  }
+  if (children == null) return node;
+  if (!Array.isArray(children)) children = [children];
+  for (let i = 0; i < children.length; i++) {
+    const c = children[i];
+    if (c == null || c === false) continue;
+    if (typeof c === 'string' || typeof c === 'number') node.appendChild(document.createTextNode(String(c)));
+    else node.appendChild(c);
+  }
+  return node;
+}
+
+// FETCH
+async function reloadLeads() {
+  const board = document.getElementById('board');
+  const loading = document.getElementById('board-loading');
+  const empty = document.getElementById('board-empty');
+  board.classList.add('hidden');
+  empty.classList.add('hidden');
+  loading.classList.remove('hidden');
+
+  if (!getToken()) {
+    loading.classList.add('hidden');
+    empty.classList.remove('hidden');
+    document.getElementById('board-empty-msg').textContent = 'אין טוקן — לחץ על כפתור Token כדי להמשיך';
+    showTokenModal();
+    return;
+  }
+
+  try {
+    const raw = await apiGet('Leads');
+    const list = normalizeList(raw);
+    leads = list.filter(function(l){ return l && l._id; });
+    leadsById = {};
+    for (let i = 0; i < leads.length; i++) leadsById[leads[i]._id] = leads[i];
+    lastFetchAt = new Date();
+    columnPages = {};
+    for (let i = 0; i < COLUMNS.length; i++) columnPages[COLUMNS[i].id] = 1;
+    renderAll();
+  } catch (e) {
+    console.error('reloadLeads failed', e);
+    loading.classList.add('hidden');
+    empty.classList.remove('hidden');
+    document.getElementById('board-empty-msg').textContent = 'שגיאה בטעינה: ' + e.message;
+    if (!handleAuthError(e.message)) toast('טעינה נכשלה: ' + e.message, true);
+  }
+}
+
+// RENDER
+function renderAll() {
+  document.getElementById('board-loading').classList.add('hidden');
+  document.getElementById('board').classList.remove('hidden');
+  renderKPIs();
+  renderBoard();
+}
+
+function renderKPIs() {
+  const total = leads.length;
+  const activeStages = { NEW:1, CONTACTED:1, ENGAGED:1, MEETING_BOOKED:1, MEETING_HELD:1, NEGOTIATION:1 };
+  let active = 0, hot = 0;
+  for (let i = 0; i < leads.length; i++) {
+    const l = leads[i];
+    if (activeStages[effectiveStage(l)]) active++;
+    const tier = String(l.tier || '').toUpperCase();
+    if (tier === 'HOT' || tier === 'VERY_HOT') hot++;
+  }
+  document.getElementById('kpi-total').textContent = String(total);
+  document.getElementById('kpi-active').textContent = String(active);
+  document.getElementById('kpi-hot').textContent = String(hot);
+  document.getElementById('kpi-updated').textContent = lastFetchAt
+    ? lastFetchAt.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+    : '—';
+}
+
+function leadsByColumn() {
+  const buckets = {};
+  for (let i = 0; i < COLUMNS.length; i++) buckets[COLUMNS[i].id] = [];
+  for (let i = 0; i < leads.length; i++) {
+    const lead = leads[i];
+    buckets[columnFor(effectiveStage(lead))].push(lead);
+  }
+  const sortKey = function(l){
+    return new Date(l.last_message_at || l.updated_at || l.created_at || 0).getTime() || 0;
+  };
+  for (let i = 0; i < COLUMNS.length; i++) {
+    buckets[COLUMNS[i].id].sort(function(a, b){ return sortKey(b) - sortKey(a); });
+  }
+  return buckets;
+}
+
+function renderBoard() {
+  const board = document.getElementById('board');
+  const buckets = leadsByColumn();
+  while (board.firstChild) board.removeChild(board.firstChild);
+  const frag = document.createDocumentFragment();
+  for (let i = 0; i < COLUMNS.length; i++) {
+    const col = COLUMNS[i];
+    const items = buckets[col.id];
+
+    const headerLeft = el('div', { class: 'flex items-center gap-2' }, [
+      el('span', { class: 'text-xs font-bold uppercase tracking-wider text-on-surface' }, col.label)
+    ]);
+    const headerCount = el('span', { class: 'text-xs font-mono text-on-surface-variant', data: { count: '1' } }, String(items.length));
+    const header = el('div', { class: 'kanban-col-header flex items-center justify-between' }, [headerLeft, headerCount]);
+
+    const body = el('div', { class: 'kanban-col-body', data: { colBody: col.id } });
+    const colEl = el('div', { class: 'kanban-col', data: { col: col.id } }, [header, body]);
+
+    renderColumnBody(body, col.id, items);
+    frag.appendChild(colEl);
+  }
+  board.appendChild(frag);
+}
+
+function renderColumnBody(bodyEl, colId, items) {
+  while (bodyEl.firstChild) bodyEl.removeChild(bodyEl.firstChild);
+  if (items.length === 0) {
+    bodyEl.appendChild(el('div', { class: 'text-xs text-on-surface-variant text-center py-4' }, '—'));
+    return;
+  }
+  const pages = columnPages[colId] || 1;
+  const limit = pages * PAGE_SIZE;
+  const visible = items.slice(0, limit);
+  const frag = document.createDocumentFragment();
+  for (let i = 0; i < visible.length; i++) frag.appendChild(buildLeadCard(visible[i]));
+  bodyEl.appendChild(frag);
+
+  if (items.length > limit) {
+    const remaining = items.length - limit;
+    const more = el('button', {
+      class: 'text-xs text-primary hover:underline py-2',
+      onclick: function(){
+        columnPages[colId] = (columnPages[colId] || 1) + 1;
+        renderColumnBody(bodyEl, colId, items);
+      }
+    }, 'טען עוד (+' + Math.min(PAGE_SIZE, remaining) + ' / ' + remaining + ')');
+    bodyEl.appendChild(more);
+  }
+}
+
+function buildLeadCard(lead) {
+  const stage = effectiveStage(lead);
+  const name = leadDisplayName(lead);
+  const phone = formatPhone(lead.phone_number || lead.phone || '');
+  const tier = String(lead.tier || '').toUpperCase();
+  const tierClass = tier ? 'tier-badge tier-' + tier : 'tier-badge tier-unknown';
+  const tierEmoji = (tier === 'HOT' || tier === 'VERY_HOT') ? '🔥' : tier === 'WARM' ? '🌡️' : tier === 'COLD' ? '❄️' : '?';
+  const tierLabel = tier || 'UNKNOWN';
+  const code = lead.project_code || lead.project_id || '';
+  const created = relativeTime(lead.created_at);
+  const hotSig = parseHotSignal(lead);
+  const optedProse = optedOutProse(lead);
+
+  const nameRow = el('div', { class: 'flex items-start justify-between gap-2' }, [
+    el('div', { class: 'name flex-1 min-w-0 truncate' }, name),
+    el('span', { class: tierClass }, tierEmoji + ' ' + tierLabel)
+  ]);
+  const phoneRow = el('div', { class: 'phone' }, phone);
+  const metaRow = el('div', { class: 'meta-row' }, [
+    el('span', { class: 'code-badge' }, code),
+    el('span', { title: 'created' }, created ? (created + ' ago') : '—')
+  ]);
+
+  const children = [nameRow, phoneRow, metaRow];
+
+  if (hotSig) {
+    children.push(el('div', { class: 'hot-signal' }, '⚡ ' + hotSig));
+  }
+  if (optedProse) {
+    children.push(el('div', { class: 'opted-out-warn' }, '⚠️ Maya status: ' + optedProse));
+  }
+
+  // Actions
+  const actionsEl = el('div', { class: 'actions' });
+  const cfg = STAGE_ACTIONS[stage] || {};
+  if (cfg.locked) {
+    actionsEl.appendChild(el('button', { class: 'btn-locked', disabled: true }, cfg.locked));
+  } else {
+    if (cfg.primary) {
+      const p = cfg.primary;
+      actionsEl.appendChild(el('button', {
+        class: 'btn-primary',
+        onclick: function(){ triggerAction(lead._id, p); }
+      }, p.label));
+    }
+    if (cfg.secondary) {
+      const s = cfg.secondary;
+      actionsEl.appendChild(el('button', {
+        class: 'btn-danger',
+        onclick: function(){ triggerAction(lead._id, s); }
+      }, s.label));
+    }
+  }
+  children.push(actionsEl);
+
+  return el('div', { class: 'lead-card', data: { leadId: lead._id } }, children);
+}
+
+// ACTION DISPATCH
+function triggerAction(leadId, actionCfg) {
+  const lead = leadsById[leadId];
+  if (!lead) { toast('ליד לא נמצא', true); return; }
+
+  pendingAction = { leadId: leadId, target: actionCfg.target, lostTitle: actionCfg.lostTitle };
+
+  if (!actionCfg.modal) {
+    return doTransition({});
+  }
+
+  const summary = leadDisplayName(lead) + ' — ' + formatPhone(lead.phone_number || '');
+  if (actionCfg.modal === 'meeting') {
+    const dflt = new Date(); dflt.setDate(dflt.getDate() + 3);
+    document.getElementById('meeting-date').value = dflt.toISOString().slice(0, 10);
+    document.getElementById('meeting-note').value = '';
+    document.getElementById('meeting-lead-info').textContent = summary;
+    document.querySelectorAll('#meeting-type-group .radio-pill').forEach(function(p){ p.classList.remove('selected'); });
+    document.querySelector('#meeting-type-group .radio-pill[data-value="zoom"]').classList.add('selected');
+    document.querySelector('#meeting-type-group input[value="zoom"]').checked = true;
+    document.getElementById('meeting-modal').classList.remove('hidden');
+  } else if (actionCfg.modal === 'closed') {
+    document.getElementById('closed-value').value = '';
+    document.getElementById('closed-currency').value = 'THB';
+    document.getElementById('closed-date').value = new Date().toISOString().slice(0, 10);
+    document.getElementById('closed-confirm').checked = false;
+    document.getElementById('closed-lead-info').textContent = summary;
+    document.getElementById('closed-modal').classList.remove('hidden');
+  } else if (actionCfg.modal === 'lost') {
+    document.getElementById('lost-reason').value = '';
+    document.getElementById('lost-lead-info').textContent = summary;
+    document.getElementById('lost-title').textContent = actionCfg.lostTitle || 'איבוד ליד';
+    document.getElementById('lost-modal').classList.remove('hidden');
+  }
+}
+
+// Radio pills wire-up
+document.querySelectorAll('#meeting-type-group .radio-pill').forEach(function(elPill){
+  elPill.addEventListener('click', function(){
+    document.querySelectorAll('#meeting-type-group .radio-pill').forEach(function(p){ p.classList.remove('selected'); });
+    elPill.classList.add('selected');
+    const v = elPill.dataset.value;
+    const input = document.querySelector('#meeting-type-group input[value="' + v + '"]');
+    if (input) input.checked = true;
+  });
+});
+
+// MODAL CONFIRMS
+function hideMeetingModal() { document.getElementById('meeting-modal').classList.add('hidden'); }
+function hideClosedModal() { document.getElementById('closed-modal').classList.add('hidden'); }
+function hideLostModal() { document.getElementById('lost-modal').classList.add('hidden'); }
+
+function confirmMeeting() {
+  const date = document.getElementById('meeting-date').value;
+  if (!date) { toast('בחר תאריך', true); return; }
+  const type = (document.querySelector('#meeting-type-group input:checked') || {}).value || 'zoom';
+  const note = document.getElementById('meeting-note').value.trim() || null;
+  const extras = {
+    meeting_scheduled_at: new Date(date + 'T10:00:00.000Z').toISOString(),
+    meeting_type: type
+  };
+  hideMeetingModal();
+  doTransition(extras, note);
+}
+
+function confirmClosed() {
+  const value = parseInt(document.getElementById('closed-value').value, 10);
+  const currency = document.getElementById('closed-currency').value;
+  const date = document.getElementById('closed-date').value;
+  const confirmed = document.getElementById('closed-confirm').checked;
+  if (!value || value <= 0) { toast('הזן סכום עסקה', true); return; }
+  if (!date) { toast('בחר תאריך סגירה', true); return; }
+  if (!confirmed) { toast('יש לאשר את סגירת העסקה', true); return; }
+  const extras = {
+    deal_value: value,
+    deal_currency: currency,
+    closed_at: new Date(date + 'T00:00:00.000Z').toISOString()
+  };
+  hideClosedModal();
+  doTransition(extras);
+}
+
+function confirmLost() {
+  const reason = document.getElementById('lost-reason').value.trim();
+  if (reason.length < 5) { toast('הסיבה חייבת להיות לפחות 5 תווים', true); return; }
+  const extras = {
+    lost_reason: reason,
+    lost_at: new Date().toISOString()
+  };
+  hideLostModal();
+  doTransition(extras, reason);
+}
+
+// CORE TRANSITION (GET → append → PUT)
+async function doTransition(extras, note) {
+  if (!pendingAction) return;
+  const leadId = pendingAction.leadId;
+  const target = pendingAction.target;
+  const lead = leadsById[leadId];
+  if (!lead) { toast('ליד לא נמצא', true); pendingAction = null; return; }
+
+  // PWRC: GET current lead before write to avoid clobbering pipeline_history.
+  let fresh;
+  try {
+    const raw = await apiGet('Leads/' + encodeURIComponent(leadId));
+    fresh = normalizeSingle(raw);
+    if (!fresh || typeof fresh !== 'object') throw new Error('GET returned no record');
+  } catch (e) {
+    console.error('GET before PUT failed', e);
+    if (!handleAuthError(e.message)) toast('שגיאת רענון לפני עדכון: ' + e.message, true);
+    pendingAction = null;
+    return;
+  }
+
+  const currentHistory = Array.isArray(fresh.pipeline_history) ? fresh.pipeline_history : [];
+  const fromStage = (fresh.pipeline_stage && String(fresh.pipeline_stage).trim()) || 'NONE';
+  const entry = {
+    from: fromStage,
+    to: target,
+    at: new Date().toISOString(),
+    by: 'liam'
+  };
+  if (note) entry.note = note;
+  const newHistory = currentHistory.concat([entry]);
+
+  const payload = Object.assign({
+    pipeline_stage: target,
+    pipeline_history: newHistory
+  }, extras || {});
+
+  try {
+    await apiPut('Leads/' + encodeURIComponent(leadId), payload);
+
+    const updated = Object.assign({}, lead, payload);
+    leadsById[leadId] = updated;
+    const idx = leads.findIndex(function(l){ return l._id === leadId; });
+    if (idx >= 0) leads[idx] = updated;
+
+    moveCardToColumn(leadId);
+    renderKPIs();
+    toast('✅ ' + leadDisplayName(updated) + ' → ' + target);
+    console.log('[KPR-179] stage change', { leadId: leadId, from: fromStage, to: target, payload: payload });
+  } catch (e) {
+    console.error('PUT failed', e);
+    if (!handleAuthError(e.message)) toast('עדכון נכשל: ' + e.message, true);
+  } finally {
+    pendingAction = null;
+  }
+}
+
+function moveCardToColumn(leadId) {
+  const lead = leadsById[leadId];
+  if (!lead) return;
+  const newStage = effectiveStage(lead);
+  const newCol = columnFor(newStage);
+
+  const existing = document.querySelector('[data-lead-id="' + CSS.escape(leadId) + '"]');
+  const oldColBody = existing ? existing.closest('.kanban-col-body') : null;
+  if (existing) existing.remove();
+
+  const newCard = buildLeadCard(lead);
+  const newColBody = document.querySelector('[data-col-body="' + CSS.escape(newCol) + '"]');
+  if (newColBody) {
+    newColBody.insertBefore(newCard, newColBody.firstChild);
+  }
+
+  const buckets = leadsByColumn();
+  document.querySelectorAll('.kanban-col').forEach(function(col){
+    const id = col.dataset.col;
+    const cnt = col.querySelector('[data-count]');
+    if (cnt) cnt.textContent = String(buckets[id].length);
+  });
+
+  if (oldColBody && oldColBody.children.length === 0) {
+    const oldColId = oldColBody.dataset.colBody;
+    renderColumnBody(oldColBody, oldColId, buckets[oldColId]);
+  }
+}
+
+// INIT
+document.addEventListener('DOMContentLoaded', function(){
+  if (!getToken()) {
+    showTokenModal();
+    document.getElementById('board-loading').classList.add('hidden');
+    document.getElementById('board-empty').classList.remove('hidden');
+    document.getElementById('board-empty-msg').textContent = 'הכנס Bearer token כדי להתחיל';
+  } else {
+    reloadLeads();
+  }
+});
+</script>
+</body>
+</html>
