@@ -565,7 +565,7 @@ tr.pipeline-row-pinned td:first-child { box-shadow: inset 4px 0 0 #FBBF24; }
 #page-reports .filter-info { font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--text-3); letter-spacing:1px; }
 #page-reports .filter-info span { color:var(--gold); }
 
-#page-reports .headline-grid { display:grid; grid-template-columns:repeat(4,1fr); border:1px solid var(--line); margin-bottom:24px; background:var(--bg-1); }
+#page-reports .headline-grid { display:grid; grid-template-columns:repeat(5,1fr); border:1px solid var(--line); margin-bottom:24px; background:var(--bg-1); }
 #page-reports .headline-cell { padding:24px 28px; border-right:1px solid var(--line); position:relative; transition:background 0.2s; }
 #page-reports .headline-cell:last-child { border-right:none; }
 #page-reports .headline-cell:hover { background:var(--bg-2); }
@@ -582,6 +582,26 @@ tr.pipeline-row-pinned td:first-child { box-shadow: inset 4px 0 0 #FBBF24; }
 #page-reports .delta-label { color:var(--text-3); font-size:10px; }
 
 #page-reports .chart-row { display:grid; grid-template-columns:2fr 1fr; gap:16px; margin-bottom:24px; }
+#page-reports .portfolio-panel { border:1px solid var(--line); background:var(--bg-1); margin-bottom:24px; }
+#page-reports .portfolio-grid { display:grid; grid-template-columns:repeat(3,1fr); }
+#page-reports .portfolio-card { padding:18px 20px; border-right:1px solid var(--line); transition:background 0.15s; }
+#page-reports .portfolio-card:last-child { border-right:none; }
+#page-reports .portfolio-card:hover { background:var(--bg-2); }
+#page-reports .portfolio-card-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+#page-reports .portfolio-name { font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--text-1); line-height:1.45; min-height:32px; margin-bottom:14px; direction:ltr; text-align:right; }
+#page-reports .portfolio-stats { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:12px; }
+#page-reports .portfolio-stats .stat-label { font-family:'JetBrains Mono', monospace; font-size:9px; color:var(--text-3); letter-spacing:1px; margin-bottom:2px; }
+#page-reports .portfolio-stats .stat-value { font-family:'JetBrains Mono', monospace; font-size:13px; font-weight:700; color:var(--text-1); }
+#page-reports .portfolio-stats .stat-value.gold { color:var(--gold-bright); }
+#page-reports .portfolio-stats .stat-value.green { color:var(--green-bright); }
+#page-reports .portfolio-footer { font-size:10px; color:var(--text-3); padding-top:10px; border-top:1px dashed var(--line); font-family:'JetBrains Mono', monospace; }
+#page-reports .portfolio-status, #page-reports .portfolio-health { font-family:'JetBrains Mono', monospace; font-size:9px; padding:2px 6px; text-transform:uppercase; letter-spacing:1.5px; font-weight:700; }
+#page-reports .portfolio-status.active { color:var(--green); background:var(--green-dim); }
+#page-reports .portfolio-status.paused { color:var(--text-3); background:var(--bg-3); }
+#page-reports .portfolio-health.excellent { color:var(--green); background:var(--green-dim); }
+#page-reports .portfolio-health.good { color:var(--gold); background:var(--gold-dim); }
+#page-reports .portfolio-health.warning { color:var(--gold); background:var(--gold-dim); }
+#page-reports .portfolio-health.alert { color:var(--red); background:var(--red-dim); }
 #page-reports .panel { background:var(--bg-1); border:1px solid var(--line); overflow:hidden; }
 #page-reports .panel-header { display:flex; justify-content:space-between; align-items:center; padding:14px 20px; border-bottom:1px solid var(--line); background:var(--bg-2); }
 #page-reports .panel-title { font-family:'JetBrains Mono', monospace; font-size:11px; text-transform:uppercase; letter-spacing:2px; color:var(--text-2); font-weight:600; }
@@ -5061,6 +5081,7 @@ function renderProjects(radarProjects) {
   let currentFilter = 'all';
   let loaded = false;
   let usingFallback = false;
+  let metaSnapshot = null;
 
   const monthNames = {
     '01':'ינואר','02':'פברואר','03':'מרץ','04':'אפריל','05':'מאי','06':'יוני',
@@ -5258,6 +5279,38 @@ function renderProjects(radarProjects) {
     }).join('');
   }
 
+  function renderPortfolio(snap) {
+    if (!snap || !Array.isArray(snap.campaigns) || snap.campaigns.length === 0) return '';
+    const cards = snap.campaigns.map(c => {
+      const statusClass = (c.delivery_status || c.status || '').toLowerCase() === 'active' ? 'active' : 'paused';
+      const statusLabel = statusClass === 'active' ? 'ACTIVE' : 'PAUSED';
+      const health = (c.health || 'info').toLowerCase();
+      const name = (c.name || '').replace(/[‎‏]/g, '').trim();
+      const budget = c.daily_budget_usd ? `$${c.daily_budget_usd.toFixed(0)}/יום` : '—';
+      return `<div class="portfolio-card">
+        <div class="portfolio-card-head">
+          <span class="portfolio-status ${statusClass}">${statusLabel}</span>
+          <span class="portfolio-health ${health}">${health.toUpperCase()}</span>
+        </div>
+        <div class="portfolio-name">${name}</div>
+        <div class="portfolio-stats">
+          <div><div class="stat-label">SPEND</div><div class="stat-value gold">${fmtMoney(c.spend || 0)}</div></div>
+          <div><div class="stat-label">CONV.</div><div class="stat-value green">${c.conversations || 0}</div></div>
+          <div><div class="stat-label">$/CONV.</div><div class="stat-value">${fmtMoneyDec(c.cost_per_conversation || 0)}</div></div>
+          <div><div class="stat-label">CTR</div><div class="stat-value">${(c.ctr || 0).toFixed(2)}%</div></div>
+        </div>
+        <div class="portfolio-footer">תקציב ${budget} · ${fmtNum(c.impressions || 0)} חשיפות · CPM ${fmtMoneyDec(c.cpm || 0)}</div>
+      </div>`;
+    }).join('');
+    return `<div class="portfolio-panel fade-in delay-3">
+      <div class="panel-header">
+        <div class="panel-title">CAMPAIGN PORTFOLIO <span class="gold">▸</span> META · 30D</div>
+        <div class="panel-actions"><span style="font-size:10px;color:var(--text-3)">${snap.campaigns.length} קמפיינים</span></div>
+      </div>
+      <div class="portfolio-grid">${cards}</div>
+    </div>`;
+  }
+
   function render() {
     const app = document.getElementById('reports-app');
     if (!app) return;
@@ -5279,8 +5332,9 @@ function renderProjects(radarProjects) {
       dCTR = getDelta(avgCTR, compCTR);
     }
     const insights = detectInsights(filtered);
-    const now = new Date();
-    const timestampStr = `${String(now.getDate()).padStart(2,'0')}.${String(now.getMonth()+1).padStart(2,'0')}.${now.getFullYear()} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+    const snapDate = metaSnapshot && metaSnapshot.meta && metaSnapshot.meta.snapshot_at ? new Date(metaSnapshot.meta.snapshot_at) : new Date();
+    const timestampStr = `${String(snapDate.getDate()).padStart(2,'0')}.${String(snapDate.getMonth()+1).padStart(2,'0')}.${snapDate.getFullYear()} ${String(snapDate.getHours()).padStart(2,'0')}:${String(snapDate.getMinutes()).padStart(2,'0')}`;
+    const timestampLabel = metaSnapshot ? 'META SNAPSHOT' : 'PAGE LOAD';
     const filterLabels = { 'all':'כל הזמנים', '7d':'7 ימים אחרונים', '30d':'30 ימים אחרונים', 'this_month':'החודש', 'last_month':'חודש שעבר' };
     const sourceNote = usingFallback ? ' · <span style="color:var(--red)">FALLBACK</span>' : '';
 
@@ -5292,7 +5346,7 @@ function renderProjects(radarProjects) {
         </div>
         <div class="topbar-right">
           <div class="live-indicator"><span class="live-dot"></span><span>LIVE SYNC</span></div>
-          <div class="timestamp">${timestampStr}${sourceNote}</div>
+          <div class="timestamp">${timestampLabel} · ${timestampStr}${sourceNote}</div>
         </div>
       </div>
       <div class="filter-bar fade-in delay-1">
@@ -5323,6 +5377,13 @@ function renderProjects(radarProjects) {
           <div class="headline-meta">
             ${dLeads ? `<span class="delta ${dLeads.dir === 'up' ? 'up' : 'down'}">${dLeads.dir === 'up' ? '▲' : '▼'} ${dLeads.value}%</span>` : ''}
             <span class="delta-label">${dLeads ? 'מול תקופה קודמת' : `${(totalLeads/Math.max(filtered.length,1)).toFixed(1)} לדוח`}</span>
+          </div>
+        </div>
+        <div class="headline-cell">
+          <div class="headline-label">Conversations <span style="opacity:0.5;font-size:9px">(30d)</span></div>
+          <div class="headline-value gold">${metaSnapshot ? metaSnapshot.totals.total_conversations : '—'}</div>
+          <div class="headline-meta">
+            <span class="delta-label">${metaSnapshot ? `${fmtMoneyDec(metaSnapshot.totals.avg_cost_per_conversation)} / שיחה` : 'Meta snapshot N/A'}</span>
           </div>
         </div>
         <div class="headline-cell">
@@ -5360,6 +5421,7 @@ function renderProjects(radarProjects) {
           <div class="month-list">${renderMonths(allData)}</div>
         </div>
       </div>
+      ${renderPortfolio(metaSnapshot)}
       <div class="insights fade-in delay-4">
         ${insights.map(i => `
           <div class="insight">
@@ -5414,16 +5476,25 @@ function renderProjects(radarProjects) {
     if (loaded) { render(); return; }
     const app = document.getElementById('reports-app');
     if (app) app.innerHTML = '<div class="loading">LOADING DATA</div>';
-    let data = null;
-    try {
-      const resp = await fetch(CSV_URL);
-      if (resp.ok) {
-        const text = await resp.text();
-        data = parseCSV(text);
+    const csvPromise = (async () => {
+      try {
+        const resp = await fetch(CSV_URL);
+        if (resp.ok) return parseCSV(await resp.text());
+      } catch (e) {
+        console.log('[reports] CSV fetch blocked (CORS?), using fallback:', e.message);
       }
-    } catch (e) {
-      console.log('[reports] CSV fetch blocked (CORS?), using fallback:', e.message);
-    }
+      return null;
+    })();
+    const snapshotPromise = (async () => {
+      try {
+        const resp = await fetch('./campaigns/data.json', { cache: 'no-store' });
+        if (resp.ok) return await resp.json();
+      } catch (e) {
+        console.log('[reports] Meta snapshot fetch failed:', e.message);
+      }
+      return null;
+    })();
+    const [data, snapshot] = await Promise.all([csvPromise, snapshotPromise]);
     if (data && data.length > 0) {
       allData = data;
       usingFallback = false;
@@ -5431,6 +5502,7 @@ function renderProjects(radarProjects) {
       allData = [...FALLBACK];
       usingFallback = true;
     }
+    metaSnapshot = snapshot;
     allData.sort((a, b) => a.date.localeCompare(b.date));
     loaded = true;
     render();
