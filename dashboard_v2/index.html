@@ -5109,6 +5109,15 @@ function renderProjects(radarProjects) {
   let usingFallback = false;
   let metaSnapshot = null;
 
+  // Filter key → Meta window preset. "חודש שעבר" maps to last_90d (no exact preset).
+  const WINDOW_MAP = { 'all': 'maximum', '30d': 'last_30d', '7d': 'last_7d', 'last_month': 'last_90d' };
+  const WINDOW_LABEL = { 'all': 'ALL TIME', '30d': '30D', '7d': '7D', 'last_month': '90D' };
+  const getWindowSnap = (f) => {
+    if (!metaSnapshot || !metaSnapshot.windows) return null;
+    const key = WINDOW_MAP[f];
+    return key ? (metaSnapshot.windows[key] || null) : null;
+  };
+
   const monthNames = {
     '01':'ינואר','02':'פברואר','03':'מרץ','04':'אפריל','05':'מאי','06':'יוני',
     '07':'יולי','08':'אוגוסט','09':'ספטמבר','10':'אוקטובר','11':'נובמבר','12':'דצמבר'
@@ -5305,7 +5314,7 @@ function renderProjects(radarProjects) {
     }).join('');
   }
 
-  function renderPortfolio(snap) {
+  function renderPortfolio(snap, windowLabel) {
     if (!snap || !Array.isArray(snap.campaigns) || snap.campaigns.length === 0) return '';
     const cards = snap.campaigns.map(c => {
       const statusClass = (c.delivery_status || c.status || '').toLowerCase() === 'active' ? 'active' : 'paused';
@@ -5330,19 +5339,20 @@ function renderProjects(radarProjects) {
     }).join('');
     return `<div class="portfolio-panel fade-in delay-3" id="campaign-portfolio">
       <div class="panel-header">
-        <div class="panel-title">CAMPAIGN PORTFOLIO <span class="gold">▸</span> META · 30D</div>
+        <div class="panel-title">CAMPAIGN PORTFOLIO <span class="gold">▸</span> META · ${windowLabel || '30D'}</div>
         <div class="panel-actions"><span style="font-size:10px;color:var(--text-3)">${snap.campaigns.length} קמפיינים</span></div>
       </div>
       <div class="portfolio-grid">${cards}</div>
     </div>`;
   }
 
-  function renderFunnel(snap) {
+  function renderFunnel(snap, windowLabel) {
     let leads = [], meetings = [];
     try { leads = JSON.parse(localStorage.getItem('kph_boti_leads_v1') || '[]'); } catch (e) {}
     try { meetings = JSON.parse(localStorage.getItem('kph_toi_meetings_v1') || '[]'); } catch (e) {}
     const spend = snap && snap.totals ? (snap.totals.total_spend || 0) : 0;
     const conversations = snap && snap.totals ? (snap.totals.total_conversations || 0) : 0;
+    const wLabel = windowLabel || '30D';
 
     const thirtyDaysAgo = Date.now() - (30 * 24 * 60 * 60 * 1000);
     const recentLeads = leads.filter(l => l.contacted_at && new Date(l.contacted_at).getTime() > thirtyDaysAgo);
@@ -5410,7 +5420,7 @@ function renderProjects(radarProjects) {
 
     return `<div class="portfolio-panel fade-in delay-3" id="funnel-section">
       <div class="panel-header">
-        <div class="panel-title">🎯 FULL FUNNEL <span class="gold">▸</span> META + FIREBASE · 30D</div>
+        <div class="panel-title">🎯 FULL FUNNEL <span class="gold">▸</span> META · ${wLabel} + FIREBASE · 30D</div>
         <div class="panel-actions"><span style="font-size:10px;color:var(--text-3)">${recentLeads.length} לידים · ${recentMeetings.length} פגישות</span></div>
       </div>
       <div class="funnel-body">
@@ -5429,20 +5439,27 @@ function renderProjects(radarProjects) {
     if (!app) return;
     const filtered = filterData(allData, currentFilter);
     const comparison = getComparisonData(filtered, currentFilter, allData);
-    const totalSpend = sum(filtered, 'spend');
     const totalLeads = sum(filtered, 'leads');
     const totalClicks = sum(filtered, 'clicks');
     const totalImpressions = sum(filtered, 'impressions');
-    const avgCPL = totalLeads > 0 ? totalSpend / totalLeads : 0;
-    const avgCTR = totalImpressions > 0 ? (totalClicks / totalImpressions * 100) : 0;
+    const csvSpend = sum(filtered, 'spend');
+    const csvCTR = totalImpressions > 0 ? (totalClicks / totalImpressions * 100) : 0;
+    const windowSnap = getWindowSnap(currentFilter);
+    const windowLabel = WINDOW_LABEL[currentFilter] || '';
+    // Spend + CTR sourced from Meta window when available; CSV fallback otherwise.
+    // CPL stays CSV-only (Leads source is CSV, must use CSV spend to keep ratio consistent).
+    const totalSpend = windowSnap ? windowSnap.totals.total_spend : csvSpend;
+    const avgCTR = windowSnap ? windowSnap.totals.avg_ctr : csvCTR;
+    const avgCPL = totalLeads > 0 ? csvSpend / totalLeads : 0;
     let dSpend = null, dLeads = null, dCPL = null, dCTR = null;
     if (comparison && comparison.length > 0) {
-      dSpend = getDelta(totalSpend, sum(comparison, 'spend'));
+      // Suppress Spend/CTR deltas when sourced from Meta — comparison data is CSV-only.
+      dSpend = windowSnap ? null : getDelta(totalSpend, sum(comparison, 'spend'));
       dLeads = getDelta(totalLeads, sum(comparison, 'leads'));
       const compCPL = sum(comparison, 'leads') > 0 ? sum(comparison, 'spend') / sum(comparison, 'leads') : 0;
       dCPL = getDelta(avgCPL, compCPL);
       const compCTR = sum(comparison, 'impressions') > 0 ? sum(comparison, 'clicks') / sum(comparison, 'impressions') * 100 : 0;
-      dCTR = getDelta(avgCTR, compCTR);
+      dCTR = windowSnap ? null : getDelta(avgCTR, compCTR);
     }
     const insights = detectInsights(filtered);
     const snapDate = metaSnapshot && metaSnapshot.meta && metaSnapshot.meta.snapshot_at ? new Date(metaSnapshot.meta.snapshot_at) : new Date();
@@ -5464,10 +5481,9 @@ function renderProjects(radarProjects) {
       </div>
       <div class="filter-bar fade-in delay-1">
         <div class="filter-tabs">
-          <button class="filter-tab ${currentFilter === 'all' ? 'active' : ''}" data-f="all">All Time</button>
+          <button class="filter-tab ${currentFilter === 'all' ? 'active' : ''}" data-f="all">ALL TIME</button>
           <button class="filter-tab ${currentFilter === '30d' ? 'active' : ''}" data-f="30d">30D</button>
           <button class="filter-tab ${currentFilter === '7d' ? 'active' : ''}" data-f="7d">7D</button>
-          <button class="filter-tab ${currentFilter === 'this_month' ? 'active' : ''}" data-f="this_month">החודש</button>
           <button class="filter-tab ${currentFilter === 'last_month' ? 'active' : ''}" data-f="last_month">חודש שעבר</button>
         </div>
         <div class="filter-info">
@@ -5493,10 +5509,10 @@ function renderProjects(radarProjects) {
           </div>
         </div>
         <div class="headline-cell">
-          <div class="headline-label">Conversations <span style="opacity:0.5;font-size:9px">(30d)</span></div>
-          <div class="headline-value gold" id="metric-conversations">${metaSnapshot ? metaSnapshot.totals.total_conversations : '—'}</div>
+          <div class="headline-label">Conversations <span style="opacity:0.5;font-size:9px">(${windowLabel || '30d'})</span></div>
+          <div class="headline-value gold" id="metric-conversations">${windowSnap ? windowSnap.totals.total_conversations : '—'}</div>
           <div class="headline-meta">
-            <span class="delta-label">${metaSnapshot ? `${fmtMoneyDec(metaSnapshot.totals.avg_cost_per_conversation)} / שיחה` : 'Meta snapshot N/A'}</span>
+            <span class="delta-label">${windowSnap ? `${fmtMoneyDec(windowSnap.totals.avg_cost_per_conversation)} / שיחה` : 'Meta snapshot N/A'}</span>
           </div>
         </div>
         <div class="headline-cell">
@@ -5534,8 +5550,8 @@ function renderProjects(radarProjects) {
           <div class="month-list">${renderMonths(allData)}</div>
         </div>
       </div>
-      ${renderPortfolio(metaSnapshot)}
-      ${renderFunnel(metaSnapshot)}
+      ${renderPortfolio(windowSnap, windowLabel)}
+      ${renderFunnel(windowSnap, windowLabel)}
       <div class="insights fade-in delay-4">
         ${insights.map(i => `
           <div class="insight">

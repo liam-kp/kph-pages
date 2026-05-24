@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """
 fetch_snapshot.py — KPH Marketing Brain
-Pulls last_30d snapshot from Meta Marketing API and writes data.json.
+Pulls 4 time-window snapshots (last_7d, last_30d, last_90d, maximum) from Meta
+Marketing API and writes data.json with schema:
+  { meta, windows: { <preset>: { totals, campaigns } } }
 
 Usage:
     python3 fetch_snapshot.py
@@ -9,17 +11,9 @@ Usage:
 Requirements:
     - ~/.meta/token.txt containing a valid Meta Marketing API access token
     - Token needs permissions: ads_read, ads_management
-
-Output:
-    data.json (overwrites existing)
-
-Architecture note (KPR-170):
-    v1: Runs locally, writes to repo, git push manually triggers GitHub Pages.
-    v2: Will move to api.aiagentpro.online cron, frontend won't change.
 """
 
 import json
-import os
 import sys
 import urllib.request
 import urllib.parse
@@ -34,6 +28,8 @@ TOKEN_PATH = Path.home() / ".meta" / "token.txt"
 OUTPUT_PATH = Path(__file__).parent / "data.json"
 API_VERSION = "v21.0"
 BASE_URL = f"https://graph.facebook.com/{API_VERSION}"
+
+WINDOWS = ["last_7d", "last_30d", "last_90d", "maximum"]
 
 # Health thresholds (from 06_KPI_DEFINITIONS_v1.md)
 COST_PER_CONV_EXCELLENT = 8.0
@@ -64,7 +60,6 @@ def fetch_graph(path, params, token):
         sys.exit(f"❌ Network error: {e.reason}")
 
 def extract_conversations(actions):
-    """Pull WhatsApp/Messenger conversation count from insights actions array."""
     if not actions:
         return 0
     for a in actions:
@@ -76,7 +71,6 @@ def extract_conversations(actions):
     return 0
 
 def classify_health(cost_per_conv, frequency):
-    """Returns ('excellent'|'good'|'warning'|'kill', verdict_string)."""
     if cost_per_conv is None or cost_per_conv == 0:
         return ("warning", "no_conversations")
     if frequency and frequency > 3.5:
@@ -97,35 +91,17 @@ def safe_float(v, default=0.0):
     except (ValueError, TypeError):
         return default
 
-# ─── Main ─────────────────────────────────────────────────────────────────
-def main():
-    print(f"🔑 Loading token from {TOKEN_PATH}")
-    token = load_token()
-
-    print(f"📡 Fetching campaigns from Ad Account {AD_ACCOUNT_ID} (last 30d)...")
-
-    # Campaign-level insights for last_30d
+def fetch_window(preset, meta_by_id, token):
     insights = fetch_graph(
         f"act_{AD_ACCOUNT_ID}/insights",
         {
             "level": "campaign",
-            "date_preset": "last_30d",
+            "date_preset": preset,
             "fields": "campaign_id,campaign_name,spend,impressions,clicks,ctr,cpc,cpm,frequency,reach,actions",
             "limit": "100",
         },
         token,
     )
-
-    # Campaign metadata (status, budget, objective)
-    campaigns_meta = fetch_graph(
-        f"act_{AD_ACCOUNT_ID}/campaigns",
-        {
-            "fields": "id,name,status,effective_status,objective,daily_budget,lifetime_budget",
-            "limit": "100",
-        },
-        token,
-    )
-    meta_by_id = {c["id"]: c for c in campaigns_meta.get("data", [])}
 
     campaigns = []
     totals = dict(spend=0.0, impressions=0, clicks=0, conversations=0,
@@ -178,25 +154,14 @@ def main():
         elif status == "PAUSED":
             totals["paused_campaigns"] += 1
 
-    # Sort by spend descending
     campaigns.sort(key=lambda c: c["spend"], reverse=True)
 
-    # Aggregate averages
     avg_ctr = (totals["clicks"] / totals["impressions"] * 100) if totals["impressions"] else 0
     avg_cpc = (totals["spend"] / totals["clicks"]) if totals["clicks"] else 0
     avg_cpm = (totals["spend"] / totals["impressions"] * 1000) if totals["impressions"] else 0
     avg_cpconv = (totals["spend"] / totals["conversations"]) if totals["conversations"] else 0
 
-    output = {
-        "meta": {
-            "ad_account_id": AD_ACCOUNT_ID,
-            "account_name": ACCOUNT_NAME,
-            "currency": "USD",
-            "snapshot_at": datetime.now(timezone(timedelta(hours=7))).isoformat(),
-            "date_range": "last_30d",
-            "generator": "fetch_snapshot.py v1.0",
-            "is_mock": False,
-        },
+    return {
         "totals": {
             "total_spend": round(totals["spend"], 2),
             "total_impressions": totals["impressions"],
@@ -212,10 +177,45 @@ def main():
         "campaigns": campaigns,
     }
 
+# ─── Main ─────────────────────────────────────────────────────────────────
+def main():
+    print(f"🔑 Loading token from {TOKEN_PATH}")
+    token = load_token()
+
+    print(f"📡 Fetching campaign metadata from Ad Account {AD_ACCOUNT_ID}...")
+    campaigns_meta = fetch_graph(
+        f"act_{AD_ACCOUNT_ID}/campaigns",
+        {
+            "fields": "id,name,status,effective_status,objective,daily_budget,lifetime_budget",
+            "limit": "100",
+        },
+        token,
+    )
+    meta_by_id = {c["id"]: c for c in campaigns_meta.get("data", [])}
+
+    windows = {}
+    for preset in WINDOWS:
+        print(f"📡 Fetching insights for {preset}...")
+        windows[preset] = fetch_window(preset, meta_by_id, token)
+
+    output = {
+        "meta": {
+            "ad_account_id": AD_ACCOUNT_ID,
+            "account_name": ACCOUNT_NAME,
+            "currency": "USD",
+            "snapshot_at": datetime.now(timezone(timedelta(hours=7))).isoformat(),
+            "windows_available": WINDOWS,
+            "generator": "fetch_snapshot.py v2.0",
+            "is_mock": False,
+        },
+        "windows": windows,
+    }
+
     OUTPUT_PATH.write_text(json.dumps(output, indent=2, ensure_ascii=False))
     print(f"✅ Wrote {OUTPUT_PATH}")
-    print(f"   Campaigns: {len(campaigns)} ({totals['active_campaigns']} active, {totals['paused_campaigns']} paused)")
-    print(f"   Total spend: ${totals['spend']:.2f} | Conversations: {totals['conversations']} | Avg CpC: ${avg_cpconv:.2f}")
+    for preset in WINDOWS:
+        t = windows[preset]["totals"]
+        print(f"   {preset:10s} ${t['total_spend']:>9.2f} · {t['total_conversations']:>4} conv · CpC ${t['avg_cost_per_conversation']:.2f}")
 
 if __name__ == "__main__":
     main()
