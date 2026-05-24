@@ -602,6 +602,32 @@ tr.pipeline-row-pinned td:first-child { box-shadow: inset 4px 0 0 #FBBF24; }
 #page-reports .portfolio-health.good { color:var(--gold); background:var(--gold-dim); }
 #page-reports .portfolio-health.warning { color:var(--gold); background:var(--gold-dim); }
 #page-reports .portfolio-health.alert { color:var(--red); background:var(--red-dim); }
+
+#page-reports .funnel-body { padding:20px; }
+#page-reports .funnel-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:8px; margin-bottom:20px; }
+#page-reports .funnel-step { position:relative; padding:14px 8px; background:var(--bg-2); border:1px solid var(--line); text-align:center; }
+#page-reports .funnel-label { font-family:'JetBrains Mono', monospace; font-size:9px; color:var(--text-3); letter-spacing:1.5px; text-transform:uppercase; margin-bottom:6px; }
+#page-reports .funnel-value { font-family:'JetBrains Mono', monospace; font-size:20px; font-weight:700; color:var(--text-1); }
+#page-reports .funnel-value.green { color:var(--green-bright); }
+#page-reports .funnel-value.gold { color:var(--gold-bright); }
+#page-reports .funnel-arrow { position:absolute; right:-9px; top:50%; transform:translateY(-50%); color:var(--text-3); font-size:18px; z-index:2; background:var(--bg-1); padding:0 2px; }
+#page-reports .funnel-kpi-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:20px; }
+#page-reports .funnel-kpi { padding:12px; background:var(--bg-2); border:1px solid var(--line); text-align:center; }
+#page-reports .funnel-kpi-value { font-family:'JetBrains Mono', monospace; font-size:17px; font-weight:700; margin-top:4px; color:var(--text-1); }
+#page-reports .funnel-kpi-value.green { color:var(--green-bright); }
+#page-reports .funnel-kpi-value.gold { color:var(--gold-bright); }
+#page-reports .funnel-projects { border-top:1px dashed var(--line); padding-top:14px; }
+#page-reports .funnel-projects-title { font-family:'JetBrains Mono', monospace; font-size:10px; color:var(--text-3); letter-spacing:2px; text-transform:uppercase; margin-bottom:10px; }
+#page-reports .funnel-projects-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(180px,1fr)); gap:8px; }
+#page-reports .funnel-project-row { display:flex; justify-content:space-between; align-items:center; padding:10px 12px; background:var(--bg-2); border:1px solid var(--line); }
+#page-reports .funnel-project-name { font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--text-2); }
+#page-reports .funnel-project-count { font-family:'JetBrains Mono', monospace; font-size:14px; font-weight:700; color:var(--green-bright); }
+@media (max-width: 768px) {
+  #page-reports .funnel-grid { grid-template-columns:repeat(3,1fr); }
+  #page-reports .funnel-arrow { display:none; }
+  #page-reports .funnel-kpi-grid { grid-template-columns:repeat(2,1fr); }
+}
+
 #page-reports .panel { background:var(--bg-1); border:1px solid var(--line); overflow:hidden; }
 #page-reports .panel-header { display:flex; justify-content:space-between; align-items:center; padding:14px 20px; border-bottom:1px solid var(--line); background:var(--bg-2); }
 #page-reports .panel-title { font-family:'JetBrains Mono', monospace; font-size:11px; text-transform:uppercase; letter-spacing:2px; color:var(--text-2); font-weight:600; }
@@ -5311,6 +5337,93 @@ function renderProjects(radarProjects) {
     </div>`;
   }
 
+  function renderFunnel(snap) {
+    let leads = [], meetings = [];
+    try { leads = JSON.parse(localStorage.getItem('kph_boti_leads_v1') || '[]'); } catch (e) {}
+    try { meetings = JSON.parse(localStorage.getItem('kph_toi_meetings_v1') || '[]'); } catch (e) {}
+    const spend = snap && snap.totals ? (snap.totals.total_spend || 0) : 0;
+    const conversations = snap && snap.totals ? (snap.totals.total_conversations || 0) : 0;
+
+    const thirtyDaysAgo = Date.now() - (30 * 24 * 60 * 60 * 1000);
+    const recentLeads = leads.filter(l => l.contacted_at && new Date(l.contacted_at).getTime() > thirtyDaysAgo);
+    const recentMeetings = meetings.filter(m => m.date && new Date(m.date).getTime() > thirtyDaysAgo);
+
+    const contacted = recentLeads.filter(l => l.contacted_at).length;
+    const inConv = recentLeads.filter(l => l.status === 'in_conversation').length;
+    const transferred = recentLeads.filter(l => l.transferred_to_pipeline).length;
+
+    const steps = [
+      { label: 'SPEND', value: '$' + spend.toFixed(0), cls: 'gold' },
+      { label: 'CONV.', value: conversations, cls: 'green' },
+      { label: 'LEADS', value: recentLeads.length, cls: 'green' },
+      { label: 'CONTACTED', value: contacted, cls: 'green' },
+      { label: 'IN CONV', value: inConv, cls: 'green' },
+      { label: 'MEETINGS', value: recentMeetings.length, cls: 'green' },
+      { label: 'DEALS', value: transferred, cls: 'gold' }
+    ];
+
+    const replyRate = conversations > 0 ? ((contacted / conversations) * 100).toFixed(1) + '%' : '—';
+    const meetingRate = recentLeads.length > 0 ? ((recentMeetings.length / recentLeads.length) * 100).toFixed(1) + '%' : '—';
+    const cpl = recentLeads.length > 0 ? '$' + (spend / recentLeads.length).toFixed(2) : '—';
+    const cpMeeting = recentMeetings.length > 0 ? '$' + (spend / recentMeetings.length).toFixed(2) : '—';
+
+    const projectMap = {
+      'KP-BCH-011': 'Red Sunset',
+      'KP-ZEN-012': 'ZENITH',
+      'KP-SRI-013': 'Srithanu (BNS)',
+      'KP-NAI-014': 'Villa Nai-Wok'
+    };
+    const byProject = {};
+    recentMeetings.forEach(m => {
+      const key = m.project || 'unattributed';
+      byProject[key] = (byProject[key] || 0) + 1;
+    });
+
+    const funnelCells = steps.map((s, i) => `
+      <div class="funnel-step">
+        <div class="funnel-label">${s.label}</div>
+        <div class="funnel-value ${s.cls}">${s.value}</div>
+        ${i < steps.length - 1 ? '<div class="funnel-arrow">›</div>' : ''}
+      </div>
+    `).join('');
+
+    const kpiCells = [
+      { label: 'Reply Rate', value: replyRate, cls: 'green' },
+      { label: 'Meeting Rate', value: meetingRate, cls: 'green' },
+      { label: 'Cost per Lead', value: cpl, cls: 'gold' },
+      { label: 'Cost per Meeting', value: cpMeeting, cls: 'gold' }
+    ].map(k => `
+      <div class="funnel-kpi ${k.cls}">
+        <div class="funnel-label">${k.label}</div>
+        <div class="funnel-kpi-value ${k.cls}">${k.value}</div>
+      </div>
+    `).join('');
+
+    const projectRows = Object.keys(byProject).length === 0
+      ? '<div style="color:var(--text-3);font-family:\'JetBrains Mono\',monospace;font-size:11px;">אין פגישות ב-30 ימים אחרונים</div>'
+      : Object.entries(byProject).map(([key, count]) => `
+        <div class="funnel-project-row">
+          <span class="funnel-project-name">${projectMap[key] || key}</span>
+          <span class="funnel-project-count">${count}</span>
+        </div>
+      `).join('');
+
+    return `<div class="portfolio-panel fade-in delay-3" id="funnel-section">
+      <div class="panel-header">
+        <div class="panel-title">🎯 FULL FUNNEL <span class="gold">▸</span> META + FIREBASE · 30D</div>
+        <div class="panel-actions"><span style="font-size:10px;color:var(--text-3)">${recentLeads.length} לידים · ${recentMeetings.length} פגישות</span></div>
+      </div>
+      <div class="funnel-body">
+        <div class="funnel-grid">${funnelCells}</div>
+        <div class="funnel-kpi-grid">${kpiCells}</div>
+        <div class="funnel-projects">
+          <div class="funnel-projects-title">MEETINGS BY PROJECT</div>
+          <div class="funnel-projects-grid">${projectRows}</div>
+        </div>
+      </div>
+    </div>`;
+  }
+
   function render() {
     const app = document.getElementById('reports-app');
     if (!app) return;
@@ -5422,6 +5535,7 @@ function renderProjects(radarProjects) {
         </div>
       </div>
       ${renderPortfolio(metaSnapshot)}
+      ${renderFunnel(metaSnapshot)}
       <div class="insights fade-in delay-4">
         ${insights.map(i => `
           <div class="insight">
