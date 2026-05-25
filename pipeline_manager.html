@@ -257,6 +257,7 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background:#10141a; color:#dfe
     <div class="modal-body">
       <p class="text-xs text-on-surface-variant">הטוקן נשמר ב-localStorage של הדפדפן. השג אותו מ-AI Agent Pro → DevTools → <code class="text-secondary">JSON.parse(localStorage.getItem('auth-storage')).state.token</code></p>
       <input id="token-input" class="form-input" placeholder="Paste Bearer token..." type="password"/>
+      <div id="token-error" class="text-xs hidden" style="color:#f47373;"></div>
     </div>
     <div class="modal-footer">
       <button onclick="saveToken()" class="bg-primary text-on-primary px-6 py-2 text-xs font-bold active:scale-95 transition-transform">שמור</button>
@@ -434,12 +435,24 @@ let lastFetchAt = null;
 let pendingAction = null;
 
 // TOKEN (matches dashboard_v2 pattern)
+function cleanHeader(value) {
+  if (typeof value !== 'string') return '';
+  return value.replace(/[^\x20-\x7E]/g, '').trim();
+}
+function validateToken(token) {
+  if (!token) return 'יש להזין טוקן';
+  if (!/^[\x20-\x7E]+$/.test(token)) {
+    return 'הטוקן מכיל תווים לא חוקיים (עברית/יוניקוד) — העתק טוקן ASCII בלבד';
+  }
+  if (token.length < 20) return 'הטוקן קצר מדי';
+  return null;
+}
 function getToken() {
-  const s = sessionStorage.getItem('kph_token'); if (s) return s;
-  const l = localStorage.getItem('kph_token'); if (l) return l;
+  const s = sessionStorage.getItem('kph_token'); if (s) return cleanHeader(s);
+  const l = localStorage.getItem('kph_token'); if (l) return cleanHeader(l);
   try {
     const a = JSON.parse(localStorage.getItem('auth-storage') || '{}');
-    if (a && a.state && a.state.token) return a.state.token;
+    if (a && a.state && a.state.token) return cleanHeader(a.state.token);
   } catch(e) {}
   return '';
 }
@@ -450,13 +463,29 @@ function setToken(t) {
 function showTokenModal() {
   document.getElementById('token-modal').classList.remove('hidden');
   document.getElementById('token-input').value = getToken();
+  clearTokenError();
 }
 function hideTokenModal() {
   document.getElementById('token-modal').classList.add('hidden');
+  clearTokenError();
+}
+function showTokenError(msg) {
+  const el = document.getElementById('token-error');
+  el.textContent = msg;
+  el.classList.remove('hidden');
+  document.getElementById('token-input').style.borderBottomColor = '#f47373';
+}
+function clearTokenError() {
+  const el = document.getElementById('token-error');
+  el.textContent = '';
+  el.classList.add('hidden');
+  document.getElementById('token-input').style.borderBottomColor = '';
 }
 function saveToken() {
   const t = document.getElementById('token-input').value.trim();
-  if (t) { setToken(t); hideTokenModal(); reloadLeads(); }
+  const err = validateToken(t);
+  if (err) { showTokenError(err); return; }
+  setToken(t); hideTokenModal(); reloadLeads();
 }
 function isAuthError(err) {
   return /401|auth|token|unauthorized|migration/i.test(String(err));
@@ -482,12 +511,25 @@ function toast(msg, isError) {
 }
 
 // API
+function friendlyFetchError(err, method, path) {
+  const msg = String(err && err.message || err);
+  if (/ISO-8859-1|non[- ]ASCII|code point/i.test(msg)) {
+    return new Error('הטוקן מכיל תווים לא חוקיים — העתק שוב טוקן מהדשבורד');
+  }
+  return new Error(method + ' ' + path + ' ' + msg);
+}
+
 async function apiGet(path) {
   const token = getToken();
   if (!token) throw new Error('No token');
+  const tokenErr = validateToken(token);
+  if (tokenErr) throw new Error(tokenErr);
   const sep = path.indexOf('?') >= 0 ? '&' : '?';
   const url = AIAGENTPRO_API + '/api/firebase-data/' + path + sep + 'customerId=' + CUSTOMER_ID;
-  const res = await fetch(url, { headers: { 'Authorization': 'Bearer ' + token } });
+  let res;
+  try {
+    res = await fetch(url, { headers: { 'Authorization': cleanHeader('Bearer ' + token) } });
+  } catch (e) { throw friendlyFetchError(e, 'GET', path); }
   if (!res.ok) {
     const body = await res.text().catch(function(){ return ''; });
     throw new Error('GET ' + path + ' ' + res.status + (body ? ': ' + body.slice(0, 160) : ''));
@@ -498,12 +540,17 @@ async function apiGet(path) {
 async function apiPut(path, payload) {
   const token = getToken();
   if (!token) throw new Error('No token');
+  const tokenErr = validateToken(token);
+  if (tokenErr) throw new Error(tokenErr);
   const url = AIAGENTPRO_API + '/api/firebase-data/' + path + '?customerId=' + CUSTOMER_ID;
-  const res = await fetch(url, {
-    method: 'PUT',
-    headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
-  });
+  let res;
+  try {
+    res = await fetch(url, {
+      method: 'PUT',
+      headers: { 'Authorization': cleanHeader('Bearer ' + token), 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+  } catch (e) { throw friendlyFetchError(e, 'PUT', path); }
   if (!res.ok) {
     const body = await res.text().catch(function(){ return ''; });
     throw new Error('PUT ' + path + ' ' + res.status + (body ? ': ' + body.slice(0, 160) : ''));
