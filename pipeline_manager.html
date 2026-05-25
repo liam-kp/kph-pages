@@ -960,6 +960,50 @@ function confirmLost() {
   doTransition(extras, reason);
 }
 
+// META CAPI (non-blocking; UI must work even if Meta is down)
+const CAPI_URL = 'https://kohphanganinvestmenthub.com/api/capi/event';
+
+function lastHotSignalType(lead) {
+  const raw = lead && lead.hot_signals_json;
+  if (!raw) return undefined;
+  try {
+    const arr = typeof raw === 'string' ? JSON.parse(raw) : raw;
+    if (!Array.isArray(arr) || arr.length === 0) return undefined;
+    const last = arr[arr.length - 1] || {};
+    return last.type || last.signal_type || undefined;
+  } catch (e) { return undefined; }
+}
+
+async function fireCAPIEvent(lead, historyEntry, extras) {
+  const payload = {
+    lead_id: lead._id || lead.id,
+    phone_number: lead.phone_number || lead.contact_id || '',
+    pipeline_history_entry: historyEntry,
+    campaign_code: lead.project_code || lead.project_id || 'unknown'
+  };
+  if (lead.name) payload.name = lead.name;
+  if (lead.tier) payload.tier = lead.tier;
+  const hot = lastHotSignalType(lead);
+  if (hot) payload.hot_signal = hot;
+  if (extras && extras.deal_value != null) payload.deal_value = extras.deal_value;
+  if (extras && extras.deal_currency) payload.deal_currency = extras.deal_currency;
+
+  const res = await fetch(CAPI_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+  const result = await res.json().catch(function(){ return {}; });
+  if (res.ok && result && result.meta_response && result.meta_response.events_received === 1) {
+    console.log('[KPR-180] CAPI event sent', result.event_id);
+    toast('📊 Meta updated: ' + historyEntry.to);
+  } else {
+    console.warn('[KPR-180] CAPI non-OK', res.status, result);
+    toast('📊 Meta sync failed (saved locally)', true);
+  }
+  return result;
+}
+
 // CORE TRANSITION (GET → append → PUT)
 async function doTransition(extras, note) {
   if (!pendingAction) return;
@@ -1009,6 +1053,12 @@ async function doTransition(extras, note) {
     renderKPIs();
     toast('✅ ' + leadDisplayName(updated) + ' → ' + target);
     console.log('[KPR-179] stage change', { leadId: leadId, from: fromStage, to: target, payload: payload });
+
+    // KPR-180.3: fire Meta CAPI in parallel; non-blocking
+    fireCAPIEvent(updated, entry, extras).catch(function(err){
+      console.error('[KPR-180] CAPI fire failed (non-fatal)', err);
+      toast('📊 Meta sync failed (saved locally)', true);
+    });
   } catch (e) {
     console.error('PUT failed', e);
     if (!handleAuthError(e.message)) toast('עדכון נכשל: ' + e.message, true);
