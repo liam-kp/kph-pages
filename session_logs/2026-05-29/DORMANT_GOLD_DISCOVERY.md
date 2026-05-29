@@ -132,3 +132,63 @@ The 85/13/11/61 split is from the 2026-04-18 audit (then 203 live); live ghosts 
 
 ---
 _Read-only discovery. No writes to Firebase. Sources: live `/Leads` GET + on-disk legacy audit artifacts (2026-03-01 → 2026-04-19)._
+
+---
+
+## SECTION 5 — WhatsApp / Baileys source (KPR-195 · A1.2) ✅ VERIFIED
+
+**Added 2026-05-29 · Autonomous, READ-ONLY.** Maps the third source A1 left un-mapped: the **current business WhatsApp / Baileys era**, to find people who talked to us after the Baileys cutover but have no valid Firebase Lead (LID/ghost-bug victims).
+
+### 5.1 Source — FOUND, accessible via wrapper (NOT phone extraction)
+A1 assumed the live WhatsApp source was dead (Green API expired 2026-02-05). **That is wrong for the Baileys era.** The Baileys/`WHATSAPP_WEB` conversations live in a **separate Postgres** behind `whatsapp-agents-backend` (Render, oregon) — which **is** the service at `api.aiagentpro.online`. The A1 STEP-1 probes 404'd only because the route mounts subpaths:
+
+| Endpoint | Result |
+|---|---|
+| `GET /api/conversations` | 404 (no root handler) |
+| `GET /api/conversations/all` | **200 ✅** — 443 conversations w/ embedded contact + latest msg |
+| `GET /api/messages/all` | 200 ✅ (paginated, returns latest 50 only) |
+| `GET /api/firebase-data/Leads` | 200 ✅ — 312 leads |
+
+→ **Source = Postgres via wrapper. No phone extraction needed.** Auth = admin Bearer (`~/.kph_admin_token`).
+
+### 5.2 Baileys conversation corpus ✅ VERIFIED
+| Metric | Value | Confidence |
+|---|---:|:--:|
+| Conversations | **443** | ✅ counted |
+| Unique contacts | **433** | ✅ counted |
+| — individual / group | 408 / 25 | ✅ |
+| Channel | KP Hub - Production (`WHATSAPP_WEB`) | ✅ (442/443; 1 stray test channel) |
+| Time window | **2026-02-28 → 2026-05-29** | ✅ confirms Baileys era (post-Feb-2026) |
+
+Contact-ID format split (the LID/ghost signal at source): **60 real E.164 · 335 `lidId`-set (pure LID) · 38 ghost externalId ≥14 digits** → **373 / 433 (86%) are LID/ghost-format**, mirroring the 87.5% ghost rate in live Firebase.
+⚠️ Message **volume** is not exhaustive: `messages/all` caps at 50 and conversations embed only the latest message each. Contact- and conversation-level counts are fully verified; total message count would need per-conversation pagination.
+
+### 5.3 Cross-reference vs 312 Firebase Leads ✅ VERIFIED
+Leads carry a `contact_id` (UUID → Postgres Contact) — matched on `contact_id` first, then normalized phone. (292/312 leads have a contact_id; 17 are legacy w/ none.)
+
+| | Contacts | Note |
+|---|---:|---|
+| Have a valid Lead | **287** | 285 by contact_id + 2 by phone |
+| **GAP — talked, NO Lead** | **146** | the real exposure |
+| — groups (not leads) | 25 | exclude |
+| — **LID-ghost, no Lead** | **66** | bug victims, non-dialable as-is |
+| — **real phone, no Lead** | **55** | of which **50 solidly dialable** (44 🇮🇱 972 · 3 🇹🇭 66 · 2 🇺🇸 · 1 🇷🇺) + 5 odd-length |
+
+### 5.4 The number Liam wants
+**116 individual contacts messaged the Baileys WhatsApp but have no CRM Lead** (146 gap − 25 groups − 5 odd-length):
+- **~50 reachable real people** (mostly Israeli + Thai numbers) — talked, dialable, **never became a Lead**. Immediate reactivation gold, no normalization needed.
+- **66 LID-ghost victims** — talked, but the LID/ghost bug left them with a non-dialable contact and no Lead; recoverable only after LID→phone resolution (same blocker as the 272 live-FB ghosts).
+
+### 5.5 Self-verify
+| # | Claim | Status |
+|---|---|---|
+| 5-1 | Baileys source reachable via wrapper (`/api/conversations/all`) | ✅ VERIFIED (HTTP 200, 443 rows) |
+| 5-2 | 443 conv / 433 contacts / window 02-28→05-29 | ✅ VERIFIED (counted) |
+| 5-3 | 287 have Lead · 146 gap · 66 ghost · 50 dialable | ✅ VERIFIED (contact_id + phone join) |
+| 5-4 | Total message volume | ⚠️ NOT EXHAUSTIVE (endpoint paginates at 50) |
+| — | Zero data writes (GET only) | ✅ VERIFIED |
+
+**Bottom line (A1.2):** The Baileys WhatsApp source is **live and queryable** — A1's "no fresh source" conclusion holds only for the Green-API legacy, not for this. **~50 dialable real leads** sit outside the CRM right now, plus **66 LID-ghost** talkers pending number resolution. Merge sequencing should add a Phase-0: pull the 50 dialable Baileys-gap contacts straight into `/Leads` (they already have valid phones + recent conversations), ahead of the heavier legacy-CSV migration.
+
+---
+_A1.2 read-only discovery. No writes to Firebase or Postgres — GET only on `/api/conversations/all`, `/api/messages/all`, `/api/firebase-data/Leads`._
