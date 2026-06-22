@@ -1,8 +1,14 @@
 # KPH Brain — Changelog
 
+## 2026-06-23 — Step 3 migration (One-Brain consolidation)
+- `runbooks/meta-ads-mcp.md` — added (live account IDs, MCP tools, deploy flow, exact-trigger connection rule). Migrated from Marketing Brain.
+- `runbooks/audience-bank.md` — added (per-project audience presets, seed bank). Migrated from Marketing Brain.
+- `PLAYBOOKS/campaign-operations.md` — added (ACQUIRE loop, True ROAS, KPIs, language-readiness gate). Migrated from Marketing Brain.
+- `runbooks/website-map.md` — added (repo, build-time Firebase pull, slug map, /tour template, deep-link gap). Migrated from Website project.
+- `_INDEX.md` — expanded to route the migrated docs.
+- Marketing Brain + Website project IP now lives in the brain → their boxes can go thin / projects can collapse to one.
+
 ## 2026-06-18 — Step 2 scaffold
-- `_INDEX.md` — expanded from 3-line stub to full load-map; runbooks/ link preserved.
-- `INSTRUCTIONS_CORE.md` — added (thinned core: identity, scope, LAW 0–8, three systems, resource order, 4 gates, campaign→Maya exact-trigger rule, media→runbooks pointer).
-- `CAMPAIGN_PRELAUNCH_QA_GATE.md` — v2. Check 3 rewritten from PROJECT_KEYWORDS to exact-trigger (4 fields filled + Meta prefill char-for-char match). All PROJECT_KEYWORDS logic scrubbed. 7 checks retained.
-- `PLAYBOOKS/new-project-onboarding.md` — v2. Adam gate dropped from Stage 4 (Maya readiness = Claude filling 4 fields). Stage 2 locked to clone the /tour template.
-- `runbooks/image_upload_storage_url.md` — untouched (pre-existing).
+- Full `_INDEX.md`, `INSTRUCTIONS_CORE.md`, `CAMPAIGN_PRELAUNCH_QA_GATE.md` (v2 exact-trigger), `PLAYBOOKS/new-project-onboarding.md` (v2 /tour clone, no Adam gate), `_CHANGELOG.md`.
+- `.nojekyll` added at repo root — REQUIRED so GitHub Pages serves underscore-prefixed files (`_INDEX.md`, `_CHANGELOG.md`). Never remove it.
+- Push must use **liam-kp** with credential-helper reset (default anothermeateam2 → 403).
