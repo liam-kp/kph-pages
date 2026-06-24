@@ -16,7 +16,7 @@ Baked rules: PWRC on every write · EN=THB+USD+EUR / HE=THB+ILS ·
 ensure_ascii for HE/emoji · prompt-section PUT preserves existing sortOrder
 (re-GET first) · never PATCH · Cloudflare -> curl only.
 """
-import argparse, json, os, re, subprocess, sys, tempfile
+import argparse, json, os, re, subprocess, sys, tempfile, time
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA = os.path.join(ROOT, "data")
@@ -264,15 +264,72 @@ def cmd_diff(kp):
     return 0
 
 
+PP_FIELD = "availability_summary_public"
+# wrapper may bump these on write; not counted as an "unexpected" change
+TIMESTAMP_FIELDS = {"updated_at", "updatedAt", "last_updated_public"}
+
+
+def curl_put(url, body_obj):
+    # ensure_ascii=True for HE/emoji (aiagentpro wrapper convention); never PATCH.
+    data = json.dumps(body_obj, ensure_ascii=True)
+    out = subprocess.run(
+        ["curl", "-sS", "-X", "PUT", "-A", "Mozilla/5.0",
+         "-H", f"Authorization: Bearer {_token()}",
+         "-H", "Content-Type: application/json",
+         "--data-binary", data, url],
+        capture_output=True, text=True, check=True).stdout
+    return out
+
+
 def cmd_apply(kp, confirm=False):
+    # GUARD 1: no flag -> refuse, non-zero. A stub can never silently pass.
     if not confirm:
-        print("=== apply " + kp + " — GATE ===")
-        print("REFUSED. apply performs live PWRC writes to /Project_Inventory,")
-        print("/Projects_Public and prompt-sections. Re-run with --i-have-liams-go")
-        print("only after Liam approves the diff above.")
+        print(f"=== apply {kp} — GATE ===")
+        print("REFUSED. Live Firebase write requires --i-have-liams-go.")
         return 2
-    print("apply: would PWRC-write (GET-before -> PUT preserving sortOrder -> sleep 3 -> GET-after).")
-    print("Not implemented in dry-run build — gate intentionally stops here.")
+
+    ssot, fx = load_ssot(kp), load_fx()
+    tokens = derive_tokens(ssot)
+    intended = render_projects_public(ssot, tokens)[PP_FIELD]
+    url = f"{BASE}/firebase-data/Projects_Public/{kp}?customerId={CID}"
+
+    # PWRC: GET-before (full record)
+    before = curl_get(url)
+    before = before.get("data", before) if isinstance(before, dict) and "_id" not in before else before
+    before_val = before.get(PP_FIELD)
+
+    # write exactly ONE field on a full merged payload (PUT, never PATCH)
+    merged = dict(before)
+    merged[PP_FIELD] = intended
+    curl_put(url, merged)
+    time.sleep(3)
+
+    # GET-after (independent re-read)
+    after = curl_get(url)
+    after = after.get("data", after) if isinstance(after, dict) and "_id" not in after else after
+    after_val = after.get(PP_FIELD)
+
+    # side-by-side
+    print(f"=== PWRC apply {kp} : {PP_FIELD} ===")
+    print("GET-before:")
+    print(f"  {before_val!r}")
+    print("GET-after :")
+    print(f"  {after_val!r}")
+
+    changed = sorted(k for k in set(before) | set(after) if before.get(k) != after.get(k))
+    unexpected = [k for k in changed if k != PP_FIELD and k not in TIMESTAMP_FIELDS]
+    print(f"\nfields changed: {changed}")
+    print(f"prompt-sections written: 0 | Project_Inventory written: 0")
+
+    # GUARD 2: post-write assert. Never exit 0 without a verified exact match.
+    if after_val != intended:
+        print("\n‼️‼️ FAILED — live value != intended string. Write did NOT verify.")
+        print(f"INTENDED:\n  {intended!r}")
+        return 1
+    if unexpected:
+        print(f"\n‼️‼️ FAILED — unexpected fields changed: {unexpected}")
+        return 1
+    print("\n✅ VERIFIED — 1 field written, GET-after == intended EXACTLY, 0 other fields, 0 sections.")
     return 0
 
 
