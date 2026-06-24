@@ -1,0 +1,365 @@
+{
+  "project_id": "KP-ZEN-012",
+  "project_name": "Maduwan — Zenith",
+  "customerId": "11a3a8c9-d3db-4b32-8c08-35dd7868b959",
+  "developer": "Zenith Comp Co., Ltd",
+  "title_structure": "Individual Chanote title per villa — freehold or leasehold",
+  "location": "Maduwan, Koh Phangan, Surat Thani",
+  "location_blurb": "Maduwan — the heart of the island. Quiet, green, close to everything. 5 min to Sri Thanu & Hin Kong beaches · 1 min walk to 7/11 & Tops Daily · 4 min to Arki Kids School · 6 min to Podium Gym · 7 min to Thong Sala (island centre). Not on the sea — a 5-minute drive.",
+  "location_maps_url": "https://maps.app.goo.gl/WwD6Lj9G7uoEyUGD7",
+  "delivery": "Handover July 2027 (12–13 months from contract)",
+  "payment": "Five milestone payments of 20%, reservation → handover. 1-bed: flexible staged option (e.g. 30/15/20/10/20).",
+  "turnkey_included": [
+    "Private salt-system pool + decking",
+    "Air-conditioning throughout — 5 units + ceiling fans",
+    "Fitted kitchen — granite, gas hob, mixer",
+    "Furniture pack",
+    "Full landscaping + 1.5m perimeter wall",
+    "Individual Chanote title"
+  ],
+  "turnkey_note": "Furniture and selected finishes are provided to a set allowance and can be upgraded. Covered carport is not included.",
+  "model": "build-to-suit",
+  "model_note": "Buyer chooses a size tier and a design; developer builds on an available plot. Designs are customizable (pool size, house size, terrace, 1 / 1.5 / 2 storeys). Plot mappings below are EXAMPLES, not fixed assignments.",
+  "fx": {
+    "as_of": "2026-06-23",
+    "thb_to_usd": 0.0302,
+    "thb_to_eur": 0.0264,
+    "thb_to_ils": 0.0901,
+    "rounding": "nearest 100 (band figures to nearest 1000)",
+    "display_rule": {
+      "EN": "THB + USD + EUR",
+      "HE": "THB + ILS",
+      "never": [
+        "ILS in EN",
+        "USD or EUR in HE"
+      ]
+    },
+    "note": "SINGLE SOURCE for currency. Supersedes the old fx_thb_per_usd 32.5. Brochure v1/v2 were rendered at the earlier ฿32.5/$1 rate (USD ~1.8% higher, e.g. 1BR $107,700 vs $105,700) — reconcile on next brochure rebuild."
+  },
+  "band_pricing": [
+    {
+      "band": "1 Bed",
+      "thb": 3500000,
+      "usd": 105700,
+      "eur": 92400,
+      "ils": 315000
+    },
+    {
+      "band": "2 Bed",
+      "thb": 5250000,
+      "usd": 158600,
+      "eur": 138600,
+      "ils": 473000
+    },
+    {
+      "band": "3 Bed",
+      "thb": 5900000,
+      "usd": 178200,
+      "eur": 155800,
+      "ils": 532000
+    },
+    {
+      "band": "4 Bed / Grand",
+      "thb": 6900000,
+      "usd": 208400,
+      "eur": 182200,
+      "ils": 622000
+    }
+  ],
+  "headline_metric_policy": "Headline = built (indoor) area + plot size, both shown. Pool m2 and terrace m2 are named features, NEVER folded into built area.",
+  "hero_line": "Design your villa — 1 to 4 bedrooms, single or two-storey, your pool, your terrace. From THB 3.5M, central Koh Phangan.",
+  "land": {
+    "rows": {
+      "right_row_A_to_D_sqm_approx": 194,
+      "left_row_E_to_H_sqm_approx": 211
+    },
+    "plot_deed_sizes_sqm": {
+      "A": 194.88,
+      "B": 194.8,
+      "C": 194.8,
+      "D": 194.4,
+      "E": 211.6,
+      "F": 211.6,
+      "G": 211.19,
+      "H": 211.2
+    },
+    "plots": {
+      "A": {
+        "sqm": 194.88,
+        "status": "available"
+      },
+      "B": {
+        "sqm": 194.8,
+        "status": "available"
+      },
+      "C": {
+        "sqm": 194.8,
+        "status": "available"
+      },
+      "D": {
+        "sqm": 194.4,
+        "status": "SOLD"
+      },
+      "E": {
+        "sqm": 211.6,
+        "status": "available"
+      },
+      "F": {
+        "sqm": 211.6,
+        "status": "available"
+      },
+      "G": {
+        "sqm": 211.19,
+        "status": "RESERVED"
+      },
+      "H": {
+        "sqm": 211.2,
+        "status": "SOLD"
+      }
+    },
+    "scarcity": "5 of 8 villas remaining — only 2 of the larger 211 m² plots left (availability as of June 2026)",
+    "scarcity_line": "Larger 211 m2 plots — limited availability.",
+    "garden_premium_policy": "No garden premium on public assets — sales-conversation upsell only.",
+    "status_policy": "Dated count is the honest urgency in print; do not re-bake per-plot SOLD/RESERVED badges into the masked masterplan image."
+  },
+  "public_ladder": [
+    {
+      "band": "1 Bed",
+      "from_thb": 3500000,
+      "built_indoor_sqm": "~40",
+      "signature_feature": "Plunge pool, single-storey — the entry into Maduwan.",
+      "configs": [
+        "1BR"
+      ]
+    },
+    {
+      "band": "1 Bed + Study",
+      "from_thb": 4500000,
+      "built_indoor_sqm": "~60-65 (est)",
+      "signature_feature": "Add a dedicated study / work room to the 1-bed footprint.",
+      "configs": [],
+      "status": "positioning_only_no_floor_plan"
+    },
+    {
+      "band": "2 Bed",
+      "from_thb": 5250000,
+      "built_indoor_sqm": "79-118",
+      "signature_feature": "Single or two-storey, large-pool option; premium 2-bed to THB 6.7M.",
+      "configs": [
+        "2BR-1F",
+        "2BR-2F",
+        "2BR-BIG"
+      ]
+    },
+    {
+      "band": "3 Bed",
+      "from_thb": 5900000,
+      "built_indoor_sqm": "78-101",
+      "signature_feature": "1, 1.5 or 2 storeys — the most configurable band.",
+      "configs": [
+        "3BR-S",
+        "3BR-2F",
+        "3BR-1F"
+      ]
+    },
+    {
+      "band": "4 Bed / Grand",
+      "from_thb": 6900000,
+      "built_indoor_sqm": "up to 106 built / 157 total",
+      "signature_feature": "The largest footprint — the grand villa.",
+      "configs": [
+        "4BR"
+      ]
+    }
+  ],
+  "configs": [
+    {
+      "unit_id": "KP-ZEN-012-1BR",
+      "unit_type": "1BR",
+      "band": "1 Bed",
+      "villa_label_en": "1-Bedroom Plunge Villa",
+      "bedrooms": 1,
+      "floors": 1,
+      "built_size_sqm": 40.0,
+      "terrace_sqm": 12.0,
+      "pool_sqm": 9.0,
+      "total_area_sqm": 61.0,
+      "price_thb": 3500000,
+      "plot_code": "G",
+      "plot_size_sqm": 211.19,
+      "floor_plan_ref": "floor-plans/1BR/kp-zen-012_1br_floorplan.pdf",
+      "source_pdf": "KP-ZEN-012_Maduwan_1BR_floorplan_PlotG.pdf",
+      "alias_pdf": "Zennith Plot_G_210669.pdf",
+      "angle": "Smallest footprint, lowest entry — a private plunge-pool villa on a full plot.",
+      "unit_status": "available"
+    },
+    {
+      "unit_id": "KP-ZEN-012-2BR-1F",
+      "unit_type": "2BR-1F",
+      "band": "2 Bed",
+      "villa_label_en": "2-Bedroom Single-Storey Villa",
+      "bedrooms": 2,
+      "floors": 1,
+      "built_size_sqm": 79.4,
+      "terrace_sqm": 20.74,
+      "pool_sqm": 30.5,
+      "total_area_sqm": 130.64,
+      "price_thb": 5250000,
+      "plot_code": "C",
+      "plot_size_sqm": 194.8,
+      "floor_plan_ref": "floor-plans/2BR-1F/kp-zen-012_2br-1f_floorplan.pdf",
+      "source_pdf": "Zenith__Plot_C_06-02-69.pdf",
+      "angle": "Single-level living with a generous 30 m2 pool.",
+      "unit_status": "available"
+    },
+    {
+      "unit_id": "KP-ZEN-012-2BR-2F",
+      "unit_type": "2BR-2F",
+      "band": "2 Bed",
+      "villa_label_en": "2-Bedroom Two-Storey Villa",
+      "bedrooms": 2,
+      "floors": 2,
+      "built_size_sqm": 108.72,
+      "terrace_sqm": 18.15,
+      "pool_sqm": 9.24,
+      "total_area_sqm": 136.11,
+      "price_thb": 5500000,
+      "plot_code": null,
+      "plot_size_sqm": null,
+      "floor_plan_ref": "floor-plans/2BR-2F/kp-zen-012_2br-2f_floorplan.pdf",
+      "source_pdf": "Bedroom2 _Zenith_070568_260324_120859.pdf",
+      "angle": "Two storeys stack the bedrooms upstairs, freeing the ground floor.",
+      "unit_status": "available"
+    },
+    {
+      "unit_id": "KP-ZEN-012-2BR-BIG",
+      "unit_type": "2BR-BIG",
+      "band": "2 Bed",
+      "villa_label_en": "2-Bedroom Grand Villa",
+      "bedrooms": 2,
+      "floors": 1,
+      "built_size_sqm": 117.72,
+      "terrace_sqm": 40.52,
+      "pool_sqm": 13.52,
+      "total_area_sqm": 171.16,
+      "price_thb": 6700000,
+      "plot_code": "H",
+      "plot_size_sqm": 211.2,
+      "floor_plan_ref": "floor-plans/2BR-BIG/kp-zen-012_2br-big_floorplan.pdf",
+      "source_pdf": "Plot H - 6.7 M THB.pdf",
+      "angle": "Premium 2-bed: oversized 40 m2 terrace and the largest single-storey footprint.",
+      "unit_status": "available"
+    },
+    {
+      "unit_id": "KP-ZEN-012-3BR-S",
+      "unit_type": "3BR-S",
+      "band": "3 Bed",
+      "villa_label_en": "3-Bedroom Two-Storey Villa (Compact)",
+      "bedrooms": 3,
+      "floors": 2,
+      "built_size_sqm": 78.0,
+      "terrace_sqm": 16.88,
+      "pool_sqm": 12.5,
+      "total_area_sqm": 107.38,
+      "price_thb": 5900000,
+      "plot_code": null,
+      "plot_size_sqm": null,
+      "floor_plan_ref": "floor-plans/3BR-S/kp-zen-012_3br-s_floorplan.pdf",
+      "source_pdf": "Deed-Layout_Plan 3785_H2FL_R1_17-04-68.pdf",
+      "source_note": "PDF p1 = layout/site plan, p2 = ground+upper floor plans (this unit), p3 = roof plan (A-07, 17/04/68). Areas reconcile: 78 built + 16.88 terrace + 12.5 pool = 107.38 total. 3BR-S HAS a dedicated unit plan (Liam's confirmation holds).",
+      "angle": "Compact two-storey three-bed — three bedrooms on the smallest 3-bed footprint.",
+      "unit_status": "available"
+    },
+    {
+      "unit_id": "KP-ZEN-012-3BR-2F",
+      "unit_type": "3BR-2F",
+      "band": "3 Bed",
+      "villa_label_en": "3-Bedroom Two-Storey Villa (Large)",
+      "bedrooms": 3,
+      "floors": 2,
+      "built_size_sqm": 100.85,
+      "terrace_sqm": 15.36,
+      "pool_sqm": 9.24,
+      "total_area_sqm": 125.44,
+      "price_thb": 6400000,
+      "plot_code": "A",
+      "plot_size_sqm": 194.88,
+      "floor_plan_ref": "floor-plans/3BR-2F/kp-zen-012_3br-2f_floorplan.pdf",
+      "source_pdf": "3BR_A_Floor_plan.pdf",
+      "angle": "Full two-storey three-bed with the largest indoor area in the band.",
+      "unit_status": "available"
+    },
+    {
+      "unit_id": "KP-ZEN-012-3BR-1F",
+      "unit_type": "3BR-1F",
+      "band": "3 Bed",
+      "villa_label_en": "3-Bedroom Single-Storey Villa",
+      "bedrooms": 3,
+      "floors": 1,
+      "built_size_sqm": 93.17,
+      "terrace_sqm": 15.0,
+      "pool_sqm": 17.5,
+      "total_area_sqm": 125.67,
+      "price_thb": 6400000,
+      "plot_code": null,
+      "plot_size_sqm": null,
+      "floor_plan_ref": "floor-plans/3BR-1F/kp-zen-012_3br-1f_floorplan.pdf",
+      "source_pdf": "18-09-2568.pdf",
+      "angle": "Single-storey three-bed — everything on one level, 17.5 m2 pool.",
+      "unit_status": "available"
+    },
+    {
+      "unit_id": "KP-ZEN-012-4BR",
+      "unit_type": "4BR",
+      "band": "4 Bed / Grand",
+      "villa_label_en": "4-Bedroom Grand Villa",
+      "bedrooms": 4,
+      "floors": 2,
+      "built_size_sqm": 106.36,
+      "terrace_sqm": 26.64,
+      "pool_sqm": 24.3,
+      "total_area_sqm": 157.3,
+      "price_thb": 6900000,
+      "plot_code": "D",
+      "plot_size_sqm": 194.4,
+      "floor_plan_ref": "floor-plans/4BR/kp-zen-012_4br_floorplan.pdf",
+      "source_pdf": "Zenith_Plot_D_18-12-68.pdf",
+      "angle": "Four bedrooms across two storeys — the grand villa, up to 157 m2 total.",
+      "unit_status": "available"
+    }
+  ],
+  "site_features": [
+    "3-phase electricity",
+    "Deep well (water)",
+    "Central Koh Phangan location"
+  ],
+  "masterplan": {
+    "image_ref": "site-plan/kp-zen-012_masterplan.png",
+    "source": "Plots Layout - Zenith Maduwarn.png (newest in inbox, 2026-06-23)",
+    "warning": "Source image has 'SOLD OUT' (x2) and 'RESERVED' badges baked in. Conflicts with print status policy. For the brochure these are neutralized; live status belongs on the site/tour."
+  },
+  "exclusions": [
+    {
+      "file": "KP-ZEN-013_BNS_duplex_floorplan.pdf",
+      "reason": "Different project (KP-ZEN-013 BNS). Not imported."
+    }
+  ],
+  "deferred": [
+    {
+      "item": "1 Bed + Study (THB 4.5M)",
+      "reason": "Positioning/pricing construct only — no dedicated floor plan or verified specs. Present on ladder/idea pages as a configuration. Do NOT write to Firebase. Needs a developer floor plan to become a real unit."
+    }
+  ],
+  "confirm_items": [
+    "RESOLVED v2 (2026-06-23): title structure, delivery, payment, turn-key inclusions, location, plot scarcity — now filled in the brochure.",
+    "Still open: 1 Bed + Study (THB 4.5M) needs a developer floor plan to become a real unit.",
+    "Still open: clean status-free masterplan image from developer for any published asset (v2 uses masked image + dated scarcity count).",
+    "Still open: hero 'One Bedroom Unit - 3.5 M.jpeg' is low-res (738px-wide source) — request a higher-res render for print."
+  ],
+  "_ssot": {
+    "role": "SINGLE SOURCE OF TRUTH (authoring home) for KP-ZEN-012. kph-compile renders every surface from this file.",
+    "seeded_from": "~/Business/04_Thailand-Co/KPIH/assets/KP-ZEN-012/inventory.json (read-only) reconciled vs live GET /Project_Inventory + /Projects_Public on 2026-06-24",
+    "reconcile": "see _reconcile.md — live=current-truth default; file flagged where it differs. No silent picks.",
+    "note": "KPIH/assets copy NOT yet deprecated; pointer-stub deferred to apply phase per Liam."
+  }
+}
