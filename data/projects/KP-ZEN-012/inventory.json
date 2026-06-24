@@ -147,7 +147,6 @@
       "signature_feature": "Single or two-storey, large-pool option; premium 2-bed to THB 6.7M.",
       "configs": [
         "2BR-1F",
-        "2BR-2F",
         "2BR-BIG"
       ]
     },
@@ -157,9 +156,7 @@
       "built_indoor_sqm": "78-101",
       "signature_feature": "1, 1.5 or 2 storeys — the most configurable band.",
       "configs": [
-        "3BR-S",
-        "3BR-2F",
-        "3BR-1F"
+        "3BR-S"
       ]
     },
     {
@@ -191,7 +188,8 @@
       "source_pdf": "KP-ZEN-012_Maduwan_1BR_floorplan_PlotG.pdf",
       "alias_pdf": "Zennith Plot_G_210669.pdf",
       "angle": "Smallest footprint, lowest entry — a private plunge-pool villa on a full plot.",
-      "unit_status": "available"
+      "unit_status": "available",
+      "visibility": "public"
     },
     {
       "unit_id": "KP-ZEN-012-2BR-1F",
@@ -210,7 +208,8 @@
       "floor_plan_ref": "floor-plans/2BR-1F/kp-zen-012_2br-1f_floorplan.pdf",
       "source_pdf": "Zenith__Plot_C_06-02-69.pdf",
       "angle": "Single-level living with a generous 30 m2 pool.",
-      "unit_status": "available"
+      "unit_status": "available",
+      "visibility": "public"
     },
     {
       "unit_id": "KP-ZEN-012-2BR-2F",
@@ -229,7 +228,8 @@
       "floor_plan_ref": "floor-plans/2BR-2F/kp-zen-012_2br-2f_floorplan.pdf",
       "source_pdf": "Bedroom2 _Zenith_070568_260324_120859.pdf",
       "angle": "Two storeys stack the bedrooms upstairs, freeing the ground floor.",
-      "unit_status": "available"
+      "unit_status": "available",
+      "visibility": "internal_upsell"
     },
     {
       "unit_id": "KP-ZEN-012-2BR-BIG",
@@ -248,7 +248,8 @@
       "floor_plan_ref": "floor-plans/2BR-BIG/kp-zen-012_2br-big_floorplan.pdf",
       "source_pdf": "Plot H - 6.7 M THB.pdf",
       "angle": "Premium 2-bed: oversized 40 m2 terrace and the largest single-storey footprint.",
-      "unit_status": "available"
+      "unit_status": "available",
+      "visibility": "public"
     },
     {
       "unit_id": "KP-ZEN-012-3BR-S",
@@ -268,7 +269,8 @@
       "source_pdf": "Deed-Layout_Plan 3785_H2FL_R1_17-04-68.pdf",
       "source_note": "PDF p1 = layout/site plan, p2 = ground+upper floor plans (this unit), p3 = roof plan (A-07, 17/04/68). Areas reconcile: 78 built + 16.88 terrace + 12.5 pool = 107.38 total. 3BR-S HAS a dedicated unit plan (Liam's confirmation holds).",
       "angle": "Compact two-storey three-bed — three bedrooms on the smallest 3-bed footprint.",
-      "unit_status": "available"
+      "unit_status": "available",
+      "visibility": "public"
     },
     {
       "unit_id": "KP-ZEN-012-3BR-2F",
@@ -287,7 +289,8 @@
       "floor_plan_ref": "floor-plans/3BR-2F/kp-zen-012_3br-2f_floorplan.pdf",
       "source_pdf": "3BR_A_Floor_plan.pdf",
       "angle": "Full two-storey three-bed with the largest indoor area in the band.",
-      "unit_status": "available"
+      "unit_status": "available",
+      "visibility": "internal_upsell"
     },
     {
       "unit_id": "KP-ZEN-012-3BR-1F",
@@ -306,7 +309,8 @@
       "floor_plan_ref": "floor-plans/3BR-1F/kp-zen-012_3br-1f_floorplan.pdf",
       "source_pdf": "18-09-2568.pdf",
       "angle": "Single-storey three-bed — everything on one level, 17.5 m2 pool.",
-      "unit_status": "available"
+      "unit_status": "available",
+      "visibility": "internal_upsell"
     },
     {
       "unit_id": "KP-ZEN-012-4BR",
@@ -325,7 +329,8 @@
       "floor_plan_ref": "floor-plans/4BR/kp-zen-012_4br_floorplan.pdf",
       "source_pdf": "Zenith_Plot_D_18-12-68.pdf",
       "angle": "Four bedrooms across two storeys — the grand villa, up to 157 m2 total.",
-      "unit_status": "available"
+      "unit_status": "available",
+      "visibility": "public"
     }
   ],
   "site_features": [
@@ -360,6 +365,8 @@
     "role": "SINGLE SOURCE OF TRUTH (authoring home) for KP-ZEN-012. kph-compile renders every surface from this file.",
     "seeded_from": "~/Business/04_Thailand-Co/KPIH/assets/KP-ZEN-012/inventory.json (read-only) reconciled vs live GET /Project_Inventory + /Projects_Public on 2026-06-24",
     "reconcile": "see _reconcile.md — live=current-truth default; file flagged where it differs. No silent picks.",
-    "note": "KPIH/assets copy NOT yet deprecated; pointer-stub deferred to apply phase per Liam."
-  }
+    "note": "KPIH/assets copy NOT yet deprecated; pointer-stub deferred to apply phase per Liam.",
+    "band_ladder_decision": "KPR-284 decision A (2026-06-24): 5-band 'from' public ladder. Upsell configs 2BR-2F ฿5.5M / 3BR-1F ฿6.4M / 3BR-2F ฿6.4M = visibility:internal_upsell — Maya surfaces only when a lead picks that floor/layout; excluded from public ladder + availability_summary."
+  },
+  "short_term_revenue": "Short-term ~2x revenue"
 }

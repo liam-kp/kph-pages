@@ -117,45 +117,39 @@ def get_inventory(kp):
 
 # ---------- rendered Projects_Public payload (derived from SSOT) ----------
 def render_projects_public(ssot, tokens):
-    configs = [c for c in ssot["configs"] if c.get("unit_status") == "available"]
+    # Build-to-suit: availability is PLOT-based (pick a plot + a band), not config-based.
+    plots = ssot["land"]["plots"]
+    avail = sorted(p for p, info in plots.items()
+                   if str(info.get("status", "")).lower() == "available")
     lo = next(b for b in ssot["band_pricing"] if b["band"] == "1 Bed")
     hi = next(b for b in ssot["band_pricing"] if b["band"] == "4 Bed / Grand")
-    summary = (f"{len(ssot['configs'])} villa configurations, {len(configs)} available "
-               f"(build-to-suit, 1BR–4BR on individual plots). "
+    summary = (f"{len(plots)} plots total, {len(avail)} available ({', '.join(avail)}). "
+               f"Build-to-suit: choose your plot + villa type (1BR–4BR), fully customizable design. "
                f"Prices from {money('฿', lo['thb'])} (1BR, {money('₪', lo['ils'])}) "
-               f"to {money('฿', hi['thb'])} (4BR). "
-               f"Fully customizable design. 10–12% est. long-term yield.")
+               f"to {money('฿', hi['thb'])} (4BR). 10–12% est. long-term yield.")
+    if ssot.get("short_term_revenue"):
+        summary += f" {ssot['short_term_revenue']}."
     return {"availability_summary_public": summary,
             "google_maps_url": ssot.get("location_maps_url")}
 
 
 # ---------- the two named diff findings ----------
 def finding_band_vs_config(ssot):
-    lines = ["### Finding 1 — 4(+1) public bands vs 8 live configs",
-             "Public ladder publishes a 'from' floor per band; configs above that floor are not individually published.",
-             "", "| Band (public 'from') | Configs in band | Config prices | Above 'from'? |",
-             "|---|---|---|---|"]
+    lines = ["### Finding 1 — public ladder (KPR-284 decision A: 5-band 'from')",
+             "Public ladder = 5 bands, 'from' pricing. Upsell configs are visibility:internal_upsell — "
+             "Maya surfaces them only when a lead picks that floor/layout; never in the public ladder or "
+             "availability_summary.",
+             "", "| Band (public 'from') | Public configs | Internal upsell (hidden) |",
+             "|---|---|---|"]
     for b in ssot["public_ladder"]:
         cfgs = b.get("configs", [])
-        prices = []
-        for ct in cfgs:
-            c = next((x for x in ssot["configs"] if x["unit_type"] == ct), None)
-            if c: prices.append(f"{ct}={money('฿', c['price_thb'])}")
-        frm = b.get("from_thb")
-        above = [p for ct, p in
-                 [(ct, next((x for x in ssot['configs'] if x['unit_type'] == ct), {}).get('price_thb'))
-                  for ct in cfgs] if p and frm and p > frm]
-        flag = "⚠️ " + ", ".join(str(x) for x in above) if above else "—"
-        note = " (POSITIONING ONLY, no floor plan)" if b.get("status", "").startswith("positioning") else ""
-        lines.append(f"| {b['band']} {money('฿', frm)}{note} | {', '.join(cfgs) or '—'} | "
-                     f"{', '.join(prices) or '—'} | {flag} |")
-    lines += ["",
-              "**Configs whose exact price is NOT individually published:** "
-              "2BR-2F ฿5,500,000, 3BR-1F ฿6,400,000, 3BR-2F ฿6,400,000 "
-              "(2BR-BIG ฿6,700,000 IS named in §18 prose).",
-              "**Proposed canonical ladder (NOT applied):** keep the 5-band public_ladder already in the SSOT "
-              "(1 Bed / 1 Bed+Study* / 2 Bed / 3 Bed / 4 Bed-Grand) — *1 Bed+Study ฿4.5M stays positioning-only "
-              "until a floor plan exists."]
+        internal = [c["unit_type"] for c in ssot["configs"]
+                    if c["band"] == b["band"] and c.get("visibility") == "internal_upsell"]
+        intstr = ", ".join(f"{u}={money('฿', next(c['price_thb'] for c in ssot['configs'] if c['unit_type']==u))}"
+                            for u in internal) or "—"
+        note = " *(positioning only, no floor plan)*" if b.get("status", "").startswith("positioning") else ""
+        lines.append(f"| {b['band']} from {money('฿', b.get('from_thb'))}{note} | "
+                     f"{', '.join(cfgs) or '—'} | {intstr} |")
     return "\n".join(lines)
 
 
