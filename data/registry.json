@@ -1,0 +1,70 @@
+{
+  "_meta": {
+    "purpose": "The cross-project field contract. One row per price/spec/availability/delivery/location/FX field group: type, canonical_source, consumed_by, render_moment, conflict_winner. kph-compile and firebase-schema-truth-check read this to know which surface owns which field and who wins on conflict.",
+    "sources": [
+      "Master Plan SS3 table (KPR-284) — render_moment + conflict_winner (authoritative, supplied by Liam)",
+      "FIREBASE_SCHEMA_MASTER_v2_2026-05-15.md — field types + live prevalence (audited 2026-05-15, >30d -> treat as suspect, live-verified per LAW 6)",
+      "Live key verification 2026-06-24 on KP-ZEN-012 (GET Projects_Public + Project_Inventory) — LAW 6: live wins over doc"
+    ],
+    "render_moment_legend": {
+      "build": "baked into a static surface at build time (website /tour, brochure)",
+      "runtime": "injected into the live Maya prompt at conversation time (prompt-sections / composePrompt)",
+      "freestyle": "the model may quote it conversationally; must still trace to canonical"
+    }
+  },
+  "fields": {
+    "price": {
+      "type": "number (THB integer)",
+      "canonical_source": "Project_Inventory.price_thb",
+      "consumed_by": [
+        "Projects_Public.availability_summary_public (range prose)",
+        "prompt-sections: 17-campaign-red-sunset, 18-campaign-maduwan-zennith, 20-catalog-villa-nai-wok, 22-campaign-bns-ban-nai-suan, 23-discovery-protocol, 32-bns-one-bedroom-navigation",
+        "brochure (price table)",
+        "website /tour"
+      ],
+      "render_moment": ["build", "runtime", "freestyle"],
+      "conflict_winner": "SSOT/inventory (inventory.json configs[].price_thb -> band_pricing)",
+      "notes": "LAW 6: the /Project_Inventory collection more often carries unit_price_thb (71%) than price_thb (47%), but KP-ZEN-012's live records use price_thb -> canonical for this project is price_thb. EN renders THB+USD+EUR, HE renders THB+ILS via fx.json (never mix)."
+    },
+    "specs": {
+      "type": "bedrooms:number | built_size_sqm:number | pool_sqm:number | total_area_sqm:number | floors:number | plot_size_sqm:number",
+      "canonical_source": "Project_Inventory (per-config)",
+      "consumed_by": ["prompt-sections SS18 band table", "brochure", "website /tour"],
+      "render_moment": ["build", "runtime", "freestyle"],
+      "conflict_winner": "SSOT/inventory (inventory.json configs[])",
+      "notes": "Headline metric policy = built(indoor)+plot, both shown; pool/terrace named separately, never folded into built area."
+    },
+    "availability_lineup": {
+      "type": "available_count:number | availability_summary_public:string",
+      "canonical_source": "Projects_Public.availability_summary_public + Project_Inventory.available_count",
+      "consumed_by": ["prompt-sections (scarcity line)", "brochure (dated scarcity)", "website"],
+      "render_moment": ["build", "freestyle"],
+      "conflict_winner": "inventory count (SSOT configs[] where unit_status=='available')",
+      "notes": "DRIFT: KP-ZEN-012 has no available_count field live; count is derived from configs[].unit_status. Live availability_summary_public prose ('5 available') counts plots, not configs — see _reconcile.md. Never bake per-plot SOLD/RESERVED into print; use dated scarcity count."
+    },
+    "delivery_handover": {
+      "type": "string (e.g. 'July 2027')",
+      "canonical_source": "Project_Inventory.handover_estimate",
+      "consumed_by": ["prompt-sections (handover line)", "brochure", "website"],
+      "render_moment": ["build", "runtime", "freestyle"],
+      "conflict_winner": "SSOT/inventory (inventory.json .delivery)",
+      "notes": "DRIFT: handover_estimate is NOT populated on KP-ZEN-012 live records; SSOT inventory.json .delivery = 'Handover July 2027 (12-13 months from contract)' is the truth. Token resolves to 'July 2027'."
+    },
+    "location_map": {
+      "type": "string (URL)",
+      "canonical_source": "Projects_Public.google_maps_url",
+      "consumed_by": ["prompt-sections", "brochure (location page)", "website"],
+      "render_moment": ["build", "runtime"],
+      "conflict_winner": "Projects_Public",
+      "notes": "Live value present: https://maps.app.goo.gl/WwD6Lj9G7uoEyUGD7 ; matches inventory.json location_maps_url."
+    },
+    "fx": {
+      "type": "number (rate) per currency",
+      "canonical_source": "fx.json",
+      "consumed_by": ["ALL surfaces — any THB->USD/EUR/ILS conversion"],
+      "render_moment": ["build", "runtime", "freestyle"],
+      "conflict_winner": "fx.json",
+      "notes": "fx.json supersedes the legacy fx_thb_per_usd 32.5 used by brochure v1/v2 (USD ~1.9% high). EN=THB+USD+EUR, HE=THB+ILS."
+    }
+  }
+}

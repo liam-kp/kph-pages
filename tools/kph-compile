@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# kph-compile — thin wrapper so `tools/kph-compile <cmd> <KP>` works.
+exec python3 "$(dirname "$0")/kph_compile.py" "$@"
