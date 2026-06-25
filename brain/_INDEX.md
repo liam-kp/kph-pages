@@ -16,6 +16,9 @@ Single source of truth for **KPH Sales OS** (the full product, not just the site
 - **Website / slugs / top-of-funnel** → `runbooks/website-map.md`.
 - **Media / image work** (Meta upload, `image_hash`, `storage_url`, base64) → `runbooks/image_upload_storage_url.md`.
 
+## skills/
+- `firebase-schema-truth-check/SKILL.md` — STC: verify field validity vs schema+code BEFORE any Firebase write. Schema = `data/FIREBASE_SCHEMA_MASTER.md`.
+
 ## runbooks/
 - `CAMPAIGN_PRELAUNCH_QA_GATE.md` — mandatory ACQUIRE gate before any campaign spend (HE+EN).
 - `meta-ads-mcp.md` — live Meta account IDs, MCP tools, deploy flow, connection rule.
