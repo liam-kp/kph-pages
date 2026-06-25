@@ -38,7 +38,7 @@ PWRC on the write. No `PROJECT_KEYWORDS`. No backend ticket. Language ∈ {EN, H
 → Output: complete PAUSED campaign wired to Maya.
 
 ### Stage 6 — Pre-Launch QA Gate → activate
-- Run `CAMPAIGN_PRELAUNCH_QA_GATE.md` (7-check). Include the fresh-number tap-through.
+- Run `runbooks/CAMPAIGN_PRELAUNCH_QA_GATE.md` (7-check). Include the fresh-number tap-through.
 - All PASS → Liam approves → activate via MCP. Any FAIL → fix, re-run.
 → Output: live campaign, GO recorded in Linear.
 

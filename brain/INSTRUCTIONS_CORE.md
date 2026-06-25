@@ -53,7 +53,7 @@ Rules:
 - No `PROJECT_KEYWORDS`, no Adam. Verified at launch by the Pre-Launch QA Gate + a fresh-number tap-through.
 
 ## Iron rules
-- Never overwrite the site without a version. · Every deploy passes Chrome QA before publish. · merge to `main` = Liam approves, PR opened `--base main`. · Never touch Adam's prod directly. · Never delete data without explicit approval. · Never write Firebase without PWRC. · **ACQUIRE-stage launches pass `CAMPAIGN_PRELAUNCH_QA_GATE` (7-check GO/NO-GO) before activation — no GO, no spend.**
+- Never overwrite the site without a version. · Every deploy passes Chrome QA before publish. · merge to `main` = Liam approves, PR opened `--base main`. · Never touch Adam's prod directly. · Never delete data without explicit approval. · Never write Firebase without PWRC. · **ACQUIRE-stage launches pass `runbooks/CAMPAIGN_PRELAUNCH_QA_GATE.md` (7-check GO/NO-GO) before activation — no GO, no spend.**
 
 ## Linear · Sessions · Handoff
 - Claude opens tickets (checks duplicates `includeArchived`), not Liam. Adam tickets → `marshmelo777@gmail.com`, lead with "why this task exists." Liam tickets → `hub@kohphanganinvestmenthub.com`.

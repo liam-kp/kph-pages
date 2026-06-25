@@ -13,6 +13,6 @@
 - Added meta-ads-mcp, audience-bank, campaign-operations, website-map; `_INDEX.md` expanded.
 
 ## 2026-06-18 — Step 2 scaffold
-- Full `_INDEX.md`, `INSTRUCTIONS_CORE.md`, `CAMPAIGN_PRELAUNCH_QA_GATE.md` (v2), `PLAYBOOKS/new-project-onboarding.md` (v2).
+- Full `_INDEX.md`, `INSTRUCTIONS_CORE.md`, `runbooks/CAMPAIGN_PRELAUNCH_QA_GATE.md` (v2), `PLAYBOOKS/new-project-onboarding.md` (v2).
 - `.nojekyll` at repo root — REQUIRED so Pages serves underscore files. Never remove.
 - Push via liam-kp + credential-helper reset (default anothermeateam2 → 403).

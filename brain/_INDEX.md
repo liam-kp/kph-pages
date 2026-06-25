@@ -10,13 +10,14 @@ Single source of truth for **KPH Sales OS** (the full product, not just the site
 - `INSTRUCTIONS_CORE.md` — identity, scope, laws, the three systems, resource order, the 4 gates, campaign→Maya routing rule.
 
 ## By task
-- **Launch / wire a campaign to Maya** → `CAMPAIGN_PRELAUNCH_QA_GATE.md` (7-check GO/NO-GO) + `runbooks/meta-ads-mcp.md`.
+- **Launch / wire a campaign to Maya** → `runbooks/CAMPAIGN_PRELAUNCH_QA_GATE.md` (7-check GO/NO-GO) + `runbooks/meta-ads-mcp.md`.
 - **Run / optimize campaigns** (Campaign Strategist) → `PLAYBOOKS/campaign-operations.md` + `runbooks/audience-bank.md`.
 - **Onboard a new project / villa / resale** → `PLAYBOOKS/new-project-onboarding.md`.
 - **Website / slugs / top-of-funnel** → `runbooks/website-map.md`.
 - **Media / image work** (Meta upload, `image_hash`, `storage_url`, base64) → `runbooks/image_upload_storage_url.md`.
 
 ## runbooks/
+- `CAMPAIGN_PRELAUNCH_QA_GATE.md` — mandatory ACQUIRE gate before any campaign spend (HE+EN).
 - `meta-ads-mcp.md` — live Meta account IDs, MCP tools, deploy flow, connection rule.
 - `audience-bank.md` — per-project audience presets (moat; keep living).
 - `website-map.md` — repo, build-time Firebase pull, slug map, /tour template.

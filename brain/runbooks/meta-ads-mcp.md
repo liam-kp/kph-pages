@@ -42,7 +42,7 @@ Firebase writes from Claude Chat return 401 → all Firebase ops via Claude Code
 1. Images → Meta via `meta-image-upload` → `image_hash` (script: `~/Business/01_Real-Estate-Leads/_marketing_brain/skills/meta-image-upload/scripts/upload_image.py`; Firebase `image_data` lives on the single-fetch endpoint, not the list endpoint).
 2. Build campaign+ad set+creative+ad PAUSED, Click-to-WhatsApp.
 3. Ad prefill text == `facebook_trigger_message(_en)` char-for-char, emoji-free.
-4. `CAMPAIGN_PRELAUNCH_QA_GATE.md` (7-check) + fresh-number tap-through.
+4. `runbooks/CAMPAIGN_PRELAUNCH_QA_GATE.md` (7-check) + fresh-number tap-through.
 5. Liam approves → `ads_activate_entity` top-down.
 
 ## Connection rule (Claude-owned, never Adam)

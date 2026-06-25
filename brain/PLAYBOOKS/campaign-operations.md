@@ -3,7 +3,7 @@
 The ongoing ACQUIRE loop, Claude-owned (Campaign Strategist).
 
 ## Loop
-propose audience (Audience Bank) → deploy PAUSED top-down (`mcp-campaign-deploy`) → `CAMPAIGN_PRELAUNCH_QA_GATE` (7-check + fresh-number tap-through) → Liam approves → activate top-down → monitor `ads_insights_*` → optimize budget/creative/audience → bank winners.
+propose audience (Audience Bank) → deploy PAUSED top-down (`mcp-campaign-deploy`) → `runbooks/CAMPAIGN_PRELAUNCH_QA_GATE.md` (7-check + fresh-number tap-through) → Liam approves → activate top-down → monitor `ads_insights_*` → optimize budget/creative/audience → bank winners.
 
 ## Ad-set / activation rules
 - Top-down PAUSED always; `ads_activate_entity` needs explicit `entity_type`.
