@@ -67,6 +67,8 @@ def derive_tokens(ssot):
     # handover (from .delivery)
     m = re.search(r"([A-Z][a-z]+ \d{4})", ssot.get("delivery", ""))
     if m: t["KP-ZEN-012.handover"] = m.group(1)
+    # built m² of the 1-bed entry config — so SS18 derives it from inventory, never a hardcoded number
+    t["KP-ZEN-012.1bed.sqm"] = f"{_band_entry_config(ssot, '1 Bed')['built_size_sqm']:g}"
     return t
 
 
@@ -416,7 +418,11 @@ def cmd_apply(kp, confirm=False, dry=False):
     key_removed = sorted(set(before) - set(merged))
     val_changed = sorted(k for k in (set(before) | set(merged)) if before.get(k) != merged.get(k))
     keys_ok = (not key_added and not key_removed)
-    set_ok = (val_changed == sorted(PP_WRITE_FIELDS))
+    # SUBSET invariant: every changed top-level key must be within PP_WRITE_FIELDS, and >=1 changed.
+    # A re-apply that legitimately touches fewer than 4 (e.g. only the m²-bearing fields) still passes;
+    # abort only on key churn or a changed field OUTSIDE the 4.
+    outside_fields = [k for k in val_changed if k not in PP_WRITE_FIELDS]
+    set_ok = (len(val_changed) >= 1 and not outside_fields)
 
     mode = "DRY-RUN (no PUT)" if dry else "LIVE PWRC WRITE"
     print(f"=== apply {kp} — {mode} : {len(PP_WRITE_FIELDS)} Projects_Public fields ===\n")
@@ -431,7 +437,7 @@ def cmd_apply(kp, confirm=False, dry=False):
     print(f"top-level keys ADDED  : {key_added}    (MUST be [])")
     print(f"top-level keys REMOVED: {key_removed}    (MUST be [])")
     print(f"top-level VALUE-changed: {val_changed}")
-    print(f"  → key-set unchanged: {'✅' if keys_ok else '‼️ NO'} | exactly-the-4-changed: {'✅' if set_ok else '‼️ NO'}")
+    print(f"  → key-set unchanged: {'✅' if keys_ok else '‼️ NO'} | changed ⊆ the 4 (≥1): {'✅' if set_ok else '‼️ NO — outside: '+str(outside_fields)}")
 
     if dry:
         print("\n=== DRY-RUN — no PUT issued, zero Firebase writes. ===")
