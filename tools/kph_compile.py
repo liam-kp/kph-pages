@@ -115,8 +115,95 @@ def get_inventory(kp):
             and str(r.get("project_id", "")).startswith(kp)]
 
 
+# ---------- widened price block (KPR-284 Phase-1 WIDEN) ----------
+# Exact THB*fx, NO display-rounding (step 5 owns rounding). EN=THB+USD+EUR, HE=THB+ILS.
+PP_PUBLIC_BANDS = ["1 Bed", "2 Bed", "3 Bed", "4 Bed / Grand"]
+PP_BAND_TOKEN = {"1 Bed": "1bed", "2 Bed": "2bed", "3 Bed": "3bed", "4 Bed / Grand": "4bed"}
+# template-driven price-bearing Projects_Public prose (live field name -> template)
+PP_TMPL = {
+    "short_pitch_he":             "pp/short_pitch.he.tmpl",
+    "short_pitch_en":             "pp/short_pitch.en.tmpl",
+    "second_message_template":    "pp/second_message.he.tmpl",   # HE field has NO _he suffix (live truth)
+    "second_message_template_en": "pp/second_message.en.tmpl",
+}
+
+
+# STC verdict (origin/production code-truth, 2026-06-25) — which widened fields the bot actually reads.
+PP_STC_STATUS = {
+    "availability_summary_public": "ACTIVE (7 prod files)",
+    "google_maps_url":             "ACTIVE (10 prod files)",
+    "second_message_template":     "ACTIVE (jade_master_prompt directs Maya)",
+    "second_message_template_en":  "ACTIVE (jade_master_prompt directs Maya)",
+    "short_pitch_he":              "ORPHANED (0 prod read paths)",
+    "short_pitch_en":              "ORPHANED (0 prod read paths)",
+}
+
+
+def extract_thb(v, min_val=1_000_000):
+    """THB villa prices in a value. Boundary-anchored so grouped numbers aren't sliced
+    (₪315,350 stays 315350, not 15350). Filtered to >= min_val to isolate the THB ladder
+    (villa prices are >=฿1M; USD/EUR/ILS conversions are all <฿1M) — set min_val=0 for all."""
+    s = v if isinstance(v, str) else json.dumps(v, ensure_ascii=False)
+    out = set()
+    for m in re.findall(r"(?<![\d,.])\d{1,3}(?:,\d{3})+(?![\d])", s):
+        out.add(int(m.replace(",", "")))
+    for m in re.findall(r"฿\s*(\d+(?:\.\d+)?)\s*M\b", s):
+        out.add(int(float(m) * 1_000_000))
+    return {n for n in out if n >= min_val}
+
+
+def fx_amounts(thb, fx):
+    # round() only cleans float noise; products of round THB * 4dp rate are integral. No display-rounding.
+    return {"usd": int(round(thb * fx["thb_to_usd"])),
+            "eur": int(round(thb * fx["thb_to_eur"])),
+            "ils": int(round(thb * fx["thb_to_ils"]))}
+
+
+def _sqm(x):  # exact built m²; %g only strips a trailing .0 (40.0->40), NOT display-rounding (79.4 stays 79.4)
+    return f"{x:g}"
+
+
+def _band_entry_config(ssot, band):
+    """The 'from' config of a band = cheapest PUBLIC config in it (internal_upsell excluded)."""
+    pub = [c for c in ssot["configs"] if c["band"] == band and c.get("visibility") == "public"]
+    return min(pub, key=lambda c: c["price_thb"])
+
+
+def derive_pp_tokens(ssot, fx):
+    """Exact-from-fx price + built-m² tokens for the widened Projects_Public prose block."""
+    bands = {b["band"]: b for b in ssot["band_pricing"]}
+    t = {}
+    for band in PP_PUBLIC_BANDS:
+        key = PP_BAND_TOKEN[band]
+        a = fx_amounts(bands[band]["thb"], fx)
+        t[f"pp.{key}.thb"] = money("฿", bands[band]["thb"])
+        t[f"pp.{key}.usd"] = money("$", a["usd"])
+        t[f"pp.{key}.eur"] = money("€", a["eur"])
+        t[f"pp.{key}.ils"] = money("₪", a["ils"])
+        t[f"pp.{key}.sqm"] = _sqm(_band_entry_config(ssot, band)["built_size_sqm"])
+    # premium 2-bed = the 2BR-BIG config (฿6.7M, visibility:public). 5.5M/6.4M stay internal_upsell (hidden).
+    big = next(c for c in ssot["configs"] if c["unit_type"] == "2BR-BIG")
+    ab = fx_amounts(big["price_thb"], fx)
+    t["pp.2bedbig.thb"] = money("฿", big["price_thb"])
+    t["pp.2bedbig.usd"] = money("$", ab["usd"])
+    t["pp.2bedbig.eur"] = money("€", ab["eur"])
+    t["pp.2bedbig.ils"] = money("₪", ab["ils"])
+    t["pp.2bedbig.sqm"] = _sqm(big["built_size_sqm"])
+    lo, hi = bands["1 Bed"]["thb"], bands["4 Bed / Grand"]["thb"]
+    t["pp.range.thb"] = f"{money('฿', lo)}–{money('฿', hi)}"
+    return t
+
+
+def render_pp_fields(ssot, fx, kp):
+    tok = derive_pp_tokens(ssot, fx)
+    out = {}
+    for field, rel in PP_TMPL.items():
+        out[field] = render_text(open(os.path.join(proj_dir(kp), rel)).read().rstrip("\n"), tok)
+    return out
+
+
 # ---------- rendered Projects_Public payload (derived from SSOT) ----------
-def render_projects_public(ssot, tokens):
+def render_projects_public(ssot, tokens, fx=None, kp=None):
     # Build-to-suit: availability is PLOT-based (pick a plot + a band), not config-based.
     plots = ssot["land"]["plots"]
     avail = sorted(p for p, info in plots.items()
@@ -129,8 +216,13 @@ def render_projects_public(ssot, tokens):
                f"to {money('฿', hi['thb'])} (4BR). 10–12% est. long-term yield.")
     if ssot.get("short_term_revenue"):
         summary += f" {ssot['short_term_revenue']}."
-    return {"availability_summary_public": summary,
-            "google_maps_url": ssot.get("location_maps_url")}
+    out = {"availability_summary_public": summary,
+           "google_maps_url": ssot.get("location_maps_url")}
+    # WIDEN: merge the price-bearing prose block only when fx+kp supplied (render/diff path,
+    # NOT the gated single-field apply path, which calls with (ssot, tokens) only).
+    if fx is not None and kp is not None:
+        out.update(render_pp_fields(ssot, fx, kp))
+    return out
 
 
 # ---------- the two named diff findings ----------
@@ -221,7 +313,7 @@ def cmd_render(kp, outdir=None):
             rendered = render_text(open(os.path.join(sdir, f)).read(), tokens)
             open(os.path.join(outdir, "sections", f[:-5] + ".rendered.md"), "w").write(rendered)
             n += 1
-    pp = render_projects_public(ssot, tokens)
+    pp = render_projects_public(ssot, tokens, fx, kp)
     json.dump(pp, open(os.path.join(outdir, "Projects_Public.patch.json"), "w"),
               ensure_ascii=False, indent=2)
     print(f"=== render {kp} -> {outdir} ===")
@@ -248,25 +340,43 @@ def cmd_diff(kp):
             total += d
             print(f"  ⚠️ {key}: {d} char delta")
     print(f"\n  sections total delta: {total}")
-    # Projects_Public
-    print("\n## Projects_Public (rendered patch vs live)")
+    # Projects_Public (WIDENED — full price block)
+    print("\n## Projects_Public price block (rendered-from-SSOT vs live)")
     live = get_projects_public(kp)
-    patch = render_projects_public(ssot, tokens)
+    patch = render_projects_public(ssot, tokens, fx, kp)
     for k, v in patch.items():
         lv = live.get(k)
-        mark = "✅" if lv == v else "⚠️"
-        print(f"  {mark} {k}:")
-        print(f"      live    : {json.dumps(lv, ensure_ascii=False)[:160]}")
-        print(f"      rendered: {json.dumps(v, ensure_ascii=False)[:160]}")
+        same = (lv == v)
+        stc = PP_STC_STATUS.get(k, "?")
+        print(f"\n  {'✅' if same else '⚠️'} {k}   [STC: {stc}]")
+        lp, rp = extract_thb(lv), extract_thb(v)
+        if lp or rp:
+            removed = sorted(lp - rp); added = sorted(rp - lp)
+            print(f"      THB live : {sorted(lp)}")
+            print(f"      THB SSOT : {sorted(rp)}")
+            if removed: print(f"      ▸ live-only (stale, dropped by SSOT): {removed}")
+            if added:   print(f"      ▸ SSOT-only (added):                 {added}")
+        if not same:
+            print(f"      live     : {json.dumps(lv, ensure_ascii=False)[:240]}")
+            print(f"      rendered : {json.dumps(v, ensure_ascii=False)[:240]}")
     print()
     print(finding_band_vs_config(ssot)); print()
     print(finding_fx(ssot, fx))
     return 0
 
 
-PP_FIELD = "availability_summary_public"
+PP_WRITE_FIELDS = [
+    "second_message_template",      # HE field has NO _he suffix (STC-confirmed live truth)
+    "second_message_template_en",
+    "short_pitch_he",
+    "short_pitch_en",
+]
 # wrapper may bump these on write; not counted as an "unexpected" change
 TIMESTAMP_FIELDS = {"updated_at", "updatedAt", "last_updated_public"}
+
+
+def _norm(rec):
+    return rec.get("data", rec) if isinstance(rec, dict) and "_id" not in rec else rec
 
 
 def curl_put(url, body_obj):
@@ -281,55 +391,78 @@ def curl_put(url, body_obj):
     return out
 
 
-def cmd_apply(kp, confirm=False):
-    # GUARD 1: no flag -> refuse, non-zero. A stub can never silently pass.
+def cmd_apply(kp, confirm=False, dry=False):
+    # GUARD 1: no go-flag -> refuse, non-zero (applies to --dry too). A stub can never silently pass.
     if not confirm:
         print(f"=== apply {kp} — GATE ===")
         print("REFUSED. Live Firebase write requires --i-have-liams-go.")
         return 2
 
     ssot, fx = load_ssot(kp), load_fx()
-    tokens = derive_tokens(ssot)
-    intended = render_projects_public(ssot, tokens)[PP_FIELD]
+    intended = render_pp_fields(ssot, fx, kp)   # exactly the 4 PP_WRITE_FIELDS, exact fx, no display-rounding
+    assert sorted(intended) == sorted(PP_WRITE_FIELDS), f"render set {sorted(intended)} != write set {sorted(PP_WRITE_FIELDS)}"
     url = f"{BASE}/firebase-data/Projects_Public/{kp}?customerId={CID}"
 
     # PWRC: GET-before (full record)
-    before = curl_get(url)
-    before = before.get("data", before) if isinstance(before, dict) and "_id" not in before else before
-    before_val = before.get(PP_FIELD)
+    before = _norm(curl_get(url))
 
-    # write exactly ONE field on a full merged payload (PUT, never PATCH)
+    # Build full merged record: live record with ONLY the 4 fields replaced. Every other field byte-identical.
     merged = dict(before)
-    merged[PP_FIELD] = intended
+    for f in PP_WRITE_FIELDS:
+        merged[f] = intended[f]
+
+    # top-level churn analysis (we replace VALUES, never add/remove keys)
+    key_added = sorted(set(merged) - set(before))
+    key_removed = sorted(set(before) - set(merged))
+    val_changed = sorted(k for k in (set(before) | set(merged)) if before.get(k) != merged.get(k))
+    keys_ok = (not key_added and not key_removed)
+    set_ok = (val_changed == sorted(PP_WRITE_FIELDS))
+
+    mode = "DRY-RUN (no PUT)" if dry else "LIVE PWRC WRITE"
+    print(f"=== apply {kp} — {mode} : {len(PP_WRITE_FIELDS)} Projects_Public fields ===\n")
+    for f in PP_WRITE_FIELDS:
+        print(f"───────── {f} ─────────")
+        print("LIVE (before):"); print(repr(before.get(f)))
+        print("INTENDED (rendered, exact fx, no display-rounding):"); print(repr(intended[f]))
+        print()
+    print("EXACT json.dumps of the 4 changed keys (ensure_ascii=True — byte-for-byte as PUT would send):")
+    print(json.dumps({f: intended[f] for f in PP_WRITE_FIELDS}, ensure_ascii=True, indent=2))
+    print()
+    print(f"top-level keys ADDED  : {key_added}    (MUST be [])")
+    print(f"top-level keys REMOVED: {key_removed}    (MUST be [])")
+    print(f"top-level VALUE-changed: {val_changed}")
+    print(f"  → key-set unchanged: {'✅' if keys_ok else '‼️ NO'} | exactly-the-4-changed: {'✅' if set_ok else '‼️ NO'}")
+
+    if dry:
+        print("\n=== DRY-RUN — no PUT issued, zero Firebase writes. ===")
+        return 0 if (keys_ok and set_ok) else 1
+
+    # GUARD 2 (pre-PUT): refuse if the merged record changes anything beyond the 4 values.
+    if not (keys_ok and set_ok):
+        print("\n‼️‼️ ABORT — merged record would change more than the 4 fields. No PUT issued.")
+        return 1
+
+    # LIVE PWRC: PUT full merged -> sleep -> GET-after (independent re-read) -> verify
     curl_put(url, merged)
     time.sleep(3)
+    after = _norm(curl_get(url))
 
-    # GET-after (independent re-read)
-    after = curl_get(url)
-    after = after.get("data", after) if isinstance(after, dict) and "_id" not in after else after
-    after_val = after.get(PP_FIELD)
+    bad = [f for f in PP_WRITE_FIELDS if after.get(f) != intended[f]]
+    after_changed = sorted(k for k in (set(before) | set(after)) if before.get(k) != after.get(k))
+    unexpected = [k for k in after_changed if k not in PP_WRITE_FIELDS and k not in TIMESTAMP_FIELDS]
+    print(f"\nGET-after top-level changed: {after_changed}")
+    print("prompt-sections written: 0 | Project_Inventory written: 0")
 
-    # side-by-side
-    print(f"=== PWRC apply {kp} : {PP_FIELD} ===")
-    print("GET-before:")
-    print(f"  {before_val!r}")
-    print("GET-after :")
-    print(f"  {after_val!r}")
-
-    changed = sorted(k for k in set(before) | set(after) if before.get(k) != after.get(k))
-    unexpected = [k for k in changed if k != PP_FIELD and k not in TIMESTAMP_FIELDS]
-    print(f"\nfields changed: {changed}")
-    print(f"prompt-sections written: 0 | Project_Inventory written: 0")
-
-    # GUARD 2: post-write assert. Never exit 0 without a verified exact match.
-    if after_val != intended:
-        print("\n‼️‼️ FAILED — live value != intended string. Write did NOT verify.")
-        print(f"INTENDED:\n  {intended!r}")
+    # GUARD 3: post-write assert. Never exit 0 without verified exact match + zero collateral.
+    if bad:
+        print(f"\n‼️‼️ FAILED — these fields did not verify (live != intended): {bad}")
+        for f in bad:
+            print(f"  {f}\n    intended: {intended[f]!r}\n    live    : {after.get(f)!r}")
         return 1
     if unexpected:
-        print(f"\n‼️‼️ FAILED — unexpected fields changed: {unexpected}")
+        print(f"\n‼️‼️ FAILED — unexpected top-level fields changed: {unexpected}")
         return 1
-    print("\n✅ VERIFIED — 1 field written, GET-after == intended EXACTLY, 0 other fields, 0 sections.")
+    print(f"\n✅ VERIFIED — {len(PP_WRITE_FIELDS)} fields written, GET-after == intended EXACTLY, 0 other fields, 0 sections.")
     return 0
 
 
@@ -338,12 +471,14 @@ def main():
     sub = ap.add_subparsers(dest="cmd", required=True)
     for c in ("validate", "render", "diff", "apply"):
         p = sub.add_parser(c); p.add_argument("kp")
-        if c == "apply": p.add_argument("--i-have-liams-go", action="store_true")
+        if c == "apply":
+            p.add_argument("--i-have-liams-go", action="store_true")
+            p.add_argument("--dry", action="store_true")
     a = ap.parse_args()
     if a.cmd == "validate": sys.exit(cmd_validate(a.kp))
     if a.cmd == "render":   cmd_render(a.kp); sys.exit(0)
     if a.cmd == "diff":     sys.exit(cmd_diff(a.kp))
-    if a.cmd == "apply":    sys.exit(cmd_apply(a.kp, a.i_have_liams_go))
+    if a.cmd == "apply":    sys.exit(cmd_apply(a.kp, a.i_have_liams_go, a.dry))
 
 
 if __name__ == "__main__":

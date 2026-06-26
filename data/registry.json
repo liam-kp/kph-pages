@@ -26,6 +26,31 @@
       "conflict_winner": "SSOT/inventory (inventory.json configs[].price_thb -> band_pricing)",
       "notes": "LAW 6: the /Project_Inventory collection more often carries unit_price_thb (71%) than price_thb (47%), but KP-ZEN-012's live records use price_thb -> canonical for this project is price_thb. EN renders THB+USD+EUR, HE renders THB+ILS via fx.json (never mix)."
     },
+    "projects_public_price_fields": {
+      "type": "string | prose | dict",
+      "canonical_source": "inventory.json (configs[].price_thb -> band_pricing) + fx.json (currency)",
+      "conflict_winner": "SSOT/inventory",
+      "render_moment": ["build", "runtime"],
+      "consumed_by": [
+        "Projects_Public: availability_summary_public, second_message_template(+_en), short_pitch_he/_en, floor_plans, whatsapp_sequence_he/_en, first_message_sequence_he/_en"
+      ],
+      "visibility_rule": "internal_upsell configs (2BR-2F 5,500,000 ; 3BR-1F/2F 6,400,000) MUST NOT surface on any public field. Public ladder = 4 'from' bands (1/2/3/4 bed); premium 2BR 6,700,000 is PUBLIC but folded into the 2-bed band note (SS18), not a separate public ladder row.",
+      "per_field_stc": {
+        "_verdict": "STC 2026-06-25 on origin/production (both casings, LAW 8). schema audit 2026-05-15.",
+        "availability_summary_public": "ACTIVE (7 prod files; leadContextService, dataServiceToolHandlers). Written by kph-compile apply.",
+        "second_message_template": "ACTIVE (HE; jade_master_prompt directs Maya to fetch+use). FIELD-NAME DRIFT: HE field has NO _he suffix — brief's 'second_message_template_he' does NOT exist (0 code, absent live). DROPPED from write plan.",
+        "second_message_template_en": "ACTIVE (EN; jade_master_prompt).",
+        "first_message_sequence_he": "ACTIVE (PING1 service, 9 files) — already canonical; no write needed.",
+        "first_message_sequence_en": "ACTIVE (PING1 service) — already canonical.",
+        "google_maps_url": "ACTIVE (10 prod files).",
+        "short_pitch_he": "ORPHANED (0 prod read paths) — render+diff for audit only; write is cosmetic (no Maya effect).",
+        "short_pitch_en": "ORPHANED (0 prod read paths); live ALSO violates EN display rule (carries ILS ₪).",
+        "whatsapp_sequence_he": "ORPHANED (0 prod read paths); price-bearing bubble[1] mirrors second_message; full list-render deferred.",
+        "whatsapp_sequence_en": "ORPHANED (0 prod read paths).",
+        "floor_plans": "ORPHANED in prompt/runtime (0 prod read paths; image tool serves by filename). Live keys carry STALE prices: 2BR_Small_5_2M (no config = ghost), 2BR_Medium_5_5M (internal_upsell)."
+      },
+      "notes": "KPR-284 Phase-1 WIDEN step 4. Render exact THB*fx (fx.json), NO display-rounding (step 5 owns rounding). ONLY ACTIVE drifted price fields = second_message_template + _en -> primary gated write targets. Templates: data/projects/KP-ZEN-012/pp/*.tmpl."
+    },
     "specs": {
       "type": "bedrooms:number | built_size_sqm:number | pool_sqm:number | total_area_sqm:number | floors:number | plot_size_sqm:number",
       "canonical_source": "Project_Inventory (per-config)",
