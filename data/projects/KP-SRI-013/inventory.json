@@ -12,6 +12,8 @@
     { "name": "lower_pair","thb": 15600000, "label_en": "Both lower villas (pair) on 800 m²" }
   ],
   "range": { "thb_lo": 7800000, "thb_hi": 15600000 },
+  "furniture_pack_estimate_thb": 500000,
+  "furniture_note": "Optional furnishing ≈ ฿500,000 per villa (Liam estimate, not a published price point). Upper ฿9M is already turnkey/furnished; lowers ฿7.8M are unfurnished. A furnished pair would be ~฿16.6M — NOT published; canonical pair price stays ฿15,600,000 unfurnished. Maya may quote the ~฿500K as an estimate if asked.",
   "_ssot": {
     "role": "Authoring SSOT (price facts) for KP-SRI-013 Srithanu. Renders §18 pivot; §19 catalog is a follow-up.",
     "seeded_from": "Live GET /Project_Inventory + Liam's CORRECTED lineup (KPR-284 GO 2026-07-02, supersedes scaffold): Upper ฿9M turnkey, Lower A/B ฿7.8M each unfurnished (buy one or both), pair ฿15.6M on 800 m². Pivot = 'from ฿7.8M'.",
