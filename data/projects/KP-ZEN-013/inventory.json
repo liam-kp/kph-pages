@@ -1,0 +1,20 @@
+{
+  "project_id": "KP-ZEN-013",
+  "project_name": "Ban Nai Suan (BNS)",
+  "schema": "generic-v1",
+  "customerId": "11a3a8c9-d3db-4b32-8c08-35dd7868b959",
+  "owns_sections": ["22-campaign-bns-ban-nai-suan", "32-bns-one-bedroom-navigation"],
+  "jade_prompt_section_live": "21-catalog-bns-ban-nai-suan",
+  "price_points": [
+    { "name": "studio",  "thb": 2950000,  "label_en": "Studio+ (45.5 m², shared pool, 4 units)" },
+    { "name": "duplex",  "thb": 6700000,  "label_en": "Duplex (84 m², private pool+garden, 3 units)" },
+    { "name": "bundle3", "thb": 18000000, "label_en": "Bundle of 3 duplexes (saves ~฿2.1M vs separate)" }
+  ],
+  "range": { "thb_lo": 2950000, "thb_hi": 18000000 },
+  "_ssot": {
+    "role": "Authoring SSOT (price facts) for KP-ZEN-013 BNS. kph-compile renders the tokenized §22/§32 THB literals from here.",
+    "seeded_from": "Live GET /Projects_Public/KP-ZEN-013 + /Project_Inventory + §22 'UNIT DATA (confirmed BNS BRIEF v3, 2026-05-04)' on 2026-07-02. THB stored exact; USD/EUR/ILS derived from fx.json (never stored).",
+    "prices_authority": "§22 confirmed brief (studio ฿2.95M / duplex ฿6.7M / bundle-3 ฿18M). Live /Project_Inventory is INCOMPLETE for the sale units — see _reconcile.md.",
+    "note": "BNS prompt-sections quote THB only; ₪/$/€ are governed at conversation time by §31-currency-conversion, so no converted-currency literals are tokenized here."
+  }
+}
