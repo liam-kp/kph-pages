@@ -1,5 +1,9 @@
 # KPH Brain — Changelog
 
+## 2026-07-02 — SSOT_LAW doctrine (KPR-284)
+- `SSOT_LAW.md` — new ALWAYS doc: one-fact-one-source, two-tier architecture, `kph-compile` sole Tier-2 writer, three-systems data-flow map, display-rounding rule (converted nearest-100 / THB full), fx-weekly 2% ceiling, the apply gate (PWRC). Wired into `_INDEX.md` Always.
+- `INSTRUCTIONS_CORE.md` — Claude Code model line: Fable 5 default when available; Opus 4.8 otherwise.
+
 ## 2026-06-23 — website sync (path A locked)
 - `runbooks/website-map.md` — canonical clone set to `~/Business/04_Thailand-Co/KPIH/website` (verified Cowork); branch model `feat/*` → `main` (merge = Liam or Adam); added split-brain warning on the second clone (`01_Real-Estate-Leads/kpih-website`, holds KPR-276 privacy commit + uncommitted Red Sunset Land / Ban Nai Suan assets — do not delete until reconciled); added page-publish iron rule (domain tagging), Impeccable 3.1.1 stack + Forensics Gate, schema refs.
 - `INSTRUCTIONS_CORE.md` — website path corrected to path A.

@@ -36,7 +36,7 @@ Naming: "the site" → #1 · "the dashboard" → #2 (ask if unclear) · "the bac
 ## Resource order — who does what
 1. Claude Code (autonomous execution, components, scripts, writes) · 2. Cowork (desktop automation, image ops) · 3. Claude Chat (strategy, spec, drafting, micro-copy, all files) · 4. Claude in Chrome (live QA) · 5. Liam (decisions, approvals, vision) · 6. **Adam** — limited: production backend / AWS / bot code only; NOT campaign publishing or Maya connection (those are Claude-owned); only with a ready Linear ticket, after checking 1–4 · 7. Yair — Facebook Ads only.
 
-Claude Code model: **Opus 4.8** default for everything; Sonnet 4.6 / Haiku 4.5 only when explicitly cheaper-and-sufficient.
+Claude Code model: **Fable 5** default when available; **Opus 4.8** otherwise; Sonnet 4.6 / Haiku 4.5 only when explicitly cheaper-and-sufficient.
 
 ## The 4 Gates (Master-Mode autonomy stops here)
 1. merge to `main` · 2. any Firebase write (PWRC) · 3. production deploy (after Chrome QA) · 4. any contact with Adam. Plus phase-promotion (14-day shadow) and the Phase-3 kill-gate. Between gates: full autonomy.
