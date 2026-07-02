@@ -1,0 +1,19 @@
+{
+  "project_id": "KP-BCH-011",
+  "project_name": "Red Sunset Beachfront",
+  "schema": "generic-v1",
+  "customerId": "11a3a8c9-d3db-4b32-8c08-35dd7868b959",
+  "owns_sections": ["17-campaign-red-sunset"],
+  "jade_prompt_section_live": "17-campaign-red-sunset",
+  "price_points": [
+    { "name": "villa1", "thb": 33000000, "label_en": "Villa 1 — beachfront 4BR (150 m²)" },
+    { "name": "villa2", "thb": 26000000, "label_en": "Villa 2 — sea view 3BR (140 m²)" },
+    { "name": "villa3", "thb": 29000000, "label_en": "Villa 3 — duplex 4BR (170 m²)" }
+  ],
+  "range": { "thb_lo": 26000000, "thb_hi": 33000000 },
+  "_ssot": {
+    "role": "Authoring SSOT (price facts) for KP-BCH-011 Red Sunset. Renders tokenized §17 THB + converted-currency literals.",
+    "seeded_from": "Live GET /Project_Inventory (BCH-V1 33M, BCH-V2 26M, BCH-V3 29M) + /Projects_Public price_thb 26M-33M + §17 villa rows on 2026-07-02.",
+    "note": "§17 quotes THB + full-format USD/EUR/ILS per villa. Converted currencies retokenized from fx.json (intended FX-consistency deltas surface in dry-run). §17 also states a hardcoded '1 THB = 0.092 ILS' note that drifts from fx.json 0.089508 — see _reconcile.md."
+  }
+}
