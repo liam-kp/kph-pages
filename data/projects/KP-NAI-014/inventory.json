@@ -1,0 +1,18 @@
+{
+  "project_id": "KP-NAI-014",
+  "project_name": "Villa Nai-Wok",
+  "schema": "generic-v1",
+  "customerId": "11a3a8c9-d3db-4b32-8c08-35dd7868b959",
+  "owns_sections": ["20-catalog-villa-nai-wok"],
+  "jade_prompt_section_live": "20-catalog-villa-nai-wok",
+  "price_points": [
+    { "name": "jungle",  "thb": 10500000, "label_en": "Jungle villa 3BR, furnished (฿10M + ฿500K furniture)" },
+    { "name": "premium", "thb": 13000000, "label_en": "Premium 3BR villa" }
+  ],
+  "range": { "thb_lo": 10500000, "thb_hi": 13000000 },
+  "_ssot": {
+    "role": "Authoring SSOT (price facts) for KP-NAI-014 Villa Nai-Wok. Renders tokenized §20 THB literals.",
+    "seeded_from": "Live GET /Project_Inventory (KP-NAI-014-JUNGLE 10.5M, -PREMIUM 13M) + §20 catalog on 2026-07-02.",
+    "note": "Jungle headline ฿10.5M = ฿10M base + ~฿500K furniture (breakdown left literal in §20). Converted currencies in §20 are compact/stale (see _reconcile.md); THB tokenized only."
+  }
+}
