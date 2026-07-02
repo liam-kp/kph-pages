@@ -1,17 +1,33 @@
 {
   "_meta": {
     "purpose": "SINGLE SOURCE of currency for the kph-compile SSOT engine. All surfaces (Firebase payloads, prompt-sections, brochure, website) derive THB->USD/EUR/ILS from here. Never hardcode an FX rate downstream.",
-    "as_of": "2026-06-23",
+    "as_of": "2026-07-02",
     "seeded_from": "~/Business/04_Thailand-Co/KPIH/assets/KP-ZEN-012/inventory.json .fx (read-only)",
     "supersedes": "fx_thb_per_usd 32.5 (brochure v1/v2 legacy rate) — see registry.json fx row"
   },
-  "thb_to_usd": 0.0302,
-  "thb_to_eur": 0.0264,
-  "thb_to_ils": 0.0901,
+  "thb_to_usd": 0.030003,
+  "thb_to_eur": 0.026348,
+  "thb_to_ils": 0.089508,
   "rounding": "nearest 100 (band figures to nearest 1000)",
   "display_rule": {
-    "EN": ["THB", "USD", "EUR"],
-    "HE": ["THB", "ILS"],
-    "never": ["ILS in EN", "USD or EUR in HE"]
+    "EN": [
+      "THB",
+      "USD",
+      "EUR"
+    ],
+    "HE": [
+      "THB",
+      "ILS"
+    ],
+    "never": [
+      "ILS in EN",
+      "USD or EUR in HE"
+    ]
+  },
+  "_previous": {
+    "as_of": "2026-06-23",
+    "thb_to_usd": 0.0302,
+    "thb_to_eur": 0.0264,
+    "thb_to_ils": 0.0901
   }
 }
