@@ -77,6 +77,52 @@ def derive_tokens(ssot, fx):
     return t
 
 
+# ---------- generic (non-ZEN-012) token derivation (KPR-284 Step 3 rollout) ----------
+# Every project except the KP-ZEN-012 pilot declares a flat SSOT:
+#   {"schema":"generic-v1","project_id":..,"price_points":[{"name","thb","label_en"..}],
+#    optional "range":{"thb_lo","thb_hi"}}
+# Tokens are namespaced by project id, so a SHARED prompt-section can resolve pivot prices for
+# ANY project it mentions ({{KP-BCH-011.villa1.usd}}). Converted currencies derive from fx.json
+# and are display-rounded to nearest 100 (Step 1); THB is shown in full.
+def derive_generic(kp, ssot, fx):
+    t = {}
+    for p in ssot.get("price_points", []):
+        thb, name = p["thb"], p["name"]
+        a = fx_amounts(thb, fx)
+        t[f"{kp}.{name}.thb"]   = money("฿", thb)
+        t[f"{kp}.{name}.thb_m"] = f"฿{millions(thb)}M"
+        t[f"{kp}.{name}.usd"]   = money("$", a["usd"])
+        t[f"{kp}.{name}.eur"]   = money("€", a["eur"])
+        t[f"{kp}.{name}.ils"]   = money("₪", a["ils"])
+    rg = ssot.get("range")
+    if rg:
+        lo, hi = rg["thb_lo"], rg["thb_hi"]
+        alo, ahi = fx_amounts(lo, fx), fx_amounts(hi, fx)
+        t[f"{kp}.range.thb"]   = f"{money('฿', lo)}–{money('฿', hi)}"
+        t[f"{kp}.range.thb_m"] = f"฿{millions(lo)}M–฿{millions(hi)}M"
+        t[f"{kp}.range.usd"]   = f"{money('$', alo['usd'])}–{money('$', ahi['usd'])}"
+        t[f"{kp}.range.eur"]   = f"{money('€', alo['eur'])}–{money('€', ahi['eur'])}"
+        t[f"{kp}.range.ils"]   = f"{money('₪', alo['ils'])}–{money('₪', ahi['ils'])}"
+    return t
+
+
+def derive_project_tokens(kp, ssot, fx):
+    """Dispatch by SSOT shape: the KP-ZEN-012 pilot uses the rich band/config derive
+    (byte-identical to before); every other project uses the generic price_points derive."""
+    return derive_tokens(ssot, fx) if "band_pricing" in ssot else derive_generic(kp, ssot, fx)
+
+
+def build_global_tokens(fx):
+    """Union of every scaffolded project's namespaced tokens, so a shared prompt-section can
+    resolve pivot prices for any project it references."""
+    t, pdir = {}, os.path.join(DATA, "projects")
+    for kp in sorted(os.listdir(pdir)):
+        inv = os.path.join(pdir, kp, "inventory.json")
+        if os.path.isfile(inv):
+            t.update(derive_project_tokens(kp, json.load(open(inv)), fx))
+    return t
+
+
 def render_text(tmpl, tokens):
     """Resolve {{token}} -> display string."""
     def sub(m):
@@ -212,6 +258,10 @@ def render_pp_fields(ssot, fx, kp):
 
 # ---------- rendered Projects_Public payload (derived from SSOT) ----------
 def render_projects_public(ssot, tokens, fx=None, kp=None):
+    # Only the KP-ZEN-012 pilot renders a Projects_Public price block from SSOT; generic
+    # rollout projects tokenize prompt-sections only (their PP prose is not rendered here).
+    if "band_pricing" not in ssot:
+        return {}
     # Build-to-suit: availability is PLOT-based (pick a plot + a band), not config-based.
     plots = ssot["land"]["plots"]
     avail = sorted(p for p, info in plots.items()
@@ -278,40 +328,51 @@ def finding_fx(ssot, fx):
 # ---------- subcommands ----------
 def cmd_validate(kp):
     ssot, fx, reg = load_ssot(kp), load_fx(), load_registry()
-    tokens = derive_tokens(ssot, fx)
+    tokens = build_global_tokens(fx)   # global: shared sections resolve cross-project pivot tokens
     problems = []
     for r in ("thb_to_usd", "thb_to_eur", "thb_to_ils"):
         if not fx.get(r): problems.append(f"fx.json missing {r}")
-    for b in ssot["band_pricing"]:
-        for c in ("thb", "usd", "eur", "ils"):
-            if not b.get(c): problems.append(f"band {b['band']} missing {c}")
-    # config 'from' consistency: each band 'from_thb' == min config price in band
-    for b in ssot["public_ladder"]:
-        cps = [next((x["price_thb"] for x in ssot["configs"] if x["unit_type"] == ct), None)
-               for ct in b.get("configs", [])]
-        cps = [p for p in cps if p]
-        if cps and b.get("from_thb") and min(cps) != b["from_thb"]:
-            problems.append(f"band {b['band']} from_thb {b['from_thb']} != min config {min(cps)}")
-    # every token in every template resolves
+    if "band_pricing" in ssot:
+        # KP-ZEN-012 pilot: rich band/config/ladder consistency checks
+        for b in ssot["band_pricing"]:
+            for c in ("thb", "usd", "eur", "ils"):
+                if not b.get(c): problems.append(f"band {b['band']} missing {c}")
+        for b in ssot["public_ladder"]:
+            cps = [next((x["price_thb"] for x in ssot["configs"] if x["unit_type"] == ct), None)
+                   for ct in b.get("configs", [])]
+            cps = [p for p in cps if p]
+            if cps and b.get("from_thb") and min(cps) != b["from_thb"]:
+                problems.append(f"band {b['band']} from_thb {b['from_thb']} != min config {min(cps)}")
+        shape = "band-pricing (pilot)"
+    else:
+        # generic price_points SSOT (rollout projects)
+        pps = ssot.get("price_points", [])
+        if not pps: problems.append("generic SSOT has no price_points")
+        for p in pps:
+            if not p.get("name"): problems.append(f"price_point missing name: {p}")
+            if not p.get("thb"):  problems.append(f"price_point {p.get('name')} missing thb")
+        shape = f"generic ({len(pps)} price_points)"
+    # every token in THIS project's own templates resolves against the global table
     sdir = os.path.join(proj_dir(kp), "sections")
-    missing = set()
+    missing, ntmpl = set(), 0
     if os.path.isdir(sdir):
         for f in sorted(os.listdir(sdir)):
             if f.endswith(".tmpl"):
+                ntmpl += 1
                 missing |= (tokens_in(open(os.path.join(sdir, f)).read()) - set(tokens))
     if missing: problems.append(f"unresolved tokens in templates: {sorted(missing)}")
     print(f"=== validate {kp} ===")
-    print(f"registry fields: {len(reg['fields'])} | fx: present | tokens derived: {len(tokens)}")
-    print(f"templates: {len([f for f in os.listdir(sdir) if f.endswith('.tmpl')]) if os.path.isdir(sdir) else 0}")
+    print(f"shape: {shape} | registry fields: {len(reg['fields'])} | fx: present | "
+          f"global tokens: {len(tokens)} | own templates: {ntmpl}")
     if problems:
         print("FAIL:"); [print("  -", p) for p in problems]; return 1
-    print("PASS — SSOT sane, FX present, all tokens resolve, band 'from' == min config.")
+    print("PASS — SSOT sane, FX present, all tokens resolve globally.")
     return 0
 
 
 def cmd_render(kp, outdir=None):
     ssot, fx = load_ssot(kp), load_fx()
-    tokens = derive_tokens(ssot, fx)
+    tokens = build_global_tokens(fx)
     outdir = outdir or os.path.join(tempfile.gettempdir(), f"kph-compile-{kp}")
     os.makedirs(os.path.join(outdir, "sections"), exist_ok=True)
     sdir = os.path.join(proj_dir(kp), "sections")
@@ -329,9 +390,35 @@ def cmd_render(kp, outdir=None):
     return outdir
 
 
+def cmd_diff_generic(kp, ssot, fx):
+    """Rollout-project dry-run: derived (fx-rounded) price tokens vs the live Projects_Public
+    price-bearing fields. Read-only. Section deltas for this project surface in the shared
+    sections-home diff (`diff KP-ZEN-012`), which resolves every project's namespaced tokens."""
+    tok = derive_generic(kp, ssot, fx)
+    print(f"=== diff {kp} — generic (derived-from-SSOT vs live Projects_Public) ===\n")
+    print("## Derived price tokens (THB full · USD/EUR/ILS from fx.json, nearest-100)")
+    for p in ssot.get("price_points", []):
+        n = p["name"]
+        print(f"  {n:<12} {tok[f'{kp}.{n}.thb']:>13}  {tok[f'{kp}.{n}.usd']:>10}  "
+              f"{tok[f'{kp}.{n}.eur']:>10}  {tok[f'{kp}.{n}.ils']:>12}   {p.get('label_en','')}")
+    if ssot.get("range"):
+        print(f"  {'range':<12} {tok[f'{kp}.range.thb']}  |  {tok[f'{kp}.range.usd']}  |  "
+              f"{tok[f'{kp}.range.eur']}  |  {tok[f'{kp}.range.ils']}")
+    print("\n## Live Projects_Public price-bearing fields (for reconcile)")
+    live = get_projects_public(kp)
+    price_fields = [k for k in sorted(live) if isinstance(live.get(k), str)
+                    and re.search(r"(price|pitch|short_pitch|range|second_message|first_message)", k)]
+    for k in price_fields:
+        print(f"  {k} = {live[k][:180]}")
+    print("\n(Any converted-currency delta live-vs-derived is the FX-consistency correction — gated, no apply.)")
+    return 0
+
+
 def cmd_diff(kp):
     ssot, fx = load_ssot(kp), load_fx()
-    tokens = derive_tokens(ssot, fx)
+    if "band_pricing" not in ssot:
+        return cmd_diff_generic(kp, ssot, fx)
+    tokens = build_global_tokens(fx)
     sdir = os.path.join(proj_dir(kp), "sections")
     print(f"=== diff {kp} (live vs rendered-from-SSOT) ===\n")
     print("## Prompt-sections (render(tmpl) vs live content)")
