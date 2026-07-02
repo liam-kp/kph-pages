@@ -183,7 +183,7 @@ RULES:
 - Always Hebrew only in pricing response
 - Never mix English villa names mid-sentence
 - Always show both THB and ILS
-- ILS conversion rate: 1 THB = 0.092 ILS (฿1M = ~₪92,000) — updated weekly
+- Currency (ILS/USD/EUR): derived centrally from fx.json (fx-weekly refresh) — never hardcode a rate here.
 - CURRENCY: ALWAYS use ฿ (Thai Baht), NEVER ¥ (Yen). Verify symbol before sending.
 - Always end with a question
 
@@ -337,7 +337,7 @@ Trigger handoff when:
 ## PRICING RULES
 
 1. ALWAYS show prices in BOTH THB and ILS for Israeli leads.
-   Conversion rate: 1 THB = 0.092 ILS (10.85 THB per ILS) — updated weekly
+   Currency: derived centrally from fx.json (fx-weekly refresh) — never hardcode a rate.
    
    Exact prices to use (already rounded for marketing):
    {{KP-BCH-011.villa1.thb}} (~{{KP-BCH-011.villa1.ils}})  — Villa 1 Beachfront Signature

@@ -74,6 +74,9 @@ def derive_tokens(ssot, fx):
     if m: t["KP-ZEN-012.handover"] = m.group(1)
     # built m² of the 1-bed entry config — so SS18 derives it from inventory, never a hardcoded number
     t["KP-ZEN-012.1bed.sqm"] = f"{_band_entry_config(ssot, '1 Bed')['built_size_sqm']:g}"
+    # per-config price tokens (KPR-284 Step 5 — §18 8-config table renders each config's exact price from SSOT)
+    for c in ssot["configs"]:
+        t[f"KP-ZEN-012.cfg.{c['unit_type']}.thb"] = money("฿", c["price_thb"])
     return t
 
 
@@ -565,6 +568,74 @@ def cmd_apply(kp, confirm=False, dry=False):
     return 0
 
 
+# ---------- prompt-section apply (KPR-284 Step 5) ----------
+# PUT /customers/{CID}/prompt-sections/{key}; body {content,isEnabled,sortOrder,metadata,agentId}.
+# Backend upsert: isEnabled/sortOrder default to existing when omitted — we PASS them from GET-before
+# so they are preserved exactly. Only `content` changes; `updatedAt` is the sole expected side-effect.
+SECTION_PRESERVE = ["sectionKey", "id", "customerId", "createdAt", "isEnabled", "sortOrder", "agentId", "metadata"]
+
+
+def curl_put_section(section_key, body_obj):
+    data = json.dumps(body_obj, ensure_ascii=True)   # ensure_ascii for HE/emoji; never PATCH
+    url = f"{BASE}/customers/{CID}/prompt-sections/{section_key}"
+    return subprocess.run(
+        ["curl", "-sS", "-X", "PUT", "-A", "Mozilla/5.0",
+         "-H", f"Authorization: Bearer {_token()}",
+         "-H", "Content-Type: application/json",
+         "--data-binary", data, url],
+        capture_output=True, text=True, check=True).stdout
+
+
+def apply_section(section_key, confirm=False, dry=False):
+    if not confirm:
+        print(f"=== apply-section {section_key} — GATE ===")
+        print("REFUSED. Live prompt-section write requires --i-have-liams-go.")
+        return 2
+    fx = load_fx(); tokens = build_global_tokens(fx)
+    tmpl = os.path.join(DATA, "projects", "KP-ZEN-012", "sections", section_key + ".tmpl")
+    rendered = render_text(open(tmpl).read(), tokens)
+
+    before = get_section(section_key)                       # PWRC: GET-before (full record)
+    body = {"content": rendered,
+            "isEnabled": before["isEnabled"],
+            "sortOrder": before["sortOrder"],
+            "metadata": before.get("metadata", {}),
+            "agentId": before.get("agentId")}
+
+    mode = "DRY-RUN (no PUT)" if dry else "LIVE PWRC WRITE"
+    print(f"=== apply-section {section_key} — {mode} ===")
+    print(f"sortOrder(before)={before['sortOrder']}  isEnabled(before)={before['isEnabled']}  agentId={before.get('agentId')}")
+    print(f"content len: live={len(before['content'])} -> rendered={len(rendered)} | content changes: {before['content'] != rendered}")
+    if before["content"] == rendered:
+        print("content already in sync — no write needed.")
+        return 0
+    if dry:
+        print("=== DRY-RUN — no PUT issued. ===")
+        return 0
+
+    curl_put_section(section_key, body)                     # PUT full merged
+    time.sleep(3)
+    after = get_section(section_key)                        # GET-after (independent re-read)
+
+    changed = sorted(k for k in (set(before) | set(after)) if before.get(k) != after.get(k))
+    unexpected = [k for k in changed if k not in ("content", "updatedAt")]
+    preserved_bad = [k for k in SECTION_PRESERVE if before.get(k) != after.get(k)]
+    print(f"sortOrder(after)={after['sortOrder']}  isEnabled(after)={after['isEnabled']}")
+    print(f"GET-after changed keys: {changed}")
+
+    if after["content"] != rendered:
+        print(f"\n‼️‼️ FAILED — content did not verify (live != rendered). No further writes.")
+        return 1
+    if preserved_bad:
+        print(f"\n‼️‼️ FAILED — preserved fields changed: {preserved_bad}")
+        return 1
+    if unexpected:
+        print(f"\n‼️‼️ FAILED — unexpected fields changed: {unexpected}")
+        return 1
+    print(f"\n✅ VERIFIED — {section_key}: content written, sortOrder={after['sortOrder']} & isEnabled={after['isEnabled']} preserved, only content+updatedAt changed.")
+    return 0
+
+
 def main():
     ap = argparse.ArgumentParser(prog="kph-compile")
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -573,11 +644,14 @@ def main():
         if c == "apply":
             p.add_argument("--i-have-liams-go", action="store_true")
             p.add_argument("--dry", action="store_true")
+    ps = sub.add_parser("apply-section"); ps.add_argument("section_key")
+    ps.add_argument("--i-have-liams-go", action="store_true"); ps.add_argument("--dry", action="store_true")
     a = ap.parse_args()
     if a.cmd == "validate": sys.exit(cmd_validate(a.kp))
     if a.cmd == "render":   cmd_render(a.kp); sys.exit(0)
     if a.cmd == "diff":     sys.exit(cmd_diff(a.kp))
     if a.cmd == "apply":    sys.exit(cmd_apply(a.kp, a.i_have_liams_go, a.dry))
+    if a.cmd == "apply-section": sys.exit(apply_section(a.section_key, a.i_have_liams_go, a.dry))
 
 
 if __name__ == "__main__":
