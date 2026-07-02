@@ -40,21 +40,26 @@ def load_registry(): return json.load(open(os.path.join(DATA, "registry.json")))
 
 def money(sym, n): return f"{sym}{n:,}"
 def millions(n):   return f"{n/1e6:g}"
+def round100(n):   return int(round(n / 100.0)) * 100   # display-rounding: converted currency -> nearest 100
 
 
 # ---------- token derivation (SSOT -> display strings) ----------
-def derive_tokens(ssot):
+def derive_tokens(ssot, fx):
     """Every display string is DERIVED from the SSOT, so changing the SSOT
-    changes every rendered surface. Returns {token: display_string}."""
+    changes every rendered surface. Returns {token: display_string}.
+    Converted currencies are derived from fx.json (single source) and display-rounded
+    to nearest 100 (KPR-284 Step 1); THB is shown in full. Stored band_pricing
+    usd/eur/ils are intentionally NOT read — FX is the one source."""
     t = {}
     bands = {b["band"]: b for b in ssot["band_pricing"]}
     for name, key in BAND_KEY.items():
         b = bands[name]
+        a = fx_amounts(b["thb"], fx)
         t[f"KP-ZEN-012.{key}.thb"]   = money("฿", b["thb"])
         t[f"KP-ZEN-012.{key}.thb_m"] = f"฿{millions(b['thb'])}M"
-        t[f"KP-ZEN-012.{key}.usd"]   = money("$", b["usd"])
-        t[f"KP-ZEN-012.{key}.eur"]   = money("€", b["eur"])
-        t[f"KP-ZEN-012.{key}.ils"]   = money("₪", b["ils"])
+        t[f"KP-ZEN-012.{key}.usd"]   = money("$", a["usd"])
+        t[f"KP-ZEN-012.{key}.eur"]   = money("€", a["eur"])
+        t[f"KP-ZEN-012.{key}.ils"]   = money("₪", a["ils"])
     # premium 2-bed (2BR-BIG config) — surfaced in SS18 prose
     big = next(c for c in ssot["configs"] if c["unit_type"] == "2BR-BIG")
     t["KP-ZEN-012.premium2bed.thb"]   = money("฿", big["price_thb"])
@@ -155,10 +160,11 @@ def extract_thb(v, min_val=1_000_000):
 
 
 def fx_amounts(thb, fx):
-    # round() only cleans float noise; products of round THB * 4dp rate are integral. No display-rounding.
-    return {"usd": int(round(thb * fx["thb_to_usd"])),
-            "eur": int(round(thb * fx["thb_to_eur"])),
-            "ils": int(round(thb * fx["thb_to_ils"]))}
+    # KPR-284 Step 1 display-rounding: converted currencies -> nearest 100 (THB never rounded).
+    # Derived from the single FX source (fx.json); stored band_pricing usd/eur/ils are NOT read.
+    return {"usd": round100(thb * fx["thb_to_usd"]),
+            "eur": round100(thb * fx["thb_to_eur"]),
+            "ils": round100(thb * fx["thb_to_ils"])}
 
 
 def _sqm(x):  # exact built m²; %g only strips a trailing .0 (40.0->40), NOT display-rounding (79.4 stays 79.4)
@@ -272,7 +278,7 @@ def finding_fx(ssot, fx):
 # ---------- subcommands ----------
 def cmd_validate(kp):
     ssot, fx, reg = load_ssot(kp), load_fx(), load_registry()
-    tokens = derive_tokens(ssot)
+    tokens = derive_tokens(ssot, fx)
     problems = []
     for r in ("thb_to_usd", "thb_to_eur", "thb_to_ils"):
         if not fx.get(r): problems.append(f"fx.json missing {r}")
@@ -305,7 +311,7 @@ def cmd_validate(kp):
 
 def cmd_render(kp, outdir=None):
     ssot, fx = load_ssot(kp), load_fx()
-    tokens = derive_tokens(ssot)
+    tokens = derive_tokens(ssot, fx)
     outdir = outdir or os.path.join(tempfile.gettempdir(), f"kph-compile-{kp}")
     os.makedirs(os.path.join(outdir, "sections"), exist_ok=True)
     sdir = os.path.join(proj_dir(kp), "sections")
@@ -325,7 +331,7 @@ def cmd_render(kp, outdir=None):
 
 def cmd_diff(kp):
     ssot, fx = load_ssot(kp), load_fx()
-    tokens = derive_tokens(ssot)
+    tokens = derive_tokens(ssot, fx)
     sdir = os.path.join(proj_dir(kp), "sections")
     print(f"=== diff {kp} (live vs rendered-from-SSOT) ===\n")
     print("## Prompt-sections (render(tmpl) vs live content)")
