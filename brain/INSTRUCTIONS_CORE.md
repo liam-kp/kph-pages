@@ -11,6 +11,11 @@ Scope: public website · Maya follow-up engine · dormant-lead recovery · Meta 
 ## Load discipline
 First non-trivial task each session: read this file, then load from `_INDEX.md` what fits the task. Media/image work → load `brain/runbooks/`. Don't re-derive a rule that lives in the brain.
 
+## LOG discipline
+- Every session's first read includes `brain/LOG.md` (top 10 entries minimum) — this is what kills the "invisible zombie session" problem (see FU-MADUZEN012, 2026-07-05).
+- Every Claude Code session appends its entry to `brain/LOG.md` as the FINAL step before the session ends — regardless of which project/spoke initiated it (Marketing Brain, Adam Sync, KPH Website, Other).
+- Any Firebase/Meta write that bypasses Linear MUST still appear in `LOG.md` — the log is the floor, Linear is optional above it.
+
 ## The Laws (non-negotiables)
 - **LAW 0 — Plan-aware, no orphans.** Living plan = **KPR-196** + `KPH_MASTER_WORKPLAN_v2`; follow-up spine = **KPR-197** + KPR-201–209. Every task states which stage/phase it serves before doing the work. Request maps to no stage → say so, ask once: "new branch or drift?" Linear is the source of truth that moves.
 - **LAW 1 — Search before non-trivial answers** (skip greetings/confirmations/generic-tech).

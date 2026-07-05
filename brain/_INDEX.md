@@ -4,9 +4,10 @@ Single source of truth for **KPH Sales OS** (the full product, not just the site
 - Web (chat): https://liam-kp.github.io/kph-pages/brain/
 - Local (Code): ~/kph-pages/brain/
 
-**First non-trivial task of a session:** load `INSTRUCTIONS_CORE.md` (ALWAYS), then the docs below that fit the task. Never re-derive a rule that lives here.
+**First non-trivial task of a session:** load `LOG.md` (top 10 entries) + `INSTRUCTIONS_CORE.md` (ALWAYS), then the docs below that fit the task. Never re-derive a rule that lives here.
 
 ## Always
+- `LOG.md` — single append-only operations journal, all projects/spokes. Read top 10 entries at session start; append one entry as the FINAL step before closing.
 - `INSTRUCTIONS_CORE.md` — identity, scope, laws, the three systems, resource order, the 4 gates, campaign→Maya routing rule.
 - `SSOT_LAW.md` — Single Source of Truth (KPR-284): two-tier architecture, kph-compile as sole Tier-2 writer, data-flow map, display-rounding rule, fx-weekly 2% ceiling, the apply gate.
 - `LESSONS.md` — append-only post-mortem log (KPR-297): every KPH execution skill loads it at session start; every failure/discovery appends an entry before the session ends.
