@@ -9,6 +9,14 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-07-05 21:50 TH · [PROJECT: Marketing Brain] · [wa-backup-lead-ledger]
+- WHAT: Parsed today's iPhone WhatsApp Business backup into a full lead ledger CSV, cross-referenced against Firebase `/Leads` (GET only, no writes); discovered and corrected a WhatsApp `@lid` contact-masking gap that had silently excluded 36% of chats, and a Firebase `phone_number`-stores-raw-lid quirk that inflated false "reverse ghost" counts ~8x.
+- CHANGED: No Firebase writes (GO gate — read/report task only). Local-only outputs: `_marketing_brain/data/wa_backup_2026-07-05/ChatStorage.sqlite` (extracted copy) + `lead_ledger.csv` (3,897 rows) · `_marketing_brain/reports/lead_ledger_summary_2026-07-05.md`. Totals: 3,897 chats analyzed, 3,848 engaged (≥2 inbound), 3,281 ghosts (chat not in Firebase), 43 reverse ghosts (Firebase lead not found on phone), 260 chats attributed to a known FB campaign trigger (KP-BCH-011: 122, KP-LND-015: 64, KP-ZEN-013: 46, KP-ZEN-012: 28).
+- OPEN: 43 reverse-ghost leads not yet individually investigated (could be pre-existing-device leads or since-deleted chats) — owner: Liam. CSV/report contain real names + phone numbers — kept local under `_marketing_brain/`, deliberately not pushed to this repo.
+- REF: `_marketing_brain/reports/lead_ledger_summary_2026-07-05.md` · `_marketing_brain/reports/backup_check_2026-07-05.md` (earlier stalled-backup attempt, same day).
+
+---
+
 ## 2026-07-05 21:36 TH · [PROJECT: Marketing Brain] · [maduwan-lang-audit-v2-hold]
 - WHAT: Re-audited the FU-MADUZEN012 batch by cross-checking actual delivered WhatsApp text (not just stored custom_message) against Leads.language; confirmed a 10th EN-damage case during a GO-approved hold attempt that arrived too late (batch had already been halted independently).
 - CHANGED: No Firebase writes — hold script's GETs found 26/27 targeted PENDING records already CANCELLED (external halt, same root cause) and 1/27 already SENT before the write branch could run; zero PUT calls executed. `Follow_Ups/FU-MADUZEN012-5405466c...` (מעיין מיכאלסון) independently re-verified via full Postgres conversation history: delivered in English against a correctly-armed Hebrew custom_message — 10th confirmed damage case, up from the 9/63 in the prior backfilled entry above. `reports/lang_audit_v2_2026-07-05.md` written/updated (§6 addendum). `memory/kpr261_systemsend_verbatim_cleared.md` escalated (light-trim → full language substitution, ~20-22%).
