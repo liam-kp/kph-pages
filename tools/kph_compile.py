@@ -686,7 +686,7 @@ def curl_put_section(section_key, body_obj):
         capture_output=True, text=True, check=True).stdout
 
 
-def apply_section(section_key, confirm=False, dry=False):
+def apply_section(section_key, confirm=False, dry=False, sort_order=None):
     if not confirm:
         print(f"=== apply-section {section_key} — GATE ===")
         print("REFUSED. Live prompt-section write requires --i-have-liams-go.")
@@ -696,15 +696,30 @@ def apply_section(section_key, confirm=False, dry=False):
     rendered = render_text(open(tmpl).read(), tokens)
 
     before = get_section(section_key)                       # PWRC: GET-before (full record)
+    is_new = before.get("id") is None                       # wrapper returns an empty stub, not 404, for an unknown key
+
+    if is_new:
+        if sort_order is None:
+            print(f"=== apply-section {section_key} — GATE ===")
+            print("REFUSED. This section does not exist live yet (no id/sortOrder to preserve) — "
+                  "pass --sort-order explicitly (confirm the next free slot via a live GET first; "
+                  "never guess, per LES-002/003). No write issued.")
+            return 2
+        target_sortOrder, target_isEnabled = sort_order, True
+    else:
+        target_sortOrder, target_isEnabled = before["sortOrder"], before["isEnabled"]
+
     body = {"content": rendered,
-            "isEnabled": before["isEnabled"],
-            "sortOrder": before["sortOrder"],
+            "isEnabled": target_isEnabled,
+            "sortOrder": target_sortOrder,
             "metadata": before.get("metadata", {}),
             "agentId": before.get("agentId")}
 
     mode = "DRY-RUN (no PUT)" if dry else "LIVE PWRC WRITE"
-    print(f"=== apply-section {section_key} — {mode} ===")
-    print(f"sortOrder(before)={before['sortOrder']}  isEnabled(before)={before['isEnabled']}  agentId={before.get('agentId')}")
+    print(f"=== apply-section {section_key} — {mode}{' — NEW SECTION' if is_new else ''} ===")
+    print(f"sortOrder(before)={before.get('sortOrder')}  isEnabled(before)={before.get('isEnabled')}  agentId={before.get('agentId')}")
+    if is_new:
+        print(f"NEW SECTION — no live record existed. Will create with sortOrder={target_sortOrder}, isEnabled={target_isEnabled}.")
     print(f"content len: live={len(before['content'])} -> rendered={len(rendered)} | content changes: {before['content'] != rendered}")
     if before["content"] == rendered:
         print("content already in sync — no write needed.")
@@ -719,7 +734,17 @@ def apply_section(section_key, confirm=False, dry=False):
 
     changed = sorted(k for k in (set(before) | set(after)) if before.get(k) != after.get(k))
     unexpected = [k for k in changed if k not in ("content", "updatedAt")]
-    preserved_bad = [k for k in SECTION_PRESERVE if before.get(k) != after.get(k)]
+    if is_new:
+        # A create legitimately populates id/createdAt/customerId/sectionKey that were absent
+        # before — only the two fields we explicitly set are enforced, not the full preserve list.
+        preserved_bad = [k for k in ("isEnabled", "sortOrder") if after.get(k) != body[k]]
+        # A create legitimately assigns id/createdAt/customerId/sectionKey (absent before),
+        # flips source (platform stub -> customer record), echoes back a "key" field, and
+        # sets sortOrder from None -> the intended value -- all expected, not anomalies.
+        unexpected = [k for k in unexpected
+                      if k not in ("id", "createdAt", "customerId", "sectionKey", "source", "key", "sortOrder")]
+    else:
+        preserved_bad = [k for k in SECTION_PRESERVE if before.get(k) != after.get(k)]
     print(f"sortOrder(after)={after['sortOrder']}  isEnabled(after)={after['isEnabled']}")
     print(f"GET-after changed keys: {changed}")
 
@@ -732,7 +757,7 @@ def apply_section(section_key, confirm=False, dry=False):
     if unexpected:
         print(f"\n‼️‼️ FAILED — unexpected fields changed: {unexpected}")
         return 1
-    print(f"\n✅ VERIFIED — {section_key}: content written, sortOrder={after['sortOrder']} & isEnabled={after['isEnabled']} preserved, only content+updatedAt changed.")
+    print(f"\n✅ VERIFIED — {section_key}: content written, sortOrder={after['sortOrder']} & isEnabled={after['isEnabled']} preserved, only content+updatedAt changed{' (+ id/createdAt/customerId newly assigned on create)' if is_new else ''}.")
     return 0
 
 
@@ -746,6 +771,7 @@ def main():
             p.add_argument("--dry", action="store_true")
     ps = sub.add_parser("apply-section"); ps.add_argument("section_key")
     ps.add_argument("--i-have-liams-go", action="store_true"); ps.add_argument("--dry", action="store_true")
+    ps.add_argument("--sort-order", type=int, default=None, help="required only when the section doesn't exist live yet")
     rp = sub.add_parser("render-pivot")  # KPR-302 step 4: local-only, never touches Firebase
     rp.add_argument("--write", action="store_true", help="write the compiled .tmpl to sections-home (local file only)")
     a = ap.parse_args()
@@ -753,7 +779,7 @@ def main():
     if a.cmd == "render":   cmd_render(a.kp); sys.exit(0)
     if a.cmd == "diff":     sys.exit(cmd_diff(a.kp))
     if a.cmd == "apply":    sys.exit(cmd_apply(a.kp, a.i_have_liams_go, a.dry))
-    if a.cmd == "apply-section": sys.exit(apply_section(a.section_key, a.i_have_liams_go, a.dry))
+    if a.cmd == "apply-section": sys.exit(apply_section(a.section_key, a.i_have_liams_go, a.dry, a.sort_order))
     if a.cmd == "render-pivot": sys.exit(cmd_render_pivot(a.write))
 
 
