@@ -92,6 +92,15 @@ const isEnglish = !/[\u0590-\u05FF]/.test(messageText.trim());
 - **Prevents:** EN leads receiving Hebrew PING1 (L9 — Mike / KP-ZEN-012, confirmed 2026-06-24). This is a **silent bug** — routing is correct, Firebase is correct, but the wrong language sequence fires.
 - **Owner if FAIL:** **Adam** — `conversation-interpreter/index.ts` on `origin/production` (KPR-262).
 
+### 6b. HE copy lint — asterisk/digit check ⭐ (KPR-299)
+On any HE `custom_message` / follow-up / campaign copy going out via Firebase or a Code prompt:
+- No Latin digits inline — spell numbers as Hebrew words (`5`→`חמש`, not the digit).
+- No `*` (bold marker) touching punctuation on either side — always a space or string boundary.
+- No `*` glued directly to a Hebrew prefix letter (ב/ל/מ/ש/כ/ה) with zero separation — WhatsApp's bold parser needs a whitespace/start boundary before the opening marker or it renders as a literal asterisk.
+- **PASS:** zero Latin digits, every `*` has a space (or string edge) on both sides, no prefix-letter glue.
+- **Prevents:** the KPR-299 leak — HE follow-up copy that looks fine in a visual proofread but fails bold rendering and shows raw digits/asterisks to the lead.
+- **Owner if FAIL:** **ours** — Firebase PWRC, rewrite the copy per the lint before scheduling/re-scheduling.
+
 ### 6. Meta ad config
 - Prefill == `facebook_trigger_message` (exact, per check 3).
 - CTWA routes to the correct WhatsApp number (KPH line: `66967907754`).
@@ -130,6 +139,7 @@ PRE-LAUNCH QA — <PROJECT_CODE>
 5  Fire path / lang / FB gate  PASS / FAIL / UNKNOWN  + evidence
 5b isEnglish regex (EN only) . PASS / FAIL / UNKNOWN  + evidence
 6  Meta ad config ............ PASS / FAIL / UNKNOWN  + evidence
+6b HE copy lint (asterisk/digit) PASS / FAIL / UNKNOWN  + evidence
 7  Freestyle content current .. PASS / FAIL / UNKNOWN  + evidence
 
 VERDICT: GO / NO-GO
@@ -142,7 +152,7 @@ Manual gate still pending: fresh-number tap-through — HE AND EN.
 ## When the gate returns NO-GO
 
 **1. Route the fix by owner.**
-- **Ours** — Firebase content (checks 1, 2, 3, 7): fix via **Firebase PWRC** (GET → merge → PUT → GET-verify), retain the before-snapshot for rollback. No Adam.
+- **Ours** — Firebase content (checks 1, 2, 3, 6b, 7): fix via **Firebase PWRC** (GET → merge → PUT → GET-verify), retain the before-snapshot for rollback. No Adam.
 - **Adam** — fire path / `isFacebookAd` / isEnglish regex (checks 5, 5b): Linear ticket.
 
 **2. Before opening any Linear ticket — duplicate-check first.** These leaks are usually **systemic and already tracked**. Run `list_issues` with `includeArchived: true` for the symptom + project before creating anything, and **update the existing ticket — do not duplicate**.
@@ -164,6 +174,7 @@ Manual gate still pending: fresh-number tap-through — HE AND EN.
 | L7 | Creative create fails `1885183` | "AI Agent" app `1234288655275607` in Dev mode | Use KPH Campaign Engine Live-mode token |
 | L8 | Ad set create errors on bid | campaign defaulted to `LOWEST_COST_WITH_BID_CAP` | Mirror proven campaign → `LOWEST_COST_WITHOUT_CAP` |
 | L9 | EN lead gets Hebrew PING1 | `isEnglish` regex rejects digits — pre-fill with "1-bedroom" returns false, HE default fires | **Adam** — fix regex: `!/[\u0590-\u05FF]/.test(msg)` (KPR-262) |
+| L10 | HE follow-up shows raw digits/asterisks instead of bold | Latin digits inline, `*` touching punctuation, or `*` glued to a prefix letter with zero separation | **Ours** -- rewrite copy per check 6b lint (KPR-299) |
 
 ---
 
