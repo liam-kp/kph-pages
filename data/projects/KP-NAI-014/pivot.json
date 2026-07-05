@@ -1,0 +1,39 @@
+{
+  "project_id": "KP-NAI-014",
+  "_ssot": {
+    "role": "Pivot targets FROM KP-NAI-014 (Villa Nai-Wok) — faithful transcription of the existing 'BUDGET ROUTING' block in sections/20-catalog-villa-nai-wok.tmpl (KPR-302 pivot-layer build, step 3). Content/meaning unchanged; structured for the future §34 router. §20 keeps its own copy until Step 5 strips it. Unlike §17/18/22, §20's router is multi-directional (three distinct pivot targets by budget tier), not a simple up/down pair."
+  },
+  "pivot_targets": [
+    {
+      "trigger": "budget_too_high",
+      "budget_range_note": "above {{KP-NAI-014.premium.thb_m}} / wants beachfront / premium",
+      "target_project_id": "KP-BCH-011",
+      "line_he": "יש לי פרויקט חוף בלעדי יותר — רוצה לשמוע?",
+      "line_en": "I have a more exclusive beachfront project — want to hear about it?"
+    },
+    {
+      "trigger": "budget_too_low",
+      "budget_range_note": "below {{KP-NAI-014.jungle.thb_m}} / {{KP-ZEN-012.range.thb_m}} range",
+      "target_project_id": "KP-ZEN-012",
+      "line_he": "יש לי אפשרות מעניינת בתקציב שלך — רוצה שאשלח?",
+      "line_en": "I have an interesting option in your budget range — want me to send it?"
+    },
+    {
+      "trigger": "budget_mid_range",
+      "budget_range_note": "฿8M–{{KP-NAI-014.jungle.thb_m}}",
+      "target_project_id": "KP-SRI-013",
+      "note": "Alternative: present NAI-014's own hidden option ({{KP-NAI-014.jungle.thb_m}}) first if close to the lead's stated range, before pivoting away.",
+      "line_he": "יש לי גם פרויקט בסריטאנו בטווח הזה — {{KP-SRI-013.range.thb_m}}.",
+      "line_en": "I also have a project in Srithanu in that range — {{KP-SRI-013.range.thb_m}}."
+    },
+    {
+      "trigger": "budget_below_minimum",
+      "budget_range_note": "below ฿4M",
+      "target_project_id": null,
+      "note": "Out of range for villa projects — no pivot target, politely decline and offer to follow up if new inventory appears.",
+      "line_he": "בתקציב הזה אין לי כרגע וילה מתאימה, אבל אם משהו חדש ייכנס — אעדכן אותך",
+      "line_en": "At that budget I don't have a matching villa right now, but if something new comes in — I'll let you know"
+    }
+  ],
+  "hidden_option_note": "KP-NAI-014 also has its own in-catalog 'hidden option' (jungle villa, {{KP-NAI-014.jungle.thb_m}}) deployed on a price objection BEFORE pivoting to another project — this is an own-inventory upsell/downsell, not a cross-project pivot, so it is not modeled as a pivot_target here (it already lives in §20's OBJECTION HANDLING, unchanged)."
+}

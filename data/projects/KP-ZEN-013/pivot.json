@@ -1,0 +1,35 @@
+{
+  "project_id": "KP-ZEN-013",
+  "_ssot": {
+    "role": "Pivot targets FROM KP-ZEN-013 (BNS Ban Nai Suan) — faithful transcription of the existing 'BNS PIVOT PROJECTS' block in sections/22-campaign-bns-ban-nai-suan.tmpl (KPR-302 pivot-layer build, step 3). Content/meaning unchanged; structured for the future §34 router. §22 keeps its own copy until Step 5 strips it. Note: KP-BNS-015 (a separate, unrelated Firebase project — see LES-022) is never a pivot target here; do not conflate the two on any future edit."
+  },
+  "pivot_targets": [
+    {
+      "trigger": "budget_high",
+      "budget_range_note": "฿20M+",
+      "target_project_id": "KP-BCH-011",
+      "line_he": "מעולה 😊\nבתקציב הזה יש לי משהו יותר מעניין —\n\n*Red Sunset (ביץ'פרונט):*\n3 וילות על החוף ממש, גישה ישירה לים\n฿26M–฿33M\n10.7%–12% תשואה נטו | רישוי מלונאי\n\nרוצה שאשלח פרטים? 🙏",
+      "line_en": "Great 😊\nIn that range I have something more interesting —\n\n*Red Sunset (Beachfront):*\n3 beachfront villas, direct beach access\n฿26M–฿33M\n10.7%–12% net ROI | Hotel license\n\nWant me to send more details? 🙏"
+    },
+    {
+      "trigger": "budget_mid_high",
+      "budget_range_note": "฿13M–฿20M",
+      "target_project_id": "KP-ZEN-013",
+      "target_project_id_alt": "KP-NAI-014",
+      "note": "Dual-option message — Option 1 is BNS's own bundle-of-3 upsell (self-pivot, kept here because it's presented alongside a genuine cross-project option in the same reply), Option 2 is Villa Nai-Wok (KP-NAI-014).",
+      "line_he": "בתקציב הזה יש לי שתי אופציות מעולות —\n\n*אופציה 1 — חבילת 3 דופלקסים ב-BNS:*\n3 דופלקסים במתחם — {{KP-ZEN-013.bundle3.thb_m}}\nחיסכון של ฿2.1M מול רכישה נפרדת\nתשואה משולבת: ~30% (אומדן מהמוכרת)\n\n*אופציה 2 — Villa Nai-Wok (KP-NAI-014):*\nוילה בנויה, 3 חדרי שינה, בריכה פרטית\nמיקום פנימי שקט באי\n\nרוצה פרטים על אחת מהן? 🙏",
+      "line_en": "In that range I have two great options —\n\n*Option 1 — Bundle of 3 Duplexes at BNS:*\n3 duplexes in the compound — {{KP-ZEN-013.bundle3.thb_m}}\nSaves ฿2.1M vs separate purchase\nCombined yield: ~30% (seller estimate)\n\n*Option 2 — Villa Nai-Wok (KP-NAI-014):*\nBuilt villa, 3 bedrooms, private pool\nQuiet inland location\n\nWant details on either? 🙏"
+    },
+    {
+      "trigger": "budget_side",
+      "budget_range_note": "{{KP-ZEN-013.duplex.thb_m}}–฿13M",
+      "target_project_id": "KP-ZEN-012",
+      "note": "Presented as a lateral alternative, not strictly up or down.",
+      "line_he": "גם אופציה — Maduwan ZENNITH:\nפרויקט בוטיק של 8 וילות עם בריכה פרטית, מרכז האי.\n{{KP-ZEN-012.range.thb_m}}\nתשואה נטו: 10-12% | מסירה יולי 2027\nרוצה לראות גם את זה? 🙏",
+      "line_en": "Also an option — Maduwan ZENNITH:\nBoutique project of 8 villas with private pool, central island.\n{{KP-ZEN-012.range.thb_m}}\nNet yield: 10-12% | Handover {{KP-ZEN-012.handover}}\nWant to see that too? 🙏"
+    }
+  ],
+  "budget_unknown_line_he": "מבין 😊\nבא נעשה את זה נכון —\nמה הטווח שחשבת להשקיע?\nיש לי פרויקטים באי ברמות מחירים שונות —\nאשמח להתאים לך משהו רלוונטי 🙏",
+  "budget_unknown_line_en": "Got it 😊\nLet's do this right —\nwhat range were you thinking of investing?\nI have projects on the island across different price points —\nhappy to match you with something relevant 🙏",
+  "budget_below_studio_note": "Below {{KP-ZEN-013.studio.thb_m}} / unknown → same generic budget-discovery line as budget_unknown, per live §22 ('PIVOT DOWN' block uses identical copy to the unknown-budget case)."
+}

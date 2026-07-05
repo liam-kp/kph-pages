@@ -1,0 +1,34 @@
+{
+  "project_id": "KP-BCH-011",
+  "_ssot": {
+    "role": "Pivot targets FROM KP-BCH-011 (Red Sunset Beachfront) — faithful transcription of the existing 'RED SUNSET PIVOT PROJECTS / BUDGET PIVOTS' block in sections/17-campaign-red-sunset.tmpl (KPR-302 pivot-layer build, step 3). Content/meaning unchanged; structured for the future §34 router. Meanwhile §17 keeps its own copy of this prose until Step 5 strips it.",
+    "target_id_note": "Pivot A's prose says 'Sritanu' but §17's own 'RED SUNSET TOOL CALLS' table maps it to get_project_info(\"KP-COV-013\" or \"KP-COV-014\") — Phangan Cove, NOT KP-SRI-013 (the project actually named Srithanu Villas). Transcribed here using the tool-table's mapping as ground truth (more concrete signal than the marketing-name prose), flagging the naming ambiguity rather than silently resolving it — pre-existing in the live prompt, not introduced by this file."
+  },
+  "pivot_targets": [
+    {
+      "trigger": "budget_mid",
+      "budget_range_note": "₪1M–₪2.5M",
+      "target_project_id": "KP-COV-013",
+      "target_project_id_alt": "KP-COV-014",
+      "line_he": "מבין 😊\nיש לי פרויקטים נוספים באזור סריטאנו —\nקרוב לחוף, פריסייל, טווח מחירים נוח יותר.\nמעניין אותך שאשלח פרטים? 🙏\nלירן",
+      "line_en": "Got it 😊\nI have projects near Sritanu —\nclose to the beach, pre-sale, more accessible price range.\nWant me to send details? 🙏\nLiran"
+    },
+    {
+      "trigger": "budget_low",
+      "budget_range_note": "₪500K–₪1M",
+      "target_project_id": "KP-ZEN-012",
+      "line_he": "מבין 😊\nיש לי פרויקט בוטיק במדוואן —\nלא על הים אבל 5 דקות נסיעה,\nbuild-to-suit מ-{{KP-ZEN-012.1bed.thb_m}} ({{KP-ZEN-012.1bed.ils}}) לוילת חדר עם בריכה פרטית.\nמעניין אותך שאשלח פרטים? 🙏\nלירן",
+      "line_en": "Got it 😊\nI have a boutique project in Maduwan —\nnot on the beach but 5 min away,\nbuild-to-suit from {{KP-ZEN-012.1bed.thb}} ({{KP-ZEN-012.1bed.usd}} / {{KP-ZEN-012.1bed.eur}}).\nWant me to send details? 🙏\nLiran"
+    },
+    {
+      "trigger": "topic_redirect_land_vs_villa",
+      "note": "Not a budget pivot — same-topic disambiguation when a lead asks about 'Red Sunset' in general. KP-LND-015 (the land) is the flagship, KP-BCH-011 (these villas) is the turnkey alternative. See section 26-project-focus-lock's alias rule.",
+      "target_project_id": "KP-LND-015",
+      "line_he": "\"Red Sunset\" מתייחס לאותו מתחם חוף בסריטאנו, בשתי זוויות מכירה. להוביל עם הקרקע — זו ההצעה המובילה/הדגל כרגע.\n⭐ Red Sunset Land (KP-LND-015) — דגל. הקרקע עצמה, {{KP-LND-015.land_plot.thb}} (~{{KP-LND-015.land_plot.ils}}), צ'אנוט (Red Garuda), 1,308 מ\"ר, 15 מ' חזית לים, גישה ישירה לחוף, פוטנציאל בנייה.\nRed Sunset Beachfront (KP-BCH-011) — האלטרנטיבה המוכנה: 3 וילות טרנקי בבנייה, ฿26M–{{KP-BCH-011.villa1.thb_m}}, למי שרוצה בית גמור.\nרכישת הקרקע (הדגל שלנו) או וילה מוכנה?",
+      "line_en": "\"Red Sunset\" names one beachfront location, sold two ways. Lead with the LAND — it is the priority/flagship offering right now.\n⭐ Red Sunset Land (KP-LND-015) — FLAGSHIP. The raw beachfront plot itself, {{KP-LND-015.land_plot.thb}} (~{{KP-LND-015.land_plot.usd}} / ~{{KP-LND-015.land_plot.eur}}), Chanote (Red Garuda) title, 1,308 sqm, 15m sea frontage, direct beach access, build potential.\nRed Sunset Beachfront (KP-BCH-011) — the turnkey ALTERNATIVE: 3 ready-built villas under construction, ฿26M–{{KP-BCH-011.villa1.thb_m}}, for buyers who want a finished home.\nBuy the land (our flagship), or a ready-built villa?"
+    }
+  ],
+  "budget_unknown_line_he": "מבין 😊\nבא נעשה את זה נכון —\nמה הטווח שחשבת להשקיע?\nיש לי מספר פרויקטים באי ברמות מחירים שונות —\nאשמח להתאים לך משהו רלוונטי 🙏\nלירן",
+  "budget_unknown_line_en": "Got it 😊\nLet's do this properly —\nwhat range were you thinking of investing?\nI have several projects on the island at different price points —\nhappy to match you with something relevant 🙏\nLiran",
+  "pivot_rules_note": "NEVER pivot to another project during initial presentation. ONLY pivot after lead explicitly says an objection ('too expensive' / 'out of my budget' / 'anything cheaper?') OR has not responded after 3+ follow-ups — verbatim rule already in §17, restated here so the router (§34) enforces the identical gate."
+}

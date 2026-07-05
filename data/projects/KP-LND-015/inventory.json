@@ -1,0 +1,24 @@
+{
+  "project_id": "KP-LND-015",
+  "project_name": "Red Sunset Land",
+  "schema": "generic-v1",
+  "customerId": "11a3a8c9-d3db-4b32-8c08-35dd7868b959",
+  "owns_sections": [],
+  "jade_prompt_section_live": null,
+  "price_points": [
+    {
+      "name": "land_plot",
+      "thb": 32000000,
+      "label_en": "Beachfront land plot (RSK-2259)"
+    }
+  ],
+  "range": {
+    "thb_lo": 32000000,
+    "thb_hi": 32000000
+  },
+  "_ssot": {
+    "role": "Authoring SSOT (price facts) for KP-LND-015 Red Sunset Land. Renders the flagship-anchor price quoted in §17's 'LAND is the flagship' block (KPR-302 pivot-layer build, step 2) — a single price point, no catalog section of its own.",
+    "seeded_from": "Live GET /Projects_Public (2026-07-05): price_thb=32000000, plot_size_sqm=1308, reference=RSK-2259 (same values as the original onboarding payload _marketing_brain/KP-LND-015_payload.json, KPR-263).",
+    "note": "KP-LND-015 is the same physical plot as KP-BCH-011 (Red Sunset Beachfront), repositioned as raw land — see Projects_Public.differentiation_angle. This file exists solely to tokenize the ฿32M figure everywhere it's quoted (§17 flagship block, both HE/EN); it does not model a catalog/config ladder the way KP-ZEN-012's inventory.json does, since there is only one sellable unit (the plot itself). Converted currencies (USD/EUR/ILS) are NOT stored here — derived from fx.json at render time only, per SSOT_LAW display-rounding rule."
+  }
+}
