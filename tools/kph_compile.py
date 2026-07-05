@@ -136,6 +136,106 @@ def render_text(tmpl, tokens):
     return re.sub(r"\{\{([^}]+)\}\}", sub, tmpl)
 
 
+# ---------- pivot router (KPR-302 step 4) ----------
+PIVOT_ROUTER_HEADER = """\
+\U0001f6a8 SECTION GATE — GLOBAL, CONDITION-ROUTED (NOT project-locked)
+═════════════════════════════════════════════════════════════════════════════
+IF no project_id locked — STOP, defer to section 26-project-focus-lock's
+"ASK, NEVER GUESS" rule. This section NEVER fires first and NEVER substitutes
+for project detection.
+═════════════════════════════════════════════════════════════════════════════
+
+\U0001f501 PIVOT ROUTER — cross-project budget pivots (KPR-302)
+
+This section EXTENDS section 26's Price-Collision Guard — it does not bypass it.
+Only activates for the CURRENTLY LOCKED project_id, and only after an explicit
+budget objection ("too expensive" / "out of my budget" / "anything cheaper?")
+or 3+ silent follow-ups — never during initial presentation (same gate as the
+per-campaign pivot blocks in sections 17/18/20/22 this section will eventually
+replace — see step 5, not yet applied).
+
+Every price below is a namespaced token resolved from that project's own
+data/projects/<KP>/inventory.json — never a literal. If a token fails to
+resolve, STOP and call get_project_info; do not guess a number.
+"""
+
+PIVOT_ROUTER_FOOTER = """\
+═════════════════════════════════════════════════════════════════════════════
+RED-FLAG CHECK before sending any pivot line: does the quoted price/unit name
+trace to the TARGET project's own inventory.json token? If it was typed
+literally instead of substituted from a token — DO NOT SEND, re-render.
+"""
+
+
+def load_pivot(kp):
+    p = os.path.join(proj_dir(kp), "pivot.json")
+    return json.load(open(p)) if os.path.isfile(p) else None
+
+
+def render_pivot_router(fx):
+    """Compile ALL data/projects/<KP>/pivot.json files into the single
+    34-pivot-router.tmpl body. Tokens are left UNRESOLVED ({{...}} placeholders
+    stay literal) -- this produces a .tmpl, same contract as every other
+    sections-home file; render_text()/apply_section() resolve tokens later,
+    at the same point every other section does.
+    Read-only: does not touch Firebase. Does not overwrite pivot.json (source).
+    """
+    pdir = os.path.join(DATA, "projects")
+    blocks = []
+    for kp in sorted(os.listdir(pdir)):
+        piv = load_pivot(kp)
+        if not piv:
+            continue
+        lines = [f"### PIVOT FROM {kp}", ""]
+        for t in piv.get("pivot_targets", []):
+            trig = t.get("trigger", "?")
+            note = t.get("budget_range_note") or t.get("note") or ""
+            target = t.get("target_project_id")
+            alt = t.get("target_project_id_alt")
+            tgt_str = target if target else "(none -- out of range, no pivot)"
+            if alt:
+                tgt_str += f" (alt: {alt})"
+            lines.append(f"IF project_id = {kp} AND trigger = {trig} "
+                         f"{'(' + note + ')' if note else ''} -> OFFER {tgt_str}")
+            if t.get("line_he"):
+                lines.append(f"HE:\n{t['line_he']}")
+            if t.get("line_en"):
+                lines.append(f"EN:\n{t['line_en']}")
+            lines.append("")
+        if piv.get("budget_unknown_line_he") or piv.get("budget_unknown_line_en"):
+            lines.append(f"IF project_id = {kp} AND trigger = budget_unknown_or_below_range -> ask, do not guess:")
+            if piv.get("budget_unknown_line_he"):
+                lines.append(f"HE:\n{piv['budget_unknown_line_he']}")
+            if piv.get("budget_unknown_line_en"):
+                lines.append(f"EN:\n{piv['budget_unknown_line_en']}")
+            lines.append("")
+        blocks.append("\n".join(lines))
+    return PIVOT_ROUTER_HEADER + "\n---\n\n" + "\n---\n\n".join(blocks) + "\n" + PIVOT_ROUTER_FOOTER
+
+
+def cmd_render_pivot(write=False):
+    """Read-only by default: prints the compiled router text.
+    write=True writes ONLY the local .tmpl file (sections-home) -- NEVER Firebase."""
+    fx = load_fx()
+    tmpl_text = render_pivot_router(fx)
+    tokens = build_global_tokens(fx)
+    print("=== render-pivot -- compiled 34-pivot-router.tmpl (tokens UNRESOLVED, as-authored) ===\n")
+    print(tmpl_text)
+    print("\n=== same content with tokens RESOLVED (preview of what apply-section would render) ===\n")
+    try:
+        print(render_text(tmpl_text, tokens))
+    except KeyError as e:
+        print(f"‼️ UNRESOLVED TOKEN: {e}")
+        return 1
+    out = os.path.join(DATA, "projects", "KP-ZEN-012", "sections", "34-pivot-router.tmpl")
+    if write:
+        open(out, "w").write(tmpl_text)
+        print(f"\nwritten (local file only, no Firebase): {out}")
+    else:
+        print(f"\n(dry -- not written; would write to {out})")
+    return 0
+
+
 def tokens_in(tmpl):
     return set(m.strip() for m in re.findall(r"\{\{([^}]+)\}\}", tmpl))
 
@@ -586,7 +686,7 @@ def curl_put_section(section_key, body_obj):
         capture_output=True, text=True, check=True).stdout
 
 
-def apply_section(section_key, confirm=False, dry=False):
+def apply_section(section_key, confirm=False, dry=False, sort_order=None):
     if not confirm:
         print(f"=== apply-section {section_key} — GATE ===")
         print("REFUSED. Live prompt-section write requires --i-have-liams-go.")
@@ -596,15 +696,30 @@ def apply_section(section_key, confirm=False, dry=False):
     rendered = render_text(open(tmpl).read(), tokens)
 
     before = get_section(section_key)                       # PWRC: GET-before (full record)
+    is_new = before.get("id") is None                       # wrapper returns an empty stub, not 404, for an unknown key
+
+    if is_new:
+        if sort_order is None:
+            print(f"=== apply-section {section_key} — GATE ===")
+            print("REFUSED. This section does not exist live yet (no id/sortOrder to preserve) — "
+                  "pass --sort-order explicitly (confirm the next free slot via a live GET first; "
+                  "never guess, per LES-002/003). No write issued.")
+            return 2
+        target_sortOrder, target_isEnabled = sort_order, True
+    else:
+        target_sortOrder, target_isEnabled = before["sortOrder"], before["isEnabled"]
+
     body = {"content": rendered,
-            "isEnabled": before["isEnabled"],
-            "sortOrder": before["sortOrder"],
+            "isEnabled": target_isEnabled,
+            "sortOrder": target_sortOrder,
             "metadata": before.get("metadata", {}),
             "agentId": before.get("agentId")}
 
     mode = "DRY-RUN (no PUT)" if dry else "LIVE PWRC WRITE"
-    print(f"=== apply-section {section_key} — {mode} ===")
-    print(f"sortOrder(before)={before['sortOrder']}  isEnabled(before)={before['isEnabled']}  agentId={before.get('agentId')}")
+    print(f"=== apply-section {section_key} — {mode}{' — NEW SECTION' if is_new else ''} ===")
+    print(f"sortOrder(before)={before.get('sortOrder')}  isEnabled(before)={before.get('isEnabled')}  agentId={before.get('agentId')}")
+    if is_new:
+        print(f"NEW SECTION — no live record existed. Will create with sortOrder={target_sortOrder}, isEnabled={target_isEnabled}.")
     print(f"content len: live={len(before['content'])} -> rendered={len(rendered)} | content changes: {before['content'] != rendered}")
     if before["content"] == rendered:
         print("content already in sync — no write needed.")
@@ -619,7 +734,17 @@ def apply_section(section_key, confirm=False, dry=False):
 
     changed = sorted(k for k in (set(before) | set(after)) if before.get(k) != after.get(k))
     unexpected = [k for k in changed if k not in ("content", "updatedAt")]
-    preserved_bad = [k for k in SECTION_PRESERVE if before.get(k) != after.get(k)]
+    if is_new:
+        # A create legitimately populates id/createdAt/customerId/sectionKey that were absent
+        # before — only the two fields we explicitly set are enforced, not the full preserve list.
+        preserved_bad = [k for k in ("isEnabled", "sortOrder") if after.get(k) != body[k]]
+        # A create legitimately assigns id/createdAt/customerId/sectionKey (absent before),
+        # flips source (platform stub -> customer record), echoes back a "key" field, and
+        # sets sortOrder from None -> the intended value -- all expected, not anomalies.
+        unexpected = [k for k in unexpected
+                      if k not in ("id", "createdAt", "customerId", "sectionKey", "source", "key", "sortOrder")]
+    else:
+        preserved_bad = [k for k in SECTION_PRESERVE if before.get(k) != after.get(k)]
     print(f"sortOrder(after)={after['sortOrder']}  isEnabled(after)={after['isEnabled']}")
     print(f"GET-after changed keys: {changed}")
 
@@ -632,7 +757,7 @@ def apply_section(section_key, confirm=False, dry=False):
     if unexpected:
         print(f"\n‼️‼️ FAILED — unexpected fields changed: {unexpected}")
         return 1
-    print(f"\n✅ VERIFIED — {section_key}: content written, sortOrder={after['sortOrder']} & isEnabled={after['isEnabled']} preserved, only content+updatedAt changed.")
+    print(f"\n✅ VERIFIED — {section_key}: content written, sortOrder={after['sortOrder']} & isEnabled={after['isEnabled']} preserved, only content+updatedAt changed{' (+ id/createdAt/customerId newly assigned on create)' if is_new else ''}.")
     return 0
 
 
@@ -646,12 +771,16 @@ def main():
             p.add_argument("--dry", action="store_true")
     ps = sub.add_parser("apply-section"); ps.add_argument("section_key")
     ps.add_argument("--i-have-liams-go", action="store_true"); ps.add_argument("--dry", action="store_true")
+    ps.add_argument("--sort-order", type=int, default=None, help="required only when the section doesn't exist live yet")
+    rp = sub.add_parser("render-pivot")  # KPR-302 step 4: local-only, never touches Firebase
+    rp.add_argument("--write", action="store_true", help="write the compiled .tmpl to sections-home (local file only)")
     a = ap.parse_args()
     if a.cmd == "validate": sys.exit(cmd_validate(a.kp))
     if a.cmd == "render":   cmd_render(a.kp); sys.exit(0)
     if a.cmd == "diff":     sys.exit(cmd_diff(a.kp))
     if a.cmd == "apply":    sys.exit(cmd_apply(a.kp, a.i_have_liams_go, a.dry))
-    if a.cmd == "apply-section": sys.exit(apply_section(a.section_key, a.i_have_liams_go, a.dry))
+    if a.cmd == "apply-section": sys.exit(apply_section(a.section_key, a.i_have_liams_go, a.dry, a.sort_order))
+    if a.cmd == "render-pivot": sys.exit(cmd_render_pivot(a.write))
 
 
 if __name__ == "__main__":

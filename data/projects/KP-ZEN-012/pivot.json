@@ -1,0 +1,27 @@
+{
+  "project_id": "KP-ZEN-012",
+  "_ssot": {
+    "role": "Pivot targets FROM KP-ZEN-012 (Maduwan Zennith) — faithful transcription of the existing 'MADUWAN PIVOT PROJECTS' block in sections/18-campaign-maduwan-zennith.tmpl (KPR-302 pivot-layer build, step 3). Content/meaning unchanged; structured for the future §34 router. §18 keeps its own copy until Step 5 strips it."
+  },
+  "pivot_targets": [
+    {
+      "trigger": "budget_high",
+      "budget_range_note": "≥ ₪1M / ≥ ฿10M",
+      "target_project_id": "KP-SRI-013",
+      "target_project_id_alt": "KP-NAI-014",
+      "note": "Dual-option message — presents Sritanu Villas (KP-SRI-013) as Option 1 and Villa Nai-Wok (KP-NAI-014) as Option 2 in the same reply. Red Sunset (KP-BCH-011) offered only if lead explicitly asks for beachfront (separate trigger below).",
+      "line_he": "מעולה 😊\nבתקציב הזה יש לי שתי אופציות שהכי מתאימות —\n\n*אופציה 1 — Srithanu Villas (סריטאנו):*\n3 חדרי מאסטר + בריכה פרטית\nמסירה יוני 2026 · ליס 30 שנה או חברה תאילנדית · 14% תשואה שנתית\nוילה עליונה: {{KP-SRI-013.upper.thb}} טורנקי — מרוהטת, מוכנה למגורים\nוילות תחתונות: {{KP-SRI-013.lower_a.thb}} כל אחת, ללא ריהוט — אפשר אחת או שתיים (זוג {{KP-SRI-013.lower_pair.thb}} על 800 מ\"ר)\nהחל מ-{{KP-SRI-013.lower_a.thb}} (~{{KP-SRI-013.lower_a.ils}})\nריהוט אופציונלי לוילות התחתונות ≈ ฿500,000 לוילה (הערכה)\n\n*אופציה 2 — Villa Nai-Wok:*\n3 חדרי מאסטר + בריכה פרטית\nשכונת בוטיק של 7 וילות, רישוי מלונאי\nמסירה מאי 2026, כולל ריהוט\nליסהולד או חברה תאילנדית\n12% תשואה שנתית\n฿10,000,000–฿13,000,000 (~₪920,000–₪1,196,000)\n\nרוצה שאשלח פרטים על אחד מהם? 🙏",
+      "line_en": "Great 😊\nIn that range I have two options that fit best —\n\n*Option 1 — Srithanu Villas:*\n3 master BR + private pool\nDelivery June 2026 · 30-year lease or Thai company · 14% annual ROI\nUpper villa: {{KP-SRI-013.upper.thb}} turnkey — furnished, move-in ready\nLower villas: {{KP-SRI-013.lower_a.thb}} each, unfurnished — buy one or both (pair {{KP-SRI-013.lower_pair.thb}} on 800 sqm)\nFrom {{KP-SRI-013.lower_a.thb}} (~{{KP-SRI-013.lower_a.usd}})\nOptional furnishing for the lower villas ≈ ฿500,000 per villa (estimate)\n\n*Option 2 — Villa Nai-Wok:*\n3 master BR + private pool\nBoutique 7-villa neighborhood, hotel license\nDelivery May 2026, furniture included\nLeasehold or Thai company\n12% annual ROI\n฿10,000,000–฿13,000,000 (~$305K–$397K)\n\nWant me to send more details on any of these? 🙏"
+    },
+    {
+      "trigger": "explicit_beachfront_request",
+      "note": "Only fires if lead explicitly asks for beachfront, regardless of stated budget.",
+      "target_project_id": "KP-BCH-011",
+      "line_he": "אם ביץ'פרונט אמיתי זה מה שמחפש — יש לי גם את זה:\n*Red Sunset (ביץ'פרונט):*\n3 וילות על החוף ממש\n฿26M–฿33M (₪2.39M–₪3.04M)\n10.7%–12% תשואה נטו | רישוי מלונאי 🙏",
+      "line_en": "If true beachfront is what you're after — I have that too:\n*Red Sunset (Beachfront):*\n3 beachfront villas\n฿26M–฿33M ($795K–$1M)\n10.7%–12% net ROI | Hotel license 🙏"
+    }
+  ],
+  "budget_unknown_line_he": "מבין 😊\nבא נעשה את זה נכון —\nמה הטווח שחשבת להשקיע?\nיש לי פרויקטים באי ברמות מחירים שונות —\nאשמח להתאים לך משהו רלוונטי 🙏",
+  "budget_unknown_line_en": "Got it 😊\nLet's do this right —\nwhat range were you thinking of investing?\nI have projects on the island across different price points —\nhappy to match you with something relevant 🙏",
+  "pivot_rules_note": "After lead states budget → route to budget_high or back to Maduwan. Same never-pivot-during-initial-presentation gate as KP-BCH-011's pivot.json."
+}
