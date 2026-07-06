@@ -9,6 +9,15 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-07-06 20:29 TH · [PROJECT: Marketing Brain] · [en-ghost-wave-held]
+
+- WHAT: Tasked to build+arm an "EN-ghost reactivation wave" (Maduwan 1BR copy, ghost leads detected as EN-language only), justified as safe because KPR-303 is a HE→EN-specific bug. Held before any build/write — live KPR-303 check found it reopened again at 10:16Z that same morning (fresh 3-lead Hebrew canary post-"fix" delivered 3/3 in English), and found documented reverse-direction evidence (`damage_list.csv`: Omer Miller, KP-ZEN-013, EN-expected lead delivered in Hebrew) proving the bug is a pipeline-level language-detection failure, not one-directional — so EN-armed leads are not actually safe from it. Liam chose "hold everything."
+- CHANGED: Nothing in Firebase/Follow_Ups/Leads. Memory `maduwan_1br_blast_frozen.md` updated with this attempt + the reverse-direction evidence, so a future session doesn't re-derive the same false EN-safe premise. KPR-303 — comment added documenting the EN-ghost-wave proposal and why it was declined.
+- OPEN: KPR-303 send-pipeline fix still owned by Adam/marshmelo777, `Todo`, reopened same-day twice. No EN-ghost or Maduwan wave should proceed until a real post-fix canary holds AND Liam gives explicit GO.
+- REF: KPR-303 (Linear) · `maduwan_1br_blast_frozen.md` (memory) · `_marketing_brain/data/wa_backup_2026-07-05/damage_list.csv`.
+
+---
+
 ## 2026-07-06 16:30 TH · [PROJECT: Marketing Brain] · [kpr304-maya-blind-six-pivot-targets]
 
 - WHAT: KPR-304 done — the 6 Maya-blind projects (KP-AVL-016, KP-HYA-018, KP-TVD-017, KP-RSL-001, KP-RSL-002, KP-RSL-003) now have SSOT Tier-1 `inventory.json` and are wired into the §34 pivot router from all 4 wired campaigns. Corrected the task brief's "land-vs-villa (RSL-00x)" premise — live GET showed all three RSL-00x are built/resale villas, not land; no land-vs-villa pivot type applied.
