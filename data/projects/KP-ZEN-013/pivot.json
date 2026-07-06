@@ -29,7 +29,7 @@
       "line_en": "Also an option — Maduwan ZENNITH:\nBoutique project of 8 villas with private pool, central island.\n{{KP-ZEN-012.range.thb_m}}\nNet yield: 10-12% | Handover {{KP-ZEN-012.handover}}\nWant to see that too? 🙏"
     },
     {
-      "trigger": "budget_lateral_entry_villas",
+      "trigger": "budget_upgrade_entry_villas",
       "budget_range_note": "฿11.2M–฿11.5M (lateral to BNS's own price spread, not a strict up/down pivot)",
       "target_project_id": "KP-RSL-003",
       "target_project_id_alt": "KP-AVL-016",
