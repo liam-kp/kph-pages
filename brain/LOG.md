@@ -9,6 +9,15 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-07-07 18:45 TH · [PROJECT: Marketing Brain] · [Lead Qualification]
+
+- WHAT: Full chat-base classification of the ~3,897-lead WhatsApp population (device backup `ChatStorage.sqlite`, cross-referenced with live Firebase `/Leads` and Postgres `/api/conversations/all`). 3,795 leads resolved to a 1:1 chat session and classified: BUYER_HOT 777, BUYER_WARM 713, GHOST 1,943, IRRELEVANT 362. Total real buyer pool (HOT+WARM) = 1,490, gating future Custom Audience / LAL builds.
+- CHANGED: No Firebase/Meta writes (read-only session, per task spec). Local files only.
+- OPEN: `master` branch named in the task spec doesn't exist in this repo (only `gh-pages` + `hub/*`) — entry originally landed on `hub/kpr-304-maya-blind-six-pivot-targets-34-expansion`, cherry-picked onto `gh-pages` directly per Liam's follow-up. Project-name field is free-text per-lead inference, canonicalized post-hoc by keyword — long-tail project names may still be unmerged.
+- REF: `leads_qualified_2026-07-06.csv`, `qualification_summary_2026-07-06.md`, `qualification_progress.json` (all in `_marketing_brain/`)
+
+---
+
 ## 2026-07-07 11:20 TH · [PROJECT: Marketing Brain] · [kpzen012-as3-build]
 
 - WHAT: Tasked to build+activate KP-ZEN-012 CTWA v3 AS-3; task brief framed it as "mirror AS-1/AS-2, blocked on Page permission, cleared 2026-07-04." Pre-flight found the brief's premise stale: the original 2026-07-02 build report specs AS-3 as a **Retargeting** ad set (€6) depending on 3 new Custom Audiences (CA-PageEngagers-365, CA-MessagedPage-365, CA-VideoViewers75-Maduwan) that require a page-scoped access token (`pages_show_list`+`pages_read_engagement`+`pages_manage_ads`+`pages_manage_metadata`) — never generated. The 2026-07-04 "Full Control" grant only completed step (A) of two (Page asset assigned to system user); step (B), issuing the actual page-scoped token, never happened. Live-verified, not LOG-assumed: `~/.meta/token.txt` `debug_token` still shows only `ads_management, ads_read, business_management`; `/me/accounts` → 0 pages; `~/.meta/token_page.txt` does not exist; ad account has 0 Custom Audiences. No build attempted — stopped and asked Liam per the task's own "distinct audience → STOP, don't invent targeting" rule. Liam chose "get the page token first."
