@@ -9,6 +9,15 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-07-07 TH · [PROJECT: Marketing Brain] · [kpzen012-bubble3-wonderland]
+
+- WHAT: Task brief `task_KPZEN012_bubble3_add_wonderland.md` (Downloads) called for editing `first_message_sequence_en/he[2]` ("bubble 3") to swap the Arki Kids School line for a Chaloklam Beach line and add a new Wonderland Healing Center line. Live GET showed index [2] is the pricing bubble (no distance lines at all) — the real location/distance-lines content lives at index [3]. Companion file `task_KPZEN012_bubble3_arki_to_chaloklam.md` referenced by the brief does not exist in Downloads; live HE text also didn't literally contain "ארקי" (said generic "בית ספר" instead) so a strict string-match check per the brief's Step 2 would have wrongly concluded the swap already ran. Surfaced the index mismatch to Liam before writing; he confirmed editing index [3]. STC ran first (field `first_message_sequence_en/he` confirmed Active — live in `firstMessageSequenceService.ts`/`leadContextService.ts`, not just migration code). GET→merge→PUT→verify done via scratchpad files (ignored stale 2026-07-04 leftover files sitting in shared `/tmp/pwrc_*.json` from an unrelated prior run). PUT verified 38/38 fields byte-match; both sequence arrays confirmed still native lists post-write (KPR-228 check).
+- CHANGED: `Projects_Public/KP-ZEN-012.first_message_sequence_en[3].content` and `.first_message_sequence_he[3].content` — replaced "4 min to Arki Kids School 🏫" / "4 דקות מבית ספר 🏫" with "9 min from Chaloklam Beach 🌊" / "9 דקות מצ'אלוקלאם ביץ' 🌊", and added a new line "2 min from Wonderland Healing Center 🧘" / "2 דקות מוונדרלנד הילינג סנטר 🧘" after the Thong Sala line. All other 36 fields byte-identical to before, including a separate `whatsapp_sequence_en/he` field discovered in the same record that also contains an "Arki Kid School" line (different wording, plus a "Podium Gym" line not present in `first_message_sequence`) — left untouched, out of this task's scope.
+- OPEN: `whatsapp_sequence_en/he` (bubble-labeled campaign sequence, distinct from `first_message_sequence_en/he`) still references "Arki Kid School" and was not audited/updated — owner: Liam, decide if that field is live/dead and whether it needs the same Chaloklam/Wonderland edit.
+- REF: `task_KPZEN012_bubble3_add_wonderland.md` (Downloads, this session's brief) · this commit.
+
+---
+
 ## 2026-07-07 18:45 TH · [PROJECT: Marketing Brain] · [Lead Qualification]
 
 - WHAT: Full chat-base classification of the ~3,897-lead WhatsApp population (device backup `ChatStorage.sqlite`, cross-referenced with live Firebase `/Leads` and Postgres `/api/conversations/all`). 3,795 leads resolved to a 1:1 chat session and classified: BUYER_HOT 777, BUYER_WARM 713, GHOST 1,943, IRRELEVANT 362. Total real buyer pool (HOT+WARM) = 1,490, gating future Custom Audience / LAL builds.
