@@ -9,6 +9,15 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-07-06 16:30 TH · [PROJECT: Marketing Brain] · [kpr304-maya-blind-six-pivot-targets]
+
+- WHAT: KPR-304 done — the 6 Maya-blind projects (KP-AVL-016, KP-HYA-018, KP-TVD-017, KP-RSL-001, KP-RSL-002, KP-RSL-003) now have SSOT Tier-1 `inventory.json` and are wired into the §34 pivot router from all 4 wired campaigns. Corrected the task brief's "land-vs-villa (RSL-00x)" premise — live GET showed all three RSL-00x are built/resale villas, not land; no land-vs-villa pivot type applied.
+- CHANGED: 6 new `data/projects/<KP>/inventory.json` (generic-v1). 4× `pivot.json` extended additions-only (KP-BCH-011 `budget_downshift_coastal`→KP-HYA-018, KP-ZEN-012 `budget_high_lifestyle`→KP-TVD-017, KP-NAI-014 `budget_upgrade_beachfront_gap`→KP-RSL-001/alt KP-RSL-002, KP-ZEN-013 `budget_lateral_entry_villas`→KP-RSL-003/alt KP-AVL-016). `34-pivot-router.tmpl` re-rendered and live-applied (PWRC verified, sortOrder 3400 preserved). §17 fold-in: tokenized the 2 remaining bare ฿26M literals to `{{KP-BCH-011.villa2.thb_m}}` (value unchanged, no write needed — already in sync). Full-suite `diff KP-ZEN-012` post-apply: 0 char delta, all 7 sections idempotent. LES-031 appended (task-file GO-gate scope: local SSOT authoring vs the one live apply-section primitive).
+- OPEN: PR #2 (branch `hub/kpr-304-maya-blind-six-pivot-targets-34-expansion`, forked `gh-pages`@`4f7243a`) not yet merged — gh-pages moved 4 commits ahead mid-session (unrelated LOG entries, zero file overlap), flagged in the PR per Gate 1, Liam's merge call. No dedicated campaign sections/ads/PING1 for the six — separate ACQUIRE decision, out of scope here.
+- REF: `_marketing_brain/PIVOT_EXPANSION_REPORT_v1.md`; KPR-304; PR https://github.com/liam-kp/kph-pages/pull/2
+
+---
+
 ## 2026-07-06 14:35 TH · [PROJECT: Marketing Brain] · [kpzen012-brochure-fix]
 
 - WHAT: Follow-up to the same-slug entry below — Liam reviewed the stop-and-report, gave direction, work executed. Built v5 from the already-fixed v4 (not the stale v3), and re-pointed Maya's live PING1 brochure link off the stale kph-pages-hosted v3.
