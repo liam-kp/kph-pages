@@ -1,0 +1,17 @@
+{
+  "project_id": "KP-RSL-001",
+  "project_name": "Sea La Villa",
+  "schema": "generic-v1",
+  "customerId": "11a3a8c9-d3db-4b32-8c08-35dd7868b959",
+  "owns_sections": [],
+  "jade_prompt_section_live": null,
+  "price_points": [
+    { "name": "villa", "thb": 16800000, "label_en": "Sea La Villa — 3BR resale (175 m² built, elevated full sea view)" }
+  ],
+  "range": { "thb_lo": 16800000, "thb_hi": 16800000 },
+  "_ssot": {
+    "role": "Authoring SSOT (price facts) for KP-RSL-001 Sea La Villa — one of the 6 KPR-304 Maya-blind projects. Tokenizes the price for its new §34-pivot-router entry only.",
+    "seeded_from": "Live GET /Projects_Public/KP-RSL-001 (2026-07-06): price_thb=16,800,000, property_type=resale_villa, 3BR/3BA, 175 m² total built, 400 m² plot, usp_tags=[sea_view].",
+    "note": "Ready (resale), Srithanu west coast. NOT a land asset — this is a built, income-generating villa. Task-brief's 'land assets (RSL-00x)' framing does not match live data for any of KP-RSL-001/002/003; flagged, not applied."
+  }
+}

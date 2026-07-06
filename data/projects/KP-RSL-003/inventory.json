@@ -1,0 +1,17 @@
+{
+  "project_id": "KP-RSL-003",
+  "project_name": "Skyline Villas",
+  "schema": "generic-v1",
+  "customerId": "11a3a8c9-d3db-4b32-8c08-35dd7868b959",
+  "owns_sections": [],
+  "jade_prompt_section_live": null,
+  "price_points": [
+    { "name": "villa", "thb": 11500000, "label_en": "Skyline Villas — 2BR presale (162 m² total built, sea view, 30yr leasehold)" }
+  ],
+  "range": { "thb_lo": 11500000, "thb_hi": 11500000 },
+  "_ssot": {
+    "role": "Authoring SSOT (price facts) for KP-RSL-003 Skyline Villas — one of the 6 KPR-304 Maya-blind projects. Tokenizes the price for its new §34-pivot-router entry only. Was previously mentioned only inside §13's generic market-positioning catalog (PIVOT_GAP_MAP_v1.md §1a) — this file gives it a proper SSOT token for the first time.",
+    "seeded_from": "Live GET /Projects_Public/KP-RSL-003 (2026-07-06): price_thb='11500000' (string on live record, cast to int here per SSOT_LAW numeric-THB rule), property_type=pre_sale, 2BR/2BA, 109 m² aircon / 162 m² total built, 480 m² plot, 30yr registered leasehold, price_tier=mid, usp_tags=[sea_view, pre_sale, pool, boutique_neighborhood, furnished_turnkey, dual_master_bedrooms].",
+    "note": "Under Construction (presale), Mae Haad/Koh Ma viewpoint (Chaloklum side). NOT a land asset — same caveat as KP-RSL-001/002."
+  }
+}

@@ -64,6 +64,30 @@ EN:
 Red Sunset Beachfront (KP-BCH-011) — the turnkey ALTERNATIVE: 3 ready-built villas under construction, ฿26M–{{KP-BCH-011.villa1.thb_m}}, for buyers who want a finished home.
 Buy the land (our flagship), or a ready-built villa?
 
+IF project_id = KP-BCH-011 AND trigger = budget_downshift_coastal (~₪1.97M / ฿22M (below Red Sunset's ฿26M entry, ready-to-move alternative)) -> OFFER KP-HYA-018
+HE:
+מבין 😊
+יש לי גם אפשרות מוכנה כבר עכשיו, קרובה יותר לתקציב —
+
+*Haad Yao Sunset Villa (HAVEN):*
+וילה 3 חד' + סטודיו דופלקס, 784 מ"ר צ'אנוט, חברה תאילנדית כלולה
+{{KP-HYA-018.package.thb}} (~{{KP-HYA-018.package.ils}})
+מוכן למגורים, נוף שקיעה, חוף האד יאו
+
+מעניין אותך שאשלח פרטים? 🙏
+לירן
+EN:
+Got it 😊
+I also have something ready right now, closer to that budget —
+
+*Haad Yao Sunset Villa (HAVEN):*
+3BR villa + duplex studio, 784 sqm chanote, Thai company included
+{{KP-HYA-018.package.thb}} (~{{KP-HYA-018.package.usd}} / ~{{KP-HYA-018.package.eur}})
+Ready to move, sunset views, Haad Yao beach
+
+Want me to send details? 🙏
+Liran
+
 IF project_id = KP-BCH-011 AND trigger = budget_unknown_or_below_range -> ask, do not guess:
 HE:
 מבין 😊
@@ -107,6 +131,12 @@ HE:
 בתקציב הזה אין לי כרגע וילה מתאימה, אבל אם משהו חדש ייכנס — אעדכן אותך
 EN:
 At that budget I don't have a matching villa right now, but if something new comes in — I'll let you know
+
+IF project_id = KP-NAI-014 AND trigger = budget_upgrade_beachfront_gap (฿16.8M–฿17.85M (gap tier between Nai-Wok's own top and Red Sunset's ฿26M entry)) -> OFFER KP-RSL-001 (alt: KP-RSL-002)
+HE:
+יש לי גם משהו ברמה גבוהה יותר, לפני ביץ'פרונט מלא — רוצה לשמוע?
+EN:
+I also have something a step up, before full beachfront — want to hear about it?
 
 ---
 
@@ -169,6 +199,28 @@ If true beachfront is what you're after — I have that too:
 3 beachfront villas
 ฿26M–฿33M ($795K–$1M)
 10.7%–12% net ROI | Hotel license 🙏
+
+IF project_id = KP-ZEN-012 AND trigger = budget_high_lifestyle (฿7M–฿9.5M (above Maduwan's own top band, below the ฿10M+ Sritanu/Nai-Wok tier)) -> OFFER KP-TVD-017
+HE:
+מבין 😊
+בתקציב הזה יש לי גם אופציה שונה —
+
+*TerraVida (הין קונג):*
+כפר בוטיק של 16 וילות, קנאל משותף, קפה וחדר כושר במקום
+{{KP-TVD-017.2br_m.thb}} ({{KP-TVD-017.2br_m.ils}})
+חכירה 30 שנה + 2 הארכות
+
+רוצה שאשלח פרטים? 🙏
+EN:
+Got it 😊
+In that range I also have a different kind of option —
+
+*TerraVida (Hin Kong):*
+Boutique village of 16 villas, shared canal, café & gym on site
+{{KP-TVD-017.2br_m.thb}} ({{KP-TVD-017.2br_m.usd}})
+30-year leasehold + 2 renewal options
+
+Want me to send details? 🙏
 
 IF project_id = KP-ZEN-012 AND trigger = budget_unknown_or_below_range -> ask, do not guess:
 HE:
@@ -251,6 +303,14 @@ Boutique project of 8 villas with private pool, central island.
 {{KP-ZEN-012.range.thb_m}}
 Net yield: 10-12% | Handover {{KP-ZEN-012.handover}}
 Want to see that too? 🙏
+
+IF project_id = KP-ZEN-013 AND trigger = budget_upgrade_entry_villas (฿11.2M–฿11.5M (lateral to BNS's own price spread, not a strict up/down pivot)) -> OFFER KP-RSL-003 (alt: KP-AVL-016)
+HE:
+גם אופציה — יש לי שתי וילות פריסייל/מוכנות בטווח קרוב, נוף לים —
+רוצה שאשלח פרטים? 🙏
+EN:
+Also an option — I have two presale/ready villas in a similar range, sea view —
+Want me to send details? 🙏
 
 IF project_id = KP-ZEN-013 AND trigger = budget_unknown_or_below_range -> ask, do not guess:
 HE:

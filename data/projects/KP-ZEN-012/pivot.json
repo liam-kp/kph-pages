@@ -19,6 +19,14 @@
       "target_project_id": "KP-BCH-011",
       "line_he": "אם ביץ'פרונט אמיתי זה מה שמחפש — יש לי גם את זה:\n*Red Sunset (ביץ'פרונט):*\n3 וילות על החוף ממש\n฿26M–฿33M (₪2.39M–₪3.04M)\n10.7%–12% תשואה נטו | רישוי מלונאי 🙏",
       "line_en": "If true beachfront is what you're after — I have that too:\n*Red Sunset (Beachfront):*\n3 beachfront villas\n฿26M–฿33M ($795K–$1M)\n10.7%–12% net ROI | Hotel license 🙏"
+    },
+    {
+      "trigger": "budget_high_lifestyle",
+      "budget_range_note": "฿7M–฿9.5M (above Maduwan's own top band, below the ฿10M+ Sritanu/Nai-Wok tier)",
+      "target_project_id": "KP-TVD-017",
+      "note": "KPR-304 addition — TerraVida sits in the gap between Maduwan's own range and the existing budget_high tier; a lifestyle-village alternative, not a straight up/down of the same product type.",
+      "line_he": "מבין 😊\nבתקציב הזה יש לי גם אופציה שונה —\n\n*TerraVida (הין קונג):*\nכפר בוטיק של 16 וילות, קנאל משותף, קפה וחדר כושר במקום\n{{KP-TVD-017.2br_m.thb}} ({{KP-TVD-017.2br_m.ils}})\nחכירה 30 שנה + 2 הארכות\n\nרוצה שאשלח פרטים? 🙏",
+      "line_en": "Got it 😊\nIn that range I also have a different kind of option —\n\n*TerraVida (Hin Kong):*\nBoutique village of 16 villas, shared canal, café & gym on site\n{{KP-TVD-017.2br_m.thb}} ({{KP-TVD-017.2br_m.usd}})\n30-year leasehold + 2 renewal options\n\nWant me to send details? 🙏"
     }
   ],
   "budget_unknown_line_he": "מבין 😊\nבא נעשה את זה נכון —\nמה הטווח שחשבת להשקיע?\nיש לי פרויקטים באי ברמות מחירים שונות —\nאשמח להתאים לך משהו רלוונטי 🙏",

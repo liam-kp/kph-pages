@@ -1,0 +1,18 @@
+{
+  "project_id": "KP-AVL-016",
+  "project_name": "Avalon Boutique Villas – Haad Khom",
+  "schema": "generic-v1",
+  "customerId": "11a3a8c9-d3db-4b32-8c08-35dd7868b959",
+  "owns_sections": [],
+  "jade_prompt_section_live": null,
+  "price_points": [
+    { "name": "twin",    "thb": 11200000, "label_en": "Twin Villa 2BR (133 m²)" },
+    { "name": "private", "thb": 12000000, "label_en": "Private Villa 2BR (143 m²)" }
+  ],
+  "range": { "thb_lo": 11200000, "thb_hi": 12000000 },
+  "_ssot": {
+    "role": "Authoring SSOT (price facts) for KP-AVL-016 Avalon Boutique Villas — one of the 6 KPR-304 Maya-blind projects. Tokenizes prices for its new §34-pivot-router entries only; no dedicated campaign section of its own (out of scope, per KPR-304).",
+    "seeded_from": "Live GET /Projects_Public/KP-AVL-016 (2026-07-06): price_thb=11,200,000, availability_summary_public quotes Twin Villa from 11.2M THB (133sqm) and Private Villa from 12M THB (143sqm). No /Project_Inventory records exist for this project_id.",
+    "note": "Presale, Haad Khom (north Koh Phangan), 5 of 10 villas available. Not a land asset — property is boutique presale villas, 2BR each."
+  }
+}

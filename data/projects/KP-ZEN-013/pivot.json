@@ -27,6 +27,15 @@
       "note": "Presented as a lateral alternative, not strictly up or down.",
       "line_he": "גם אופציה — Maduwan ZENNITH:\nפרויקט בוטיק של 8 וילות עם בריכה פרטית, מרכז האי.\n{{KP-ZEN-012.range.thb_m}}\nתשואה נטו: 10-12% | מסירה יולי 2027\nרוצה לראות גם את זה? 🙏",
       "line_en": "Also an option — Maduwan ZENNITH:\nBoutique project of 8 villas with private pool, central island.\n{{KP-ZEN-012.range.thb_m}}\nNet yield: 10-12% | Handover {{KP-ZEN-012.handover}}\nWant to see that too? 🙏"
+    },
+    {
+      "trigger": "budget_upgrade_entry_villas",
+      "budget_range_note": "฿11.2M–฿11.5M (lateral to BNS's own price spread, not a strict up/down pivot)",
+      "target_project_id": "KP-RSL-003",
+      "target_project_id_alt": "KP-AVL-016",
+      "note": "KPR-304 addition — lateral options near BNS's own mid-range, same spirit as the existing budget_side entry (not strictly up or down). Skyline Villas (KP-RSL-003, presale, sea view, 30yr leasehold) and Avalon (KP-AVL-016, presale, Haad Khom, north island).",
+      "line_he": "גם אופציה — יש לי שתי וילות פריסייל/מוכנות בטווח קרוב, נוף לים —\nרוצה שאשלח פרטים? 🙏",
+      "line_en": "Also an option — I have two presale/ready villas in a similar range, sea view —\nWant me to send details? 🙏"
     }
   ],
   "budget_unknown_line_he": "מבין 😊\nבא נעשה את זה נכון —\nמה הטווח שחשבת להשקיע?\nיש לי פרויקטים באי ברמות מחירים שונות —\nאשמח להתאים לך משהו רלוונטי 🙏",
