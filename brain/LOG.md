@@ -9,6 +9,15 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-07-06 08:12 TH · [PROJECT: Marketing Brain] · [wave-A-reactivation-arm-EN]
+
+- WHAT: Arming pass for the Wave A ghost-reactivation task. Live recomputation from the same `lead_ledger.csv` the task cites found the "214 attributed ghosts" premise was wrong (that's the count of all campaign-attributed rows regardless of ghost status) — the real `ghost_flag=Y` ∩ target-campaign population is 28, confirmed with the user before building anything. Built the 28-row target list, then per standing KPR-303 amendment armed EN-only (1 lead) and held HE (27) in the CSV, zero Firebase writes for HE.
+- CHANGED: `Leads/lead_waveA_66631820246` + `Follow_Ups/FU-WAVEA-ZEN012-66631820246` created (David, KP-ZEN-012 Track ZEN, EN, scheduled 2026-07-08T03:00:00.000Z), PWRC byte-verified. `custom_message` reused byte-identical from the KPR-299 armed EN template, no regeneration. `targets_wave_A.csv` written (28 rows: 18 BCH-011 + 9 LND-015 HE → `HOLD-KPR303`, 1 ZEN-012 EN → armed). KPR-306 (Linear) created with full scope-correction + exclusion writeup, assignee hub@.
+- OPEN: HE tranche (27 leads) blocked on KPR-303 (still `Todo`, owner Adam) — auto-unblocks on fix + successful canary. 2026-07-08 canary spot-check (David's single send) still pending — owner: Liam. If more EN ghosts surface later (re-run against a fresher backup), same exclusion/arm procedure applies.
+- REF: KPR-306 (Linear, new) · KPR-303 (Linear, unblocks HE) · `_marketing_brain/data/wa_backup_2026-07-05/targets_wave_A.csv` · `_marketing_brain/data/wa_backup_2026-07-05/lead_ledger.csv` (source, unmodified).
+
+---
+
 ## 2026-07-06 07:25 TH · [PROJECT: Marketing Brain] · [kpr299-5lead-cancel-canary-gate]
 
 - WHAT: Tasked with removing 5 double-exposure leads from the "armed" 45-lead KPR-299 recovery-ping wave (2026-07-10/11/12) plus a canary-gate decision; live PWRC check found the premise stale — the entire 45-lead cohort was already `CANCELLED` since 2026-07-05 (KPR-303 bulk halt, unrelated to this ask). No Firebase write made — nothing PENDING to cancel. Posted findings to KPR-299 instead of a fabricated cancellation/count.
