@@ -9,6 +9,15 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-07-06 14:20 TH · [PROJECT: Marketing Brain] · [kpr305-call-sheet-boti-v6-merge]
+
+- WHAT: KPR-305 Top-20 Call Sheet built — merged Boti export v6 (847 Liam reminder lines, Aug 2024→Jul 2026) with today's `lead_ledger.csv` (3,897 rows), reusing KPR-258's (B2.5) `PILOT_PRIORITY_LIST.csv` name→phone matches instead of rebuilding fuzzy-match from scratch. Read-only task, zero Firebase writes, zero outreach sent.
+- CHANGED: Nothing in Firebase/Linear data. Local-only outputs (real names+phones, deliberately not pushed to any repo): `_marketing_brain/reports/call_sheet_2026-07-06.html` (self-contained, sortable, tap-to-call/WhatsApp links, Called/Meeting-Set/Not-Relevant status buttons persisted to `localStorage`, Chrome-verified working incl. reload-persistence) + `.csv` twin. 593 unique Boti v6 entities parsed (273 T1 / 21 T2 / 299 T3 intent tiers); 502 matched to a real ledger phone (84.7% match rate, 190 reused from KPR-258, 71 phone-in-text, 241 fresh fuzzy); 35 excluded (28 KPR-258 doctrine-suppress incl. opt-outs/already-bought/rental-only/personal, 4 on this week's `damage_list.csv` — KP-ZEN-012/013 wrong-language sends, 2 resolved to a WhatsApp *group* chat not an individual, 1 the confirmed `shay` opt-out from KPR-299 (Firebase GET-verified, phone field unreliable so excluded by name)); final scoreable pool 373 after phone-based dedup. Top-20 + bench-20 (41 total incl. header) written to both files.
+- OPEN: 90 Boti v6 entities remain unmatched/below-confidence (mostly bare common first names) — not in this deliverable, same "precision over recall" tradeoff KPR-258 made. `_dormant_gold_2026-06-11/b25/boti_unmatched_REVIEW.csv` (KPR-258, older export) not re-reconciled against v6's fresh unmatched set — low priority, owner: Liam if he wants the long tail worked later.
+- REF: KPR-305 (Linear, completion comment posted) · KPR-258 (Linear, reused artifacts) · KPR-299 (Firebase GET only, shay opt-out cross-check) · `_marketing_brain/reports/call_sheet_2026-07-06.html` + `.csv` (local only, not in any repo) · `_dormant_gold_2026-06-11/b25/PILOT_PRIORITY_LIST.csv` (KPR-258 reuse source).
+
+---
+
 ## 2026-07-06 13:45 TH · [PROJECT: Marketing Brain] · [kpzen012-brochure-fix]
 
 - WHAT: Tasked with 3 brochure corrections (1BR total → 69.18 sqm, masterplan image swap, availability line → "4 of 8") against the `KP-ZEN-012_brochure_en_v3.pdf` found in `~/Downloads`/`~/Business/01_Real-Estate-Leads`. Investigation before editing found the premise stale on every count — STOPPED, no PDF edits made, nothing to version/output.
