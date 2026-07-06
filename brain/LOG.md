@@ -9,6 +9,15 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-07-06 07:25 TH · [PROJECT: Marketing Brain] · [kpr299-5lead-cancel-canary-gate]
+
+- WHAT: Tasked with removing 5 double-exposure leads from the "armed" 45-lead KPR-299 recovery-ping wave (2026-07-10/11/12) plus a canary-gate decision; live PWRC check found the premise stale — the entire 45-lead cohort was already `CANCELLED` since 2026-07-05 (KPR-303 bulk halt, unrelated to this ask). No Firebase write made — nothing PENDING to cancel. Posted findings to KPR-299 instead of a fabricated cancellation/count.
+- CHANGED: Nothing in `Follow_Ups`/`Leads` (none needed — all 45 `FU-MADUZEN012-RECOVERY-*` records already `CANCELLED`). KPR-299 — new comment documenting the already-halted state and per-lead cross-check of the 5-lead damage list against the 45-lead cohort (2 clean matches already cancelled, 1 cross-project match already cancelled, 2 leads not part of this cohort at all). No canary decision asserted — left as an open call per the standing 2026-07-05 HOLD comment.
+- OPEN: canary-gate decision (first-5-as-signal vs. fresh manual canary) still unresolved on KPR-299 — owner: Liam/team. KPR-303 send-pipeline fix still owned by Adam, `Todo`.
+- REF: KPR-299 (Linear, new comment) · KPR-303 (Linear) · `_marketing_brain/data/wa_backup_2026-07-05/damage_list.csv`.
+
+---
+
 ## 2026-07-06 06:58 TH · [PROJECT: Marketing Brain] · [kpr299-recovery-ping-v3]
 
 - WHAT: Built and armed the Maduwan (KP-ZEN-012) "two floor plans" recovery ping for the 46 leads FIRED with the broken HE-lint copy; discovered and excluded a 47th complication (opted-out lead); added a permanent opt-out suppression gate to the follow-up scheduling path; escalated KPR-303 to Urgent with cross-validated evidence from a concurrent session's audit.
