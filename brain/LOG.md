@@ -27,6 +27,15 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-07-07 03:45 TH · [PROJECT: Marketing Brain] · [kpr303-round2-canary]
+
+- WHAT: KPR-303 canary, two rounds. Round 1 (fired ~17:06-17:20 TH 07-06, Maduwan pricing copy): 3 of the 4 HE damage-list leads delivered as freshly re-generated ENGLISH paraphrases, not the armed Hebrew — non-deterministic per-recipient wording (different Maduwan spelling each time), reproducing this ticket's own diagnosed root cause. The 1 EN damage-list lead delivered correct language/content, only reformatted (markdown hard-breaks, not a language bug). Round 1 fired ~6 min before KPR-303 flipped Done→Todo at 17:16 TH — likely what surfaced the regression behind PRs #40-42. Round 2 (fired ~03:45-04:10 TH 07-07, after KPR-303's final Done at 22:30 TH 07-06): generic plain-Hebrew test copy sent to the same EN damage-list lead (language overridden en→he per explicit instruction, this round only) plus 2 internal team test contacts — all 3 delivered byte-for-byte identical Hebrew, no rewrite, no translation.
+- CHANGED: Firebase — round 1: 5 damage-list leads processed (4 HE dual-write Follow_Ups+Leads sent; 1 armed then CANCELLED per instruction, not sent; 1 EN sent). Round 2: 1 existing lead's `Leads.language` overridden en→he + new Follow_Up; 2 new `/Leads` records created for internal test contacts (one on an existing internal contact_id, one on a freshly generated contact_id after the originally-given ID turned out to belong to an unrelated live lead). KPR-303 — comment posted with full armed-vs-delivered table, tagging @marshmelo777.
+- OPEN: Round 2's copy was deliberately plain (no digits/bold/embedded Latin) — doesn't fully re-exercise round 1's failure shape (Latin product name + numerals + bold markers inside Hebrew, the actual shape of live campaign copy). Recommend one more canary using round-1-style content against the current deployed code before trusting this fix for the live Maduwan cohort. Owner: Adam/Liam.
+- REF: KPR-303 (Linear, comment posted) · `_marketing_brain/data/wa_backup_2026-07-05/damage_list.csv` (source of the 5 round-1 targets).
+
+---
+
 ## 2026-07-06 20:29 TH · [PROJECT: Marketing Brain] · [en-ghost-wave-held]
 
 - WHAT: Tasked to build+arm an "EN-ghost reactivation wave" (Maduwan 1BR copy, ghost leads detected as EN-language only), justified as safe because KPR-303 is a HE→EN-specific bug. Held before any build/write — live KPR-303 check found it reopened again at 10:16Z that same morning (fresh 3-lead Hebrew canary post-"fix" delivered 3/3 in English), and found documented reverse-direction evidence (`damage_list.csv`: Omer Miller, KP-ZEN-013, EN-expected lead delivered in Hebrew) proving the bug is a pipeline-level language-detection failure, not one-directional — so EN-armed leads are not actually safe from it. Liam chose "hold everything."
