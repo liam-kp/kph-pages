@@ -9,6 +9,15 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-07-07 18:45 TH · [PROJECT: Marketing Brain] · [Lead Qualification]
+
+- WHAT: Full chat-base classification of the ~3,897-lead WhatsApp population (device backup `ChatStorage.sqlite`, cross-referenced with live Firebase `/Leads` and Postgres `/api/conversations/all`). 3,795 leads resolved to a 1:1 chat session and classified: BUYER_HOT 777, BUYER_WARM 713, GHOST 1,943, IRRELEVANT 362. Total real buyer pool (HOT+WARM) = 1,490, gating future Custom Audience / LAL builds.
+- CHANGED: No Firebase/Meta writes (read-only session, per task spec). Local files only.
+- OPEN: `master` branch named in the task spec doesn't exist in this repo (only `gh-pages` + `hub/*`) — this entry was appended to the current working branch instead; flag if a different branch is the intended log target. Project-name field is free-text per-lead inference, canonicalized post-hoc by keyword — long-tail project names may still be unmerged.
+- REF: `leads_qualified_2026-07-06.csv`, `qualification_summary_2026-07-06.md`, `qualification_progress.json` (all in `_marketing_brain/`)
+
+---
+
 ## 2026-07-06 07:25 TH · [PROJECT: Marketing Brain] · [kpr299-5lead-cancel-canary-gate]
 
 - WHAT: Tasked with removing 5 double-exposure leads from the "armed" 45-lead KPR-299 recovery-ping wave (2026-07-10/11/12) plus a canary-gate decision; live PWRC check found the premise stale — the entire 45-lead cohort was already `CANCELLED` since 2026-07-05 (KPR-303 bulk halt, unrelated to this ask). No Firebase write made — nothing PENDING to cancel. Posted findings to KPR-299 instead of a fabricated cancellation/count.
