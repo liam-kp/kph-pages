@@ -9,6 +9,15 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-07-07 11:20 TH · [PROJECT: Marketing Brain] · [kpzen012-as3-build]
+
+- WHAT: Tasked to build+activate KP-ZEN-012 CTWA v3 AS-3; task brief framed it as "mirror AS-1/AS-2, blocked on Page permission, cleared 2026-07-04." Pre-flight found the brief's premise stale: the original 2026-07-02 build report specs AS-3 as a **Retargeting** ad set (€6) depending on 3 new Custom Audiences (CA-PageEngagers-365, CA-MessagedPage-365, CA-VideoViewers75-Maduwan) that require a page-scoped access token (`pages_show_list`+`pages_read_engagement`+`pages_manage_ads`+`pages_manage_metadata`) — never generated. The 2026-07-04 "Full Control" grant only completed step (A) of two (Page asset assigned to system user); step (B), issuing the actual page-scoped token, never happened. Live-verified, not LOG-assumed: `~/.meta/token.txt` `debug_token` still shows only `ads_management, ads_read, business_management`; `/me/accounts` → 0 pages; `~/.meta/token_page.txt` does not exist; ad account has 0 Custom Audiences. No build attempted — stopped and asked Liam per the task's own "distinct audience → STOP, don't invent targeting" rule. Liam chose "get the page token first."
+- CHANGED: Nothing — read-only session (campaign/ad-set/ad/Firebase GETs only; no Meta entities created or touched, no Firebase writes). Confirmed unchanged/still-good: CTWA v3 campaign (`120247752361560056`, ACTIVE, AS-1+AS-2 only) and `KP-ZEN-012.facebook_trigger_message_en` (byte-exact match to the live ads' prefill).
+- OPEN: Liam to complete BM step (B) — Business Settings → Users → System Users → `kph_deployer` → Generate New Token → scopes `pages_show_list, pages_read_engagement, pages_manage_ads, pages_manage_metadata` (plus existing `ads_management`, `business_management`) → save as `~/.meta/token_page.txt`. Once provided, next session builds the 3 CAs + true Retargeting AS-3 (€6, PAUSED) + AD-3 (PAUSED) per the original 07-02 spec, then runs the QA gate + tap-test + Gate-2 STOP before any activation, per this task brief's remaining steps.
+- REF: `_marketing_brain/reports/maduwan_ctwa_v3_build_20260702.md` (original AS-3 spec + exact BM steps) · `task_KPZEN012_as3_build.md` (Downloads, this session's brief).
+
+---
+
 ## 2026-07-06 20:29 TH · [PROJECT: Marketing Brain] · [en-ghost-wave-held]
 
 - WHAT: Tasked to build+arm an "EN-ghost reactivation wave" (Maduwan 1BR copy, ghost leads detected as EN-language only), justified as safe because KPR-303 is a HE→EN-specific bug. Held before any build/write — live KPR-303 check found it reopened again at 10:16Z that same morning (fresh 3-lead Hebrew canary post-"fix" delivered 3/3 in English), and found documented reverse-direction evidence (`damage_list.csv`: Omer Miller, KP-ZEN-013, EN-expected lead delivered in Hebrew) proving the bug is a pipeline-level language-detection failure, not one-directional — so EN-armed leads are not actually safe from it. Liam chose "hold everything."
