@@ -1,0 +1,17 @@
+{
+  "project_id": "KP-RSL-002",
+  "project_name": "Villa Anne",
+  "schema": "generic-v1",
+  "customerId": "11a3a8c9-d3db-4b32-8c08-35dd7868b959",
+  "owns_sections": [],
+  "jade_prompt_section_live": null,
+  "price_points": [
+    { "name": "villa", "thb": 17850000, "label_en": "Villa Anne — 3BR resale (170 m² total built, Haad Salad Bay)" }
+  ],
+  "range": { "thb_lo": 17850000, "thb_hi": 17850000 },
+  "_ssot": {
+    "role": "Authoring SSOT (price facts) for KP-RSL-002 Villa Anne — one of the 6 KPR-304 Maya-blind projects. Tokenizes the price for its new §34-pivot-router entry only.",
+    "seeded_from": "Live GET /Projects_Public/KP-RSL-002 (2026-07-06): price_thb='17850000' (string on live record, cast to int here per SSOT_LAW numeric-THB rule), property_type=resale, 3BR/2BA, 110 m² aircon / 170 m² total built, 570 m² plot, price_tier=high, usp_tags=[sea_view, boutique_neighborhood, airbnb_active, expansion_potential].",
+    "note": "Ready (resale), Haad Salad Bay. NOT a land asset — a built, tenanted/Airbnb-active villa. Same caveat as KP-RSL-001: task-brief's land-asset framing for RSL-00x does not match live data."
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "project_id": "KP-TVD-017",
+  "project_name": "TerraVida – Boutique Village Hin Kong",
+  "schema": "generic-v1",
+  "customerId": "11a3a8c9-d3db-4b32-8c08-35dd7868b959",
+  "owns_sections": [],
+  "jade_prompt_section_live": null,
+  "price_points": [
+    { "name": "2br_m", "thb": 8000000,  "label_en": "2BR/M villa (87 m²)" },
+    { "name": "2br_l", "thb": 9820000,  "label_en": "2BR/L villa (114 m²)" },
+    { "name": "3br_m", "thb": 12300000, "label_en": "3BR/M villa (137 m²)" },
+    { "name": "3br_l", "thb": 14400000, "label_en": "3BR/L villa (171 m²)" }
+  ],
+  "range": { "thb_lo": 8000000, "thb_hi": 14400000 },
+  "_ssot": {
+    "role": "Authoring SSOT (price facts) for KP-TVD-017 TerraVida — one of the 6 KPR-304 Maya-blind projects. Tokenizes prices for its new §34-pivot-router entry only; no dedicated campaign section of its own (out of scope, per KPR-304).",
+    "seeded_from": "Live GET /Projects_Public/KP-TVD-017 (2026-07-06): price_thb=8,000,000 (entry), availability_summary_public quotes 4 villa types (2BR/M ฿8M, 2BR/L ฿9.82M, 3BR/M ฿12.3M, 3BR/L ฿14.4M). No /Project_Inventory records exist for this project_id.",
+    "note": "Pre-sale, Hin Kong, 9 of 16 villas available (7 already sold), 30-year leasehold + 2 renewal options, boutique-village lifestyle community (canal, café, gym, restaurant on site)."
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "project_id": "KP-HYA-018",
+  "project_name": "Haad Yao Sunset Villa – HAVEN + Studio",
+  "schema": "generic-v1",
+  "customerId": "11a3a8c9-d3db-4b32-8c08-35dd7868b959",
+  "owns_sections": [],
+  "jade_prompt_section_live": null,
+  "price_points": [
+    { "name": "package", "thb": 22000000, "label_en": "HAVEN 3BR villa + Sovereign duplex studio, 784 m² chanote, freehold via Thai company" }
+  ],
+  "range": { "thb_lo": 22000000, "thb_hi": 22000000 },
+  "_ssot": {
+    "role": "Authoring SSOT (price facts) for KP-HYA-018 Haad Yao Sunset Villa — one of the 6 KPR-304 Maya-blind projects. Single sellable package (villa + studio + land + company), not a multi-unit ladder. Tokenizes the price for its new §34-pivot-router entry only.",
+    "seeded_from": "Live GET /Projects_Public/KP-HYA-018 (2026-07-06): price_thb=22,000,000, single-package sale (784sqm chanote land, 3BR HAVEN villa with pool + 75sqm Sovereign duplex studio, fully furnished, Thai company acquisition included). No /Project_Inventory records exist for this project_id.",
+    "note": "Ready to Move, Haad Yao west coast, sunset sea views, walking distance to beach."
+  }
+}
