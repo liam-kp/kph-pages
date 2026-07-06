@@ -26,6 +26,14 @@
       "target_project_id": "KP-LND-015",
       "line_he": "\"Red Sunset\" מתייחס לאותו מתחם חוף בסריטאנו, בשתי זוויות מכירה. להוביל עם הקרקע — זו ההצעה המובילה/הדגל כרגע.\n⭐ Red Sunset Land (KP-LND-015) — דגל. הקרקע עצמה, {{KP-LND-015.land_plot.thb}} (~{{KP-LND-015.land_plot.ils}}), צ'אנוט (Red Garuda), 1,308 מ\"ר, 15 מ' חזית לים, גישה ישירה לחוף, פוטנציאל בנייה.\nRed Sunset Beachfront (KP-BCH-011) — האלטרנטיבה המוכנה: 3 וילות טרנקי בבנייה, ฿26M–{{KP-BCH-011.villa1.thb_m}}, למי שרוצה בית גמור.\nרכישת הקרקע (הדגל שלנו) או וילה מוכנה?",
       "line_en": "\"Red Sunset\" names one beachfront location, sold two ways. Lead with the LAND — it is the priority/flagship offering right now.\n⭐ Red Sunset Land (KP-LND-015) — FLAGSHIP. The raw beachfront plot itself, {{KP-LND-015.land_plot.thb}} (~{{KP-LND-015.land_plot.usd}} / ~{{KP-LND-015.land_plot.eur}}), Chanote (Red Garuda) title, 1,308 sqm, 15m sea frontage, direct beach access, build potential.\nRed Sunset Beachfront (KP-BCH-011) — the turnkey ALTERNATIVE: 3 ready-built villas under construction, ฿26M–{{KP-BCH-011.villa1.thb_m}}, for buyers who want a finished home.\nBuy the land (our flagship), or a ready-built villa?"
+    },
+    {
+      "trigger": "budget_downshift_coastal",
+      "budget_range_note": "~₪1.97M / ฿22M (below Red Sunset's ฿26M entry, ready-to-move alternative)",
+      "target_project_id": "KP-HYA-018",
+      "note": "KPR-304 addition — Haad Yao sits meaningfully below Red Sunset's own entry price and is ready now (vs Red Sunset's under-construction status), a genuine downshift-with-tradeoff rather than the far-lower Maduwan pivot already covered by budget_low.",
+      "line_he": "מבין 😊\nיש לי גם אפשרות מוכנה כבר עכשיו, קרובה יותר לתקציב —\n\n*Haad Yao Sunset Villa (HAVEN):*\nוילה 3 חד' + סטודיו דופלקס, 784 מ\"ר צ'אנוט, חברה תאילנדית כלולה\n{{KP-HYA-018.package.thb}} (~{{KP-HYA-018.package.ils}})\nמוכן למגורים, נוף שקיעה, חוף האד יאו\n\nמעניין אותך שאשלח פרטים? 🙏\nלירן",
+      "line_en": "Got it 😊\nI also have something ready right now, closer to that budget —\n\n*Haad Yao Sunset Villa (HAVEN):*\n3BR villa + duplex studio, 784 sqm chanote, Thai company included\n{{KP-HYA-018.package.thb}} (~{{KP-HYA-018.package.usd}} / ~{{KP-HYA-018.package.eur}})\nReady to move, sunset views, Haad Yao beach\n\nWant me to send details? 🙏\nLiran"
     }
   ],
   "budget_unknown_line_he": "מבין 😊\nבא נעשה את זה נכון —\nמה הטווח שחשבת להשקיע?\nיש לי מספר פרויקטים באי ברמות מחירים שונות —\nאשמח להתאים לך משהו רלוונטי 🙏\nלירן",

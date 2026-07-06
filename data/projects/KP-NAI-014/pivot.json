@@ -33,6 +33,15 @@
       "note": "Out of range for villa projects — no pivot target, politely decline and offer to follow up if new inventory appears.",
       "line_he": "בתקציב הזה אין לי כרגע וילה מתאימה, אבל אם משהו חדש ייכנס — אעדכן אותך",
       "line_en": "At that budget I don't have a matching villa right now, but if something new comes in — I'll let you know"
+    },
+    {
+      "trigger": "budget_upgrade_beachfront_gap",
+      "budget_range_note": "฿16.8M–฿17.85M (gap tier between Nai-Wok's own top and Red Sunset's ฿26M entry)",
+      "target_project_id": "KP-RSL-001",
+      "target_project_id_alt": "KP-RSL-002",
+      "note": "KPR-304 addition — dual-option lateral upgrade. Sea La Villa (KP-RSL-001) and Villa Anne (KP-RSL-002), both ready resale, sea view, sit meaningfully above Nai-Wok's own ฿13M top and meaningfully below Red Sunset's ฿26M entry — a real gap tier, distinct from budget_too_high's straight beachfront jump.",
+      "line_he": "יש לי גם משהו ברמה גבוהה יותר, לפני ביץ'פרונט מלא — רוצה לשמוע?",
+      "line_en": "I also have something a step up, before full beachfront — want to hear about it?"
     }
   ],
   "hidden_option_note": "KP-NAI-014 also has its own in-catalog 'hidden option' (jungle villa, {{KP-NAI-014.jungle.thb_m}}) deployed on a price objection BEFORE pivoting to another project — this is an own-inventory upsell/downsell, not a cross-project pivot, so it is not modeled as a pivot_target here (it already lives in §20's OBJECTION HANDLING, unchanged)."
