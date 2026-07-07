@@ -9,6 +9,19 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-07-07 TH · [PROJECT: Marketing Brain] · [maya-freestyle-prompt-fix]
+
+- WHAT: `task_maya_freestyle_prompt_fix.md` alleged 3 freestyle-answer bugs (markdown formatting, ILS-in-EN currency, KPH-as-developer). Investigation found 2 of 3 already fixed live (sections 28/31 predate the task by weeks, correct rules confirmed in the freshly-composed prompt) — task file was stale. 3rd (developer attribution) was real, root-caused to an integration gap in KPR-184 (May 2026): `developer_profile_en/he` were written to Firebase and section 30 was told to read them, but no backend code path (`get_project_info` tool, lead-context injection) ever exposed those fields to Maya — only `developer_display_name` reaches her, and it was literally set to "Koh Phangan Investment Hub" for 3 projects.
+- CHANGED:
+  - Prompt section `30-developer-questions-global` (customer `11a3a8c9-...`, sortOrder 3000 preserved): added a HARD GUARD block — never state KPH as developer, treat a `developer_display_name`-style "Koh Phangan Investment Hub" value as equivalent-to-empty, fall back instead. 2,548 → 5,110 bytes. 3/4 automated verify checks PASS (4th, `inheritance.customer`, doesn't apply to customer-level sections — confirmed benign via raw object inspection). Snapshots: `_prompts/snapshots/30-developer-questions-global-{pre,post}-2026-07-07.md`.
+  - Firebase `Projects_Public.developer_display_name`: `KP-ZEN-012`, `KP-BCH-011`, `KP-COV-013` — `"Koh Phangan Investment Hub"` → `"Local Thai developer"` (stopgap; user-confirmed value after a Q&A conflict was caught by the permission layer before writing). Full-record PWRC GET→merge→PUT→verify on all 3, zero field loss.
+  - Post-write: fetched `/prompt-sections/preview` (bypasses cache, fresh composition) — confirmed sections 28, 30 (with new guard), and 31 all present in the live 34-section, 165,297-char composed prompt.
+  - Linear ticket KPR-308 (Adam, High) opened for the actual code fix: wire `developer_profile_en/he` through `ProjectPublic` type → `mapFirebaseToProject()` (`firebaseDataImplementation.ts:605`) → `permissions.ts` PUBLIC allow-list → `leadContextService.ts` if needed. Exact file/line refs + runnable grep in a separate comment. Linked to KPR-184 (origin of the gap) and KPR-52 (related architecture ticket, still open).
+- OPEN: KPR-308 — backend wiring fix, owner Adam. Until it lands, `developer_display_name` stopgap is the only thing preventing the KPH-misattribution bug from recurring on these 3 projects; the other 11 projects from KPR-184's original 14 were not audited this session (scope was the 3 flagged by this task) — worth a portfolio-wide check.
+- REF: KPR-308 (Linear, new) · KPR-184 (Linear, referenced) · KPR-52 (Linear, referenced) · `_prompts/snapshots/30-developer-questions-global-*.md`.
+
+---
+
 ## 2026-07-07 TH · [PROJECT: Marketing Brain] · [kpzen012-1br-image-swap]
 
 - WHAT: Two related tasks this session: (1) `task_KPZEN012_1BR_image_swap.md` — swap the wrong 1BR "staircase-into-pool" image across live Meta ads + Firebase PING1; (2) follow-up `task_KPZEN012_fix_ping1_image_stale.md` — diagnose why the PING1 image was still old after (1)'s Meta half ran.
