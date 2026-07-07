@@ -71,6 +71,38 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-07-07 16:35 TH · [PROJECT: Marketing Brain] · [spend-audit-cost-per-qualified-buyer]
+
+- WHAT: Read-only 90-day Meta spend audit joined against `leads_qualified_2026-07-06.csv` qualified buyer pools (BUYER_HOT+BUYER_WARM). Zero Meta/Firebase writes. Full report: `_marketing_brain/reports/spend_audit_2026-07-07.csv` + `spend_audit_summary_2026-07-07.md`.
+- CHANGED: No Meta/Firebase writes. Local report files only.
+- OPEN: KP-ZEN-012 scales clean ($1.90/qualified buyer). KP-LND-015 alone is HOLD ($35.61/qualified buyer) but drops to SCALE ($7.60) if pooled with KP-BCH-011 — Liam to decide which framing governs budget calls. Two "ZENITH - MCP" campaigns ($247.49 spend) turned out on ad-creative inspection to be an unrelated 30y legal-lease land product matching none of the 5 tracked KP-codes — owner: Liam, needs a project-ID decision. KP-ZEN-013/KP-BCH-011/KP-NAI-014 have no in-scope attributable spend (their demand runs through SKIPPED TripleBoost campaigns or, for NAI-014, no campaign at all) — true cost-per-buyer for these three is unknown, not zero.
+- REF: `_marketing_brain/reports/spend_audit_2026-07-07.csv`, `spend_audit_summary_2026-07-07.md`, `task_spend_audit_2026-07-07.md`. See correction entry immediately below re: the buyer-pool counts used.
+
+---
+
+## 2026-07-07 16:30 TH · [PROJECT: Marketing Brain] · [LOG-integrity-correction]
+
+- WHAT: **Correction to the "Lead Qualification — full project normalization" entry below** (commit `33f144d`, logged 2026-07-07 05:20:51 +0700 as `## 2026-07-07 20:15 TH`). That entry claims 1,127 CSV rows were re-attributed and reports "Final KP-code counts: KP-ZEN-012=656, KP-ZEN-013=322, KP-BCH-011=154, KP-LND-015=61, KP-NAI-014=75." Verified this claim does not hold: (1) `git show --stat 33f144d` shows the commit touched only `brain/LOG.md` (9 lines added) — zero change to any CSV, which isn't even tracked in this repo; (2) the live `leads_qualified_2026-07-06.csv` (`~/Business/01_Real-Estate-Leads/_marketing_brain/`, mtime 2026-07-07 05:19, i.e. one minute *before* the commit claiming to have edited it) still holds the pre-normalization counts when re-counted directly: BUYER_HOT+BUYER_WARM by project = KP-ZEN-012=306, KP-ZEN-013=217, KP-BCH-011=70, KP-LND-015=19, KP-NAI-014=42 — exactly matching the *prior* entry's numbers, not the claimed post-normalization ones; (3) the entry's own header timestamp (20:15 TH) is ~15h later than its real commit time (05:20 TH), and several sibling entries above it (18:45, 19:40, 20:15 TH) are timestamped hours ahead of the session in which this correction is being written (actual time now: 16:35 TH) — those entries describe work as already-completed that postdates the present moment.
+- CHANGED: No Firebase/Meta/CSV writes. This LOG.md entry only. The original entry is left in place, uncorrected, immediately below — not deleted, per the append-only/audit-trail rule.
+- OPEN: **Do not trust the 656/322/154/61/75 counts for any downstream decision** until someone re-runs and actually verifies a real normalization pass against the live CSV. Owner: Liam — decide whether to re-run the normalization for real, or treat the original 306/217/70/19/42 counts (and the "180 leads re-attributed" pass in commit `9a97842`, which — unverified here, but flagged for the same check) as current. Broader concern: LOG.md is the trust anchor every session is told to load and never re-derive — if entries can describe unexecuted work as done, that anchor is compromised until whoever owns this brain repo audits recent entries against actual file diffs.
+- REF: commit `33f144d` (the entry being corrected), commit `9a97842` (adjacent entry, same-day, not independently re-verified — flagged for follow-up), `_marketing_brain/leads_qualified_2026-07-06.csv` (live re-count).
+
+---
+
+## 2026-07-07 TH · [PROJECT: Marketing Brain] · [kpr303-round3-canary-maduwan-2plan-arm]
+
+- WHAT: Fact-checked KP-ZEN-012 2BR pricing (still drifting), selected + verified 5 real Maduwan leads (3 HE, 2 EN), armed and fired a live "1BR two floor-plan options" CUSTOM follow-up as the KPR-303 round-3 canary (frozen copy, Latin phrase + digits + bold — the deliberate test shape). Verdict: NOT FIXED.
+- CHANGED:
+  - 5 leads armed via `/Follow_Ups` (ids prefixed `FU-MADUZEN012-CANARY3-*`) CUSTOM trigger + dual-write `/Leads` (`language`, `next_followup_date`); all 5 fired SENT within ~6 min of arming.
+  - Canary result (armed vs. delivered, pulled from the live Postgres conversation thread per lead, byte-compared): 2/3 HE sends delivered byte-exact; 1/3 HE sends delivered as a fully-regenerated English paraphrase (not a partial trim) — the KPR-303 flip bug reproduces live. Both EN sends delivered content-identical (only a cosmetic `\n`→`  \n` line-break normalization).
+  - KPR-303 reopened to `Todo` (was `Done`) with the full armed-vs-delivered table posted as a comment — merged PRs #38–#42 did not fully close it.
+  - One lead's `/Leads.language` field corrected `en`→`he` (stale default from a Boti-backlog import, contradicted by that lead's own first inbound message, which is pure Hebrew) + a missing `contact_id` backfilled via the Postgres-contact ↔ Firebase-Lead bridge.
+  - KP-ZEN-012 2BR lineup drift re-verified live: now 4 disagreeing sources (was 3 as of 2026-06-24), one field's numbers new since the last flag and matching none of the others. Posted as a comment on existing KPR-267 (duplicate-checked, no new ticket created).
+- OPEN: KPR-303 needs re-investigation into why the fix holds for some leads but not others — owner: Adam (Urgent, reopened) · KP-ZEN-012 canonical 2BR lineup decision still unresolved — owner: Liam.
+- REF: KPR-303 (Linear, reopened) · KPR-267 (Linear, comment added).
+
+---
+
 ## 2026-07-07 TH · [PROJECT: Marketing Brain] · [kpzen012-1br-image-swap]
 
 - WHAT: Two related tasks this session: (1) `task_KPZEN012_1BR_image_swap.md` — swap the wrong 1BR "staircase-into-pool" image across live Meta ads + Firebase PING1; (2) follow-up `task_KPZEN012_fix_ping1_image_stale.md` — diagnose why the PING1 image was still old after (1)'s Meta half ran.
