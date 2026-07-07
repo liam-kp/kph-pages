@@ -9,6 +9,19 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-07-07 TH · [PROJECT: Marketing Brain] · [kpr303-round3-expanded-canary-corrections]
+
+- WHAT: Corrective re-send to the 2 round-3 canary leads that failed (flip + trim), plus an expanded sample of 6 new real leads (3 HE, 3 EN) sourced from lead_ledger.csv (KP-ZEN-012 only — the campaign_match tag under-covered true Maduwan-Hebrew inbounds, so first_inbound_text content match was used instead, cross-verified against Firebase). All 8 sends verified via byte-compare against the live Postgres conversation thread.
+- CHANGED:
+  - 2 corrective `/Follow_Ups` records armed (`FU-MADUZEN012-CANARY3-CORRECTION-*`), CUSTOM trigger, dual-write `/Leads`. Both delivered byte-exact clean.
+  - 6 new `/Follow_Ups` records armed (`FU-MADUZEN012-CANARY6-*`), CUSTOM trigger, dual-write `/Leads`. All 6 delivered clean — 3 HE byte-exact, 3 EN content-identical but with a new cosmetic artifact (`\n` → `  \n` trailing double-space per line), not previously documented.
+  - Result: 8/8 clean this round. Combined with the 3 already-clean round-3 leads = 11/11 evidence points clean. Posted full table as a comment on KPR-303.
+  - Flagged in the KPR-303 comment: the ticket's own state history shows Done→Todo cycling through 5 PRs, reopened to Todo at 08:08Z — roughly 30 min before this round's sends fired at 08:40–09:00Z — yet none of the 8 reproduced the flip/trim bug.
+- OPEN: KPR-303 — still Todo; today's clean 8/8 doesn't prove the fix, only that this sample didn't reproduce it — owner: Adam/marshmelo777. A pre-existing **uncommitted** local LOG.md draft entry for the original round-3 run (`kpr303-round3-canary-maduwan-2plan-arm`) sits in the main `~/kph-pages` checkout (not this worktree) and describes only 1 failure mode (flip) across the 3 HE leads, not the 2 distinct modes (flip + trim) this task's brief stated — left un-reconciled and un-committed, flagged for the user rather than resolved unilaterally. Wave A (~70-lead big-blast) remains HELD pending Liam's separate explicit text approval.
+- REF: KPR-303 (Linear, comment added, ticket status Todo).
+
+---
+
 ## 2026-07-07 TH · [PROJECT: Marketing Brain] · [kpzen012-brochure-fix]
 
 - WHAT: Closing follow-up to the two same-slug entries below (2026-07-06) — Liam reviewed PR #24 and gave explicit merge approval this session (after an initial ambiguous "go ahead" was correctly blocked pending confirmed visual sign-off; re-asked, confirmed, then merged).
