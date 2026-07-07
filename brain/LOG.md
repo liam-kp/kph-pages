@@ -22,6 +22,15 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-07-07 TH · [PROJECT: Marketing Brain] · [kpzen012-1br-image-swap-closeout]
+
+- WHAT: Closed out `task_KPZEN012_1BR_image_swap.md` — real fresh-number tap-test landed (EN, 08:55 UTC), then old ads paused on Liam's GO.
+- CHANGED: Tap-test confirmed PING1 fix live: correct routing, 5 images in order, first image byte-verified as the corrected render, pricing/location bubbles correct (incl. earlier Chaloklam/Wonderland fix). Could not attribute which specific ad (old vs new) delivered that impression — 4 EN ad variants share identical pre-fill text and Baileys/Postgres captures no ad-referral metadata; flagged as a real gap, not silently assumed. Liam took the call to proceed anyway. Paused all 6 old ads: 120247752439120056, 120247752437370056, 120247752436020056, 120247278418910056, 120247401174960056, 120247180363810056. Verified per-adset: only the 6 v4-poolfix ads are ACTIVE, ad sets themselves untouched (no learning reset).
+- OPEN: None for this task. Follow-ups from earlier remain open for Liam: baked-in "2 BEDROOMS" text on live creatives, KP-IMG-ZEN-PING1-1BR now needs the same fix mirrored anywhere else it's referenced if found later.
+- REF: `task_KPZEN012_1BR_image_swap.md`, `task_KPZEN012_fix_ping1_image_stale.md` (Downloads).
+
+---
+
 ## 2026-07-07 TH · [PROJECT: Marketing Brain] · [kpzen012-brochure-fix]
 
 - WHAT: Closing follow-up to the two same-slug entries below (2026-07-06) — Liam reviewed PR #24 and gave explicit merge approval this session (after an initial ambiguous "go ahead" was correctly blocked pending confirmed visual sign-off; re-asked, confirmed, then merged).
