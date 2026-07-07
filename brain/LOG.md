@@ -9,6 +9,15 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-07-07 TH · [PROJECT: Marketing Brain] · [kpzen012-brochure-fix]
+
+- WHAT: Closing follow-up to the two same-slug entries below (2026-07-06) — Liam reviewed PR #24 and gave explicit merge approval this session (after an initial ambiguous "go ahead" was correctly blocked pending confirmed visual sign-off; re-asked, confirmed, then merged).
+- CHANGED: `kpih-website` PR #24 squash-merged to `main` (commit `118d2205`), branch deleted. Vercel auto-deployed to production (`dpl_2mvrvbdiQEnnDznFPxX3ksTuLa54`, verified `READY`). Live-verified post-deploy (both the direct deployment URL and the production domain, cache-bust confirmed past a momentarily-stale edge hit on the first check): `https://kohphanganinvestmenthub.com/brochures/KP-ZEN-012_maduwan_en.pdf` now serves v5 (8,052,578 bytes) with the masterplan page reading "4 of 8 plots available — A, B, E and F open. C and G reserved. D and H sold." Combined with the prior session's Firebase re-point of Maya's PING1 link (same URL, already live), the full brochure-fix arc is closed: 1BR total, masterplan wording, and the live WhatsApp link are all now consistent and correct.
+- OPEN: None on this thread. Orphaned `~/kph-pages/brochures/KP-ZEN-012_brochure_en_v3.pdf` still world-reachable at its old URL (unlinked, not deleted — never asked to delete). No new masterplan *image* was ever supplied (judged moot — v4/v5 already mask all per-plot badges out of the graphic); still open if Liam wants a proper redrawn masterplan later.
+- REF: PR https://github.com/liam-kp/kpih-website/pull/24 (merged) · commit `118d2205` · Vercel deployment `dpl_2mvrvbdiQEnnDznFPxX3ksTuLa54` · two prior same-slug LOG entries (2026-07-06, investigation + execution).
+
+---
+
 ## 2026-07-07 TH · [PROJECT: Marketing Brain] · [maya-freestyle-prompt-fix]
 
 - WHAT: `task_maya_freestyle_prompt_fix.md` alleged 3 freestyle-answer bugs (markdown formatting, ILS-in-EN currency, KPH-as-developer). Investigation found 2 of 3 already fixed live (sections 28/31 predate the task by weeks, correct rules confirmed in the freshly-composed prompt) — task file was stale. 3rd (developer attribution) was real, root-caused to an integration gap in KPR-184 (May 2026): `developer_profile_en/he` were written to Firebase and section 30 was told to read them, but no backend code path (`get_project_info` tool, lead-context injection) ever exposed those fields to Maya — only `developer_display_name` reaches her, and it was literally set to "Koh Phangan Investment Hub" for 3 projects.
