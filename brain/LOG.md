@@ -9,6 +9,15 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-07-10 TH · [PROJECT: Other] · [slim-transparency]
+
+- WHAT: scope: deal-room · what: slimmed Good-to-Know blocks all 3 options HE+EN (sales mode — dry facts, kept house-book + blue-book disclosures) · removed lawyer/DD language site-wide · lightbox nav upgraded (arrows, gallery labels, counter, view-all buttons).
+- CHANGED: index.html — replaced "Full transparency — what's important to know" blocks (all 3 options, HE+EN) with short frozen 2-item versions per `task_slim-transparency.md`; removed the trailing "Completion is subject to full legal due diligence" sentence from all three Deal Structure/Price blocks; lightbox upgraded with an always-visible header (gallery name — Active/New Compound Srithanu, Chaloklum Compound, Seed to Feed — per language) + inline photo counter, and a "View all X photos" button added above each thumbnail grid. Fixed a layout bug introduced mid-edit where the outer gallery wrapper div still carried the old `.gallery` (CSS grid) class, causing the new view-all button to render as a misshapen grid cell — renamed wrapper to `.gallery-wrap`, grid class now only on the inner dynamically-rendered div. Pushed to `liam-kp/kpih-resort-portfolio` (commit `be12d13`), live at https://liam-kp.github.io/kpih-resort-portfolio/. No Firebase/Meta/Linear writes.
+- OPEN: none.
+- REF: task_slim-transparency.md (Downloads) · commit be12d13.
+
+---
+
 ## 2026-07-10 TH · [PROJECT: Other] · [unified-galleries-toggle]
 
 - WHAT: scope: deal-room · what: unified upgrade — full swipe galleries (Srithanu 19 / Chaloklum 106 / SeedToFeed 17), full HE/EN toggle THB+EUR@0.0262, HE untouched · deleted unfiltered backup folder from Downloads.
