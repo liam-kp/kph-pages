@@ -9,6 +9,15 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-07-10 10:47 TH · [PROJECT: Other] · [seedtofeed-option3]
+
+- WHAT: added Option 3 Seed to Feed to kpih-resort-portfolio · price ฿13.7M (land+3 houses+company transfer, 2026-07-10) · income developer-reported ฿117K/mo · 4 curated photos (media shortfall — flag for Liam) · no developer name on page · Option 3 live, photo count below spec, awaiting more media from developer.
+- CHANGED: index.html (Option 3 full section: header/stats, why-this-deal, property+gallery, price+structure, location, good-to-know; Option 2 placeholder card kept, Option 3 placeholder removed; hero status tag updated), media/d-seedtofeed-01..04.jpg added. Live at https://liam-kp.github.io/kpih-resort-portfolio/. No Firebase/Meta/Linear writes.
+- OPEN: source ZIP (`WhatsApp Chat - Seed to Feed Resort (Nooma).zip`) contained only 4 unique usable photos (rest were duplicates, Chanote/blue-book docs, land diagrams, satellite map, income screenshots) vs the 18 requested — need more media from developer to fill out the gallery. Option 2 remains a placeholder, not built this session.
+- REF: task_seedtofeed-option3.md (Downloads).
+
+---
+
 ## 2026-07-10 TH · [PROJECT: Other] · [srithanu-dual-deal-room]
 
 - WHAT: built + deployed kpih-resort-portfolio (Option 1 Srithanu Dual Compound, Amir) · pricing basis 2026-06-30 WhatsApp (A ฿14.5M / B ฿18M / combined ฿30M / land ฿2M) · media: 16 Compound-A photos + 3 construction · Options 2–3 placeholders · Linear ticket pending (Chat to open).
