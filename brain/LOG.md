@@ -9,6 +9,12 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-07-10 TH · [PROJECT: Marketing Brain] · [redsunset-land-blast-halt]
+- WHAT: Liam raised a mid-batch compliance check on the [[redsunset-land-blast]] entry below — is the send going out as Meta Cloud API approved-template or free-text outside the 24h window. Confirmed the whole blast runs on `channel_id 4ba20431-e1dd-4dcd-8682-f039e9e46955` ("KP Hub - Production"), type `WHATSAPP_WEB` (Baileys/unofficial), number `+66967907754` — NOT the account's separate Meta WABA channel ("Meta KP Hub", `wabaId 910157898367481`, `+1 555 161 5622`, only 4 conversations ever, essentially unused). Halted immediately per Liam's explicit STOP instruction rather than self-resolving.
+- CHANGED: cancelled all 46 still-`PENDING` `FU-KPLND015-*` records (verified `CANCELLED`). 11 had already fired `SENT` before the halt — irreversible.
+- OPEN: **corrects the prior entry's "full 57 scheduled and progressively firing"** — only 11/57 actually sent; 46 cancelled and awaiting Liam's explicit resume decision (Baileys, accepting known ban-risk exposure per KPR-234/KPR-35 precedent, vs. hold pending WABA verification/KPR-35 cutover) — owner: Liam. Formal Meta-template-outside-24h-window rule does not technically apply (channel never touches Meta's Business Platform), but Baileys bulk-automation ban risk is real and distinct — not treated as resolved.
+- REF: KPR-311 (Linear, halt comment) · KPR-234 · KPR-35 (Meta Cloud API cutover, still open).
+
 ## 2026-07-10 TH · [PROJECT: Marketing Brain] · [redsunset-land-blast]
 - WHAT: Liam clarified Red Sunset Land (KP-LND-015, active/freehold/32M) is a separate record from the paused Villas (KP-BCH-011) that triggered the earlier STOP. Live audit confirmed KP-LND-015 matches the frozen copy exactly. Ran the canary-gated reactivation blast against KP-LND-015's 78-lead Hebrew audience.
 - CHANGED: 57 `/Follow_Ups` records armed (`FU-KPLND015-*`, `trigger_type: CUSTOM`) + 57 `/Leads.next_followup_date` dual-writes, all GET-verified byte-exact. Canary (5, scheduled ~06:55-06:57 UTC) fired clean — Postgres-pulled delivered text byte-identical to frozen copy on all 5, KPR-303 did not trigger. Remaining 52 released, staggered 60-120s, scheduled 07:03-08:16 UTC (TH daytime). Audience exclusions from base 78: 4 opted-out, 6 active-conversation-in-last-48h, 11 manually-managed (KPR-265 TEAM-send collisions).
