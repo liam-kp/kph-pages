@@ -9,6 +9,12 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-07-10 TH · [PROJECT: Marketing Brain] · [redsunset-ping2-blast]
+- WHAT: PING2 root-cause diagnosed for KP-BCH-011 (Red Sunset) Hebrew leads; reactivation blast HARD-STOPPED at precondition gate before any arming.
+- CHANGED: Linear ticket KPR-311 created (root cause + STOP evidence posted as comments). No Firebase writes (`/Leads`, `/Follow_Ups`, `/Projects_Public` all read-only this session). No WhatsApp sends, no canary.
+- OPEN: (1) `/Projects_Public/KP-BCH-011` has no `second_message_template_he/en` field at all — that's the PING2 root cause (config gap, ours, not Adam's) — owner: Liam, do not fix until (2) resolves. (2) Live record contradicts the task file's blast copy: `transaction_type: "leasehold"` vs. copy claims Freehold; `price_thb` is a 26-33M range vs. copy's fixed 32M; `status: "Under Construction"` w/ staged payment terms vs. copy's "plans not yet submitted" — owner: Liam, confirm current true terms before any Red Sunset outbound. (3) Zero KP-BCH-011 leads exist in the last 14 days (newest is 2026-05-19) — audience-selection logic needs revisiting regardless of (2) — owner: Liam.
+- REF: KPR-311 (Linear) · KPR-303 (Linear, still Todo, cited in ticket) · `~/Downloads/KPR-XXX_redsunset_ping2_bug_and_reactivation_task.md`.
+
 ## 2026-07-10 TH · [PROJECT: Other] · [en-share-preview-fixes]
 
 - WHAT: scope: deal-room · what: added en.html share-preview shim (English og:title/description for WhatsApp cards) · fixed stale EN hero tag ("all three options live") · added English WhatsApp CTA text + prefill for EN mode.
