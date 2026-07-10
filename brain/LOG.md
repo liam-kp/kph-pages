@@ -9,6 +9,15 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-07-10 TH · [PROJECT: Other] · [unified-galleries-toggle]
+
+- WHAT: scope: deal-room · what: unified upgrade — full swipe galleries (Srithanu 19 / Chaloklum 106 / SeedToFeed 17), full HE/EN toggle THB+EUR@0.0262, HE untouched · deleted unfiltered backup folder from Downloads.
+- CHANGED: index.html rewritten — shared gallery component (3-col lazy-thumbnail grid + fullscreen single-image lightbox with swipe/arrow/keyboard nav, counter, RTL-safe via logical CSS insets, replacing the old horizontal-scroll multi-slide lightbox) wired into all three options; full HE/EN toggle (`?lang=en` deep-link, `dir`/`lang` flip, lang-toggle button) covering Hero + all three options, EN copy frozen from `task_he-en-toggle-eur.md` (Hero+Option 1) + `task_toggle-addendum-en-opt2-3.md` (Options 2+3), EUR figures baked in at the 0.0262 rate — never computed live; fixed a pre-existing CSS bug (`.compound ul li::before` used hardcoded `right:0` instead of a logical inset, invisible until LTR rendering existed). Media: Seed to Feed gallery replaced with all 17 clean photos from `~/Downloads/seedtofeed_photos/` (`d-seedtofeed-01..17.jpg` + thumbs, lead reordered to strongest houses shot); Chaloklum expanded from 24 to all 106 clean photos from `~/Downloads/chaloklum_photos/` (`c-compound-001..106.jpg` + thumbs, lead reordered to strongest wide exterior); Srithanu gallery images unchanged, thumbnails generated for the new shared component. Deleted stray `~/Downloads/seedtofeed_photos:` backup folder (66 unfiltered files incl. document/video scans) via Trash. Pushed to `liam-kp/kpih-resort-portfolio` (commit `90460a3`), live at https://liam-kp.github.io/kpih-resort-portfolio/. No Firebase/Meta/Linear writes.
+- OPEN: EN hero status tag reads "Option 1 available now · Options 2 and 3 in preparation" per the frozen copy in `task_he-en-toggle-eur.md` §3 — this is stale relative to actual site state (all three options are live; Hebrew's equivalent tag already reads "שלוש האופציות זמינות כעת"). Shipped byte-identical per the frozen-copy instruction rather than improvised — owner: Liam, needs a corrected frozen-copy line if this should say all three are available in English too. The WhatsApp CTA prefilled message (`wa.me` link) stays in Hebrew in both language modes — no English variant was provided in either toggle task file.
+- REF: task_unified-galleries-toggle.md (Downloads) · task_he-en-toggle-eur.md (Downloads) · task_toggle-addendum-en-opt2-3.md (Downloads) · commit 90460a3.
+
+---
+
 ## 2026-07-10 TH · [PROJECT: Other] · [chaloklum-twin-option2]
 
 - WHAT: added Option 2 Chaloklum Twin Compounds to kpih-resort-portfolio · pricing: single ฿11M / pair ฿22M (Liam-set, 2026-07-10) · income developer-reported ฿4.2M/yr both, expenses ฿480K/yr · 24 curated photos (one compound, twin identical) · exclusions enforced: passport photo 00000122, expense screenshot 00000135, plan binders · no developer names on page.
