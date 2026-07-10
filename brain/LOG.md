@@ -9,6 +9,12 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-07-10 TH · [PROJECT: Marketing Brain] · [redsunset-land-drip-day1-complete]
+- WHAT: Day 1 of the 3-day drip (see [[redsunset-land-drip-plan]] below) finished — all 11 Variant B leads fired.
+- CHANGED: 11/11 `FU-KPLND015-*` Day-1 records flipped `SENT` between 07:40–11:59 UTC (14:40–18:59 TH). Canary-lite (first 2 sends, byte-diffed via Postgres) confirmed clean — zero rewrite, KPR-303 did not trigger on Variant B.
+- OPEN: Day 2 (Sun 2026-07-12, 18 leads: 9 Variant B / 9 Variant C) and Day 3 (Mon 2026-07-13, 17 leads: 8 Variant B / 9 Variant C) still NOT ARMED — a same-day session must re-run PWRC fresh and execute Variant C's first-ever canary-lite gate on Sunday before releasing the rest of that day's C-variant sends. Full lead lists (fu_id/lead_id/phone) and both frozen copy variants are in the [[redsunset-land-drip-plan]] entry below — owner: whoever picks up Sun/Mon.
+- REF: KPR-311 (Linear, Day 1 completion comment).
+
 ## 2026-07-10 TH · [PROJECT: Marketing Brain] · [redsunset-land-drip-plan]
 - WHAT: Liam's resume decision on the halted 46: slow human-shaped drip over 3 calendar days (Fri/Sun/Mon) instead of a stagger-batch, using two new frozen copy variants (B/C) to avoid template repetition on the same Baileys number. Same 46 leads (previously cancelled `FU-KPLND015-*` records), re-armed on the same `_id`s.
 - CHANGED: **Day 1 (Fri 2026-07-10) ARMED** — 11 leads, Variant B, scheduled 07:32:54–11:59:38 UTC (14:32:54–18:59:38 TH), random gaps dynamically bounded within [25,70]min to guarantee landing before 19:00 TH given the ~4h35m remaining window at arm time, seconds jittered, no round-minute timestamps. Canary-lite (first 2 Variant B) pending fire-and-check. **Day 2 (Sun 2026-07-12) and Day 3 (Mon 2026-07-13) NOT YET ARMED** — deliberately deferred to same-day execution, not pre-scheduled: (1) PWRC/opt-out freshness degrades over a 2-3 day-old snapshot; (2) Variant C's canary-lite gate ("first 2 C sends byte-diffed, any rewrite → halt that variant, evidence to KPR-303") needs a live session watching the fire, not an unattended pre-scheduled batch.
