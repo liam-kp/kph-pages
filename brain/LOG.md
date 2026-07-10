@@ -9,6 +9,15 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-07-10 TH · [PROJECT: Other] · [srithanu-dual-deal-room]
+
+- WHAT: built + deployed kpih-resort-portfolio (Option 1 Srithanu Dual Compound, Amir) · pricing basis 2026-06-30 WhatsApp (A ฿14.5M / B ฿18M / combined ฿30M / land ฿2M) · media: 16 Compound-A photos + 3 construction · Options 2–3 placeholders · Linear ticket pending (Chat to open).
+- CHANGED: new public repo `liam-kp/kpih-resort-portfolio`, live at https://liam-kp.github.io/kpih-resort-portfolio/ (noindex + robots.txt disallow-all). No Firebase/Meta/Linear writes.
+- OPEN: Linear ticket to be opened retroactively by Chat. Liam to QA on device before sharing link with buyer.
+- REF: task_srithanu-dual-deal-room.md (Downloads).
+
+---
+
 ## 2026-07-07 TH · [PROJECT: Marketing Brain] · [kpzen012-as3-build]
 
 - WHAT: Completed the KP-ZEN-012 CTWA v3 AS-3 build+activation that an earlier session this day held pending a page-scoped token. Liam generated and supplied `~/.meta/token_page.txt` (verified live: `pages_show_list`, `pages_read_engagement`, `pages_manage_ads` scopes present, `/me/accounts` now returns the Page with `MANAGE` task). Built the true Retargeting AS-3 per the original 2026-07-02 spec — 2 of 3 planned Custom Audiences (no Maduwan video asset exists for the 3rd; Liam confirmed proceed with 2). Ran the full 7+5b Pre-Launch QA Gate (all PASS/GO) against live Firebase + `origin/production` code, not assumptions. Liam ran the manual fresh-number tap-test — PASS (full 4-bubble opener fired, not freestyle). Liam gave explicit GO; activated top-down (campaign already ACTIVE → AS-3 → AD-3).
