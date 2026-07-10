@@ -9,6 +9,12 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-07-10 TH · [PROJECT: Marketing Brain] · [redsunset-land-blast]
+- WHAT: Liam clarified Red Sunset Land (KP-LND-015, active/freehold/32M) is a separate record from the paused Villas (KP-BCH-011) that triggered the earlier STOP. Live audit confirmed KP-LND-015 matches the frozen copy exactly. Ran the canary-gated reactivation blast against KP-LND-015's 78-lead Hebrew audience.
+- CHANGED: 57 `/Follow_Ups` records armed (`FU-KPLND015-*`, `trigger_type: CUSTOM`) + 57 `/Leads.next_followup_date` dual-writes, all GET-verified byte-exact. Canary (5, scheduled ~06:55-06:57 UTC) fired clean — Postgres-pulled delivered text byte-identical to frozen copy on all 5, KPR-303 did not trigger. Remaining 52 released, staggered 60-120s, scheduled 07:03-08:16 UTC (TH daytime). Audience exclusions from base 78: 4 opted-out, 6 active-conversation-in-last-48h, 11 manually-managed (KPR-265 TEAM-send collisions).
+- OPEN: none for this batch — full 57 scheduled and progressively firing through ~08:16 UTC. Villas (KP-BCH-011) PING2 gap from the earlier entry is still open, unrelated to this send — owner: Liam.
+- REF: KPR-311 (Linear, all evidence + reports as comments) · KPR-303 (Linear, still Todo) · KPR-234 (Linear, ghost-LID delivery precedent).
+
 ## 2026-07-10 TH · [PROJECT: Marketing Brain] · [redsunset-ping2-blast]
 - WHAT: PING2 root-cause diagnosed for KP-BCH-011 (Red Sunset) Hebrew leads; reactivation blast HARD-STOPPED at precondition gate before any arming.
 - CHANGED: Linear ticket KPR-311 created (root cause + STOP evidence posted as comments). No Firebase writes (`/Leads`, `/Follow_Ups`, `/Projects_Public` all read-only this session). No WhatsApp sends, no canary.
