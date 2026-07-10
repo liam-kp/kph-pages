@@ -9,6 +9,15 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-07-10 TH · [PROJECT: Other] · [chaloklum-twin-option2]
+
+- WHAT: added Option 2 Chaloklum Twin Compounds to kpih-resort-portfolio · pricing: single ฿11M / pair ฿22M (Liam-set, 2026-07-10) · income developer-reported ฿4.2M/yr both, expenses ฿480K/yr · 24 curated photos (one compound, twin identical) · exclusions enforced: passport photo 00000122, expense screenshot 00000135, plan binders · no developer names on page.
+- CHANGED: index.html (Option 2 full section: header/stats, why-this-deal, compound structure+24-photo gallery, purchase matrix with recommended-deal badge, operating expenses, deal structure, location, good-to-know). Merged on top of a concurrently-pushed session that had already built Option 3 from the same base — reset to `origin/main`, re-applied Option 2 between Option 1 and Option 3, removed the Option 2 placeholder, updated anchor nav to 3 links and hero status tag to "שלוש האופציות זמינות כעת". media/c-compound-01..24.jpg added (EXIF stripped, resized, verified against exclusion list). Live at https://liam-kp.github.io/kpih-resort-portfolio/ (commit `06e5a91`). No Firebase/Meta/Linear writes.
+- OPEN: None for this task. Full portfolio (all 3 options) now live — worth a fresh end-to-end QA pass by Liam across all three sections together, since they were built in separate concurrent sessions off the same base commit.
+- REF: task_chaloklum-twin-option2.md (Downloads).
+
+---
+
 ## 2026-07-10 10:47 TH · [PROJECT: Other] · [seedtofeed-option3]
 
 - WHAT: added Option 3 Seed to Feed to kpih-resort-portfolio · price ฿13.7M (land+3 houses+company transfer, 2026-07-10) · income developer-reported ฿117K/mo · 4 curated photos (media shortfall — flag for Liam) · no developer name on page · Option 3 live, photo count below spec, awaiting more media from developer.
