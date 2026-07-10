@@ -9,6 +9,102 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-07-10 TH · [PROJECT: Marketing Brain] · [redsunset-land-drip-plan]
+- WHAT: Liam's resume decision on the halted 46: slow human-shaped drip over 3 calendar days (Fri/Sun/Mon) instead of a stagger-batch, using two new frozen copy variants (B/C) to avoid template repetition on the same Baileys number. Same 46 leads (previously cancelled `FU-KPLND015-*` records), re-armed on the same `_id`s.
+- CHANGED: **Day 1 (Fri 2026-07-10) ARMED** — 11 leads, Variant B, scheduled 07:32:54–11:59:38 UTC (14:32:54–18:59:38 TH), random gaps dynamically bounded within [25,70]min to guarantee landing before 19:00 TH given the ~4h35m remaining window at arm time, seconds jittered, no round-minute timestamps. Canary-lite (first 2 Variant B) pending fire-and-check. **Day 2 (Sun 2026-07-12) and Day 3 (Mon 2026-07-13) NOT YET ARMED** — deliberately deferred to same-day execution, not pre-scheduled: (1) PWRC/opt-out freshness degrades over a 2-3 day-old snapshot; (2) Variant C's canary-lite gate ("first 2 C sends byte-diffed, any rewrite → halt that variant, evidence to KPR-303") needs a live session watching the fire, not an unattended pre-scheduled batch.
+- OPEN: Sunday session must — re-run PWRC fresh on the 18 leads below, arm with fresh random TH-daytime timing (10:00-19:00, 25-70min-bounded random gaps), run canary-lite on first 2 Variant C sends (first-ever C send), halt+escalate-to-KPR-303 on any rewrite. Monday session — same for the 17 leads below (Variant B here is NOT a first-time canary, already cleared Fri; Monday's Variant C leads are the second-ever C exposure, canary-lite already satisfied by Sunday's C canary if that passed — re-verify Sunday's C canary passed before skipping Monday's C canary-lite). Owner: whoever picks up Sun/Mon — this LOG entry + KPR-311 comment are the resume source of truth if `/tmp` scratch state is gone.
+- REF: KPR-311 (Linear, plan comment) · KPR-303 (Linear, canary-lite target if any variant rewrites) · KPR-234.
+
+**Frozen Variant B** (Day 1, used today; also planned Day 2 x9, Day 3 x8):
+```
+היי,
+ראיתי שהתעניינת באדמת החוף ברד סאנסט — כמה נקודות שכדאי להכיר:
+🏖️ קו ראשון לים, מיקום מרכזי בקופנגן
+📜 בעלות מלאה (Freehold) — לא חכירה
+💰 32 מיליון באט (כ־2.87 מיליון ₪)
+🏗️ קיימות תוכניות ל־3 וילות יוקרה — טרם הוגשו, ניתנות לשימוש
+חלקות חוף בבעלות מלאה כמעט ולא קיימות היום בשוק באי.
+
+אם מתאים לך לעלות לשיחה קצרה, עדכן ונתאם.
+אני זמין.
+יום נעים,
+לירן
+```
+
+**Frozen Variant C** (planned Day 2 x9, Day 3 x9 — not yet used):
+```
+היי,
+בהמשך להתעניינות שלך באדמת החוף ברד סאנסט — תמצית קצרה:
+🏖️ אדמת חוף קו ראשון, במיקום מהמבוקשים בקופנגן
+📜 Freehold — בעלות מלאה, לא ליסהולד
+💰 ‏32 מיליון באט (בסביבות 2.87 מיליון ₪)
+🏗️ תוכניות אדריכליות ל־3 וילות יוקרה כלולות — טרם הוגשו לאישור
+זו אחת מחלקות החוף הבודדות בבעלות מלאה שעדיין זמינות באי.
+
+רוצה להעמיק בפרטים? עדכן אותי ונקבע שיחה.
+אני זמין.
+יום נעים,
+לירן
+```
+
+**Day 1 — Fri, Variant B, ARMED (fu_id | lead_id | phone):**
+```
+FU-KPLND015-3e34206f | -OveFnBTV6_mdeEylMfm | 184249818853405
+FU-KPLND015-cebe35ab | -OveL0GeOx4kYwJ77vfO | 239654930514104
+FU-KPLND015-4565f938 | -OvfAXYsdWT9npqSGe0Q | 242738700263641
+FU-KPLND015-c1ce6ea1 | -OvjF-Qk55umYVT4-KKB | 221860931358876
+FU-KPLND015-d1638d40 | -OvjXDhxoDvpblHL37Xs | 78275795755261
+FU-KPLND015-c0602391 | -OvklZOiRo5Otv2eTslm | 108555365539965
+FU-KPLND015-78145c6e | -OvoRzn-tdgnI3U_b3Po | 3564957102238
+FU-KPLND015-0070ec76 | -Ovpa1BgOjY7Yq-a7ThR | 251899932602407
+FU-KPLND015-764c7fb8 | -OvpkvWvpLLXyGTbTAj1 | 143091164029181
+FU-KPLND015-a67361f6 | -Ovq0JLMPiWAZE9usg0u | 71773315940373
+FU-KPLND015-1020f0d3 | -Ovq7HLANi6VKdstZA4M | 273237397246175
+```
+
+**Day 2 — Sun, planned, NOT ARMED (Variant B x9, then Variant C x9):**
+```
+FU-KPLND015-f96e7204 | -Ovsl36kXfT8KKSGUxQi | 30434238967927   [B]
+FU-KPLND015-6333b587 | -OvtQXZrrlR2zILfYnFs | 101460146683954  [B]
+FU-KPLND015-093c3a84 | -OvtXacklxUNjQEElR3k | 9775362355298    [B]
+FU-KPLND015-45a05fad | -OvuIwsC-szqnc1h2OC7 | 107185237397601  [B]
+FU-KPLND015-167c2e2b | -Ovx2umuDKO7t3r97q5r | 174805185761510  [B]
+FU-KPLND015-76849470 | -OvzPXgU6ZhuCgPFzvSU | 116518285242392  [B]
+FU-KPLND015-3065a7e5 | -Ow-4YEAxxDnZTJ4HiqI | 160593323495615  [B]
+FU-KPLND015-b7b026a2 | -Ow1RrXPcTzql5srnUbm | 224782113079497  [B]
+FU-KPLND015-3776553d | -Ow3Cd02ysMGATw8scU9 | 81660380995815   [B]
+FU-KPLND015-4673a39b | -OwCYqy7zIkaYCBd6uTt | 147596752494713  [C]
+FU-KPLND015-ac45ea45 | -OwGUK2vz2icy9afM4Gf | 277360884588547  [C]
+FU-KPLND015-909b7baa | -OwGvY8u1HNIMckvKGHV | 231253957709911  [C]
+FU-KPLND015-fb22815f | -OwH8J7uWvavBT5sbU6Q | 91449064427643   [C]
+FU-KPLND015-599d91a1 | -OwHRtGQjrQUBGwH3TpE | 251032332402902  [C]
+FU-KPLND015-bc4eb950 | -OwHdtlQdq2SkwEmgQQR | 24146440388612   [C]
+FU-KPLND015-5e3f3f40 | -OwIIrkHBgsWQvUxf1lF | 226749191315604  [C]
+FU-KPLND015-d6f60a32 | -OwNAt7_qE9QCTMAJUYe | 211316753063950  [C]
+FU-KPLND015-72a2b99f | -OwSQSdsmcKwQoJQhsZX | 104342103294078  [C]
+```
+
+**Day 3 — Mon, planned, NOT ARMED (Variant B x8, then Variant C x9):**
+```
+FU-KPLND015-f1d57df5 | -OwYNiA8r5JA-h874Sfk | 112356461961302  [B]
+FU-KPLND015-336fdbdf | -OwbBpbBacY8S2vkqab9 | 172979908563086  [B]
+FU-KPLND015-074d584c | -OwbfY1JPfB8C_Wn1kXc | 209405475836017  [B]
+FU-KPLND015-33b1e996 | -Owdu90B6E27rY2yOvaj | 264784800944310  [B]
+FU-KPLND015-3e7da2f6 | -OwgH70n4Xiu3odJuvso | 44629642764415   [B]
+FU-KPLND015-99a7842f | -OwgLf-m1bEPxzo7K-9u | 208941636169967  [B]
+FU-KPLND015-456485de | -OwmrmGfho5eya2al2ey | 67340926456021   [B]
+FU-KPLND015-899e5626 | -OwnHn3KpHi5T4V6Su4e | 121217013010611  [B]
+FU-KPLND015-3fe4e675 | -Owqmfn_N2XujluNXP2s | 196271449104492  [C]
+FU-KPLND015-782fb6cc | -OwrDZwzQ22z9tFWfTd2 | 8667378270364    [C]
+FU-KPLND015-bc6b9fcc | -Owrgf_gi2hGHhm-A1F0 | 83176521224433   [C]
+FU-KPLND015-0cd7419c | -OwsAUnv3si_ayYUuGnu | 44040779231418   [C]
+FU-KPLND015-642e7937 | -OwsFie60rnlAu96J7VE | 192002301919296  [C]
+FU-KPLND015-e44345c3 | -OwtA0EN2tZ35STxo5rb | 44062203715834   [C]
+FU-KPLND015-8fd651a3 | -OwtvZrSHGB4i-w-sLsK | 137413284352165  [C]
+FU-KPLND015-0d926e76 | -Owv1IATZCCnipdIw_oc | 58793874477122   [C]
+FU-KPLND015-2704e8f2 | -OwxX43vCF9XV8TvAf0X | 201348217847887  [C]
+```
+
 ## 2026-07-10 TH · [PROJECT: Marketing Brain] · [redsunset-land-blast-halt]
 - WHAT: Liam raised a mid-batch compliance check on the [[redsunset-land-blast]] entry below — is the send going out as Meta Cloud API approved-template or free-text outside the 24h window. Confirmed the whole blast runs on `channel_id 4ba20431-e1dd-4dcd-8682-f039e9e46955` ("KP Hub - Production"), type `WHATSAPP_WEB` (Baileys/unofficial), number `+66967907754` — NOT the account's separate Meta WABA channel ("Meta KP Hub", `wabaId 910157898367481`, `+1 555 161 5622`, only 4 conversations ever, essentially unused). Halted immediately per Liam's explicit STOP instruction rather than self-resolving.
 - CHANGED: cancelled all 46 still-`PENDING` `FU-KPLND015-*` records (verified `CANCELLED`). 11 had already fired `SENT` before the halt — irreversible.
