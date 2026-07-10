@@ -204,3 +204,25 @@
 - **Lesson:** kph-compile has exactly one live/production write primitive (`apply-section --i-have-liams-go`, which PUTs to the Firebase prompt-section API) and several local-only writes (pivot.json/inventory.json edits, `render-pivot --write`). A GO gate stated as "the apply-section writes" does not automatically read as covering local git-tracked file authoring — state the distinction explicitly in the task brief itself ("Local writes: pre-authorized. Live writes: gated on GO.") rather than relying on it being inferred from step numbering, so a session doesn't need to pause mid-task to re-derive a scope the brief already intended.
 - **Evidence:** two `AskUserQuestion` round-trips, both confirming local authoring was in scope without a fresh GO; zero Firebase contact occurred before the actual Step 5 GO was given.
 - **Source:** KPR-304 session, 2026-07-06; PIVOT_EXPANSION_REPORT_v1.md §5.
+
+## LES-032 · 2026-07-10 · Standing decision: Red Sunset closing line updated — old-CTA batches left as-is, not retrofitted
+
+- **Context:** KPR-311 Red Sunset Land (KP-LND-015) reactivation blast. By the time Liam sent a mid-flight CTA-swap instruction ("if fewer than ~20 of the remaining 52 are armed, halt and switch to the new closing line; if more, let the old batch finish"), the background arming run had already completed all 52 (57 total incl. canary) — confirmed via fresh live GET against every `FU-KPLND015-*` id, not just the local arm log. Per Liam's own threshold, the batch was left as-is.
+- **Lesson:** two things worth carrying forward. (1) When a mid-flight instruction is conditioned on "how far did the batch get," always re-verify live against Firebase before answering — a local run log can be trusted for *what was attempted*, but a fresh GET is what proves *what's actually live*, especially if any time has passed since the log was written. (2) Liam's standing rule for future Red Sunset sends (Land KP-LND-015 AND Villas KP-BCH-011, once its PING2 gap closes): the closing line is now the version below, not the original KPR-311 frozen copy — use this for all NEW arms going forward. Do not retrofit already-armed/already-sent records; mixed CTA across different leads is cosmetically fine (each lead only ever sees one message).
+- **New standard closing line (replaces the last two sentences of the KPR-311 frozen copy):**
+  ```
+  היי,
+  בהמשך לפנייה שלך על אדמת החוף ברד סאנסט — ריכזתי לך את עיקרי הדברים:
+  🏖️ אדמת חוף במיקום מרכזי בקופנגן — קו ראשון לים
+  📜 בעלות מלאה (Freehold) — לא חכירה
+  💰 32 מיליון באט (כ־2.87 מיליון ₪)
+  🏗️ תוכניות מוכנות ל־3 וילות יוקרה — טרם הוגשו, ניתנות לשימוש
+  אדמת חוף בבעלות מלאה היא הנכס הנדיר ביותר באי — כמעט ולא נשארו חלקות כאלה בשוק.
+
+  אם רוצה לעלות לשיחה להעמיק, עדכן ונתאם.
+  אני זמין.
+  יום נעים,
+  לירן
+  ```
+- **Evidence:** live GET on all 52 `FU-KPLND015-*` ids from `/tmp/arm_log_rest52.json` returned matching `_id` on every one (52/52), confirmed before answering Liam's threshold question. All 57 armed records (canary + batch) carry the original frozen copy — zero were armed with the new closing line.
+- **Source:** KPR-311 session, 2026-07-10.
