@@ -9,6 +9,15 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-07-10 TH · [PROJECT: Other] · [en-share-preview-fixes]
+
+- WHAT: scope: deal-room · what: added en.html share-preview shim (English og:title/description for WhatsApp cards) · fixed stale EN hero tag ("all three options live") · added English WhatsApp CTA text + prefill for EN mode.
+- CHANGED: index.html — HE hero tag updated to frozen wording "שלוש הזדמנויות השקעה זמינות כעת"; EN hero tag fixed from stale "Option 1 available now · Options 2 and 3 in preparation" to "Three investment opportunities available now"; `applyLang()` now live-updates `document.title` + `og:title`/`og:description` meta tags on toggle (helps in-tab title only — WhatsApp bots don't run JS); WhatsApp CTA (`#ctaLink`) now swaps href per language — English variant uses prefilled text "Hi, I'm interested in the Koh Phangan resort portfolio.", Hebrew unchanged. New file `en.html` at repo root: static redirect shim with full English og:title/og:description/og:image (same image as Hebrew) + `<meta http-equiv="refresh">` + JS fallback to `/?lang=en` — gives WhatsApp/social preview bots (which don't execute JS) a real English card when that URL is shared. Pushed to `liam-kp/kpih-resort-portfolio` (commit `83201b4`), live at https://liam-kp.github.io/kpih-resort-portfolio/ and https://liam-kp.github.io/kpih-resort-portfolio/en.html. No Firebase/Meta/Linear writes.
+- OPEN: none.
+- REF: task_en-share-preview-fixes.md (Downloads) · commit 83201b4.
+
+---
+
 ## 2026-07-10 TH · [PROJECT: Other] · [slim-transparency]
 
 - WHAT: scope: deal-room · what: slimmed Good-to-Know blocks all 3 options HE+EN (sales mode — dry facts, kept house-book + blue-book disclosures) · removed lawyer/DD language site-wide · lightbox nav upgraded (arrows, gallery labels, counter, view-all buttons).
