@@ -9,7 +9,13 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
-## 2026-07-11 TH · [PROJECT: Marketing Brain] · [kplnd015-en-status-check]
+## 2026-07-11 TH · [PROJECT: Marketing Brain] · [kplnd015-pull-he-creative]
+- WHAT: Read-only pull (task_KPLND015_pull_he_creative.md) of the live HE ad copy for Red Sunset Land, to seed frozen EN copy mirroring in Liam's strategist chat.
+- CHANGED: No writes. Extracted verbatim from ad 120246713429350056 (AD1 | IL | HE | HNW | Red Sunset Land | v2, ACTIVE): primary text, headline, description, CTA (WHATSAPP_MESSAGE), CTWA destination, page_welcome_message pre-fill, image_hash 79843deaca7d56dffa9b05de65d70c65. Confirmed KP-BCH-011 has no live HE ad (Beachfront Villas campaign CAMPAIGN_PAUSED at all levels). Pulled Firebase KP-LND-015 `facebook_trigger_message` (HE) and `facebook_trigger_message_en` verbatim — HE trigger matches live ad pre-fill exactly, no drift; EN trigger already populated (non-empty baseline).
+- OPEN: Liam's strategist chat to mirror HE copy into new/updated frozen EN ad copy — owner: Liam.
+- REF: task_KPLND015_pull_he_creative.md (~/Downloads) · [[kplnd015-en-status-check]] (prior audit this follows up on).
+
+## 2026-07-10 TH · [PROJECT: Marketing Brain] · [redsunset-land-drip-day1-complete]
 - WHAT: Read-only audit (task_KPLND015_en_status_check.md) explaining zero EN leads on Red Sunset Land — root cause is a launch gap, not routing.
 - CHANGED: No writes. Findings only: live campaign KP-LND-015 | Red Sunset Land | CBO | v2 (120246713429320056, ACTIVE) has EN ad set AS2 (120246713429340056) PAUSED since 2026-06-18 06:21 with 0 ads attached — never had creative built. HE ad set AS1 (120246713429330056) is ACTIVE and sole source of all 14d delivery: ฿485.73 spend, 50 messaging_conversation_started_7d. BCH-011 candidate (Red Sunset | Beachfront Villas | WhatsApp) fully paused since 2026-02-11, irrelevant to current flow. TripleBoost/Yair campaign excluded per hard rule, not queried.
 - OPEN: Build + publish EN ad creative for ad set AS2, then unpause — owner: Liam/Adam. No Firebase routing check needed (diagnosis = live-but-not-delivering, missing creative, not misrouted).
