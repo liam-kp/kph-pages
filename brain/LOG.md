@@ -9,6 +9,12 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-07-11 TH · [PROJECT: Marketing Brain] · [kplnd015-en-status-check]
+- WHAT: Read-only audit (task_KPLND015_en_status_check.md) explaining zero EN leads on Red Sunset Land — root cause is a launch gap, not routing.
+- CHANGED: No writes. Findings only: live campaign KP-LND-015 | Red Sunset Land | CBO | v2 (120246713429320056, ACTIVE) has EN ad set AS2 (120246713429340056) PAUSED since 2026-06-18 06:21 with 0 ads attached — never had creative built. HE ad set AS1 (120246713429330056) is ACTIVE and sole source of all 14d delivery: ฿485.73 spend, 50 messaging_conversation_started_7d. BCH-011 candidate (Red Sunset | Beachfront Villas | WhatsApp) fully paused since 2026-02-11, irrelevant to current flow. TripleBoost/Yair campaign excluded per hard rule, not queried.
+- OPEN: Build + publish EN ad creative for ad set AS2, then unpause — owner: Liam/Adam. No Firebase routing check needed (diagnosis = live-but-not-delivering, missing creative, not misrouted).
+- REF: task_KPLND015_en_status_check.md (~/Downloads).
+
 ## 2026-07-10 TH · [PROJECT: Marketing Brain] · [redsunset-land-drip-day1-complete]
 - WHAT: Day 1 of the 3-day drip (see [[redsunset-land-drip-plan]] below) finished — all 11 Variant B leads fired.
 - CHANGED: 11/11 `FU-KPLND015-*` Day-1 records flipped `SENT` between 07:40–11:59 UTC (14:40–18:59 TH). Canary-lite (first 2 sends, byte-diffed via Postgres) confirmed clean — zero rewrite, KPR-303 did not trigger on Variant B.
