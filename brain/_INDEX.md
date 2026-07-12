@@ -11,6 +11,7 @@ Single source of truth for **KPH Sales OS** (the full product, not just the site
 - `INSTRUCTIONS_CORE.md` — identity, scope, laws, the three systems, resource order, the 4 gates, campaign→Maya routing rule.
 - `SSOT_LAW.md` — Single Source of Truth (KPR-284): two-tier architecture, kph-compile as sole Tier-2 writer, data-flow map, display-rounding rule, fx-weekly 2% ceiling, the apply gate.
 - `LESSONS.md` — append-only post-mortem log (KPR-297): every KPH execution skill loads it at session start; every failure/discovery appends an entry before the session ends.
+- `ARCHITECTURE.md` — full-stack map of the brain (systems, data stores, auth, skills inventory, routing + follow-up mechanics, open risks). Feed it to any design chat building a new skill/process on top of the stack. A map, not a spec — live state wins.
 
 ## By task
 - **Launch / wire a campaign to Maya** → `runbooks/CAMPAIGN_PRELAUNCH_QA_GATE.md` (7-check GO/NO-GO) + `runbooks/meta-ads-mcp.md`.

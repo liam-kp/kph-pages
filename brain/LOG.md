@@ -9,6 +9,15 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-07-13 TH · [PROJECT: Marketing Brain] · [kpzen012-as3-build → brain-architecture-doc]
+
+- WHAT: Wrote `brain/ARCHITECTURE.md` v1 — full-stack map of the brain (systems, data stores, wrapper/auth quirks, skills inventory, ACQUIRE routing + follow-up mechanics, open-risk ticket table) — as design input for Liam's proposed new process: weekly iPhone backup → parse new leads → campaign attribution → follow-up coverage check → arm missing follow-ups (working name `weekly-lead-reconciliation`, §11 of the doc). Doc includes build-vs-reuse map, recommended safety design (propose-then-GO, canary-per-wave, dedupe vs KPR-312, attribution hierarchy vs KPR-314 contamination, ghosts deferred to Phase 2), and 5 open design questions for the chat session that will spec the skill.
+- CHANGED: `brain/ARCHITECTURE.md` created · `brain/_INDEX.md` — ARCHITECTURE.md listed under Always. No Firebase/Meta writes.
+- OPEN: design chat on `weekly-lead-reconciliation` — owner: Liam (taking the doc to Claude Chat). Q1–Q5 in §11 need answers before any build session.
+- REF: `brain/ARCHITECTURE.md` · same-session context: KPR-314 filed, LES-033 appended (see entries below dated 07-07/07-12).
+
+---
+
 ## 2026-07-13 TH · [PROJECT: Marketing Brain] · [kpr303-round3-canary-shay-trim-retraction]
 
 - WHAT: Before archiving the `kpr303-round3-expanded-canary-corrections` session (2026-07-07), re-verified shay's original round-3 send directly against the Postgres conversation thread instead of trusting the task brief's summary. Result: shay's original message was byte-exact clean — the "trim" failure never happened. Only Eli Jamo's flip was real. Corrected round-3 tally: 4/5 clean, 1/5 flip (not 3/5 clean, 2 failure modes as previously reported).
