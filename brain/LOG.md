@@ -9,6 +9,14 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-07-12 18:45 TH · [PROJECT: Marketing Brain] · [kplnd015-pause-en-adset]
+- WHAT: Paused KP-LND-015 EN ad set AS2v2 on Liam's explicit instruction (2026-07-12) — EN only, HE keeps running. AS2v2 was activated earlier the same day (see `kplnd015-en-adset-launch` above); campaign is CBO so no ad-set budget lever existed — this was a real `status=PAUSED` write on the ad set.
+- CHANGED: GET-verified AS2v2 (`120248056720950056`) name matched exactly (`KP-LND-015 | AS2v2 | TH | EN | Expat`), pre-pause status `ACTIVE`/`ACTIVE`. `POST /120248056720950056 -d status=PAUSED` → `{"success":true}`. Post-write GET-verify: AS2v2 now `status: PAUSED`, `effective_status: PAUSED`. Ad `AD2 v2` (`120248056723450056`) left untouched per instruction (pausing the ad set is sufficient). GET-verified AS1 HE (`120246713429330056`) still `ACTIVE`/`ACTIVE` and campaign (`120246713429320056`) still `ACTIVE`/`ACTIVE` — both untouched.
+- OPEN: AS2v2 paused on Liam's instruction — resume = re-activate the ad set (learning restarts, acceptable, ad set was <1 day old). Old broken AS2 (`120246713429340056`) remains PAUSED/abandoned, unrelated to this action.
+- REF: task_KPLND015_pause_en_adset.md (~/Downloads) · [[kplnd015-en-adset-launch]] entry above (same-day launch this pause follows).
+
+---
+
 ## 2026-07-12 17:30 TH · [PROJECT: Marketing Brain] · [skill-patch-iphone-backup-rotate-caffeinate]
 
 - WHAT: Patched skill `iphone-backup-rotate` per task brief `~/Downloads/task_patch_iphone_backup_caffeinate.md` — wrapped both backup commands in `caffeinate -i` to prevent idle sleep from interrupting long (10–60 min) backup runs.
