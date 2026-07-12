@@ -9,6 +9,13 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-07-13 TH · [PROJECT: Other] · [iphone-backup-rotate]
+
+- WHAT: Incremental iPhone backup FAILED — ErrorCode 105 (insufficient free disk space), real exit code 151 despite background-task wrapper misreporting "exit code 0" (that 0 came from the wrapper's trailing `echo`, not idevicebackup2). Backup snapshot unchanged: Status.plist still dated 2026-07-05, folder size unchanged at 112G. Root disk was critically low (4.5GiB free) at start; freed ~7.3GiB via approved SAFE-tier cache cleanup (Caches/Google, com.spotify.client, Homebrew, com.exafunction.windsurf.ShipIt, Adobe, .npm/_npx — contents only) mid-session, bringing free space to 13GiB, but the failure had already occurred by verification time.
+- CHANGED: No backup files written (0 received from device). No Firebase/Meta writes. Skill file `iphone-backup-rotate/SKILL.md` unchanged this session (caffeinate patch was already present from a prior session — verified, not re-applied).
+- OPEN: Backup not retried this session per Liam's explicit instruction ("if incremental fails on space, stop and report — no auto full-rotate"). Needs Liam's call: retry incremental now that 13GiB is free, or explicit full-rotate authorization (would require deleting the 2026-07-05 backup first — gated, needs Liam typing DELETE).
+- REF: none (no artifact produced by a failed backup).
+
 ## 2026-07-13 TH · [PROJECT: Marketing Brain] · [kpzen012-as3-build → brain-architecture-doc]
 
 - WHAT: Wrote `brain/ARCHITECTURE.md` v1 — full-stack map of the brain (systems, data stores, wrapper/auth quirks, skills inventory, ACQUIRE routing + follow-up mechanics, open-risk ticket table) — as design input for Liam's proposed new process: weekly iPhone backup → parse new leads → campaign attribution → follow-up coverage check → arm missing follow-ups (working name `weekly-lead-reconciliation`, §11 of the doc). Doc includes build-vs-reuse map, recommended safety design (propose-then-GO, canary-per-wave, dedupe vs KPR-312, attribution hierarchy vs KPR-314 contamination, ghosts deferred to Phase 2), and 5 open design questions for the chat session that will spec the skill.
