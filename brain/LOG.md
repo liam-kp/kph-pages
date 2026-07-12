@@ -9,6 +9,13 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-07-12 17:30 TH · [PROJECT: Marketing Brain] · [skill-patch-iphone-backup-rotate-caffeinate]
+
+- WHAT: Patched skill `iphone-backup-rotate` per task brief `~/Downloads/task_patch_iphone_backup_caffeinate.md` — wrapped both backup commands in `caffeinate -i` to prevent idle sleep from interrupting long (10–60 min) backup runs.
+- CHANGED: `~/.claude/skills/iphone-backup-rotate/SKILL.md` — Phase 2 (incremental) and Phase 3 (full-rotate) `idevicebackup2 backup` commands now prefixed `caffeinate -i`; added Notes-section line documenting the wrap. Verified via `grep -n caffeinate` — exactly 3 matches (2 commands + 1 note).
+- OPEN: None — patch is self-contained, no manual action needed from Liam.
+- REF: `~/Downloads/task_patch_iphone_backup_caffeinate.md` (source task brief) · `~/.claude/skills/iphone-backup-rotate/SKILL.md`.
+
 ## 2026-07-12 17:24 TH · [PROJECT: Marketing Brain] · [skill-install-iphone-backup-rotate]
 
 - WHAT: Installed new global Claude Code skill `iphone-backup-rotate` from a task brief in `~/Downloads/task_iphone_backup_rotate_skill.md`. Ran `repo-forensics --skill-scan` against the embedded SKILL.md content first (per global CLAUDE.md security rule) — 0 findings across all 9 scanners (dataflow, lifecycle, manifest_drift, mcp_security, openclaw_skills, runtime_dynamism, sast, secrets, skill_threats). Content written byte-identical to spec (diff-verified).
