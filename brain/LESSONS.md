@@ -226,3 +226,10 @@
   ```
 - **Evidence:** live GET on all 52 `FU-KPLND015-*` ids from `/tmp/arm_log_rest52.json` returned matching `_id` on every one (52/52), confirmed before answering Liam's threshold question. All 57 armed records (canary + batch) carry the original frozen copy — zero were armed with the new closing line.
 - **Source:** KPR-311 session, 2026-07-10.
+
+## LES-033 · 2026-07-07 · Corrects LES-005 — "PROJECT_KEYWORDS is retired" was never actually true in code, only in ticket status
+
+- **Context:** KP-ZEN-012 AS-3 build session, Pre-Launch QA Gate check 5 (fire path verification against `origin/production`, not documentation).
+- **Lesson:** LES-005 (and the brain's routing docs generally) state `PROJECT_KEYWORDS`/`campaignDetectionService.ts` is retired because KPR-228 was marked Done. It never was removed — KPR-228's own checklist included "delete PROJECT_KEYWORDS" as an unchecked box, and the ticket was closed without that step executing. The map is still live, still imported, and still proactively stamps `project_id` on any new lead whose first message contains a generic substring (`beachfront`, `maduwan`, `zenith`, etc.) — not just ad prefills. Once stamped, the PING1 fire path fetches the project directly by ID without re-validating trigger text, so an organic (non-ad) lead can misroute into a campaign's structured opener. A "Done" ticket status is a claim about scope closure, not proof the code changed — verify checklist items individually against the live file when the ticket's own body lists sub-tasks.
+- **Evidence:** `git show origin/production:.../campaignDetectionService.ts` on 2026-07-07 — `PROJECT_KEYWORDS` present verbatim, unchanged since original build. Independently re-confirmed the same day by a second, concurrent session (comment on KPR-285). Follow-up ticket opened: KPR-314.
+- **Source:** KP-ZEN-012 AS-3 build session, 2026-07-07; KPR-118 (Canceled, wrong scope), KPR-228 (Done, checklist incomplete), KPR-285 (Done, adjacent but non-overlapping fix), KPR-314 (new, tracks the actual deletion).
