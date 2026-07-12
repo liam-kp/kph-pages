@@ -9,6 +9,15 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-07-13 TH · [PROJECT: Marketing Brain] · [kpr303-round3-canary-shay-trim-retraction]
+
+- WHAT: Before archiving the `kpr303-round3-expanded-canary-corrections` session (2026-07-07), re-verified shay's original round-3 send directly against the Postgres conversation thread instead of trusting the task brief's summary. Result: shay's original message was byte-exact clean — the "trim" failure never happened. Only Eli Jamo's flip was real. Corrected round-3 tally: 4/5 clean, 1/5 flip (not 3/5 clean, 2 failure modes as previously reported).
+- CHANGED: No Firebase/Postgres writes. Posted a retraction comment on KPR-303 correcting the evidence table and flagging that the trim failure mode is unconfirmed. Practical note: the corrective re-send to shay on 2026-07-07 was therefore unnecessary (told a lead whose message had arrived correctly that "this is a correction to the previous message that didn't arrive properly") — not harmful, but factually off if the lead asks.
+- OPEN: KPR-303's confirmed evidence is now 1 flip (Eli Jamo, corrected) + 8/8 clean this round — the trim bug should not be treated as reproduced/confirmed unless a different sample shows it. Owner: Adam/marshmelo777.
+- REF: KPR-303 (Linear, retraction comment added).
+
+---
+
 ## 2026-07-13 04:07 TH · [PROJECT: Marketing Brain] · [kplnd015-pause-en-adset] (re-verify, same slug)
 
 - WHAT: New task brief `task_KPLND015_pause_en_adset.md` (Downloads) re-requested the same EN-adset pause. Pre-write GET (PWRC) found AS2v2 already `status: PAUSED` / `effective_status: PAUSED` — matches the 2026-07-12 18:45 entry below (same slug), which already performed this pause in an earlier session. Stopped before writing, reported the mismatch to Liam; he confirmed he likely requested the same pause in a different chat that day.
