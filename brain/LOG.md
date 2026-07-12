@@ -9,6 +9,13 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-07-12 17:24 TH · [PROJECT: Marketing Brain] · [skill-install-iphone-backup-rotate]
+
+- WHAT: Installed new global Claude Code skill `iphone-backup-rotate` from a task brief in `~/Downloads/task_iphone_backup_rotate_skill.md`. Ran `repo-forensics --skill-scan` against the embedded SKILL.md content first (per global CLAUDE.md security rule) — 0 findings across all 9 scanners (dataflow, lifecycle, manifest_drift, mcp_security, openclaw_skills, runtime_dynamism, sast, secrets, skill_threats). Content written byte-identical to spec (diff-verified).
+- CHANGED: New file `~/.claude/skills/iphone-backup-rotate/SKILL.md` (global skill, not repo-scoped). Purpose: keep a current local iPhone backup of the Baileys-transport WhatsApp lead data (+66967907754) until KPR-35 (Meta Cloud API) cutover — default incremental mode, full-rotate gated behind Liam's explicit in-session `DELETE` confirmation. Verified `idevicebackup2` prerequisite already present at `/opt/homebrew/bin/idevicebackup2` (no install needed).
+- OPEN: Skill installed but not yet run — first real backup rotation still pending, owner: Liam. Skill is intentionally obsolete-by-design after KPR-35 ships.
+- REF: `~/Downloads/task_iphone_backup_rotate_skill.md` (source task brief) · `~/.claude/skills/iphone-backup-rotate/SKILL.md`.
+
 ## 2026-07-12 17:20 TH · [PROJECT: Marketing Brain] · [kpzen012-brochure-he]
 
 - WHAT: Built a full Hebrew edition of the Maduwan (KP-ZEN-012) brochure at Liam's request ("let's build a Hebrew version too... make sure it's in Firebase and sent to customers in Hebrew"), on the tail of the earlier same-day EN v5 availability-line fix. Manually translated all 17 pages of `brochure_v5.html` (same weasyprint 69.0 pipeline), rebuilt as RTL with embedded Frank Ruhl Libre + Assistant fonts (pulled from google/fonts, no local Hebrew serif existed), THB + ILS pricing only per `fx.json`'s `display_rule` (rate 0.089508, as_of 2026-07-02) — content/prices/availability line otherwise identical to EN v5. QA surfaced and fixed 4 distinct instances of a WeasyPrint bug where any `position:absolute` box (grid or plain) sitting under an ancestor with computed `direction:rtl` renders empty or overflows past the page edge (`.ls-text`, `.loc-grid`, `.close-grid`, `.tk-grid`) — fixed by resetting the hosting `.page` to `direction:ltr` and re-applying `direction:rtl` directly on the affected element itself; full `pdftotext` text-completeness check + rasterized visual review of all 17 pages confirmed clean after the fix.
