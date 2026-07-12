@@ -9,6 +9,13 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-07-13 TH · [PROJECT: Other] · [iphone-backup-rotate-retry]
+
+- WHAT: Retried incremental iPhone backup (disk space no longer the constraint — 13GiB free, confirmed via monitor holding steady, never dropped below 3GiB). Retry FAILED with a different, unrelated cause: real exit code 48 (ErrorCode 208 "Device locked" — phone needs passcode entered, physical action only Liam can do). Confirmed via all 3 required checks: (1) real idevicebackup2 exit code = 48, not the wrapper-echo trap; (2) Status.plist SnapshotState unchanged, still dated 2026-07-05; (3) Info.plist Last Backup Date = 2026-07-12 22:10 UTC, not today (2026-07-13).
+- CHANGED: No backup files written (0 received from device). No Firebase/Meta writes.
+- OPEN: Needs Liam to unlock the iPhone (enter passcode) before the next retry attempt — not a disk-space or full-rotate issue, so full-rotate was correctly not attempted.
+- REF: none (no artifact produced by a failed backup).
+
 ## 2026-07-13 TH · [PROJECT: Other] · [iphone-backup-rotate]
 
 - WHAT: Incremental iPhone backup FAILED — ErrorCode 105 (insufficient free disk space), real exit code 151 despite background-task wrapper misreporting "exit code 0" (that 0 came from the wrapper's trailing `echo`, not idevicebackup2). Backup snapshot unchanged: Status.plist still dated 2026-07-05, folder size unchanged at 112G. Root disk was critically low (4.5GiB free) at start; freed ~7.3GiB via approved SAFE-tier cache cleanup (Caches/Google, com.spotify.client, Homebrew, com.exafunction.windsurf.ShipIt, Adobe, .npm/_npx — contents only) mid-session, bringing free space to 13GiB, but the failure had already occurred by verification time.
