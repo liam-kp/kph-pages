@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Lead Reconciliation Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; max-width: 1100px; margin: 2rem auto; padding: 0 1.5rem; color: #1a1a1a; background: #fafafa; }
+  h1 { font-size: 1.5rem; }
+  h2 { font-size: 1.1rem; margin-top: 2rem; border-bottom: 2px solid #eee; padding-bottom: .3rem; }
+  .kpi-row { display: flex; gap: 1rem; flex-wrap: wrap; margin: 1rem 0; }
+  .kpi-card { background: #fff; border: 1px solid #e5e5e5; border-radius: 10px; padding: 1rem 1.5rem; flex: 1; min-width: 200px; box-shadow: 0 1px 3px rgba(0,0,0,.05); }
+  .kpi-card .label { font-size: .8rem; color: #666; text-transform: uppercase; letter-spacing: .04em; }
+  .kpi-card .value { font-size: 1.8rem; font-weight: 700; margin-top: .2rem; }
+  table { border-collapse: collapse; width: 100%; background: #fff; }
+  th, td { border: 1px solid #e5e5e5; padding: 8px 10px; text-align: left; font-size: 14px; }
+  th { background: #f4f4f4; }
+  .note { font-size: .85rem; color: #666; margin-top: .5rem; }
+  .footer { margin-top: 2rem; font-size: .8rem; color: #888; }
+</style>
+</head>
+<body>
+<h1>Lead Reconciliation Dashboard</h1>
+<p class="note">Generated 2026-07-13 · quick mode · read-only, nothing armed · aggregate-only, zero PII</p>
+
+<h2>KPI header (Q5)</h2>
+<div class="kpi-row">
+  <div class="kpi-card"><div class="label">Reply rate this wave</div><div class="value">8.8%</div><div class="note">8/91 sent last 7d · baseline 7-33%</div></div>
+  <div class="kpi-card"><div class="label">Meetings booked</div><div class="value">0</div><div class="note">/Meetings collection, all-time (0 last 7d)</div></div>
+  <div class="kpi-card"><div class="label">Portfolio engaged%</div><div class="value">39.3%</div><div class="note">HOT+WARM / total active leads</div></div>
+  <div class="kpi-card"><div class="label">Actionable now</div><div class="value">119</div><div class="note">proposed, not armed — GO required</div></div>
+</div>
+
+<h2>Campaign / project breakdown</h2>
+<table>
+<tr><th>Project</th><th>n</th><th>HOT</th><th>WARM</th><th>COLD</th><th>Engaged%</th><th>Coverage gap</th><th>Verdict</th></tr>
+<tr><td>UNATTRIBUTED</td><td>295</td><td>35</td><td>13</td><td>247</td><td>16.3%</td><td>284</td><td><span style="background:#6b7280;color:#fff;padding:2px 8px;border-radius:4px;font-size:12px">N/A (unattributed)</span></td></tr>
+<tr><td>KP-ZEN-012</td><td>127</td><td>42</td><td>32</td><td>53</td><td>58.3%</td><td>56</td><td><span style="background:#16a34a;color:#fff;padding:2px 8px;border-radius:4px;font-size:12px">SCALE</span></td></tr>
+<tr><td>KP-BCH-011</td><td>118</td><td>18</td><td>2</td><td>98</td><td>16.9%</td><td>117</td><td><span style="background:#dc2626;color:#fff;padding:2px 8px;border-radius:4px;font-size:12px">KILL</span></td></tr>
+<tr><td>KP-LND-015</td><td>91</td><td>51</td><td>40</td><td>0</td><td>100.0%</td><td>53</td><td><span style="background:#16a34a;color:#fff;padding:2px 8px;border-radius:4px;font-size:12px">SCALE</span></td></tr>
+<tr><td>KP-ZEN-013</td><td>50</td><td>10</td><td>24</td><td>16</td><td>68.0%</td><td>26</td><td><span style="background:#16a34a;color:#fff;padding:2px 8px;border-radius:4px;font-size:12px">SCALE</span></td></tr>
+<tr><td>KP-AVL-016</td><td>2</td><td>0</td><td>2</td><td>0</td><td>100.0%</td><td>1</td><td><span style="background:#d97706;color:#fff;padding:2px 8px;border-radius:4px;font-size:12px">HOLD</span></td></tr>
+<tr><td>KP-COV-013</td><td>1</td><td>0</td><td>0</td><td>1</td><td>0.0%</td><td>1</td><td><span style="background:#d97706;color:#fff;padding:2px 8px;border-radius:4px;font-size:12px">HOLD</span></td></tr>
+</table>
+<p class="note">Verdict: SCALE ≥115% of portfolio engaged% (n≥5) · KILL ≤60% of portfolio engaged% (n≥5) · else HOLD. Budget-shift recommendation: KP-BCH-011 shows the widest coverage gap (117/118) and lowest engaged% — consistent with the known KPR-311/312 PING2 gap, not a demand problem; fix delivery before cutting spend. KP-LND-015 and KP-ZEN-012 show the strongest engaged% — safe to hold or scale spend once their own coverage gaps (53 and 56 leads respectively) are closed.</p>
+
+<h2>HOT leads by project (top of funnel, aggregate only)</h2>
+<table>
+<tr><th>Project</th><th>HOT leads</th><th>Coverage gap among them</th></tr>
+<tr><td>KP-LND-015</td><td>51</td><td>see campaign table above</td></tr>
+<tr><td>KP-ZEN-012</td><td>42</td><td>see campaign table above</td></tr>
+<tr><td>UNATTRIBUTED</td><td>35</td><td>see campaign table above</td></tr>
+<tr><td>KP-BCH-011</td><td>18</td><td>see campaign table above</td></tr>
+<tr><td>KP-ZEN-013</td><td>10</td><td>see campaign table above</td></tr>
+</table>
+<p class="note">Per-lead detail (names) is never published here — see the local dry-run report.</p>
+
+<h2>Coverage &amp; tier summary</h2>
+<table>
+<tr><th>Coverage</th><th>Count</th></tr>
+<tr><td>Covered</td><td>146</td></tr>
+<tr><td>Uncovered</td><td>244</td></tr>
+<tr><td>Conflicting</td><td>294</td></tr>
+</table>
+<table style="margin-top:1rem">
+<tr><th>Recon tier (recency-based)</th><th>Count</th></tr>
+<tr><td>HOT</td><td>156</td></tr>
+<tr><td>WARM</td><td>113</td></tr>
+<tr><td>COLD</td><td>415</td></tr>
+</table>
+<p class="note">This tier is distinct from the live <code>/Leads.tier</code> field (LLM buying-intent scoring, owned by the backend) — report-only, never written back to Firebase.</p>
+
+<div class="footer">lead-reconciliation-engine v1 · quick mode · full per-lead dry-run report (with names/phones) kept local in <code>_marketing_brain/reports/</code> — never published to this public repo.</div>
+</body>
+</html>

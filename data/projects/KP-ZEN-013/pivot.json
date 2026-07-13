@@ -40,5 +40,18 @@
   ],
   "budget_unknown_line_he": "מבין 😊\nבא נעשה את זה נכון —\nמה הטווח שחשבת להשקיע?\nיש לי פרויקטים באי ברמות מחירים שונות —\nאשמח להתאים לך משהו רלוונטי 🙏",
   "budget_unknown_line_en": "Got it 😊\nLet's do this right —\nwhat range were you thinking of investing?\nI have projects on the island across different price points —\nhappy to match you with something relevant 🙏",
-  "budget_below_studio_note": "Below {{KP-ZEN-013.studio.thb_m}} / unknown → same generic budget-discovery line as budget_unknown, per live §22 ('PIVOT DOWN' block uses identical copy to the unknown-budget case)."
+  "budget_below_studio_note": "Below {{KP-ZEN-013.studio.thb_m}} / unknown → same generic budget-discovery line as budget_unknown, per live §22 ('PIVOT DOWN' block uses identical copy to the unknown-budget case).",
+  "followup_pivots": {
+    "_ssot_note": "NEW block (lead-reconciliation-engine v1, ARCHITECTURE §11 Q4, decided 2026-07-13) — read only by the follow-up dry-run/decision-matrix step, never by kph_compile render-pivot (which reads only pivot_targets). Not live conversational pivots; reference copy for a proposed cross-sell CUSTOM follow-up, subject to Chat writing the frozen verbatim block before any arming (Q2).",
+    "targets": [
+      {
+        "trigger": "silent_no_reply",
+        "context": "BNS (KP-ZEN-013) lead gone silent after PING1/PING2 — cross-sell the lower-commitment Maduwan ZENNITH (KP-ZEN-012) one-bedroom entry option as a re-engagement wedge.",
+        "target_project_id": "KP-ZEN-012",
+        "arming_note": "DRAFT reference copy only, not frozen/armed. Before arming as a CUSTOM follow-up, EN version's price tokens must resolve to spelled-out figures, not raw digits (kph-followup-writer rule 6 / KPR-262 isEnglish regex).",
+        "line_he": "היי 😊\nרק רציתי להזכיר שיש לי גם אופציית כניסה נוחה יותר —\n\n*Maduwan ZENNITH, וילת חדר אחד:*\n{{KP-ZEN-012.1bed.thb_m}} ({{KP-ZEN-012.1bed.ils}})\nבריכה פרטית, מרכז האי\n\nרוצה שאשלח פרטים? 🙏",
+        "line_en": "Hi 😊\njust wanted to flag I also have a more accessible entry option —\n\n*Maduwan ZENNITH, one-bedroom villa:*\n{{KP-ZEN-012.1bed.thb_m}} (~{{KP-ZEN-012.1bed.usd}})\nprivate pool, central island location\n\nWant me to send details? 🙏"
+      }
+    ]
+  }
 }

@@ -19,6 +19,7 @@ Single source of truth for **KPH Sales OS** (the full product, not just the site
 - **Onboard a new project / villa / resale** → `PLAYBOOKS/new-project-onboarding.md`.
 - **Website / slugs / top-of-funnel** → `runbooks/website-map.md`.
 - **Media / image work** (Meta upload, `image_hash`, `storage_url`, base64) → `runbooks/image_upload_storage_url.md`.
+- **Run lead recon / coverage & silent-lead check / campaign stats** → system skill `~/.claude/skills/lead-reconciliation-engine/SKILL.md` (quick mode, no phone; full mode adds `iphone-backup-rotate`). Report-only — never arms a Follow_Up. Dashboard: `dashboard/lead_recon_latest.html`.
 
 ## skills/
 - `firebase-schema-truth-check/SKILL.md` — STC: verify field validity vs schema+code BEFORE any Firebase write. Schema = `data/FIREBASE_SCHEMA_MASTER.md`.

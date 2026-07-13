@@ -232,7 +232,19 @@ The 2026-07-05 lead-ledger session proved the full parse pipeline end-to-end:
 
 ---
 
-## 11. Proposed new process (design input — NOT yet decided)
+## 11. Proposed new process — Decided 2026-07-13, see LOG
+
+**Decided 2026-07-13** (Claude Chat design session → `lead-reconciliation-engine` v1 build, same day). See `brain/LOG.md` entry `[lead-reconciliation-engine-v1-build]` for the build report. Q1–Q5 answers:
+
+- **Q1:** Firebase-first; iPhone backup = audit layer only.
+- **Q2:** default copy = `second_message_template_he/en` per project; cross-sell + data-driven pings = bespoke CUSTOM written by Chat, delivered as frozen verbatim blocks in a separate arming task. Website links (HE/EN) are legitimate ping payloads.
+- **Q3:** two run modes in one skill — `full` (weekly, phone connected) and `quick` (on-demand, no phone).
+- **Q4:** pivot pairs = existing `pivot.json` + new `followup_pivots` block (local-only, `kph_compile render-pivot` unaffected — verified): BNS (KP-ZEN-013) → KP-ZEN-012 one-bedroom cross-sell for silent leads; KP-LND-015 no-interest → question-ping. No new Firebase fields.
+- **Q5:** KPI = inbound replies opened per week from follow-ups (reply-rate per wave vs the 7–33% baseline); secondary = meetings booked.
+
+Build note: STC (schema-truth-check) found `/Leads.tier`/`.score` already live, owned by the backend's LLM lead-scoring agent (different axis than this skill's recency tier) — this skill is report-only for tier, never overwrites it. First live quick-mode run (2026-07-13) processed 684 leads; see LOG for full numbers.
+
+### Original design input (superseded by the decisions above, kept for history)
 
 **Working name:** `weekly-lead-reconciliation`
 **Goal (Liam, 2026-07-13):** weekly iPhone backup → parse new leads → attribute each to a campaign → verify follow-up coverage → schedule missing follow-ups → exploit cross-project links.

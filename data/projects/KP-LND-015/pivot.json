@@ -1,0 +1,20 @@
+{
+  "project_id": "KP-LND-015",
+  "_ssot": {
+    "role": "followup_pivots-only file for KP-LND-015 (Red Sunset Land) — no live conversational pivot_targets exist yet for this project (out of scope for this task); this file exists solely to hold the no-interest re-engagement question-ping used by lead-reconciliation-engine (ARCHITECTURE §11 Q4, decided 2026-07-13). Not read by kph_compile render-pivot (which reads only pivot_targets, absent here)."
+  },
+  "followup_pivots": {
+    "_ssot_note": "NEW block (lead-reconciliation-engine v1) — read only by the follow-up dry-run/decision-matrix step. Reference copy only; subject to Chat writing the frozen verbatim block before any arming (Q2).",
+    "targets": [
+      {
+        "trigger": "no_interest_question_ping",
+        "context": "Lead showed no interest in the land plot (explicit decline, or gone silent post-PING1/2) — re-engage with an open question instead of a hard pivot to another project. No target_project_id: this is a discovery ping, not a cross-sell.",
+        "target_project_id": null,
+        "questions": ["what_would_interest_you", "on_island_now", "budget_range"],
+        "line_he": "היי 😊\nלא בטוח שהקרקע היא ההתאמה הנכונה בשבילך —\nמה כן היה מעניין אותך? אתה כבר באי, או עדיין מתכנן להגיע? ומה טווח התקציב שחשבת עליו?\nאשמח להתאים לך משהו רלוונטי יותר 🙏",
+        "line_en": "Hi 😊\nnot sure the land plot is the right fit for you —\nwhat would actually interest you? Are you on the island already, or still planning your trip? And what budget range did you have in mind?\nHappy to match you with something more relevant 🙏"
+      }
+    ]
+  },
+  "pivot_rules_note": "No pivot_targets defined here — KP-LND-015 has no live §-section conversational pivot block today; adding one is out of scope for this task (lead-reconciliation-engine v1, Q4)."
+}
