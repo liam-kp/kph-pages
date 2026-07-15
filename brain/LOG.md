@@ -9,6 +9,14 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-07-15 TH · [PROJECT: Marketing Brain] · [kpzen012-brochure-v5-merge]
+- WHAT: PR #24 (`liam-kp/kpih-website`, brochure v5) merged prior to this session; verified Vercel deployed and live availability correct on both EN and HE brochures.
+- CHANGED: Verified live `https://kohphanganinvestmenthub.com/brochures/KP-ZEN-012_maduwan_en.pdf` shows "4 of 8 plots available — A, B, E and F open. C and G reserved. D and H sold." and "Total footprint 69.2 m²" (matches the 69.18 sqm fix, no regression). Verified live HE brochure (`KP-ZEN-012_maduwan_he.pdf`) independently — it already carries the same corrected availability line in Hebrew (4/8, A/B/E/F פנויים, C/G בהזמנה, D/H נמכרו) even though PR #24's diff only touched the EN PDF file; HE brochure is NOT stale. No Firebase or Meta writes made this session (read-only verification + this log entry only).
+- OPEN: none — both EN and HE brochures confirmed live and correct, no follow-up required.
+- REF: `task_merge_pr24_maduwan_v5.md` · PR #24 `liam-kp/kpih-website`.
+
+---
+
 ## 2026-07-14 TH · [PROJECT: Marketing Brain] · [chat-center-v1-dataset-build]
 
 - WHAT: Built v1 knowledge base for "KPH Chat Center" (new Claude Project — Liam pastes live lead conversations, gets copy-paste-ready replies grounded in real KPH data/voice; also the future grounding layer for Maya's freestyle mode). Read-only mining task per `task_chatcenter_dataset_build.md`: no Firebase writes, no Meta calls, no outreach. Used a fresh WhatsApp Business backup (auto-detected, extracted via Manifest.db → `AppDomainGroup-group.net.whatsapp.WhatsAppSMB.shared/ChatStorage.sqlite`, unencrypted, 174,184 message rows) plus a full `Projects_Public` GET (15 records) and `kph-pages/data/projects/*/inventory.json` for ground truth. Mined 3,980 resolved 1:1 chats (@lid-resolved per the 2026-07-05 method), 1,993 engaged (≥2 inbound); attributed via `lead_ledger.csv` + `leads_qualified_2026-07-06.csv` + trigger-message matching (GENERAL 1,147 / KP-ZEN-012 396 / KP-ZEN-013 241 / KP-BCH-011 117 / KP-NAI-014 50 / KP-LND-015 42 engaged). Clustered inbound topics empirically, computed frequency + objection/buying-signal correlation, extracted best-observed verbatim answers, and built a house-voice profile from real outbound messages.
