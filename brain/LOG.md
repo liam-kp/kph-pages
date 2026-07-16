@@ -9,6 +9,14 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-07-17 TH · [PROJECT: Marketing Brain] · [chat-strategy-session-closeout]
+- WHAT: Closeout of a strategy session scoping ChatGPT as a weekly hypothesis-generator/challenger (not an implementer) — packet v1 was sent and its response feasibility-screened against real constraints. Also queued 3 new beach-project brochures for onboarding and produced a v2 skills inventory doc.
+- CHANGED: Feasibility screen on ChatGPT's response — Viewing Sprint **approved** (now next priority, spec still to be written); 60/20/10/10 budget split **rejected** (budget too small to support that granularity); video retargeting **blocked** (no footage exists to retarget with); EV (expected-value) model **deferred**. `SKILLS_AVAILABLE_v2.md` produced this session (not yet uploaded to project knowledge — Liam to upload). No Firebase/Meta/Linear writes.
+- OPEN: (1) Viewing Sprint spec — owner Claude Chat. (2) Ownership KB hub — to be built in a dedicated chat session; outputs will feed the Maya prompt-section layer, the Chat Center dataset, and FAQ creative — owner Liam. (3) 3 new beach-project brochures queued for `lean-project-onboarding` — owner Liam→Code. (4) `SKILLS_AVAILABLE_v2.md` upload to project knowledge — owner Liam. (5) **Unverified**: could not find a LOG entry for the 2026-07-16 `iphone-backup-rotate` full-rotate session — most recent `iphone-backup-rotate` entries in this LOG are dated 2026-07-13 (retry2-success, incremental only); no full-rotate entry exists for 07-16 anywhere in this file. Flagging as unverified/possibly missing — owner: Liam to confirm whether that session ran and log it retroactively if so.
+- REF: `SKILLS_AVAILABLE_v2.md` (this session, pending upload) · ChatGPT packet v1 (external, not in this repo).
+
+---
+
 ## 2026-07-17 04:35 TH · [PROJECT: Marketing Brain] · [kpr315-yair-kplnd015-followup-arm]
 - WHAT: Armed one CUSTOM Follow_Up (Red Sunset Land / KP-LND-015 lead, Sap-Ing-Sith leasehold-angle reopener) for 2026-07-19 09:10 IL / 13:10 ICT. KPR-303 pre-flight run: all 5 fix PRs (#38-42) confirmed merged to production, but the ticket itself is still Todo with a documented history of "fixed" reopening on fresh canaries — treated as live-risk per KPR-315's gate, not closed on PR-merge status alone.
 - CHANGED: `Follow_Ups/FU-KPLND015-bc4eb950-20260719` created (PENDING, dual-write verified against `/Leads` next_followup_date). Confirmed via code read (`conversation-interpreter/index.ts`) that CUSTOM-send routing keys off `Follow_Ups.phone_number`, not `contact_id` — reused the lead's previously-proven-working ghost-LID phone_number rather than a raw E.164 number supplied in the task brief, to avoid misrouting.
