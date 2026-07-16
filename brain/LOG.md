@@ -9,6 +9,14 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-07-16 23:06 TH · [PROJECT: Marketing Brain] · [iphone-backup-rotate-full]
+- WHAT: Full-rotate iPhone backup (UDID 00008140-001E28592213001C) — incremental attempt failed first (ErrorCode 105, insufficient free disk space per idevicebackup2's estimate despite 94G actually free), so escalated to gated full-rotate per skill Phase 3. Liam confirmed deletion explicitly (typed DELETE) before old backup was removed.
+- CHANGED: Old backup (43G, dated 2026-07-16 21:25 UTC, encrypted) deleted. New full backup completed successfully — 116G, unencrypted (Finder encryption setting was off this run, contrary to skill's recommendation to keep it on for full WhatsApp/Baileys completeness — worth re-enabling before next rotation), `SnapshotState: finished`, dated 2026-07-16 21:57 UTC. Free disk now 13G (down from 94G) — getting tight, flag for next rotation.
+- OPEN: Re-enable backup encryption in Finder before next rotation — owner: Liam. Monitor disk space (13G free) — owner: Liam.
+- REF: This entry retroactively resolves the "unverified/possibly missing" flag raised in the 2026-07-17 `chat-strategy-session-closeout` entry above (open item 5).
+
+---
+
 ## 2026-07-17 TH · [PROJECT: Marketing Brain] · [chat-strategy-session-closeout]
 - WHAT: Closeout of a strategy session scoping ChatGPT as a weekly hypothesis-generator/challenger (not an implementer) — packet v1 was sent and its response feasibility-screened against real constraints. Also queued 3 new beach-project brochures for onboarding and produced a v2 skills inventory doc.
 - CHANGED: Feasibility screen on ChatGPT's response — Viewing Sprint **approved** (now next priority, spec still to be written); 60/20/10/10 budget split **rejected** (budget too small to support that granularity); video retargeting **blocked** (no footage exists to retarget with); EV (expected-value) model **deferred**. `SKILLS_AVAILABLE_v2.md` produced this session (not yet uploaded to project knowledge — Liam to upload). No Firebase/Meta/Linear writes.
