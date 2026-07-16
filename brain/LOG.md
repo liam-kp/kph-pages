@@ -9,6 +9,14 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-07-17 04:35 TH · [PROJECT: Marketing Brain] · [kpr315-yair-kplnd015-followup-arm]
+- WHAT: Armed one CUSTOM Follow_Up (Red Sunset Land / KP-LND-015 lead, Sap-Ing-Sith leasehold-angle reopener) for 2026-07-19 09:10 IL / 13:10 ICT. KPR-303 pre-flight run: all 5 fix PRs (#38-42) confirmed merged to production, but the ticket itself is still Todo with a documented history of "fixed" reopening on fresh canaries — treated as live-risk per KPR-315's gate, not closed on PR-merge status alone.
+- CHANGED: `Follow_Ups/FU-KPLND015-bc4eb950-20260719` created (PENDING, dual-write verified against `/Leads` next_followup_date). Confirmed via code read (`conversation-interpreter/index.ts`) that CUSTOM-send routing keys off `Follow_Ups.phone_number`, not `contact_id` — reused the lead's previously-proven-working ghost-LID phone_number rather than a raw E.164 number supplied in the task brief, to avoid misrouting.
+- OPEN: mandatory post-send byte-diff (delivered Postgres text vs. frozen source) cannot run until after the 2026-07-19 fire time — owner: Claude/Liam, tracked on KPR-315 (kept In Progress, not Done).
+- REF: KPR-303, KPR-315 (Linear) · `task_followups_2026-07-19.md`.
+
+---
+
 ## 2026-07-15 TH · [PROJECT: Marketing Brain] · [kpzen012-brochure-v5-merge]
 - WHAT: PR #24 (`liam-kp/kpih-website`, brochure v5) merged prior to this session; verified Vercel deployed and live availability correct on both EN and HE brochures.
 - CHANGED: Verified live `https://kohphanganinvestmenthub.com/brochures/KP-ZEN-012_maduwan_en.pdf` shows "4 of 8 plots available — A, B, E and F open. C and G reserved. D and H sold." and "Total footprint 69.2 m²" (matches the 69.18 sqm fix, no regression). Verified live HE brochure (`KP-ZEN-012_maduwan_he.pdf`) independently — it already carries the same corrected availability line in Hebrew (4/8, A/B/E/F פנויים, C/G בהזמנה, D/H נמכרו) even though PR #24's diff only touched the EN PDF file; HE brochure is NOT stale. No Firebase or Meta writes made this session (read-only verification + this log entry only).
