@@ -9,6 +9,15 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-07-19 TH · [PROJECT: Marketing Brain] · [lnd015-bridge-fix-declined]
+- WHAT: Task brief (task_lnd015_bridge_fix.md, Downloads) asked to prepend a "saw you're interested in our beachfront project" bridge sentence to KP-LND-015's `first_message_sequence_he/en` PING1, to fix BCH-011→LND-015 crossover engagement. Declined — same dead end identified in the prior `fix-bch011-routing-bug` session, re-confirmed here. No write made.
+- CHANGED: Nothing (no PWRC write, no tap-test send).
+- FINDINGS: `findProjectByFacebookTrigger` (leadContextService.ts) resolves BCH-011's exact trigger to BCH-011's own project record + its own `first_message_sequence_he/en` — never LND-015's. LND-015's static PING1 field only fires for leads matching LND-015's *own* trigger directly. So editing this field (a) has zero effect on BCH-011-triggered leads — the task's own proposed tap-test would have failed to show the bridge line — and (b) would incorrectly prepend "saw you're interested in our beachfront project" onto genuine direct-LND-015-ad leads who never saw a villa ad. The actual mechanism generating the crossover land-pivot text is prompt sections `26-project-focus-lock` (Red Sunset alias) + `34-pivot-router` (`topic_redirect_land_vs_villa`), per prior session's diagnosis — a static-field bridge sentence cannot be conditioned on which trigger the lead actually sent.
+- OPEN: Real fix still pending Liam's review — carve-out in sections 26/34 so an exact facebook_trigger_message match always gets that project's own PING1 first (see prior LOG entry, [fix-bch011-routing-bug]). Liam to decide whether/when to authorize that prompt-section edit; two task briefs now landed in Downloads proposing Firebase-field-level fixes for what is a prompt-logic issue — worth checking where these briefs are being generated from.
+- REF: task_lnd015_bridge_fix.md (Downloads) · prior entry this file, [fix-bch011-routing-bug] · prompt-sections 26/34 (customerId 11a3a8c9-...b959).
+
+---
+
 ## 2026-07-19 TH · [PROJECT: Marketing Brain] · [fix-bch011-routing-bug]
 - WHAT: Investigated task brief claiming a KP-BCH-011 trigger→wrong-reply "routing bug" (delta chats 07-13→07-17 showing BCH-011 villa-ad triggers getting LND-015's land reply, zero re-engagement). Diagnosis found the premise partially false and the true root cause elsewhere — no write made.
 - CHANGED: Nothing (diagnosis-only session; no PWRC write, no tap-test send, no prompt-section edit).
