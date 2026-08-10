@@ -9,6 +9,25 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-08-10 TH · [PROJECT: Marketing Brain] · [kp-zen-012-he-onisland-creative-COMPLETE]
+- WHAT: Resumed `task_KP-ZEN-012_hebrew_on-island_creative.md` after Liam confirmed the inventory conflict (plot C sold, not just reserved — 3 sold total). Ran STC+PWRC to correct Firebase, then built the Maduwan HE on-island CTWA creative/ad set/ad (all PAUSED) and fixed the stale "6 plots/1 reserved" EN copy on both live English ads. Full 9-check QA gate: GO (pending Liam's manual tap-test).
+- CHANGED:
+  - `/Project_Inventory/ZEN-C.unit_status`: `reserved` → `sold` (PWRC verified; other 8 fields untouched — `unit_notes_internal`/`unit_notes_public` still read "reserved", flagged to Liam, not auto-synced).
+  - `/Projects_Public/KP-ZEN-012.availability_summary_public`: → "8 plots total, 3 sold (C, D, H), 1 reserved (G), 4 available (A, B, E, F) — 5 remaining. ..." (PWRC verified, all other 37 fields unchanged).
+  - Created creative `1111154761586951` ("CR | Maduwan | On-Island HE | v3") — frozen HE body/title, pre-fill byte-identical to `facebook_trigger_message` (HE), image_hash reused from On-Island EN v4-poolfix.
+  - Created ad set `120248724630190056` ("Maduwan | On-Island HE | v3") under campaign `120247752361560056`, $5/day, PAUSED, `promoted_object.whatsapp_phone_number=66967907754`, locale HE(29), Ko Phangan+Ko Samui 25mi.
+  - Created ad `120248724644640056` ("AD | Maduwan | On-Island HE | v3"), PAUSED, attached to the above.
+  - EN copy fix (creatives are immutable — swapped, did not edit in place): created creative `2099104417307227` and pointed ad `120247888266460056` (On-Island EN) at it; created creative `2075491079778588` and pointed ad `120247887808920056` (Retargeting TH) at it. Both inherit their original image_hash and EN pre-fill verbatim; only body/title changed to the frozen "3 already sold — only 5 remain, 2 of the large 211 sqm plots" copy. Both ads remain `status: ACTIVE` (still live), `effective_status: IN_PROCESS` transiently (creative-swap re-review).
+- OPEN:
+  - **HE ad set/ad awaiting Liam's fresh-number tap-test + explicit GO before activation.** Nothing activated this session.
+  - `Project_Inventory/ZEN-C` notes fields (`unit_notes_internal`/`unit_notes_public`) still say "reserved" — Liam to confirm whether to sync those to match `unit_status: sold`.
+  - Red Sunset Land CBO `120246713429320056` — still force-paused by Meta from the 2026-08-09 billing hold; needs Liam's top-down reactivation (campaign → ad set → ad).
+  - `KP-LND-015` IL ad-set hold (`120246713429330056`) — revisit 2026-08-16 per 2026-08-09 entry, unchanged this session.
+  - `runbooks/CAMPAIGN_CONNECTION_PROTOCOL.md` (referenced in the task brief) still 404s in this repo — unresolved from the prior stopped session, not touched.
+- REF: task_KP-ZEN-012_hebrew_on-island_creative.md · `Projects_Public/KP-ZEN-012` · `Project_Inventory/ZEN-C` · `act_820757680962871` · rollback snapshots `~/kph-pwrc-rollbacks/2026-08-10/`.
+
+---
+
 ## 2026-08-10 TH · [PROJECT: Marketing Brain] · [kp-zen-012-he-onisland-creative-STOPPED]
 - WHAT: Task `task_KP-ZEN-012_hebrew_on-island_creative.md` (build Maduwan HE on-island CTWA creative/ad + fix live EN copy) **STOPPED at Step 1 per the task's own guardrail** — Firebase inventory disagrees with Liam's stated ground truth and the brief says report the diff, don't guess. **Zero Meta entities created or modified this session — all calls were reads.**
   - Liam's stated truth: 8 plots total, 3 SOLD, 5 remaining, 2 of them large 211 sqm plots.
