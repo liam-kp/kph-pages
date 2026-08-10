@@ -9,6 +9,22 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-08-10 (session clock, cont.) TH · [PROJECT: Marketing Brain] · [kp-zen-012-he-onisland-activation]
+- WHAT: Liam ran the fresh-number tap-test himself (wa.me link with the exact HE trigger text, since the Business Manager ad-preview iframe wasn't loading for him) — PING1 confirmed firing correctly in Hebrew. Liam then explicitly authorized launch in chat ("בוא נעלה לאוויר עם העברית"). Activated the HE ad set + ad via Graph API, GET-verified after.
+- CHANGED:
+  - Ad set `120248724630190056` ("Maduwan | On-Island HE | v3"): PAUSED → **ACTIVE** ($5/day). GET-verified post-write.
+  - Ad `120248724644640056` ("AD | Maduwan | On-Island HE | v3"): PAUSED → **ACTIVE**. GET-verified post-write.
+  - No other entity touched. Campaign `120247752361560056` was already ACTIVE (parent of already-live EN/TH ad sets), not modified.
+  - Live daily budget account-wide, confirmed via API: On-Island HE $5 + On-Island EN $7 + Retargeting TH $6 = **$18/day total**, within the $30 ceiling.
+- OPEN: (carried from prior entry, unchanged)
+  - `Project_Inventory/ZEN-C` notes fields still say "reserved" (unit_status is "sold") — Liam to confirm sync.
+  - `Project_Inventory/ZEN-F` has no record at all (unit_label/unit_status null) — the "2 large 211sqm plots remain" math holds only under the assumption F is a normal ~195sqm plot; unverified.
+  - Red Sunset Land CBO `120246713429320056` still force-paused by Meta from the 2026-08-09 billing hold — needs Liam's top-down reactivation.
+  - `KP-LND-015` IL ad-set hold — revisit 2026-08-16.
+- REF: task_KP-ZEN-012_hebrew_on-island_creative.md · `act_820757680962871`.
+
+---
+
 ## 2026-08-10 TH · [PROJECT: Marketing Brain] · [kp-zen-012-he-onisland-creative-COMPLETE]
 - WHAT: Resumed `task_KP-ZEN-012_hebrew_on-island_creative.md` after Liam confirmed the inventory conflict (plot C sold, not just reserved — 3 sold total). Ran STC+PWRC to correct Firebase, then built the Maduwan HE on-island CTWA creative/ad set/ad (all PAUSED) and fixed the stale "6 plots/1 reserved" EN copy on both live English ads. Full 9-check QA gate: GO (pending Liam's manual tap-test).
 - CHANGED:
