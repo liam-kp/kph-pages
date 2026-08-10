@@ -9,6 +9,24 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-08-10 TH · [PROJECT: Marketing Brain] · [kp-zen-012-he-onisland-creative-STOPPED]
+- WHAT: Task `task_KP-ZEN-012_hebrew_on-island_creative.md` (build Maduwan HE on-island CTWA creative/ad + fix live EN copy) **STOPPED at Step 1 per the task's own guardrail** — Firebase inventory disagrees with Liam's stated ground truth and the brief says report the diff, don't guess. **Zero Meta entities created or modified this session — all calls were reads.**
+  - Liam's stated truth: 8 plots total, 3 SOLD, 5 remaining, 2 of them large 211 sqm plots.
+  - Live `/Projects_Public/KP-ZEN-012.availability_summary_public`: "8 plots total, 4 available (A, B, E, F). C + G reserved, D + H sold." → 2 sold, 2 reserved, 4 available.
+  - `/Project_Inventory/KP-ZEN-012`: record not found (404) — no plot-level collection exists to cross-check "211 sqm" against.
+  - No field anywhere in `Projects_Public` says "211 sqm"; the 2026-07-05 PWRC entry in this same log ties "211s" to plots **E/F** — which are in the *available* bucket, not sold, per current data. This matches the standing 2BR price/size-drift flag (KP-ZEN-012, 2026-06-24) — same known bug class recurring.
+  - Billing-hold status check (follow-up on 2026-08-09 entries above): `act_820757680962871` is now `account_status: 1 (ACTIVE)`, `disable_reason: 0` — the UNSETTLED/not-writable condition from 2026-08-09 has resolved as of this session. Not acted on further (out of this task's scope).
+  - Trigger-safety sweep (Step 2, completed despite the stop): `facebook_trigger_message` (HE) exists and is non-empty. Account-wide, only 2 ads have `effective_status: ACTIVE` — `AD | Maduwan | Retargeting TH | v3` (120247887808920056) and `AD | Maduwan | On-Island EN | v3 | v4-poolfix` (120247888266460056) — both verified via creative `object_story_spec.link_data.message` to carry the **EN** trigger verbatim, not HE. No live ad currently depends on the HE trigger string; safe to use once inventory is resolved.
+  - `runbooks/CAMPAIGN_CONNECTION_PROTOCOL.md` (named in the task brief) 404s — does not exist at that path in this repo.
+- CHANGED: None on Meta or Firebase. This LOG.md entry only.
+- OPEN:
+  - **Blocking:** Liam to resolve the inventory conflict — either (a) confirm the 3rd sale and specify which plot flipped + update `availability_summary_public` (Firebase write → full STC/PWRC required when that happens), or (b) confirm Firebase's 2-sold count is correct and reissue the frozen HE/EN scarcity copy. Either way, source the "211 sqm" figure — closest live value is 171 sqm (2BR Luxury single-level) — before Steps 3–6 of the task can resume.
+  - 2026-08-09 IL ad-set pause retry (billing hold) — now unblocked since account_status is back to 1; owner Liam/Claude, not done this session (out of scope).
+  - `CAMPAIGN_CONNECTION_PROTOCOL.md` missing — owner Liam, decide whether to recreate or remove the reference.
+- REF: task_KP-ZEN-012_hebrew_on-island_creative.md · `Projects_Public/KP-ZEN-012` · `act_820757680962871`.
+
+---
+
 ## 2026-08-09 (session clock, cont.) TH · [PROJECT: Marketing Brain] · [geo-spend-audit-2026-08-09-b1-attempt]
 - WHAT: Attempted Liam's approved B1 execution (pause 2 non-TH ad sets) from the geo spend audit. **Both writes failed** — `POST .../{adset_id} status=PAUSED` returned `(#200) Permissions error / error_subcode 2490592 "Ad account not writable" / "Ad account status is ineligible to manage ads"` for both. GET-verified before and after: both ad sets confirmed `status: ACTIVE, effective_status: ACTIVE` pre-attempt and **unchanged** post-attempt — no partial write, no drift. This upgrades the prior session's billing-hold finding: `account_status: 3` (UNSETTLED) blocks not just ad *delivery* but **all write access** to the account via the API — pausing is impossible until the balance settles. Followed up by listing all 9 currently-ACTIVE ad sets account-wide with targeted geo: 7 TH-targeted (unaffected, untouched, as instructed), 2 Yair TripleBoost (name/status only per HARD RULE, not detailed here), and the 2 IL-targeted ad sets from this task — both still live and will resume spending into Israel the instant the billing hold clears, since the intended pause never took effect.
 - CHANGED: **None.** Both PAUSE attempts failed at the API level; both ad sets remain `ACTIVE/ACTIVE`, identical to their pre-attempt state. Ad-set level only was targeted (no campaign-level or AS-3-retargeting calls made); Yair/TripleBoost untouched.
