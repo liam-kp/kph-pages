@@ -9,6 +9,19 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-08-10 (session clock, cont. 3) TH · [PROJECT: Marketing Brain] · [kp-zen-012-v6-price-front-lineswap]
+- WHAT: Liam requested a "line 1 only" copy change on all 3 live Maduwan ads (HE on-island + both EN ads) — price moved to the front for Reels truncation, scarcity line ("3 sold / 5 remain / 2 large 211sqm") restored on HE (superseding the v5 no-scarcity text from earlier this session), rest byte-identical to the prior frozen blocks. Titles, images, pre-fills untouched on all 3.
+- CHANGED:
+  - Created creative `2262629307911019` ("CR | Maduwan | On-Island HE | v6-lineswap"); ad `120248724644640056` swapped onto it. Title/image_hash(`e3708c5d9c...`)/pre-fill unchanged from prior HE creative.
+  - Created creative `1617321390027666` ("CR | Maduwan | On-Island EN | v6-lineswap"); ad `120247888266460056` swapped onto it. Image_hash `e3708c5d9c...`, title "Own a Pool Villa on Koh Phangan — From ฿3.5M", EN pre-fill all unchanged.
+  - Created creative `1044036631666236` ("CR | Maduwan | Retargeting TH | v6-lineswap"); ad `120247887808920056` swapped onto it. Image_hash `95b362c91d...` (its own, not swapped with the other EN ad), title/pre-fill unchanged.
+  - All 3 GET-verified post-swap: `status: ACTIVE`, `effective_status: IN_PROCESS` (normal transient re-review), body text byte-matches the new spec on all 3.
+  - Prior creatives (`1510609747420672` HE-v5, `2099104417307227` EN-onisland-v4, `2075491079778588` EN-retarget-v4) left orphaned, unlinked, no spend.
+- OPEN: watch `effective_status` settles to ACTIVE (not re-checked this session). Carried over: ZEN-C notes sync, ZEN-F missing inventory record, Red Sunset Land CBO reactivation.
+- REF: task_KP-ZEN-012_hebrew_on-island_creative.md · `act_820757680962871`.
+
+---
+
 ## 2026-08-10 (session clock, cont. 2) TH · [PROJECT: Marketing Brain] · [kp-zen-012-he-copyfix-v5]
 - WHAT: Liam disliked the live HE ad body (scarcity-line copy) and supplied replacement text directly in chat. Creatives are immutable — created a new creative reusing title/image/pre-fill/CTA byte-identical, swapped the live ACTIVE ad onto it.
 - CHANGED:
