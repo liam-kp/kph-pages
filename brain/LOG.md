@@ -9,6 +9,17 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-08-10 (session clock, cont. 2) TH · [PROJECT: Marketing Brain] · [kp-zen-012-he-copyfix-v5]
+- WHAT: Liam disliked the live HE ad body (scarcity-line copy) and supplied replacement text directly in chat. Creatives are immutable — created a new creative reusing title/image/pre-fill/CTA byte-identical, swapped the live ACTIVE ad onto it.
+- CHANGED:
+  - Created creative `1510609747420672` ("CR | Maduwan | On-Island HE | v5-copyfix") — new body (Liam-authored, no scarcity/sold-count line this time), same title "וילה עם בריכה בקופנגן — מ-3.5 מיליון באט", same `image_hash e3708c5d9c...`, same pre-fill (byte-identical to `facebook_trigger_message` HE), same CTA WHATSAPP_MESSAGE.
+  - Ad `120248724644640056` swapped from creative `1111154761586951` → `1510609747420672`. GET-verified: `status: ACTIVE`, `effective_status: IN_PROCESS` (normal transient Meta re-review after a creative swap on a live ad).
+  - Old creative `1111154761586951` left orphaned (unlinked, not deleted — no harm, no spend).
+- OPEN: watch `effective_status` settles back to ACTIVE post-review (not re-checked this session). Same carried-over opens as prior entries (ZEN-C notes sync, ZEN-F missing inventory record, Red Sunset Land CBO reactivation).
+- REF: task_KP-ZEN-012_hebrew_on-island_creative.md · `act_820757680962871`.
+
+---
+
 ## 2026-08-10 (session clock, cont.) TH · [PROJECT: Marketing Brain] · [kp-zen-012-he-onisland-activation]
 - WHAT: Liam ran the fresh-number tap-test himself (wa.me link with the exact HE trigger text, since the Business Manager ad-preview iframe wasn't loading for him) — PING1 confirmed firing correctly in Hebrew. Liam then explicitly authorized launch in chat ("בוא נעלה לאוויר עם העברית"). Activated the HE ad set + ad via Graph API, GET-verified after.
 - CHANGED:
