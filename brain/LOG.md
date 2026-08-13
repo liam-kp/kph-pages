@@ -9,6 +9,22 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-08-13 18:10 TH · [PROJECT: Marketing Brain] · [kpr-336-337-maya-language-and-fabrication]
+- WHAT: Diagnosed and fixed two live Maya defects from the Maduwan KP-ZEN-012 chat export (11–13/08): a single Hebrew turn on an EN lead after an emoji-only inbound (KPR-336), and 4× fabricated "I'll send to your other number" promises on the same lead (KPR-337). Phase 1 (read-only) found the real root cause wasn't any of the 3 hypothesized — §16 contradicted itself internally (clause 10's old "Hebrew fallback if undetectable" vs the LANGUAGE PERSISTENCE block added 06-21), compounded by an unexplained section `33-language-mirror` that appeared 07-04 restating the same conflict at higher precedence. Blast-radius scan of all 18,878 account messages found 7 real leads (2 HOT) with a verified unfulfilled promise, plus a separate hardcoded backend fallback string affecting 4 more contacts. Phase 2 (Gate-2 approved) applied 5 PWRC-verified prompt writes and closed both tickets' prompt-layer fix.
+- CHANGED:
+  - `16-guidelines-rules`: clause 10 rewritten to defer entirely to LANGUAGE PERSISTENCE (no more self-declared "highest priority", no more Hebrew-fallback authorization); LANGUAGE PERSISTENCE block preserved byte-identical. 2193→1918 chars, sortOrder 16 unchanged.
+  - `33-language-mirror`: added a ZERO-SIGNAL EXCEPTION reconciled word-for-word with §16's outcome language; section kept, not deleted. 282→790 chars, sortOrder 3300 unchanged.
+  - `36-action-truth-guard` (**new**, sortOrder 3600): global ACTION-TRUTH GUARD — forbids unconditional action-promises in any language, non-contradiction rule, honest-limitation script. 0→2988 chars.
+  - `17-campaign-red-sunset` / `18-campaign-maduwan-zennith` / `22-campaign-bns-ban-nai-suan`: 5 scripted "I'll send / I'll get it sent" objection-handling lines (no real send mechanism) rewritten to present-tense delivery, 3 of them wired to an actual `get_project_info` tool call. 20550→20621 / 25545→25616 / 22485→22563 chars.
+  - All 5 writes: PWRC (GET→PUT→sleep 3→GET-verify, 4-point check) — all PASS. Pre/post snapshot pairs in `_prompts/snapshots/*-2026-08-13.md`. Full composed 36-section prompt attached to both tickets: `jade_master_prompt_UPDATED_2026-08-13.md`.
+  - 6 deterministic re-QA traces run against the freshly persisted text (no live send) — all resolved correctly (EN stays EN on emoji/voice from both ends of the precedence stack, HE stays HE, action-limitation stated honestly with no self-contradiction).
+  - KPR-336, KPR-337 → **In Review**.
+  - New tickets: **KPR-338** (Adam, Urgent) — the hardcoded `"Our team will get back to you shortly"` fallback string, 4 contacts confirmed with no follow-through, linked to KPR-337. **KPR-339** (Adam, High) — unexplained `33-language-mirror` appearance 07-04, who/what wrote outside our PWRC process, links KPR-336 + LES-030. **KPR-340** (Liam, High) — manual WhatsApp recovery tracker for the 7 real leads with a broken promise (2 HOT), draft messages in `~/Downloads/kpr337_recovery.md`, nothing sent automatically.
+- OPEN: KPR-338/339 need Adam's backend-log access to actually locate the source (owner: Adam). KPR-340's 7 manual sends not yet made (owner: Liam). Re-QA was deterministic-trace only, not a live generation test — first real English lead hitting an emoji-only turn is the true confirmation.
+- REF: KPR-336, KPR-337, KPR-338, KPR-339, KPR-340 (Linear) · `~/Downloads/kpr336/FINDINGS.md` + `phase2/RE-QA.md` · `~/Downloads/kpr337_recovery.md` · `~/Business/01_Real-Estate-Leads/Campaigns/_TEMPLATE/jade_master_prompt_UPDATED_2026-08-13.md`.
+
+---
+
 ## 2026-08-10 (session clock, cont. 3) TH · [PROJECT: Marketing Brain] · [kp-zen-012-v6-price-front-lineswap]
 - WHAT: Liam requested a "line 1 only" copy change on all 3 live Maduwan ads (HE on-island + both EN ads) — price moved to the front for Reels truncation, scarcity line ("3 sold / 5 remain / 2 large 211sqm") restored on HE (superseding the v5 no-scarcity text from earlier this session), rest byte-identical to the prior frozen blocks. Titles, images, pre-fills untouched on all 3.
 - CHANGED:
