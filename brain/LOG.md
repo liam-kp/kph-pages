@@ -9,6 +9,14 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-08-18 (scheduled, armed 2026-08-16 TH) · [PROJECT: Marketing Brain] · [wave4-en-armed-8-leads]
+- WHAT: Armed WAVE4-EN (`wave_id=WAVE4-EN-20260818`) — 8 leads, frozen single-line "did you get a chance to look" copy, personalized by first name only. Pulled from the zen012_no_reply segment's high-confidence HOT/WARM pool (11 candidates originally scoped; 3 dropped for non-individual/business-style contact names before this arming run, per Liam's instruction).
+- CHANGED: 8× `/Follow_Ups` records created (`status=PENDING`, `trigger_type=CUSTOM`, `channel_id` set, `scheduled_date` UTC+Z, jittered 10:00–19:00 TH on 2026-08-18, min 20 min apart) + 8× `/Leads` dual-write (`next_followup_date`, `language=en`). Pre-arm live recheck (fresh GET, not reused from an earlier pull): 0/8 opted out, 0/8 had any existing Follow_Ups record. Regex lint (`^[a-zA-Z\s.,!?'"()\-—]+$`) + no-digit/no-Hebrew checks: 8/8 PASS before write. Post-write GET-verify + byte-diff of `custom_message` against the frozen personalized text: 8/8 PASS, 0 retries needed.
+- OPEN: none — fully armed and verified. Delivery/reply outcome not yet observable (sends fire 2026-08-18).
+- REF: `_marketing_brain/reports/wave4_en_proposal_2026-08-16.md`, `wave4_en_sheet_2026-08-16.csv`, `wave4_11_high_confidence_full_conversations_2026-08-16.md` · wave_id `WAVE4-EN-20260818`.
+
+---
+
 ## 2026-08-16 15:15 TH (cont.) · [PROJECT: Marketing Brain] · [auto-followup-engine-v1-build-and-first-run]
 - WHAT: Built the `auto-followup-engine` skill (client-side KPR-312 workaround: find leads that got PING1/any outbound with no follow-up since, segment, propose — never auto-arms) per Liam's build request, then ran it once in proposal mode. STC verdict before design: schema audit date 2026-05-15 (>30d stale, Phase V grep run as tiebreaker) — `wave_id` confirmed as a Claude-side-only bookkeeping field (0 backend code hits, 50 live records already carry it e.g. `WAVE1-EN-20260806`), `second_message_template*` confirmed 0 backend read hits (reconfirms KPR-312), OPTED_OUT-prefix suppression confirmed live in 2 backend files. All fields used are read-only this run.
 - CHANGED: **Zero Firebase writes** (proposal-only run). New skill file `~/.claude/skills/auto-followup-engine/SKILL.md`. Local reports only: `_marketing_brain/reports/autofollowup_20260816.md` (+ `autofollowup_20260816.csv` 478-row full gap list, `autofollowup_nextwave_20260819.csv` 30-lead proposed wave).
