@@ -17,6 +17,14 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-08-16 TH (cont.) · [PROJECT: Marketing Brain] · [full-funnel-audit-20260816-linear-and-fresh-backup]
+- WHAT: Two follow-ups to the audit below, same session, per Liam's explicit go-ahead. (1) Posted findings to Linear. (2) Discovered mid-session that a concurrent session had rotated the iPhone backup same-day (finished 2026-08-16T01:39:47Z) — re-extracted the correct WhatsAppSMB-domain ChatStorage.sqlite (per LES-038, verified against 08-05 for sanity — no partner-name collapse) and re-ran Part 1 on genuinely fresh data, superseding the original 08-05-based ghost count.
+- CHANGED: **Linear** — comment on KPR-331 (independent 08-16 reconfirmation: 5788/5789 fresh outgoing messages still PENDING/deliveredAt-null); comment on KPR-312 (ping-funnel evidence: 0/101 leads got the designed second_message_template automatically, only generic decay-engine + manual waves); new ticket **KPR-341** (Adam, Medium) — 31→34 in-window ghost chats with real ad-click trigger text and zero /Leads record, root-cause investigation request, cross-referenced KPR-306/314. **No /Leads or /Follow_Ups writes.** Local: re-extracted `_marketing_brain/data/wa_backup_2026-08-16/ChatStorage.sqlite` (250MB, WhatsAppSMB domain); re-ran ghost check → in-window ghosts corrected **31 → 34** (all-time 2,402 → 2,404); overwrote `reports/ghosts_inwindow_20260816.csv` and updated `reports/full_funnel_audit_20260816.md` §1 with the fresh numbers and a freshness-correction note (old figures struck, not silently replaced).
+- OPEN: KPR-341 awaits Adam's code-path investigation. On-island (Part 4)'s Boti-ledger side still reflects coverage through 2026-07-29 only — no reusable extraction script exists for that source; a future session should build one alongside `iphone-backup-rotate`.
+- REF: `_marketing_brain/reports/full_funnel_audit_20260816.md` (updated) · `ghosts_inwindow_20260816.csv` (updated, 34 rows) · KPR-331, KPR-312, KPR-341 (Linear) · LES-038 (this file, confirms the WhatsAppSMB-domain extraction gotcha independently).
+
+---
+
 ## 2026-08-16 TH · [PROJECT: Marketing Brain] · [full-funnel-audit-20260816]
 - WHAT: Read-only 5-part funnel audit (ghost recheck, ping funnel, beachfront wave, on-island rebuild, Linear status). Fresh Firebase (913 Leads/1323 Follow_Ups/17 Projects_Public) + Postgres (997 conv/5789 outgoing/5390 incoming) pulled same-day; iPhone backup reused from `wa_backup_2026-08-05` (11 days stale, no fresher local copy — full-rotate not attempted, out of scope and previously failure-prone). **Zero writes to /Leads or /Follow_Ups.**
 - FINDINGS:
