@@ -9,6 +9,15 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-08-20 13:20 TH · [PROJECT: Marketing Brain] · [wave5-he-20260820-armed-21-leads]
+- WHAT: Armed `WAVE5-HE-20260820` — 21 leads, frozen single-block HE beachfront copy ("קו ראשון לים... האם רלוונטי??"), personalized by first name only. Pulled from the `beachfront_he_fresh60_20260820` pool (last_message_at ≤60d, live-refreshed), skipping the 2 WARM leads already sent this week under WAVE5-HE-20260817.
+- CHANGED: 21× `/Follow_Ups` records created (`wave_id=WAVE5-HE-20260820`, `status=PENDING`, `trigger_type=CUSTOM`, `channel_id` set, `scheduled_date` UTC+Z, jittered 14:00–18:40 TH on 2026-08-20, ~14min spacing ±3min) + 21× `/Leads` dual-write (`next_followup_date`, `language=he`). Pre-arm live recheck (fresh GET, not reused from an earlier snapshot): 0/21 opted out, 0/21 held a live PENDING Follow_Up, 0/21 matched the excluded phone. SHA-256 of each `custom_message` computed and logged before any write; post-write GET-verify + byte-diff against that SHA: **21/21 PASS, 0 retries**. Collection-level GET on `/Follow_Ups` filtered to this `wave_id` independently confirms 21/21.
+- FLAG (not silently resolved): 4 of the mechanically-freshest 25 candidates had non-personalizable display names (emoji-only ×2, single-letter ×1, a Hebrew idiom apparently captured from a WhatsApp bio rather than an actual name ×1) — swapped for the next-freshest candidates that passed all filters, matching the precedent Liam already set on WAVE5-HE-20260817 (3 similar drops). One included lead's saved name is a business name, not a person ("אימבר עבודות חשמל") — first token used as a plausible personal name, lower confidence, not swapped.
+- OPEN: Reply-rate readout not yet possible — sends fire across 14:00–18:40 TH today. First send batch (14:00–14:29 window) closest to actionable read by end of day.
+- REF: `_marketing_brain/reports/beachfront_he_fresh60_20260820.csv` (source pool) · wave_id `WAVE5-HE-20260820` · zero canary-gate applied per this task's explicit instruction (not requested this run — flagging since prior waves used a 5-canary-first pattern under KPR-303).
+
+---
+
 ## 2026-08-20 09:00 TH · [PROJECT: Marketing Brain] · [iphone-backup-rotate-20260820-and-wave-reconciliation]
 - WHAT: (1) Incremental iPhone backup rotate, then (2) read-only reconciliation of WAVE5-HE-20260817/20260818 + WAVE4-EN-20260818 against Postgres (full per-conversation detail, not the truncated `/all` snapshot) and phone-side ChatStorage.sqlite (WhatsAppSMB domain, symmetric @lid matching per LES-036). Zero Firebase writes, zero Follow_Ups armed.
 - CHANGED: Local backup at `~/Library/Application Support/MobileSync/Backup/00008140-001E28592213001C` updated in place, 113G → 133G. No prior data deleted. New LESSONS.md entry (LES-039, below) — no Firebase/Follow_Ups changes.
