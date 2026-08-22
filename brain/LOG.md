@@ -1024,3 +1024,6 @@ FU-KPLND015-2704e8f2 | -OwxX43vCF9XV8TvAf0X | 201348217847887  [C]
 - CHANGED: Campaign CTWA v3 built with ad sets AS-1, AS-2 + 3 ads, state PAUSED (AS-3 deferred, blocked on page token). Blast Phase-1 dry-run run against 498 leads.
 - OPEN: AS-3 blocked on page token — resolved 2026-07-04 (Full Control granted, see above) — owner: Adam/Yair (page/asset access).
 - REF: `_marketing_brain/reports/maduwan_35_audit_20260702.md` · `_marketing_brain/reports/maduwan_ctwa_v3_build_20260702.md`.
+
+## 2026-08-23 — iPhone backup rotate
+- Mode: incremental · Result: FAIL (ErrorCode 102 ENOSPC, real exit 154; Data volume 94%, 27Gi free — delta+staging exceeded it). Old 08-20 snapshot intact (133G, SnapshotState finished). No full-rotate attempted per space-fail rule. Note: failed run still bumped Info.plist Last Backup Date to 08-23 — trust exit code + Status.plist, not Info.plist date.
