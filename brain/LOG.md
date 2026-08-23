@@ -1027,3 +1027,6 @@ FU-KPLND015-2704e8f2 | -OwxX43vCF9XV8TvAf0X | 201348217847887  [C]
 
 ## 2026-08-23 — iPhone backup rotate
 - Mode: incremental · Result: FAIL (ErrorCode 102 ENOSPC, real exit 154; Data volume 94%, 27Gi free — delta+staging exceeded it). Old 08-20 snapshot intact (133G, SnapshotState finished). No full-rotate attempted per space-fail rule. Note: failed run still bumped Info.plist Last Backup Date to 08-23 — trust exit code + Status.plist, not Info.plist date.
+
+## 2026-08-23 — iPhone backup rotate (retry after cleanup)
+- Mode: incremental · Space gate met (36Gi free, cache+Downloads cleanup + Trash empty) · Result: FAIL — different cause this attempt: "No device found" (real exit 255), device disconnected before/during run, NOT ENOSPC. Old 08-20 snapshot untouched (Status.plist unchanged, SnapshotState finished). Disk space held steady at 36Gi (no data transferred). Needs iPhone reconnected + Trust tapped, then retry.
