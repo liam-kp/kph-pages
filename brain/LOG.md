@@ -1030,3 +1030,8 @@ FU-KPLND015-2704e8f2 | -OwxX43vCF9XV8TvAf0X | 201348217847887  [C]
 
 ## 2026-08-23 — iPhone backup rotate (retry after cleanup)
 - Mode: incremental · Space gate met (36Gi free, cache+Downloads cleanup + Trash empty) · Result: FAIL — different cause this attempt: "No device found" (real exit 255), device disconnected before/during run, NOT ENOSPC. Old 08-20 snapshot untouched (Status.plist unchanged, SnapshotState finished). Disk space held steady at 36Gi (no data transferred). Needs iPhone reconnected + Trust tapped, then retry.
+
+## 2026-08-23 — iPhone backup rotate (SUCCESS)
+- Mode: incremental · Result: SUCCESS, real exit 0, "Backup Successful", Status.plist SnapshotState=finished, Date 2026-08-23 07:59 UTC. 4934 files received, size 131G. Preceded by 2 same-day failures (ENOSPC, then device-disconnect) — see prior entries; unblocked by cache/Downloads/Trash cleanup (34→36Gi) + iPhone reconnect.
+- Extraction: ChatStorage.sqlite pulled from AppDomainGroup-group.net.whatsapp.WhatsAppSMB.shared (Business container, not personal) → ~/Downloads/_extracted/ChatStorage_20260823.sqlite. Partner-name spot check passed (business contacts, not personal contact list).
+- Free space after: 42Gi.
