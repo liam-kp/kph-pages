@@ -907,6 +907,10 @@ tr.pipeline-row-pinned td:first-child { box-shadow: inset 4px 0 0 #FBBF24; }
       <span class="material-symbols-outlined">smart_toy</span>
       <span class="text-sm">בוטי</span>
     </div>
+    <div class="nav-item flex items-center gap-3 px-6 py-4 text-[#bccac1] hover:bg-[#181c22] cursor-pointer" data-page="ops">
+      <span class="material-symbols-outlined">monitor_heart</span>
+      <span class="text-sm">Ops</span>
+    </div>
   </nav>
   <div class="p-6 border-t-[0.5px] border-[#3d4943] flex items-center gap-3">
     <div class="w-8 h-8 bg-surface-container-highest flex items-center justify-center">
@@ -928,6 +932,7 @@ tr.pipeline-row-pinned td:first-child { box-shadow: inset 4px 0 0 #FBBF24; }
   <button class="mob-nav-btn" data-page="projects"><span class="material-symbols-outlined">location_city</span></button>
   <button class="mob-nav-btn" data-page="reports"><span class="material-symbols-outlined">insert_chart</span></button>
   <button class="mob-nav-btn" data-page="boti"><span class="material-symbols-outlined">smart_toy</span></button>
+  <button class="mob-nav-btn" data-page="ops"><span class="material-symbols-outlined">monitor_heart</span></button>
 </nav>
 
 <!-- ========== MAIN CONTENT ========== -->
@@ -944,6 +949,7 @@ tr.pipeline-row-pinned td:first-child { box-shadow: inset 4px 0 0 #FBBF24; }
         <a class="top-tab text-[#bccac1] text-sm pb-1 cursor-pointer hover:text-white" data-page="projects">Projects</a>
         <a class="top-tab text-[#bccac1] text-sm pb-1 cursor-pointer hover:text-white" data-page="reports">Reports</a>
         <a class="top-tab text-[#bccac1] text-sm pb-1 cursor-pointer hover:text-white" data-page="boti">בוטי</a>
+        <a class="top-tab text-[#bccac1] text-sm pb-1 cursor-pointer hover:text-white" data-page="ops">Ops</a>
       </nav>
     </div>
     <div class="flex items-center gap-4">
@@ -1419,6 +1425,189 @@ tr.pipeline-row-pinned td:first-child { box-shadow: inset 4px 0 0 #FBBF24; }
           <tbody id="boti-tbody" class="divide-y divide-outline-variant/20"></tbody>
         </table>
       </div>
+    </div>
+
+    <!-- ==================== OPS PAGE ==================== -->
+    <div id="page-ops" class="page-content p-6 space-y-6 fade-in">
+
+      <div class="flex flex-wrap justify-between items-end gap-4">
+        <div>
+          <h2 class="text-3xl font-bold tracking-tight">Ops</h2>
+          <p class="text-on-surface-variant text-sm mt-2">Lead health · wave performance · meetings · system health</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <span class="text-[10px] text-on-surface-variant font-mono" id="ops-updated">--</span>
+          <button onclick="loadOps()" class="px-4 py-2 bg-primary text-on-primary font-bold text-sm active:scale-95 transition-transform">Refresh</button>
+        </div>
+      </div>
+
+      <div id="ops-banner" class="hidden bg-surface-container-high p-4 ghost-border flex items-start gap-3">
+        <span class="material-symbols-outlined text-error text-lg">key_off</span>
+        <p class="text-[11px] leading-snug text-on-surface-variant" id="ops-banner-text"></p>
+      </div>
+
+      <!-- ---------- 1. LEAD HEALTH ---------- -->
+      <section>
+        <div class="flex items-center gap-4 mb-4">
+          <h3 class="text-sm font-bold tracking-[0.2em] text-on-surface-variant uppercase">1 · Lead Health</h3>
+          <span class="text-[10px] font-mono text-primary" id="ops-lh-src">live</span>
+          <div class="h-[1px] flex-1 bg-outline-variant"></div>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div class="bg-surface-container p-4 ghost-border">
+            <p class="text-[10px] text-on-surface-variant uppercase tracking-wider mb-1">Total Leads</p>
+            <p class="text-3xl font-bold" id="ops-lh-total">--</p>
+          </div>
+          <div class="bg-surface-container p-4 ghost-border border-r-4 border-primary">
+            <p class="text-[10px] text-primary uppercase tracking-wider mb-1">Contactable</p>
+            <p class="text-3xl font-bold text-primary" id="ops-lh-contactable">--</p>
+          </div>
+          <div class="bg-surface-container p-4 ghost-border border-r-4 border-error">
+            <p class="text-[10px] text-error uppercase tracking-wider mb-1">HOT</p>
+            <p class="text-3xl font-bold text-error" id="ops-lh-hot">--</p>
+          </div>
+          <div class="bg-surface-container p-4 ghost-border border-r-4 border-secondary">
+            <p class="text-[10px] text-secondary uppercase tracking-wider mb-1">WARM</p>
+            <p class="text-3xl font-bold text-secondary" id="ops-lh-warm">--</p>
+          </div>
+          <div class="bg-surface-container p-4 ghost-border">
+            <p class="text-[10px] text-on-surface-variant uppercase tracking-wider mb-1">COLD</p>
+            <p class="text-3xl font-bold" id="ops-lh-cold">--</p>
+          </div>
+          <div class="bg-surface-container p-4 ghost-border border-r-4 border-tertiary">
+            <p class="text-[10px] text-tertiary uppercase tracking-wider mb-1">No Conversation</p>
+            <p class="text-3xl font-bold text-tertiary" id="ops-lh-noconv">--</p>
+          </div>
+          <div class="bg-surface-container p-4 ghost-border border-r-4 border-tertiary">
+            <p class="text-[10px] text-tertiary uppercase tracking-wider mb-1">Missing Language</p>
+            <p class="text-3xl font-bold text-tertiary" id="ops-lh-nolang">--</p>
+          </div>
+          <div class="bg-surface-container p-4 ghost-border border-r-4 border-error">
+            <p class="text-[10px] text-error uppercase tracking-wider mb-1">Ghosts (backup)</p>
+            <div class="flex items-baseline gap-2">
+              <p class="text-3xl font-bold text-error" id="ops-lh-ghosts">--</p>
+              <span class="text-[9px] text-on-surface-variant font-mono" id="ops-lh-ghosts-asof"></span>
+            </div>
+          </div>
+        </div>
+        <p class="text-[10px] leading-relaxed text-on-surface-variant mt-3" id="ops-lh-notes"></p>
+      </section>
+
+      <!-- ---------- 2. WAVE PERFORMANCE ---------- -->
+      <section>
+        <div class="flex items-center gap-4 mb-4">
+          <h3 class="text-sm font-bold tracking-[0.2em] text-on-surface-variant uppercase">2 · Wave Performance</h3>
+          <span class="text-[10px] font-mono text-primary" id="ops-wave-src">live + snapshot</span>
+          <div class="h-[1px] flex-1 bg-outline-variant"></div>
+        </div>
+        <div class="bg-surface-container ghost-border p-4 mb-4">
+          <canvas id="ops-wave-chart" height="90"></canvas>
+        </div>
+        <div class="bg-surface-container ghost-border overflow-x-auto">
+          <table class="w-full text-xs" style="min-width:720px">
+            <thead>
+              <tr class="text-on-surface-variant text-[10px] uppercase tracking-widest border-b border-outline-variant/30">
+                <th class="px-4 py-3 font-medium text-left">Wave ID</th>
+                <th class="px-4 py-3 font-medium text-left">Date</th>
+                <th class="px-4 py-3 font-medium text-left">Segment</th>
+                <th class="px-4 py-3 font-medium text-left">Lang</th>
+                <th class="px-4 py-3 font-medium text-left">Armed</th>
+                <th class="px-4 py-3 font-medium text-left">Sent<sup>*</sup></th>
+                <th class="px-4 py-3 font-medium text-left">Replies</th>
+                <th class="px-4 py-3 font-medium text-left">Reply rate</th>
+              </tr>
+            </thead>
+            <tbody id="ops-wave-tbody" class="divide-y divide-outline-variant/10">
+              <tr><td colspan="8" class="px-4 py-10 text-center text-on-surface-variant">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="text-[10px] leading-relaxed text-on-surface-variant mt-3" id="ops-wave-notes"></p>
+      </section>
+
+      <!-- ---------- 3. MEETINGS ---------- -->
+      <section>
+        <div class="flex items-center gap-4 mb-4">
+          <h3 class="text-sm font-bold tracking-[0.2em] text-on-surface-variant uppercase">3 · Meetings</h3>
+          <span class="text-[10px] font-mono text-primary">counts + dates only</span>
+          <div class="h-[1px] flex-1 bg-outline-variant"></div>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+          <div class="bg-surface-container p-4 ghost-border border-r-4 border-error">
+            <p class="text-[10px] text-error uppercase tracking-wider mb-1">Today</p>
+            <p class="text-3xl font-bold text-error" id="ops-mt-today">--</p>
+          </div>
+          <div class="bg-surface-container p-4 ghost-border border-r-4 border-primary">
+            <p class="text-[10px] text-primary uppercase tracking-wider mb-1">Next 7 days</p>
+            <p class="text-3xl font-bold text-primary" id="ops-mt-week">--</p>
+          </div>
+          <div class="bg-surface-container p-4 ghost-border">
+            <p class="text-[10px] text-on-surface-variant uppercase tracking-wider mb-1">Arrivals upcoming</p>
+            <p class="text-3xl font-bold" id="ops-mt-arrivals">--</p>
+          </div>
+          <div class="bg-surface-container p-4 ghost-border">
+            <p class="text-[10px] text-on-surface-variant uppercase tracking-wider mb-1">Departures upcoming</p>
+            <p class="text-3xl font-bold" id="ops-mt-departures">--</p>
+          </div>
+        </div>
+        <div class="bg-surface-container ghost-border overflow-x-auto">
+          <table class="w-full text-xs" style="min-width:520px">
+            <thead>
+              <tr class="text-on-surface-variant text-[10px] uppercase tracking-widest border-b border-outline-variant/30">
+                <th class="px-4 py-3 font-medium text-left">Date</th>
+                <th class="px-4 py-3 font-medium text-left">Type</th>
+                <th class="px-4 py-3 font-medium text-left">Count</th>
+                <th class="px-4 py-3 font-medium text-left">Source</th>
+              </tr>
+            </thead>
+            <tbody id="ops-mt-tbody" class="divide-y divide-outline-variant/10">
+              <tr><td colspan="4" class="px-4 py-10 text-center text-on-surface-variant">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="text-[10px] leading-relaxed text-on-surface-variant mt-3" id="ops-mt-notes"></p>
+      </section>
+
+      <!-- ---------- 4. SYSTEM HEALTH ---------- -->
+      <section>
+        <div class="flex items-center gap-4 mb-4">
+          <h3 class="text-sm font-bold tracking-[0.2em] text-on-surface-variant uppercase">4 · System Health</h3>
+          <div class="h-[1px] flex-1 bg-outline-variant"></div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+          <div class="bg-surface-container p-4 ghost-border" id="ops-sh-backup-card">
+            <p class="text-[10px] text-on-surface-variant uppercase tracking-wider mb-1">Last iPhone Backup</p>
+            <p class="text-xl font-bold" id="ops-sh-backup-date">--</p>
+            <p class="text-[10px] font-mono mt-1" id="ops-sh-backup-state">--</p>
+          </div>
+          <div class="bg-surface-container p-4 ghost-border border-r-4 border-error">
+            <p class="text-[10px] text-error uppercase tracking-wider mb-1">Open Blockers</p>
+            <p class="text-3xl font-bold text-error" id="ops-sh-blockers">--</p>
+          </div>
+          <div class="bg-surface-container p-4 ghost-border border-r-4 border-tertiary">
+            <p class="text-[10px] text-tertiary uppercase tracking-wider mb-1">Leads with departure_date</p>
+            <p class="text-3xl font-bold text-tertiary" id="ops-sh-departures">--</p>
+          </div>
+        </div>
+        <div class="bg-surface-container ghost-border overflow-x-auto">
+          <table class="w-full text-xs" style="min-width:760px">
+            <thead>
+              <tr class="text-on-surface-variant text-[10px] uppercase tracking-widest border-b border-outline-variant/30">
+                <th class="px-4 py-3 font-medium text-left">Ticket</th>
+                <th class="px-4 py-3 font-medium text-left">Title</th>
+                <th class="px-4 py-3 font-medium text-left">Status</th>
+                <th class="px-4 py-3 font-medium text-left">Priority</th>
+                <th class="px-4 py-3 font-medium text-left">Adam's last comment</th>
+              </tr>
+            </thead>
+            <tbody id="ops-sh-tbody" class="divide-y divide-outline-variant/10">
+              <tr><td colspan="5" class="px-4 py-10 text-center text-on-surface-variant">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="text-[10px] leading-relaxed text-on-surface-variant mt-3" id="ops-sh-notes"></p>
+      </section>
+
     </div>
 
   </div><!-- end main-scroll -->
@@ -2571,6 +2760,7 @@ async function loadPageData(page) {
       case 'projects': await loadProjects(); break;
       case 'reports': await loadReports(); break;
       case 'boti': renderBotiPage(); break;
+      case 'ops': await loadOps(); break;
     }
   } catch(e) {
     console.error('Load error:', e);
@@ -8387,10 +8577,452 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
+// ============================================================================
+// OPS PAGE — lead health · wave performance · meetings · system health
+// Live: /Leads + /Follow_Ups via firebaseFetchDirect (Netlify proxy is dead on
+// gh-pages, so never firebaseFetch here). Snapshot: ./ops_data.json holds the
+// four classes the browser cannot read live — Linear ticket state (no public
+// token), verified reply counts (KPR-331 makes Postgres status unusable),
+// iPhone-backup ghost counts, and local backup status. Every snapshot-sourced
+// number is labelled "as of" in the UI.
+// AGGREGATE ONLY — this page never renders a lead name or phone number.
+// ============================================================================
+
+let opsChart = null;          // module-level so we can destroy() before re-draw
+let opsData = null;           // last successful snapshot
+
+const OPS_DEAD_TIERS = ['DEAD_PARTNER', 'DEAD_RENTAL', 'DEAD_B2B', 'INTERNAL_TEST'];
+
+function opsIsOptedOut(l) {
+  return String(l.status || '').toUpperCase().startsWith('OPTED_OUT');
+}
+function opsIsExcludedTier(l) {
+  return OPS_DEAD_TIERS.includes(String(l.tier || '').toUpperCase());
+}
+// Contactable = has a phone, not opted out, not a DEAD_*/INTERNAL_TEST tier,
+// not NOT_QUALIFIED. @lid masking does NOT block sends, so masked numbers count.
+function opsIsContactable(l) {
+  if (!l.phone_number) return false;
+  if (opsIsOptedOut(l)) return false;
+  if (opsIsExcludedTier(l)) return false;
+  if (String(l.status || '').toUpperCase() === 'NOT_QUALIFIED') return false;
+  return true;
+}
+
+function opsDaysSince(iso) {
+  if (!iso) return null;
+  const t = new Date(iso).getTime();
+  if (isNaN(t)) return null;
+  return Math.floor((Date.now() - t) / 86400000);
+}
+function opsFmtDate(d) {
+  if (!d) return '--';
+  const s = String(d).slice(0, 10);
+  const [y, m, dd] = s.split('-');
+  return (y && m && dd) ? `${dd}/${m}/${y}` : s;
+}
+function opsTodayISO(offsetDays) {
+  const n = new Date();
+  if (offsetDays) n.setDate(n.getDate() + offsetDays);
+  return `${n.getFullYear()}-${String(n.getMonth() + 1).padStart(2, '0')}-${String(n.getDate()).padStart(2, '0')}`;
+}
+function opsSetText(id, v) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = (v === null || v === undefined) ? '--' : String(v);
+}
+
+// ---------- loader ----------
+async function loadOps() {
+  const hasToken = !!getToken();
+  const banner = document.getElementById('ops-banner');
+  const bannerText = document.getElementById('ops-banner-text');
+
+  const [leadsRes, fuRes, snapRes] = await Promise.allSettled([
+    hasToken ? firebaseFetchDirect('Leads')      : Promise.reject(new Error('No token')),
+    hasToken ? firebaseFetchDirect('Follow_Ups') : Promise.reject(new Error('No token')),
+    fetch('./ops_data.json', { cache: 'no-store' }).then(r => {
+      if (!r.ok) throw new Error(`ops_data.json ${r.status}`);
+      return r.json();
+    }),
+  ]);
+
+  const unwrap = (res) => {
+    if (res.status !== 'fulfilled') return null;
+    const v = res.value;
+    return Array.isArray(v) ? v : (v && Array.isArray(v.data) ? v.data : null);
+  };
+  const leads = unwrap(leadsRes);
+  const followups = unwrap(fuRes);
+  if (snapRes.status === 'fulfilled') opsData = snapRes.value;
+
+  // Live failure degrades to snapshot-only: static panels still render.
+  if (!leads || !followups) {
+    const why = leadsRes.reason?.message || fuRes.reason?.message || 'unavailable';
+    if (banner && bannerText) {
+      banner.classList.remove('hidden');
+      bannerText.innerHTML = hasToken
+        ? `<strong class="text-on-surface block mb-1">חלק מהנתונים החיים לא נטענו</strong>הפאנלים המבוססים על snapshot מוצגים כרגיל. שגיאה: ${String(why).slice(0, 120)}`
+        : '<strong class="text-on-surface block mb-1">אין טוקן</strong>נתוני Firebase החיים (בריאות לידים, פגישות, ספירות גל) מוצגים כ־«--». לחץ על כפתור Token למעלה. פאנלי ה־snapshot (גלים היסטוריים, טיקטים, גיבוי) מוצגים כרגיל.';
+    }
+    if (leadsRes.status === 'rejected' && leadsRes.reason?.message !== 'No token') {
+      handleAuthError(leadsRes.reason);
+    }
+  } else if (banner) {
+    banner.classList.add('hidden');
+  }
+
+  renderOpsLeadHealth(leads);
+  renderOpsWaves(followups);
+  renderOpsMeetings(leads);
+  renderOpsSystemHealth(leads);
+
+  const el = document.getElementById('ops-updated');
+  if (el) {
+    const stamp = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+    const snapAt = opsData?.meta?.generated_at || '?';
+    el.textContent = `live ${stamp} · snapshot ${snapAt}`;
+  }
+}
+
+// ---------- 1. LEAD HEALTH ----------
+function renderOpsLeadHealth(leads) {
+  const srcEl = document.getElementById('ops-lh-src');
+  const g = opsData?.ghosts;
+
+  if (g) {
+    opsSetText('ops-lh-ghosts', g.in_window);
+    const asof = document.getElementById('ops-lh-ghosts-asof');
+    if (asof) asof.textContent = `as of ${g.as_of}`;
+  }
+
+  if (!leads) {
+    ['ops-lh-total','ops-lh-contactable','ops-lh-hot','ops-lh-warm','ops-lh-cold','ops-lh-noconv','ops-lh-nolang']
+      .forEach(id => opsSetText(id, '--'));
+    if (srcEl) { srcEl.textContent = 'no live data'; srcEl.className = 'text-[10px] font-mono text-error'; }
+  } else {
+    if (srcEl) { srcEl.textContent = `live · ${leads.length} records`; srcEl.className = 'text-[10px] font-mono text-primary'; }
+    // Raw Firebase tier — deliberately NOT the pipeline's firebaseTierToUnified()
+    // remap (which shifts HOT→VERY_HOT), so these agree with Firebase itself.
+    const tier = (t) => leads.filter(l => String(l.tier || '').toUpperCase() === t).length;
+    opsSetText('ops-lh-total', leads.length);
+    opsSetText('ops-lh-contactable', leads.filter(opsIsContactable).length);
+    opsSetText('ops-lh-hot', tier('HOT'));
+    opsSetText('ops-lh-warm', tier('WARM'));
+    opsSetText('ops-lh-cold', tier('COLD'));
+    opsSetText('ops-lh-noconv', leads.filter(l => !l.total_messages).length);
+    opsSetText('ops-lh-nolang', leads.filter(l => !l.language).length);
+  }
+
+  const notes = document.getElementById('ops-lh-notes');
+  if (notes) {
+    notes.innerHTML = [
+      '<strong>Contactable</strong> = has phone_number, status not OPTED_OUT*/NOT_QUALIFIED, tier not DEAD_*/INTERNAL_TEST. @lid-masked numbers count — masking blocks calls and ad audiences, not WhatsApp sends.',
+      '<strong>No conversation</strong> = <code>total_messages</code> empty or 0.',
+      '<strong>HOT/WARM/COLD</strong> are raw Firebase <code>tier</code> values, not the Pipeline tab\'s remapped tiers — the two will differ by design.',
+      g ? `<strong>Ghosts</strong> = ${g.in_window} in-window (since ${g.window_from}) / ${g.all_time} all-time, from <code>${g.backup_used}</code> as of ${g.as_of}. ${g.stale_vs_latest_backup ? '⚠ The latest backup is ' + (opsData?.backup?.date || '').slice(0,10) + ' — no recount has been run against it. Tracked by ' + g.ticket + '.' : ''}` : '',
+    ].filter(Boolean).join(' · ');
+  }
+}
+
+// ---------- 2. WAVE PERFORMANCE ----------
+function renderOpsWaves(followups) {
+  const tbody = document.getElementById('ops-wave-tbody');
+  const srcEl = document.getElementById('ops-wave-src');
+  const snapWaves = opsData?.waves || [];
+
+  // Live counts per wave_id from /Follow_Ups.
+  const live = {};
+  if (followups) {
+    followups.forEach(fu => {
+      const id = fu && fu.wave_id;
+      if (!id) return;
+      if (!live[id]) live[id] = { armed: 0, sent: 0, cancelled: 0, pending: 0, lang: null };
+      const row = live[id];
+      row.armed++;
+      const st = String(fu.status || '').toUpperCase();
+      if (st === 'SENT') row.sent++;
+      else if (st === 'CANCELLED') row.cancelled++;
+      else if (st === 'PENDING') row.pending++;
+      if (!row.lang && fu.language) row.lang = String(fu.language).toLowerCase();
+    });
+  }
+  if (srcEl) {
+    srcEl.textContent = followups ? `live armed/sent · ${Object.keys(live).length} waves` : 'snapshot only';
+    srcEl.className = followups ? 'text-[10px] font-mono text-primary' : 'text-[10px] font-mono text-error';
+  }
+
+  // Union of snapshot waves and any live wave_id the snapshot has not caught up to.
+  const byId = {};
+  snapWaves.forEach(w => { byId[w.wave_id] = { ...w }; });
+  Object.keys(live).forEach(id => {
+    if (!byId[id]) {
+      const m = id.match(/^(.*?)-(HE|EN)?-?(\d{8})$/i);
+      byId[id] = {
+        wave_id: id,
+        date: m ? `${m[3].slice(0,4)}-${m[3].slice(4,6)}-${m[3].slice(6,8)}` : '',
+        segment: '— (not in snapshot)',
+        language: (m && m[2]) ? m[2].toLowerCase() : (live[id].lang || ''),
+        delivered: null, replies: null, reply_rate: null,
+        source: 'live only — replies not yet measured',
+      };
+    }
+  });
+
+  const rows = Object.values(byId).sort((a, b) => String(a.date).localeCompare(String(b.date)));
+
+  const langBadge = (l) => {
+    if (!l) return '<span class="text-on-surface-variant">--</span>';
+    const c = l === 'he' ? 'text-secondary' : 'text-primary';
+    return `<span class="${c} font-bold uppercase">${l}</span>`;
+  };
+  const rateCell = (r) => {
+    if (r === null || r === undefined) return '<span class="text-on-surface-variant">not measured</span>';
+    const c = r >= 25 ? 'text-primary' : r >= 15 ? 'text-secondary' : 'text-error';
+    return `<span class="${c} font-bold">${r.toFixed(1)}%</span>`;
+  };
+
+  if (tbody) {
+    tbody.innerHTML = rows.length ? rows.map(w => {
+      const lv = live[w.wave_id];
+      // Armed is a live-only figure. Without a token we show "--" rather than
+      // borrowing the snapshot's delivered count, which is a different number
+      // (WAVE4-HE-20260817 armed 5, delivered 0 — all cancelled).
+      const armed = lv ? lv.armed : null;
+      const sent = lv ? lv.sent : (w.delivered ?? null);
+      const cancelNote = lv && lv.cancelled ? ` <span class="text-[9px] text-error">(${lv.cancelled} cancelled)</span>` : '';
+      const pendNote = lv && lv.pending ? ` <span class="text-[9px] text-tertiary">(${lv.pending} pending)</span>` : '';
+      return `<tr class="hover:bg-surface-container-high">
+        <td class="px-4 py-3 font-mono text-[11px]">${w.wave_id}</td>
+        <td class="px-4 py-3 text-on-surface-variant">${opsFmtDate(w.date)}</td>
+        <td class="px-4 py-3 text-on-surface-variant">${w.segment || '--'}</td>
+        <td class="px-4 py-3">${langBadge(w.language || (lv && lv.lang))}</td>
+        <td class="px-4 py-3 font-bold">${armed ?? '--'}${cancelNote}</td>
+        <td class="px-4 py-3 font-bold">${sent ?? '--'}${pendNote}</td>
+        <td class="px-4 py-3 font-bold">${w.replies ?? '<span class="text-on-surface-variant font-normal">--</span>'}</td>
+        <td class="px-4 py-3">${rateCell(w.reply_rate)}</td>
+      </tr>`;
+    }).join('') : '<tr><td colspan="8" class="px-4 py-10 text-center text-on-surface-variant">No wave data</td></tr>';
+
+    // Combined + baseline rows go in verbatim as user/audit-stated figures.
+    const extras = [
+      ...(opsData?.wave_combined || []).map(w => ({ label: w.label, rate: w.reply_rate, note: w.source })),
+      ...(opsData?.baselines || []).map(b => ({ label: b.label, rate: b.reply_rate, note: b.note })),
+    ];
+    if (extras.length) {
+      tbody.innerHTML += extras.map(e => `<tr class="bg-surface-container-low">
+        <td class="px-4 py-3 text-on-surface-variant italic" colspan="4">${e.label}</td>
+        <td class="px-4 py-3 text-on-surface-variant" colspan="2">${e.note || ''}</td>
+        <td class="px-4 py-3"></td>
+        <td class="px-4 py-3">${rateCell(e.rate)}</td>
+      </tr>`).join('');
+    }
+  }
+
+  const notes = document.getElementById('ops-wave-notes');
+  if (notes) {
+    notes.innerHTML = [
+      '<strong>Armed</strong> and <strong>Sent</strong> are live from <code>/Follow_Ups</code>.',
+      `<sup>*</sup><strong>Sent</strong> is Firebase <code>status: SENT</code>, <em>not</em> confirmed delivery — <code>sentAt</code>/<code>deliveredAt</code> never populate (KPR-331).`,
+      `<strong>Replies</strong> and <strong>reply rate</strong> are snapshot values as of ${opsData?.meta?.generated_at || '?'}: ${opsData?.reply_method || ''}`,
+      'Italic rows are combined/baseline figures carried in verbatim, not separate waves.',
+    ].join(' · ');
+  }
+
+  renderOpsWaveChart(rows);
+}
+
+function renderOpsWaveChart(rows) {
+  const canvas = document.getElementById('ops-wave-chart');
+  if (!canvas || typeof Chart === 'undefined') return;
+  // Chart.js throws "Canvas is already in use" on the second render otherwise.
+  if (opsChart) { opsChart.destroy(); opsChart = null; }
+
+  const pts = rows
+    .filter(w => w.reply_rate !== null && w.reply_rate !== undefined && w.date)
+    .sort((a, b) => String(a.date).localeCompare(String(b.date)));
+
+  if (!pts.length) return;
+
+  opsChart = new Chart(canvas.getContext('2d'), {
+    type: 'line',
+    data: {
+      labels: pts.map(p => `${opsFmtDate(p.date).slice(0, 5)} ${String(p.language || '').toUpperCase()}`),
+      datasets: [{
+        label: 'Reply rate %',
+        data: pts.map(p => p.reply_rate),
+        borderColor: '#68dbae',
+        backgroundColor: 'rgba(104,219,174,0.12)',
+        pointBackgroundColor: pts.map(p => p.language === 'he' ? '#f6c667' : '#68dbae'),
+        pointRadius: 4,
+        borderWidth: 2,
+        tension: 0.3,
+        fill: true,
+      }],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            title: (items) => pts[items[0].dataIndex].wave_id,
+            label: (item) => {
+              const p = pts[item.dataIndex];
+              const n = (p.replies !== null && p.delivered) ? ` (${p.replies}/${p.delivered})` : '';
+              return `${item.parsed.y.toFixed(1)}%${n}`;
+            },
+          },
+        },
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: { color: '#bccac1', font: { size: 10 }, callback: (v) => v + '%' },
+          grid: { color: 'rgba(188,202,193,0.08)' },
+        },
+        x: {
+          ticks: { color: '#bccac1', font: { size: 10 } },
+          grid: { display: false },
+        },
+      },
+    },
+  });
+}
+
+// ---------- 3. MEETINGS ----------
+// Boti reminders and TOI meetings live in this browser's localStorage — names
+// never leave the machine and are never rendered here. Firebase contributes
+// arrival_date / departure_date. Counts and dates only.
+function renderOpsMeetings(leads) {
+  const today = opsTodayISO();
+  const in7 = opsTodayISO(7);   // local both ends — mixing local/UTC lost a day
+  const buckets = {}; // date -> { meeting, reminder, arrival, departure }
+  const bump = (date, kind) => {
+    const d = String(date || '').slice(0, 10);
+    if (!d || d < today || d > in7) return;
+    if (!buckets[d]) buckets[d] = { meeting: 0, reminder: 0, arrival: 0, departure: 0 };
+    buckets[d][kind]++;
+  };
+
+  let botiCount = 0, toiCount = 0;
+  try {
+    JSON.parse(localStorage.getItem('kph_boti_leads_v1') || '[]').forEach(b => {
+      if (b && b.reminder_date) { bump(b.reminder_date, 'reminder'); botiCount++; }
+    });
+  } catch (e) { console.warn('Ops: boti localStorage unreadable', e); }
+  try {
+    JSON.parse(localStorage.getItem('kph_toi_meetings_v1') || '[]').forEach(m => {
+      if (m && m.date) { bump(m.date, 'meeting'); toiCount++; }
+    });
+  } catch (e) { console.warn('Ops: toi meetings localStorage unreadable', e); }
+
+  let arrivals = 0, departures = 0;
+  if (leads) {
+    leads.forEach(l => {
+      const a = String(l.arrival_date || '').slice(0, 10);
+      const d = String(l.departure_date || '').slice(0, 10);
+      if (a && a >= today) { arrivals++; bump(a, 'arrival'); }
+      if (d && d >= today) { departures++; bump(d, 'departure'); }
+      if (l.meeting_date) bump(l.meeting_date, 'meeting');
+    });
+  }
+
+  const dates = Object.keys(buckets).sort();
+  const todayTotal = buckets[today]
+    ? buckets[today].meeting + buckets[today].reminder + buckets[today].arrival + buckets[today].departure
+    : 0;
+  const weekTotal = dates.reduce((s, d) =>
+    s + buckets[d].meeting + buckets[d].reminder + buckets[d].arrival + buckets[d].departure, 0);
+
+  opsSetText('ops-mt-today', todayTotal);
+  opsSetText('ops-mt-week', weekTotal);
+  opsSetText('ops-mt-arrivals', leads ? arrivals : '--');
+  opsSetText('ops-mt-departures', leads ? departures : '--');
+
+  const tbody = document.getElementById('ops-mt-tbody');
+  if (tbody) {
+    const rows = [];
+    dates.forEach(d => {
+      const b = buckets[d];
+      const isToday = d === today;
+      [['meeting', 'Meeting', 'Boti / TOI (local)'],
+       ['reminder', 'Reminder', 'Boti (local)'],
+       ['arrival', 'Arrival', 'Firebase arrival_date'],
+       ['departure', 'Departure', 'Firebase departure_date']].forEach(([k, label, src]) => {
+        if (!b[k]) return;
+        rows.push(`<tr class="${isToday ? 'bg-surface-container-high' : ''}">
+          <td class="px-4 py-3 font-mono ${isToday ? 'text-error font-bold' : ''}">${opsFmtDate(d)}${isToday ? ' · today' : ''}</td>
+          <td class="px-4 py-3">${label}</td>
+          <td class="px-4 py-3 font-bold">${b[k]}</td>
+          <td class="px-4 py-3 text-on-surface-variant text-[10px]">${src}</td>
+        </tr>`);
+      });
+    });
+    tbody.innerHTML = rows.length ? rows.join('')
+      : '<tr><td colspan="4" class="px-4 py-10 text-center text-on-surface-variant">Nothing scheduled today or in the next 7 days</td></tr>';
+  }
+
+  const notes = document.getElementById('ops-mt-notes');
+  if (notes) {
+    notes.innerHTML = `Counts and dates only — no names, ever. Boti reminders (${botiCount} loaded) and TOI meetings (${toiCount} loaded) come from <em>this browser's</em> localStorage and are never published; arrivals and departures come live from Firebase. Window: today → +7 days.`;
+  }
+}
+
+// ---------- 4. SYSTEM HEALTH ----------
+function renderOpsSystemHealth(leads) {
+  const b = opsData?.backup;
+  if (b) {
+    opsSetText('ops-sh-backup-date', opsFmtDate(b.date));
+    const stateEl = document.getElementById('ops-sh-backup-state');
+    const days = opsDaysSince(b.date);
+    const ok = b.snapshot_state === 'finished';
+    if (stateEl) {
+      stateEl.className = `text-[10px] font-mono mt-1 ${ok ? 'text-primary' : 'text-error'}`;
+      stateEl.textContent = `${ok ? '✓' : '✗'} ${b.snapshot_state} · ${b.mode}${days !== null ? ` · ${days}d ago` : ''}`;
+    }
+  }
+
+  const tickets = opsData?.tickets || [];
+  const open = tickets.filter(t => t.status_type !== 'completed' && t.status_type !== 'canceled');
+  opsSetText('ops-sh-blockers', open.length);
+  opsSetText('ops-sh-departures', leads ? leads.filter(l => l.departure_date).length : '--');
+
+  const tbody = document.getElementById('ops-sh-tbody');
+  if (tbody) {
+    tbody.innerHTML = tickets.length ? tickets.map(t => {
+      const days = opsDaysSince(t.adam_last_comment_at);
+      const commentCell = days === null
+        ? '<span class="text-error font-bold">never</span>'
+        : `<span class="${days > 30 ? 'text-error font-bold' : 'text-on-surface-variant'}">${days}d ago · ${opsFmtDate(t.adam_last_comment_at)}</span>`;
+      const statusCls = t.status_type === 'started' ? 'text-secondary'
+        : t.status_type === 'completed' ? 'text-primary' : 'text-on-surface-variant';
+      const prioCls = t.priority === 'Urgent' ? 'text-error font-bold'
+        : t.priority === 'High' ? 'text-secondary' : 'text-on-surface-variant';
+      return `<tr class="hover:bg-surface-container-high">
+        <td class="px-4 py-3 font-mono"><a href="${t.url}" target="_blank" rel="noopener" class="text-primary hover:underline">${t.id}</a></td>
+        <td class="px-4 py-3 text-on-surface-variant">${t.title}</td>
+        <td class="px-4 py-3 ${statusCls} font-bold">${t.status}</td>
+        <td class="px-4 py-3 ${prioCls}">${t.priority}</td>
+        <td class="px-4 py-3">${commentCell}</td>
+      </tr>`;
+    }).join('') : '<tr><td colspan="5" class="px-4 py-10 text-center text-on-surface-variant">No ticket snapshot</td></tr>';
+  }
+
+  const notes = document.getElementById('ops-sh-notes');
+  if (notes) {
+    notes.innerHTML = [
+      `Backup status read from <code>Status.plist</code> (SnapshotState), not Info.plist — a failed run still bumps Info.plist's date.`,
+      `Ticket state and Adam's last-comment dates are a snapshot as of <strong>${opsData?.meta?.generated_at || '?'}</strong> — Linear needs a token that cannot ship on a public page. Refresh them with <code>ops_data.README.md</code>.`,
+      `<code>departure_date</code> count is live from Firebase (KPR-197 capture went live 2026-08-06).`,
+    ].join(' · ');
+  }
+}
+
 // ============ INIT ============
 (async function init() {
   // Read URL hash for initial page
-  const validPages = ['today', 'pipeline', 'closings', 'campaigns', 'projects', 'reports', 'boti'];
+  const validPages = ['today', 'pipeline', 'closings', 'campaigns', 'projects', 'reports', 'boti', 'ops'];
   const hash = window.location.hash.replace('#', '');
   const startPage = validPages.includes(hash) ? hash : 'today';
 

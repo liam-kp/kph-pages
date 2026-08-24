@@ -1,0 +1,63 @@
+{
+  "meta": {
+    "generated_at": "2026-08-25",
+    "generator": "manual — see ops_data.README.md",
+    "note": "AGGREGATE ONLY — zero PII. Holds the four data classes the browser cannot read live: Linear ticket state (no public token), verified reply counts (KPR-331 makes Postgres status unusable; replies are content-matched offline), iPhone-backup ghost counts, and local backup status."
+  },
+
+  "backup": {
+    "date": "2026-08-23T07:59:22Z",
+    "date_local": "2026-08-23 14:59 +07",
+    "snapshot_state": "finished",
+    "is_full_backup": false,
+    "mode": "incremental",
+    "device_udid_tail": "…3001C",
+    "source": "Status.plist (SnapshotState), per iphone_backup_verification_gotcha — Info.plist is unreliable"
+  },
+
+  "ghosts": {
+    "in_window": 34,
+    "all_time": 2404,
+    "window_from": "2026-05-01",
+    "as_of": "2026-08-16",
+    "backup_used": "wa_backup_2026-08-16 (WhatsAppSMB domain)",
+    "stale_vs_latest_backup": true,
+    "note": "Latest backup is 2026-08-23; no recount has been run against it. 34 is the 08-16 figure.",
+    "ticket": "KPR-341"
+  },
+
+  "tickets": [
+    { "id": "KPR-303", "title": "CUSTOM follow-up custom_message not sent byte-exact — LLM rewrite step", "status": "In Progress", "status_type": "started", "priority": "Urgent", "created_at": "2026-07-05", "assignee": "Adam", "adam_last_comment_at": "2026-07-06T09:57:39Z", "url": "https://linear.app/kprealestatebot/issue/KPR-303" },
+    { "id": "KPR-312", "title": "Follow-up engine: auto-send project second_message_template on first NO_RESPONSE_24H (PING2)", "status": "Backlog", "status_type": "backlog", "priority": "High", "created_at": "2026-07-12", "assignee": "Adam", "adam_last_comment_at": null, "url": "https://linear.app/kprealestatebot/issue/KPR-312" },
+    { "id": "KPR-314", "title": "Delete dead PROJECT_KEYWORDS map from campaignDetectionService.ts", "status": "Backlog", "status_type": "backlog", "priority": "Medium", "created_at": "2026-07-12", "assignee": "Adam", "adam_last_comment_at": null, "url": "https://linear.app/kprealestatebot/issue/KPR-314" },
+    { "id": "KPR-331", "title": "Postgres messages: sentAt/deliveredAt never populated, status stuck on PENDING", "status": "Backlog", "status_type": "backlog", "priority": "High", "created_at": "2026-08-06", "assignee": "Adam", "adam_last_comment_at": null, "url": "https://linear.app/kprealestatebot/issue/KPR-331" },
+    { "id": "KPR-343", "title": "Maya sends wrong project set + stale Red Sunset villa prices on positive reply", "status": "Backlog", "status_type": "backlog", "priority": "Urgent", "created_at": "2026-08-21", "assignee": "unassigned", "adam_last_comment_at": null, "url": "https://linear.app/kprealestatebot/issue/KPR-343" },
+    { "id": "KPR-347", "title": "66 campaign leads (11.4%) never written to Firebase since 2026-03-01", "status": "Backlog", "status_type": "backlog", "priority": "Urgent", "created_at": "2026-08-24", "assignee": "unassigned", "adam_last_comment_at": null, "url": "https://linear.app/kprealestatebot/issue/KPR-347" }
+  ],
+
+  "waves": [
+    { "wave_id": "WAVE1-EN-20260806", "date": "2026-08-06", "segment": "EN backlog", "language": "en", "delivered": 5,  "replies": 0,  "reply_rate": 0.0,  "source": "wave audit" },
+    { "wave_id": "WAVE2-EN-20260806", "date": "2026-08-06", "segment": "EN backlog", "language": "en", "delivered": 10, "replies": null, "reply_rate": null, "source": "split of WAVE2 (see WAVE2 combined)" },
+    { "wave_id": "WAVE2-EN-20260807", "date": "2026-08-07", "segment": "EN backlog", "language": "en", "delivered": 5,  "replies": null, "reply_rate": null, "source": "split of WAVE2 (see WAVE2 combined)" },
+    { "wave_id": "WAVE3-EN-20260807", "date": "2026-08-07", "segment": "EN backlog", "language": "en", "delivered": 30, "replies": 8,  "reply_rate": 26.7, "source": "wave audit" },
+    { "wave_id": "WAVE4-HE-20260817", "date": "2026-08-17", "segment": "beachfront (superseded)", "language": "he", "delivered": 0, "replies": 0, "reply_rate": null, "source": "week_review 08-17→08-24 — all 5 CANCELLED (wave5_supersede)" },
+    { "wave_id": "WAVE5-HE-20260817", "date": "2026-08-17", "segment": "beachfront / KP-LND-015", "language": "he", "delivered": 5,  "replies": 3, "reply_rate": 60.0, "source": "week_review 08-17→08-24" },
+    { "wave_id": "WAVE4-EN-20260818", "date": "2026-08-18", "segment": "zen012_no_reply + bns_crosssell", "language": "en", "delivered": 8,  "replies": 2, "reply_rate": 25.0, "source": "week_review 08-17→08-24" },
+    { "wave_id": "WAVE5-HE-20260818", "date": "2026-08-18", "segment": "beachfront / KP-LND-015", "language": "he", "delivered": 5,  "replies": 1, "reply_rate": 20.0, "source": "week_review 08-17→08-24 — 10 armed, 5 CANCELLED" },
+    { "wave_id": "WAVE5-HE-20260820", "date": "2026-08-20", "segment": "beachfront / KP-LND-015", "language": "he", "delivered": 21, "replies": 6, "reply_rate": 28.6, "source": "week_review 08-17→08-24" },
+    { "wave_id": "WAVE5-HE-20260821", "date": "2026-08-21", "segment": "beachfront / KP-LND-015", "language": "he", "delivered": 21, "replies": 4, "reply_rate": 19.0, "source": "week_review 08-17→08-24" },
+    { "wave_id": "WAVE6-20260825", "date": "2026-08-25", "segment": "HE canary (KPR-342)", "language": "he", "delivered": null, "replies": null, "reply_rate": null, "source": "armed 08-24, fires today — not yet measured" }
+  ],
+
+  "wave_combined": [
+    { "label": "WAVE2-EN (both days)", "date": "2026-08-06", "language": "en", "delivered": 15, "replies": 2, "reply_rate": 13.3, "source": "user-stated / wave audit" }
+  ],
+
+  "baselines": [
+    { "label": "HE beachfront — short + one question", "reply_rate": 16.1, "note": "copy-format baseline, 50-send beachfront wave" },
+    { "label": "HE beachfront — long multi-listing dump", "reply_rate": 5.3,  "note": "copy-format baseline" },
+    { "label": "Week of 2026-08-17 (all waves)", "reply_rate": 26.7, "note": "16 genuine replies / 60 delivered — aggregate of WAVE4/5 rows above" }
+  ],
+
+  "reply_method": "Replies are counted by matching real outgoing message content + timing in Postgres threads against the armed custom_message, then inbound-after-send. Follow_Ups.status and Postgres status/sentAt/deliveredAt are ignored — see KPR-331. Postgres reply visibility measured 93.8% accurate (15/16) week of 08-17, so reply counts are a floor."
+}
