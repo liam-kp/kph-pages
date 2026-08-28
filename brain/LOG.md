@@ -9,6 +9,27 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-08-28 14:33 TH · [PROJECT: Marketing Brain] · [kp-clf-021-gate2-record-written]
+
+- WHAT: **Gate 2 GO given by Liam — the gated record for KP-CLF-021 is now WRITTEN to `/Projects_Public` and verified.** Also received the missing access-path input, which is held locally and is deliberately absent from Firebase (see FINDINGS). Everything else on this asset stays held: no campaign, no Maya wiring, no publishing, and the capital-side collateral is still not sendable.
+- CHANGED: **1× Firebase write** — `/Projects_Public/KP-CLF-021` created. Full-record `PUT` (never PATCH), post-write GET-verified **19/19 fields byte-match, 0 retries of 3 allowed**. Local: intake and outreach files updated with the new input. Linear: verification comment on **KPR-349**. No other system touched.
+- FINDINGS:
+  - **STC changed the write, which is the entire reason it runs first.** The by-id project lookup tool on `origin/production` returns `{ found: true, project: raw }` — the **whole unfiltered record**, internal notes included, into the assistant's tool context. Anything sensitive in an "internal" field is therefore one tool-call from a customer-facing LLM. A third party's personal detail supplied this session was consequently **kept out of Firebase entirely** and recorded only in the local project directory; the record documents that choice and the reason. **"Internal field" is a naming convention, not an access control.**
+  - **The reassuring half of the same grep:** the agent tool registry has **no enumerate/list function** for that collection — lookup is by id only. With no trigger or sequence fields written, there is no path to this record's id. **The gate holds by construction rather than by convention**, which is the difference between a gated record and a merely un-advertised one.
+  - **Absence was asserted, not assumed.** Per LES-018 the wrapper `PUT` is a merge, so omitting a field is a no-op and a sent-fields-only diff is structurally blind to a failed exclusion. All ten exclusions — publish trigger, every price field, the public availability summary, both trigger fields, both opener sequences, the map URL — were verified **absent from the live GET**, not merely absent from the payload.
+  - **No price field was populated even though a guide price now exists**, because that figure remains unverified. The number lives only in a clearly-labelled unverified note.
+  - ⚠️ **Sequence collision, now live.** A concurrent session took the same sequence number for a different asset today; the collection went 19 → 20 records between this asset's intake and this write. **Not renumbered** — the full project id is the unique key, duplicate sequence numbers already exist three times over in this collection, and renumbering would have invalidated two tickets, two entries in this journal, every filename and the saved memory. Flagged rather than "fixed".
+  - **The doctrine promoted earlier today is already in use elsewhere** — the concurrent session's own commit message records its record as gated with no publish trigger. Worth noting as evidence that promoting a finding out of a ticket and into a runbook actually changes behaviour.
+  - **This journal is genuinely concurrent.** The pull before appending brought down another session's entry written minutes earlier; appending without it would have conflicted. Pull before you append.
+- OPEN:
+  - **Outreach still cannot be sent.** The contact channel was not supplied, and the Latin spelling of a third party's name is my own reading and unconfirmed — sending a first approach that misspells the recipient's name is worse than sending none. Both needed. Owner: Liam.
+  - **The capital-side collateral remains held.** Gate 2 covered the Firebase write only; the figures behind that document are still unconfirmed. Owner: Liam.
+  - **The blocking commercial question is unchanged**, but the prior has moved: an offhand description by Liam suggests the counterparty may be closer to a principal than an intermediary, which would change our fee position. Recorded as a signal, explicitly **not** treated as settled. Owner: Liam.
+  - ⚠ **Third time flagged:** `brain/LESSONS.md` still carries the same **40 uncommitted lines** (LES-041, LES-015→019) from 08-23/08-24. Stashed and restored intact across this session's pull; still untouched, still uncommitted. Owner: Liam.
+- REF: Linear **KPR-349** (verification comment) · **KPR-348**. Local: `projects/KP-CLF-021_the-cliffs/`. Zero PII, zero names, no price, no coordinates, asset unnamed on this branch.
+
+---
+
 ## 2026-08-28 14:26 TH · [PROJECT: Marketing Brain] · [kp-hhn-021-hidden-hin-onboarding]
 
 - WHAT: Lean ACQUIRE onboarding of **KP-HHN-021 Hidden Hin** — 33 villas, Coconut Lane, Srithanu/Hin Kong, 3 types THB 10.0M / 12.5M / 15.25M, handover Oct 2026. Written to Firebase as a **gated** record: in inventory, quotable by Maya, **not published to the public site**. Persona **G (Resort Partner)** — first project in the portfolio to claim G, differentiation check PASS.
