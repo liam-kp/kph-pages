@@ -9,6 +9,27 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-08-28 12:42 TH · [PROJECT: Marketing Brain] · [kp-clf-021-gated-intake]
+
+- WHAT: Gated ACQUIRE intake of a new third-party large-ticket land/hospitality **concept** we may be asked to introduce (ref **KP-CLF-021**). Built the deck-sourced fact base, the open-questions mandate, and a proposed Firebase record — **nothing written to Firebase, nothing published, Maya not wired, no campaign, no Meta upload.** Asset stays unnamed here per the SBB-2601 precedent; full detail is in Linear (private) and local files only.
+- CHANGED: **No writes to any state-bearing system.** Created Linear **KPR-348** (assigned Liam, deliberately NOT Adam — no backend code involved). Local only: `_deliverables/KP-CLF-021_2026-08/` (facts, open questions, differentiation verdict, proposed record JSON) and `_media/KP-CLF/` (rasterised pages + `pdfimages` extraction, reference-grade). Source deck copied from `~/Downloads` to the canonical `_inbox/` path. This LOG entry is the only thing written to `kph-pages`.
+- FINDINGS:
+  - **Proposed ID was taken.** The brief proposed sequence `016`; `KP-AVL-016` already holds it. Highest live sequence is `020` → took **021** and used it consistently everywhere downstream.
+  - **The brief's own fact table was wrong in four places.** It anticipated 2 internal conflicts in the source; reading the rasterised pages surfaced **7**, and three of the brief's rows did not match any page (a FAR range no page states, plus wrong page-sourcing for site coverage and built-up area). Lesson restated: a task-brief fact table is an unverified claim — re-read the primary source, always.
+  - **The headline sales claim has two defensible readings.** The deck's central differentiator (a keys-per-rai density figure vs a competitor average) only reconciles if a whole accommodation category is excluded from the key count — while another page explicitly counts it in. Definitional, not arithmetic, and it sits under the single most quotable number in the deck. Flagged as the first question to the source.
+  - **Gate 2 schema truth: this collection has NO visibility field, and none was invented.** `website_status` is decorative — 4/19 records carry it, always the same value, and **nothing in the website code reads it**. `kpih-website` `fetchAllProjects()` filters on **exactly one thing: a truthy `slug`**. Anything with a slug is auto-published to the listing, footer, featured block and a generated static page. 18/19 live records have one; the sole exception is the existing precedent for a genuinely non-public record. The proposed record is therefore drafted **with no `slug`**, plus the established gated pattern (`campaign_status: inventory_only`, `due_diligence_status_internal`, reactive-only `internal_notes`).
+  - **Differentiation PASS with a correction.** The proposed angle described the asset as "income-producing". It is not — it is unbuilt land with no keys, no operator, no revenue and no stated price — and that phrase is verbatim another portfolio record's registered hook, so adopting it would have manufactured the exact blur the check exists to prevent. Angle re-cut on scale + development mandate instead.
+  - **The supplied visuals are unusable.** `pdfimages -list` confirms one flat full-page raster per page — the presentation was printed and re-scanned, so there are no render layers to recover. Originals must be requested before any collateral exists.
+- OPEN:
+  - **Gate 2 awaits Liam's GO** — Firebase record drafted and printed, unwritten. On GO: STC first, then PWRC (GET → merge → full-record PUT → verify), per §7. Owner: Liam.
+  - **10 questions to the source**, incl. price, title/Chanote, EIA + slope exposure, beach ownership vs public access, principal identity, and introduction exclusivity **in writing before any introduction**. Owner: Liam.
+  - `google_maps_url` is on 19/19 live records and the playbook calls it mandatory at launch; the deck gives no coordinates, so it was **omitted rather than guessed**. Owner: Liam / source.
+  - **Adjacency risk for any future wiring:** an existing portfolio record sits in the same coastal area and its live trigger text contains that area name — any future trigger for KP-CLF-021 must not collide. Not actionable this session.
+  - ⚠ **Unrelated pre-existing state found in this repo:** `brain/LESSONS.md` carries **40 uncommitted lines** (LES-041, LES-015→019) from earlier sessions, dated 08-23/08-24. Left untouched and NOT included in this commit — this session staged `brain/LOG.md` only. Someone should commit them deliberately. Owner: Liam.
+- REF: Linear **KPR-348**. Local: `_deliverables/KP-CLF-021_2026-08/{KP-CLF-021_facts.md, KP-CLF-021_open_questions.md, KP-CLF-021_differentiation_verdict.md, KP-CLF-021_PROPOSED_RECORD.json}`, `_media/KP-CLF/`. Source deck md5 `e53c4ab86af8bed24918111ca5694794`.
+
+---
+
 ## 2026-08-24 20:05 TH · [PROJECT: Marketing Brain] · [sbb-2601-investor-brochure-v2-and-brochure-template]
 
 - WHAT: Built v2 of the EN investor brochure for a third-party beachfront hospitality listing we are introducing (ref SBB-2601) — 4pp A4 + 1080×1350 teaser + self-contained HTML — and factored the whole build into a reusable, content-agnostic template so the next listing is a data swap, not a rebuild. v1 retained alongside. **Zero Firebase writes, zero public-site changes, no collateral published anywhere.**
