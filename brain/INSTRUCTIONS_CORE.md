@@ -28,7 +28,7 @@ First non-trivial task each session: read this file, then load from `_INDEX.md` 
 - **LAW 8 — Verify-before-verdict.** A read-only diagnosis that blocks money/launch/plan must clear: (1) multi-pattern verification (camelCase AND snake_case, all dirs not just `src/`); (2) Linear reconciliation (`includeArchived` before re-diagnosing); (3) resolve contradictions before declaring. One grep ≠ truth.
 
 ## Three separate systems — never mix
-1. **Public site (KPIH Hub)** — kohphanganinvestmenthub.com · repo `liam-kp/kpih-website` · `~/Business/04_Thailand-Co/KPIH/website` · Next.js 16.2.6 + Tailwind v4 + TS strict + Framer Motion · branch `main` (Liam approves merge). Pulls Firebase at **build-time** from `…/api/firebase-data/Projects_Public`.
+1. **Public site (KPIH Hub)** — kohphanganinvestmenthub.com · repo `liam-kp/kpih-website` · `~/Business/04_Thailand-Co/KPIH/website` · Next.js 16.2.6 + Tailwind v4 + TS strict + Framer Motion · branch `main` (Liam approves merge). Pulls Firebase at **build-time** from `…/api/firebase-data/Projects_Public`. **A truthy `slug` is the only publish gate — there is no visibility field, and `website_status` is unread. See `runbooks/website-map.md` → Publish trigger before writing any gated record.**
 2. **Internal dashboard (Sales Ops)** — liam-kp.github.io/kph-pages/dashboard_v2 · repo `liam-kp/kph-pages` · `~/kph-pages` · HTML/JS vanilla · branch `gh-pages`.
 3. **Backend Admin (Adam's)** — app.aiagentpro.online/dashboard · repo `marshmelo777/whatsapp-agents-backend` · proprietary · touch only via `https://api.aiagentpro.online`.
 
