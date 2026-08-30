@@ -9,6 +9,28 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-08-30 12:19 TH · [PROJECT: Marketing Brain] · [projects-public-critical-redaction]
+
+- WHAT: Executed the content redaction of every CRITICAL finding from this morning's collection-wide exposure audit — **7 records, 15 fields** — moving the sensitive text out of the database and into local files, leaving stub pointers behind. This is the defence-in-depth half; **the code fix that actually protects future records is still with Adam.**
+- CHANGED: **7 Firebase writes**, each a full-record PUT with a fresh pre-write GET and an abort-on-drift guard. **7/7 verified: every field byte-matched, 15/15 stubs in place, 0 retries.** Every non-targeted field on every record carried through unchanged. Local preservation files created under each record's own project directory. One comment on the tracking ticket. **No other collection touched, no campaign, no prompt write, nothing published.**
+- METHOD (the part worth reusing):
+  - **The local copy was written and byte-verified BEFORE anything was removed.** Fifteen values, each confirmed present verbatim in its destination file, and only then redacted. Never delete before the copy exists and has been checked — not "written", *checked*.
+  - Verification asserted the **sensitive strings are absent from the live response**, not merely that the stub was written. Those are different claims, and only the second one is worth anything.
+  - On the record another session was actively editing, the write was gated on a **fresh GET with an abort if the redaction targets had moved**. They had not; unrelated public copy on that record had, and was carried through as-found rather than reverted to my stale snapshot.
+- FINDINGS:
+  - 🔴 **One record was excluded because the standard write cycle would have destroyed it.** Its single-record GET returns *exactly* the contents of a nested object stored inside it — the wrapper is treating a stored field named like its own response envelope and unwrapping it. A read-modify-write would therefore have written the inner object as the whole record, **silently deleting sixteen fields including the one that publishes it to the website**. A live, published project would have quietly vanished at the next build. Caught by diffing the single-record GET against the list endpoint before writing, rather than trusting either. **Blast radius verified as exactly one record in the collection.** Left untouched and handed to Adam with the root cause.
+  - **A record created *after* this morning's audit already carried the same class of exposure** — a counterparty's full name and a commission field — and was included in the redaction. Every new onboarding reintroduces this until the code fix ships. Content cleanup is a snapshot; the whitelist is the fix.
+  - 🔴 **My own audit had a methodological gap, found while verifying my own work.** The first pass iterated top-level string fields and skipped lists-of-dicts; the later exhaustive pass walked every nested string but only searched for contact details, not commercial language. A nested list-of-dicts containing **our commission rate in plain prose** fell precisely between the two. A full nested re-scan across all records found it, plus two deliberate marketing lines and one false positive. **Left untouched — it sits in a structured, customer-facing field, outside the authorised scope, and editing it could affect display.** Reported for a decision.
+  - **That last finding sharpens the argument for the code fix rather than weakening it.** An allow-list protects the *field set*; it cannot protect against sensitive text placed inside a field that is legitimately public. Both halves are needed, and neither substitutes for the other.
+- OPEN:
+  - **The code fix is still the real remedy** and is unstarted. Until it ships, every onboarding can reintroduce exposure. Owner: Adam.
+  - **The excluded record needs a different repair** — flattening via the list shape, not a normal write — and the wrapper's unwrapping behaviour should be checked against other collections. Owner: Adam.
+  - **The commission line in a customer-facing structured field is unredacted**, pending a decision on whether editing it is safe. Owner: Liam.
+  - A concurrent session onboarded the newest record minutes before it was redacted here. Its targets were stable at write time, but that session may not expect the change. Owner: whoever holds it.
+- REF: Tracking ticket updated with fields and record IDs only — no values. Audit report and preservation files are local. **This entry names no record, no person, no field value and no figure.**
+
+---
+
 ## 2026-08-30 10:09 TH · [PROJECT: Marketing Brain] · [kp-clf-021-jv-positioning-and-collection-exposure-audit]
 
 - WHAT: Repositioned a gated large-ticket asset onto a **joint-venture** proposition after a correction from Liam, and — while gating it — ran a **read-only exposure audit of the entire `/Projects_Public` collection** against the tool that feeds the assistant. The audit is the session's most important output and it is not about this project. Also landed the LESSONS backlog that had been flagged in four consecutive entries.
