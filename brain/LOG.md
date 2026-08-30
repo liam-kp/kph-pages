@@ -9,6 +9,32 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-08-30 08:09 TH · [PROJECT: Marketing Brain] · [kp-zen-012-ping1-remove-signature]
+
+- WHAT: Removed the trailing personal signature from the Maduwan **KP-ZEN-012** outbound copy — **both language variants**, per explicit GO+dead. Eight occurrences across six fields in one merge PUT. Routing untouched, campaign unaffected, no message content reworded or re-translated.
+- CHANGED: **1× Firebase write** — `/Projects_Public/KP-ZEN-012`, full-record merge `PUT`, GET-verified **byte-identical to intended payload, key set 38 → 38, 0 retries**. Exactly 64 JSON-escaped characters removed, nothing else:
+  - `first_message_sequence_he[3].content` — `…🤙\n\n<NAME>` → `…🤙` *(live PING1)*
+  - `first_message_sequence_en[3].content` — `…🤙\n\n<NAME>` → `…🤙` *(live PING1)*
+  - `whatsapp_sequence_he` bubble 4 `.content` — `…🙏\n\n<NAME>` → `…🙏`
+  - `whatsapp_sequence_he` bubble 5 `.content` — `זמין לשאלות,\n<NAME>` → `זמין לשאלות`
+  - `whatsapp_sequence_en` bubble 4 `.content` — `…🙏\n\n<NAME>` → `…🙏`
+  - `whatsapp_sequence_en` bubble 5 `.content` — `Available for questions,\n<NAME>` → `Available for questions`
+  - `fourth_message_template` — `זמין לשאלות,\n<NAME>` → `זמין לשאלות`
+  - `fourth_message_template_en` — `Available for questions,\n<NAME>` → `Available for questions`
+  - **Deliberately NOT touched:** `developer_profile_he/en` (name is mid-sentence, intended copy); prompt-sections `34-pivot-router` (8 sign-offs) and `17-campaign-red-sunset` (1) — same house style, out of scope; `/Follow_Ups` — no live risk (below).
+- FINDINGS:
+  - **The guard caught a shape the brief did not anticipate, which is the only reason the copy is not now broken.** The brief specified a trailing signature and forbade punctuation changes. Four of the eight occurrences were **not** that shape — the name sat under a sign-off phrase ending in a comma (`זמין לשאלות,` / `Available for questions,`). Stripping only the name, as literally instructed, would have shipped four messages ending on a dangling comma. An `endswith` assertion on a fresh GET separated the two shapes **before** the write; Liam chose to drop the comma with the name. **A suffix guard is not just a safety check against drift — it is a content classifier.**
+  - **Two of the six fields carry live traffic; four are dead code that still reaches the customer.** Phase V against `origin/production` put `first_message_sequence_he/en` on the live read path (`firstMessageSequenceService`, `leadContextService:171-172`, `firebaseDataImplementation:630`) and returned **zero** references for `whatsapp_sequence_*` and `fourth_message_template*`. Those four were still worth fixing: the by-id project lookup returns the **whole raw record** into the assistant's context (same mechanism logged 08-28), so a dead field's sign-off can still surface in a generation. **"No code reads it" is not the same as "the customer cannot see it."**
+  - **The stale-schema path was the one that mattered.** `FIREBASE_SCHEMA_MASTER.md` was last audited 2026-05-15 — 107 days — and lists `first_message_template_he/en` as live-ish (2/10, 1/10 fill). Code says both are dead (0 hits, and 1 hit inside a migration script's string literal), and neither exists on this record at all. Had the edit been aimed at the documented field names it would have returned HTTP 200 and changed nothing a lead ever sees — the exact KPR-116 failure mode. **Code beat docs again; the grep is not optional.**
+  - **`/Follow_Ups` history is full of the signature and none of it is actionable.** 103 of 1,458 messages end with the name: 101 SENT (immutable history), 1 CANCELLED, 1 PAUSED. The single PAUSED record is `MANUAL` with a naive-local past date — it cannot auto-fire on either count. Scanned and dismissed with evidence rather than left as an unknown.
+- OPEN:
+  - ⚠️ **`whatsapp_sequence_he/en` still carries wrong 2BR figures — flagged, deliberately NOT fixed this session.** Bubble 2 quotes **฿5,500,000 / 136 sqm** for the 2BR, one of the three conflicting price/size sets first flagged 2026-06-24; only the ฿6.7M "Large" set is internally consistent, and the ฿5.5M/136 sqm quote has no matching floor-plan PDF. Same field also points at a superseded brochure URL and a `claude.ai` artifact link. Out of scope for a signature edit; needs a pricing decision, not a text edit. Owner: Liam.
+  - **Tap-test not yet run.** PING1 change is verified in the record but not observed end-to-end on a live inbound. Reset the conversation in Adam's system, then tap the live Maduwan ad from a fresh number and confirm the closing bubble ends on `🤙` with no name. Owner: Liam.
+  - ⚠ **Fourth time flagged:** `brain/LESSONS.md` still carries the same **40 uncommitted lines** (LES-041, LES-015→019) from 08-23/08-24. Untouched by this session — LOG.md committed alone. Owner: Liam.
+- REF: No Linear ticket opened — copy-only edit, no backend code involved. Verified `facebook_trigger_message` and `facebook_trigger_message_en` **byte-unchanged by sha256 before/after** (routing intact), alongside `first_message_media_urls`, `second_message_template/_en`, `slug`, `status`. Zero PII, zero lead identifiers, no worked examples.
+
+---
+
 ## 2026-08-28 14:33 TH · [PROJECT: Marketing Brain] · [kp-clf-021-gate2-record-written]
 
 - WHAT: **Gate 2 GO given by Liam — the gated record for KP-CLF-021 is now WRITTEN to `/Projects_Public` and verified.** Also received the missing access-path input, which is held locally and is deliberately absent from Firebase (see FINDINGS). Everything else on this asset stays held: no campaign, no Maya wiring, no publishing, and the capital-side collateral is still not sendable.
