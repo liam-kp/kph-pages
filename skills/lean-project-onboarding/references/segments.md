@@ -25,6 +25,7 @@ This is the canonical price/segment map. Use it during interview (step 1) to hel
 | 8 | **Bundles** | 11-22M | 2+ villas together | `BND` | Lean |
 | 9 | **Resorts / Hotels** | Highest tier | Separate category | `HTL` | Lean |
 | 10 | **Land** | Variable | Land plots only | `LND` | Lean |
+| 11 | **Ready Villas (move-in)** | 5-6M/unit | Built, vacant, multi-unit block available — Madawan Ready Villa (RDY-001) | `RDY` | Lean |
 
 ### Track decision rule
 
@@ -135,6 +136,20 @@ Standard sea_view onboarding. Use `prompts/image_classification_seaview.md`.
 
 **USP tags:** `["land", "buildable", ...]` plus:
 - `chanote`, `road_access`, `utility_access`
+
+### `Ready Villas` (RDY) — Lean
+**Identifying signals:**
+- Built and vacant now — genuinely move-in ready, not a resale with a sitting tenant
+- Private (not shared/compound) pool
+- Sold as a multi-unit block (2-3 identical villas), tiered pricing per unit count
+- No construction wait, no off-plan risk
+
+**USP tags:** `["ready_new", "pool", ...]` plus:
+- `private_pool`, `multi_unit_block`, `vacant`
+
+**Special handling:** Use `/Project_Inventory` for per-unit records (one per villa, same pattern as `SL2`/`ZEN` multi-unit projects, e.g. KP-SRI-013), not just `purchase_options` on the single `/Projects_Public` record — tiered block pricing needs the unit-level `unit_notes_public` text since `/Project_Inventory`'s live read path (`getAvailableInventory`) only returns one `price_thb` per unit, not a bundle price. First instance: KP-RDY-001 (Madawan Ready Villa), opened 2026-08-30.
+
+⚠️ **Do not confuse with `ZEN` (pre-sale/off-plan) projects that may share the same area name** — e.g. KP-RDY-001 (Madawan, ready) vs KP-ZEN-012 (Maduwan Zennith, off-plan) are unrelated projects. Never let a `RDY` project's keywords collide with an existing `ZEN`/`BCH`/`SRI` project's keywords in `campaignDetectionService.ts` — grep `PROJECT_KEYWORDS` before adding any.
 
 ---
 
