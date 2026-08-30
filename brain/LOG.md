@@ -9,6 +9,36 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-08-30 10:09 TH · [PROJECT: Marketing Brain] · [kp-clf-021-jv-positioning-and-collection-exposure-audit]
+
+- WHAT: Repositioned a gated large-ticket asset onto a **joint-venture** proposition after a correction from Liam, and — while gating it — ran a **read-only exposure audit of the entire `/Projects_Public` collection** against the tool that feeds the assistant. The audit is the session's most important output and it is not about this project. Also landed the LESSONS backlog that had been flagged in four consecutive entries.
+- CHANGED:
+  - **`brain/LESSONS.md` committed and pushed** (`ab06701`) — six lessons that had sat uncommitted in the working tree since 08-23/08-24. **Two defects fixed before landing, not carried in as written** (below).
+  - **1× Firebase write** — one gated record updated. Full-record `PUT`, GET-verified **19/19 byte-match, 0 retries**. Copy rewritten to the JV proposition; commercial positioning **removed** from its internal field. **15 excluded keys asserted ABSENT on the live GET**, including the publish trigger, every price field, both routing fields and both opener sequences.
+  - **Linear:** one **Urgent ticket to Adam** (the only one in this track) + comments on the two existing project tickets.
+  - **No prompt-section write. No trigger written. No campaign. No spend. No outreach to anyone.** Everything customer-facing is drafted and held.
+- FINDINGS:
+  - 🔴 **The collection-wide audit is the headline.** The by-id project lookup returns the **entire unfiltered record** into the assistant's context — logged twice before, but never measured. Measuring it across all 21 records found, sitting in fields the assistant reads verbatim: **a third party's email address and phone number**, **our own commission as an exact figure on two records**, an owner's private stake pricing in a field explicitly labelled *"not for the assistant"*, NDA-gated operating financials, and seven counterparty names. **8 CRITICAL, 4 HIGH, 3 MEDIUM, 10 clear.** Read-only; no other record was touched.
+  - **Seven records carry an explicit "internal only — do not publish" sentence inside the field itself.** That sentence has never done anything. **A field name is not an access control**, and neither is an instruction written to a human inside the data.
+  - **My own first pass at the fix was wrong in an instructive way.** I drafted a deny-list of field names and it **missed three fields whose names literally end in `_internal`** — including the one holding our commission. A deny-list only catches what its author thought of. The patch shipped to Adam is an **allow-list**, and that mistake is written into the ticket as the reason.
+  - **A second trap in the same fix:** one record carries a **nested object holding a complete second copy of itself** — 37 keys, 13 of which do not exist at top level, including internal objection-handling copy. A whitelist applied only to top-level keys would pass all of it straight through. Called out explicitly with the patch.
+  - **The prompt is at 94.4% of its ceiling** — measured live across 36 sections. Existing campaign sections run 20–32k characters each; there is roughly 11k of headroom, and per the newly-landed lesson the total ceiling is **declared but not enforced**, so nothing would reject an over-large write. The new section was therefore drafted at **about a fifth** the size of its siblings, and the trade-off is flagged for a human decision rather than absorbed silently.
+  - **A routing near-miss worth recording:** two generic keyword pairs in the live routing table both map to an unrelated campaign, and a naturally-worded trigger for this project would have silently routed to it. Caught by testing the exact candidate strings against the live table rather than eyeballing them. The drafted trigger avoids the words entirely, contains no digits, and collides with none of the 20 live trigger strings.
+  - **The land-area conflict has been neutralised without being resolved.** Two irreconcilable figures have been propagating through collateral for three sessions. All copy now uses an **open-ended form that is true under both**, so the unresolved conflict stops leaking into documents while the underlying question stays open.
+- CHANGED (LESSONS backlog — two defects fixed before landing):
+  1. **ID collision:** the block had numbered itself into a range **already occupied since July** by five unrelated lessons. Renumbered to the next free range. **A previously-cited lesson number in earlier entries and tickets now points elsewhere** — the mapping is recorded in the commit message and on the ticket.
+  2. 🔴 **PII on a public branch:** one evidence line **named two real leads by first name.** Redacted before pushing; the lesson itself is unchanged. Same failure class as the 2026-08-05 incident on this branch.
+- OPEN:
+  - **Everything customer-facing is held behind the Adam ticket.** Prompt-section write, trigger field and campaign all wait on the whitelist. Owner: Adam, then Liam to release.
+  - **The prompt ceiling must be resolved before the new section ships** — trim the largest campaign section, gate campaign sections per project (an existing backlog ticket already proposes this), or raise and enforce the limit. Owner: Liam.
+  - **No usable ad creative exists.** The only imagery is a print-and-rescan of a third-party deck, licensed for one-to-one sends only. A public campaign cannot launch without original assets. Owner: source.
+  - **Content redaction of the 8 CRITICAL findings is ours and should follow the code fix**, not precede it — the whitelist removes the exposure for every record at once, including future ones. Owner: Liam.
+  - ⚠️ **New collision introduced by a concurrent session, flagged not fixed:** `brain/LESSONS.md` now has **two duplicate lesson IDs** in the working tree — a parallel session appended entries using numbers this session had already published an hour earlier. **HEAD is clean; the duplicates are uncommitted.** Left untouched because it is another session's live work; the next free numbers are two higher. Owner: whoever holds that session.
+  - ⚠️ **Pre-existing PII on this public branch, unrelated to this session:** the LESSONS file already contains a real lead's first name and record identifiers in an older committed entry, and a prompt section still contains the concrete named example that a July lesson identified as causing mis-routing. Neither is in scope here. Both flagged. Owner: Liam.
+- REF: One Adam ticket (Urgent) + comments on two project tickets. Audit: `_deliverables/PROJECTS_PUBLIC_exposure_audit_2026-08-30.md` (local; field locations only, values withheld). Project files under `projects/` (local). Asset unnamed here, no personal names, no relationship, no price, no coordinates.
+
+---
+
 ## 2026-08-30 09:25 TH · [PROJECT: Marketing Brain] · [kp-hhn-021-copy-correction]
 
 - WHAT: KP-HHN-021 Hidden Hin copy correction (Claude Code) — fixed two contradictions caught on the description_public write.
