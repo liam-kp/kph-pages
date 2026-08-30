@@ -9,6 +9,20 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-08-30 09:25 TH · [PROJECT: Marketing Brain] · [kp-hhn-021-copy-correction]
+
+- WHAT: KP-HHN-021 Hidden Hin copy correction (Claude Code) — fixed two contradictions caught on the description_public write.
+- CHANGED: **1× Firebase write** — `/Projects_Public/KP-HHN-021`, merge `PUT` of exactly 4 fields, PWRC + STC-verified, keys **33 → 34**.
+  - availability: "8 available" in description vs "PENDING DEVELOPER CONFIRMATION" in availability_summary_public — resolved to 8, confirmed by Liam.
+  - ownership: freehold conversion and the 90-year figure were presented to buyers as verified fact, contradicting due_diligence_status_internal — re-attributed to the developer with an explicit KPH-has-not-verified caveat in both HE and EN.
+  - authoring error in the frozen copy, caught at write time by the runner, not in production.
+  - available_units set to 8.
+  - all other fields byte-identical, gate unchanged: no slug, website_status draft, campaign_status inventory_only.
+- OPEN: commercial terms still unagreed, tracked on KPR-350.
+- REF: Linear KPR-350 (comment); no new ticket.
+
+---
+
 ## 2026-08-30 09:05 TH · [PROJECT: Marketing Brain] · [kp-hhn-021-description-public]
 
 - WHAT: **NURTURE enablement for KP-HHN-021 Hidden Hin.** Wrote the frozen HE+EN long-form description to `/Projects_Public/KP-HHN-021`, PWRC-verified byte-identical. Maya can now **pitch** the project, not only quote prices and send media. **Still gated** — no `slug`, `campaign_status` and `website_status` untouched, no outbound sequence written. Commercial terms still open on KPR-350.
