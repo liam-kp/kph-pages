@@ -6,15 +6,15 @@
 // ============================================================================
 (function () {
   const CSS = `
-  .inv{--i-bg:#0a0a0a;--i-bg2:#111;--i-bg3:#161616;--i-line:#1f1f1f;--i-line2:#2a2a2a;--i-t1:#fff;--i-t2:#999;--i-t3:#5a5a5a;
+  .inv{--i-bg:#0a0a0a;--i-bg2:#111;--i-bg3:#161616;--i-line:#1f1f1f;--i-line2:#2a2a2a;--i-t1:#fff;--i-t2:#cfcfcf;--i-t3:#a3a3a3;
        --i-green:#00d68f;--i-greenb:#00ff9d;--i-gold:#d4a843;--i-goldb:#f5c84b;--i-red:#ff3358;--i-blue:#4a90d9;
        font-family:'Inter',system-ui,sans-serif;color:var(--i-t1);}
   .inv *{box-sizing:border-box;margin:0;padding:0}
   .inv .mono{font-family:'JetBrains Mono',ui-monospace,monospace;font-feature-settings:'tnum'}
   .inv-sec{margin:28px 0}
-  .inv-sec-title{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--i-t3);margin-bottom:14px;display:flex;align-items:center;gap:12px}
+  .inv-sec-title{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--i-t3);margin-bottom:14px;display:flex;align-items:center;gap:12px}
   .inv-sec-title .g{color:var(--i-goldb)} .inv-sec-title:after{content:'';flex:1;height:1px;background:var(--i-line)}
-  .inv-tag{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;padding:3px 8px;border-radius:2px;border:1px solid var(--i-line2);color:var(--i-t2)}
+  .inv-tag{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:3px 8px;border-radius:2px;border:1px solid var(--i-line2);color:var(--i-t2)}
   .inv-tag.live{color:var(--i-green);border-color:rgba(0,214,143,.3);background:rgba(0,214,143,.06)}
   .inv-tag.rep{color:var(--i-gold);border-color:rgba(212,168,67,.35);background:rgba(212,168,67,.06)}
   .inv-tag.demo{color:var(--i-blue);border-color:rgba(74,144,217,.4);background:rgba(74,144,217,.08)}
@@ -23,37 +23,38 @@
   .inv-grid.c4{grid-template-columns:repeat(4,1fr)} .inv-grid.c3{grid-template-columns:repeat(3,1fr)} .inv-grid.c5{grid-template-columns:repeat(5,1fr)}
   @media(max-width:860px){.inv-grid.c4,.inv-grid.c5{grid-template-columns:repeat(2,1fr)} .inv-grid.c3{grid-template-columns:1fr}}
   .inv-cell{background:var(--i-bg2);padding:18px 20px;position:relative}
-  .inv-cell .l{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--i-t3);margin-bottom:10px}
+  .inv-cell .l{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:2px;text-transform:uppercase;color:var(--i-t3);margin-bottom:10px}
   .inv-cell .v{font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700;line-height:1;letter-spacing:-1px}
   .inv-cell .v.g{color:var(--i-greenb)} .inv-cell .v.y{color:var(--i-goldb)} .inv-cell .v.r{color:var(--i-red)} .inv-cell .v.b{color:var(--i-blue)} .inv-cell .v.m{color:var(--i-t3);font-size:18px}
-  .inv-cell .s{font-size:10px;color:var(--i-t3);margin-top:8px;font-family:'JetBrains Mono',monospace;line-height:1.5}
+  .inv-cell .s{font-size:11.5px;color:var(--i-t2);margin-top:8px;font-family:'JetBrains Mono',monospace;line-height:1.5}
   .inv-funnel{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--i-line);border:1px solid var(--i-line)}
   @media(max-width:860px){.inv-funnel{grid-template-columns:repeat(2,1fr)}}
   .inv-step{background:var(--i-bg2);padding:16px 12px 14px;position:relative;text-align:center}
-  .inv-step .l{font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--i-t3);margin-bottom:8px;min-height:22px}
+  .inv-step .l{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--i-t3);margin-bottom:8px;min-height:22px}
   .inv-step .v{font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:700;color:var(--i-greenb);letter-spacing:-.5px}
   .inv-step .v.y{color:var(--i-goldb)} .inv-step .v.r{color:var(--i-red)} .inv-step .v.b{color:var(--i-blue)} .inv-step .v.m{color:var(--i-t3)}
-  .inv-step .p{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--i-t2);margin-top:6px}
-  .inv-step .c{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--i-gold);margin-top:3px}
+  .inv-step .p{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--i-t2);margin-top:6px}
+  .inv-step .c{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--i-gold);margin-top:3px}
   .inv-step .bar{height:3px;background:var(--i-bg3);margin-top:10px;overflow:hidden}
   .inv-step .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--i-green),var(--i-greenb))}
   .inv-step.rep .bar i{background:linear-gradient(90deg,var(--i-gold),var(--i-goldb))}
   .inv-step.rep{background:repeating-linear-gradient(135deg,var(--i-bg2) 0 6px,#141200 6px 7px)}
   .inv-step.demo{border-top:2px dashed rgba(74,144,217,.5)} .inv-step.demo .bar i{background:var(--i-blue)}
-  .inv-note{font-size:11px;line-height:1.7;color:var(--i-t2);margin-top:12px;padding:12px 14px;border-left:2px solid var(--i-line2);background:var(--i-bg2)}
-  .inv-note b{color:var(--i-t1)} .inv-note code{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--i-gold)}
+  .inv-note{font-size:12.5px;line-height:1.7;color:var(--i-t2);margin-top:12px;padding:12px 14px;border-left:2px solid var(--i-line2);background:var(--i-bg2)}
+  .inv-note b{color:var(--i-t1)} .inv-note code{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--i-gold)}
   .inv-note.rep{border-left-color:var(--i-gold)} .inv-note.demo{border-left-color:var(--i-blue)}
-  .inv-table{width:100%;border-collapse:collapse;font-size:12px;border:1px solid var(--i-line)}
-  .inv-table th{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--i-t3);text-align:left;padding:10px 12px;border-bottom:1px solid var(--i-line);background:var(--i-bg3);font-weight:500}
+  .inv-table{width:100%;border-collapse:collapse;font-size:13px;border:1px solid var(--i-line)}
+  .inv-table th{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--i-t3);text-align:left;padding:10px 12px;border-bottom:1px solid var(--i-line);background:var(--i-bg3);font-weight:500}
   .inv-table td{padding:10px 12px;border-bottom:1px solid var(--i-line);font-family:'JetBrains Mono',monospace;color:var(--i-t2)}
   .inv-table td:first-child{color:var(--i-t1);font-family:'Inter',sans-serif}
   .inv-table td.g{color:var(--i-greenb)} .inv-table td.y{color:var(--i-goldb)} .inv-table tr:hover td{background:var(--i-bg3)}
   .inv[dir=rtl] .inv-table th,.inv[dir=rtl] .inv-table td{text-align:right}
   .inv-loop{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
-  .inv-loop .n{background:var(--i-bg2);border:1px dashed rgba(74,144,217,.45);padding:14px;position:relative;font-size:11.5px;line-height:1.55;color:var(--i-t2)}
-  .inv-loop .n b{display:block;color:var(--i-t1);font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px}
+  .inv-loop .n{background:var(--i-bg2);border:1px dashed rgba(74,144,217,.45);padding:14px;position:relative;font-size:13px;line-height:1.55;color:var(--i-t2)}
+  .inv-loop .n b{display:block;color:var(--i-t1);font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px}
   .inv-loop .n i{position:absolute;top:8px;right:10px;font-style:normal;font-family:'JetBrains Mono',monospace;font-size:20px;color:rgba(74,144,217,.35);font-weight:700}
   .inv[dir=rtl] .inv-loop .n i{right:auto;left:10px}
+  .inv-more{margin-top:10px} .inv-more summary{cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--i-t3);list-style:none;display:inline-flex;align-items:center;gap:8px} .inv-more summary::-webkit-details-marker{display:none} .inv-more summary:before{content:'+';color:var(--i-gold);font-weight:700} .inv-more[open] summary:before{content:'−'} .inv-more summary:hover{color:var(--i-t1)}
   .inv-input{display:inline-block;min-width:60px;padding:2px 8px;border:1px dashed var(--i-gold);color:var(--i-goldb);font-family:'JetBrains Mono',monospace;font-size:12px;border-radius:2px}
   `;
   function ensureCSS() {
@@ -65,7 +66,7 @@
     en: {
       spend:'Media spend', convs:'WhatsApp conversations', leads:'Leads in CRM', engaged:'Engaged (≥1 message)', multi:'Replied to the AI (≥2)', deep:'Real conversation (≥5)',
       hot:'HOT / WARM', island:'On island / arriving', calls:'Phone calls', meetings:'Meetings held', contracts:'Contracts', closings:'Closings (in signing)',
-      sales:'Total sales', comm:'Total commissions', cpl:'cost / lead', cpe:'cost / engaged', cpm:'cost / meeting', cpc:'cost / closing', cpconv:'cost / conversation', cph:'cost / hot-warm', cpcall:'cost / call',
+      sales:'Total sales', comm:'Total commissions', cpl:'cost / lead', cpe:'cost / engaged', cpm:'cost / meeting', cpc:'cost / closing', cpconv:'cost / conversation', cph:'cost / hot-warm', cpcall:'cost / call', how:'How we counted',
       await:'awaiting', awaitSub:'not yet in the system — Liam to confirm', none:'none attributable',
       lay1:'System-recorded · 2026 pilot', lay2:'Reconstructed · backup + reminder bot', lay3:'Track record · all-time ledger', demo:'ILLUSTRATIVE · not real data',
       ofPrev:'of previous', fromSpend:'of media spend',
@@ -86,7 +87,7 @@
     he: {
       spend:'הוצאת מדיה', convs:'שיחות וואטסאפ', leads:'לידים ב-CRM', engaged:'Engaged (≥1 הודעה)', multi:'ענו ל-AI (≥2)', deep:'שיחה אמיתית (≥5)',
       hot:'HOT / WARM', island:'באי / מגיעים', calls:'שיחות טלפון', meetings:'פגישות', contracts:'חוזים', closings:'סגירות (בחתימה)',
-      sales:'סך מכירות', comm:'סך עמלות', cpl:'עלות / ליד', cpe:'עלות / engaged', cpm:'עלות / פגישה', cpc:'עלות / סגירה', cpconv:'עלות / שיחה', cph:'עלות / ליד חם', cpcall:'עלות / שיחת טלפון',
+      sales:'סך מכירות', comm:'סך עמלות', cpl:'עלות / ליד', cpe:'עלות / engaged', cpm:'עלות / פגישה', cpc:'עלות / סגירה', cpconv:'עלות / שיחה', cph:'עלות / ליד חם', cpcall:'עלות / שיחת טלפון', how:'איך ספרנו',
       await:'ממתין', awaitSub:'לא במערכת — ליאם משלים', none:'אין ייחוס',
       lay1:'נרשם במערכת · פיילוט 2026', lay2:'שוחזר · גיבוי + בוטי', lay3:'טרק-רקורד · כל הזמנים', demo:'המחשה · לא נתונים אמיתיים',
       ofPrev:'מהשלב הקודם', fromSpend:'מהוצאת המדיה',
@@ -116,6 +117,13 @@
   const esc = (s) => String(s).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
   const tpl = (s, vars) => s.replace(/\{(\w+)\}/g, (_, k) => vars[k] ?? '');
 
+  // compact mode (pitch page): long explanations fold behind a toggle; the dashboard keeps them open.
+  function fold(html, opts, label) {
+    if (!html) return '';
+    if (!opts.compact) return html;
+    return `<details class="inv-more"><summary>${label}</summary>${html}</details>`;
+  }
+
   function step(label, value, opts = {}) {
     const { cls = '', prev = null, cost = null, t, pct = null, sub = null, kind = '' } = opts;
     const p = pct !== null ? pct : (prev ? fmt.pct(value, prev) : '');
@@ -123,7 +131,7 @@
     return `<div class="inv-step ${kind}">
       <div class="l">${label}</div>
       <div class="v ${cls}">${value == null ? `<span class="m">${t.await}</span>` : (typeof value === 'number' ? fmt.num(value) : value)}</div>
-      ${p ? `<div class="p">${p} ${t.ofPrev}</div>` : ''}${sub ? `<div class="p" style="font-size:8.5px;color:var(--i-t3);line-height:1.35">${sub}</div>` : (p ? '' : '<div class="p">&nbsp;</div>')}
+      ${p ? `<div class="p">${p} ${t.ofPrev}</div>` : ''}${sub ? `<div class="p" style="font-size:10px;color:var(--i-t2);line-height:1.4">${sub}</div>` : (p ? '' : '<div class="p">&nbsp;</div>')}
       ${cost ? `<div class="c">${cost}</div>` : ''}
       <div class="bar"><i style="width:${barW}%"></i></div>
     </div>`;
@@ -154,7 +162,7 @@
 
     const rows = f.by_campaign.map(c => {
       const mc = (m.campaigns || []).find(x => x.code === c.code) || {};
-      return `<tr><td>${esc(c.label)} <span class="mono" style="color:var(--i-t3);font-size:10px">${c.code}</span></td>
+      return `<tr><td>${esc(c.label)} <span class="mono" style="color:var(--i-t3);font-size:11px">${c.code}</span></td>
         <td class="y">${mc.spend_usd != null ? fmt.usd(mc.spend_usd) : '—'}</td><td>${mc.conversations != null ? fmt.num(mc.conversations) : '—'}</td>
         <td class="g">${fmt.num(c.leads)}</td><td>${fmt.num(c.engaged_1plus)} <span style="color:var(--i-t3)">${fmt.pct(c.engaged_1plus, c.leads)}</span></td>
         <td>${fmt.num(c.engaged_2plus)}</td><td>${fmt.num(c.hot_warm)}</td><td class="y">${mc.spend_usd != null ? fmt.usd(mc.spend_usd / c.leads, 2) : '—'}</td></tr>`;
@@ -165,14 +173,14 @@
         <div class="inv-sec-title"><span class="g">▸</span> ${lang === 'he' ? 'שלב 1 — פיילוט קופנגן, מקצה לקצה' : 'Phase 1 — Koh Phangan pilot, end to end'}
           <span class="inv-tag live">${t.lay1}</span><span class="inv-tag rep">${t.lay2}</span></div>
         ${funnel}
-        <div class="inv-note">${t.p1note}<br>${tpl(t.alignedNote, { win: a.window, spend: fmt.usd(spend, 2), lwin: L.window.split(' ')[0], lspend: fmt.usd(L.spend_usd, 2) })}
+        ${fold(`<div class="inv-note">${t.p1note}<br>${tpl(t.alignedNote, { win: a.window, spend: fmt.usd(spend, 2), lwin: L.window.split(' ')[0], lspend: fmt.usd(L.spend_usd, 2) })}
           ${tpl(t.nonMedia, { c: fmt.num(f.leads_in_crm), n: f.leads_non_media_imports, m: fmt.num(f.leads_media_origin) })}</div>
-        ${r.method ? `<div class="inv-note rep"><b>${lang === 'he' ? 'שחזור אריחי הזהב.' : 'Reconstruction of the gold tiles.'}</b> ${esc(lang === 'he' && r.method_he ? r.method_he : r.method)}${r.phone_calls_floor_note ? ' ' + esc(r.phone_calls_floor_note) : ''}</div>` : ''}
+        ${r.method ? `<div class="inv-note rep"><b>${lang === 'he' ? 'שחזור אריחי הזהב.' : 'Reconstruction of the gold tiles.'}</b> ${esc(lang === 'he' && r.method_he ? r.method_he : r.method)}${r.phone_calls_floor_note ? ' ' + esc(r.phone_calls_floor_note) : ''}</div>` : ''}`, opts, t.how)}
       </div>
       <div class="inv-sec">
         <div class="inv-sec-title"><span class="g">▸</span> ${t.byCamp}<span class="inv-tag live">${t.lay1}</span></div>
         <div style="overflow-x:auto"><table class="inv-table"><thead><tr><th>${t.camp}</th><th>${t.spendc}</th><th>${t.convc}</th><th>${t.leadsc}</th><th>${t.eng}</th><th>${t.multic}</th><th>${t.hotc}</th><th>${t.cplc}</th></tr></thead><tbody>${rows}</tbody></table></div>
-        <div class="inv-note">${tpl(t.campNote, { tagged: fmt.num(f.leads_campaign_attributed), all: fmt.num(f.leads_media_origin) })}</div>
+        ${fold(`<div class="inv-note">${tpl(t.campNote, { tagged: fmt.num(f.leads_campaign_attributed), all: fmt.num(f.leads_media_origin) })}</div>`, opts, t.how)}
       </div>
       <div class="inv-sec">
         <div class="inv-sec-title"><span class="g">▸</span> ${t.engine}<span class="inv-tag live">${t.lay1}</span></div>
@@ -203,7 +211,7 @@
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:12px;align-items:start">
         <table class="inv-table"><thead><tr><th>Year</th><th>${t.tr_won}</th><th>${t.tr_sales}</th></tr></thead><tbody>${yrs}</tbody></table>
-        <div class="inv-note" style="margin-top:0">${esc(tr.note)}${data.pipeline && data.pipeline.signing_2026 ? `<br><b>${lang === 'he' ? 'בחתימה כעת (2026)' : 'In signing now (2026)'}:</b> ${data.pipeline.signing_2026.deals} ${lang === 'he' ? 'עסקאות' : 'deals'} · ${fmt.thbM(data.pipeline.signing_2026.sales_thb)} · ${lang === 'he' ? 'עמלה' : 'commission'} ${fmt.thbM(data.pipeline.signing_2026.commission_thb)}${data.pipeline.signing_2026.paid ? '' : (lang === 'he' ? ' · טרם שולם' : ' · not yet paid')}. ${lang === 'he' ? 'לא נספרות כמכירות עד ההשלמה.' : 'Not counted as sales until completed.'}` : ''}</div>
+        <div class="inv-note" style="margin-top:0">${opts.compact ? '' : esc(tr.note)}${data.pipeline && data.pipeline.signing_2026 ? `<br><b>${lang === 'he' ? 'בחתימה כעת (2026)' : 'In signing now (2026)'}:</b> ${data.pipeline.signing_2026.deals} ${lang === 'he' ? 'עסקאות' : 'deals'} · ${fmt.thbM(data.pipeline.signing_2026.sales_thb)} · ${lang === 'he' ? 'עמלה' : 'commission'} ${fmt.thbM(data.pipeline.signing_2026.commission_thb)}${data.pipeline.signing_2026.paid ? '' : (lang === 'he' ? ' · טרם שולם' : ' · not yet paid')}. ${lang === 'he' ? 'לא נספרות כמכירות עד ההשלמה.' : 'Not counted as sales until completed.'}` : ''}</div>
       </div>
     </div></div>`;
   }
@@ -230,7 +238,7 @@
           ${step(t.sales, fmt.usd(sales), { cls: 'b', t, kind: 'demo', sub: fmt.usd(d.avg_deal_usd) + ' avg' })}
           ${step(t.comm, fmt.usd(comm), { cls: 'b', t, kind: 'demo', sub: d.commission_pct + '% · ' + (comm / d.spend_usd).toFixed(1) + '× ' + t.fromSpend })}
         </div>
-        <div class="inv-note demo"><b>${t.demo}.</b> ${esc(d.note)}</div>
+        ${opts.compact ? '' : `<div class="inv-note demo"><b>${t.demo}.</b> ${esc(d.note)}</div>`}
       </div>
       <div class="inv-sec">
         <div class="inv-sec-title"><span class="g">▸</span> ${t.p2title}<span class="inv-tag demo">${t.demo}</span></div>
