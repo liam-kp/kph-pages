@@ -9,6 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="./investor_panel.js"></script>
 <script>
 tailwind.config = {
   darkMode: "class",
@@ -5298,6 +5299,9 @@ function renderProjects(radarProjects) {
   let loaded = false;
   let usingFallback = false;
   let metaSnapshot = null;
+  // Investor panel (KPR-344 pitch): 'meta' = existing report, 'phase1' / 'phase2' = investor modes
+  let currentMode = 'meta';
+  let investorData = null;
 
   // Filter key → Meta window preset. "חודש שעבר" maps to last_90d (no exact preset).
   const WINDOW_MAP = { 'all': 'maximum', '30d': 'last_30d', '7d': 'last_7d', 'last_month': 'last_90d' };
@@ -5624,9 +5628,47 @@ function renderProjects(radarProjects) {
     </div>`;
   }
 
+  function modeBar() {
+    const b = (m, label) => `<button class="filter-tab ${currentMode === m ? 'active' : ''}" data-mode="${m}">${label}</button>`;
+    return `<div class="filter-bar fade-in" style="margin-bottom:12px">
+      <div class="filter-tabs">${b('meta', 'META')}${b('phase1', 'REPORT · PHASE 1')}${b('phase2', 'REPORT · PHASE 2')}</div>
+      <div class="filter-info">${currentMode === 'meta' ? 'קמפיינים · Meta' : currentMode === 'phase1' ? 'פיילוט קופנגן · נתונים אמיתיים' : 'לופ סגור · המחשה'}
+        ${currentMode !== 'meta' ? ` · <a href="./investor.html" target="_blank" rel="noopener" style="color:var(--gold)">דף המשקיעים (EN) ↗</a>` : ''}</div>
+    </div>`;
+  }
+  function bindModeBar(app) {
+    app.querySelectorAll('.filter-tab[data-mode]').forEach(btn => {
+      btn.addEventListener('click', () => { currentMode = btn.dataset.mode; render(); });
+    });
+  }
+  function renderInvestor() {
+    const app = document.getElementById('reports-app');
+    if (!app) return;
+    const K = window.KPHInvestor;
+    let body;
+    if (!K) body = '<div class="loading">investor_panel.js לא נטען</div>';
+    else if (!investorData) body = '<div class="loading">investor_data.json לא נטען</div>';
+    else body = currentMode === 'phase1' ? K.renderPhase1(investorData, { lang: 'he' }) : K.renderPhase2(investorData, { lang: 'he' });
+    const gen = investorData?.meta?.generated_at || '—';
+    app.innerHTML = `
+      <div class="topbar fade-in">
+        <div class="topbar-left">
+          <div class="terminal-id">KPH/REPORTS//INVESTOR</div>
+          <h1>Reports <span class="gold">▸ ${currentMode === 'phase1' ? 'PHASE 1' : 'PHASE 2'}</span></h1>
+        </div>
+        <div class="topbar-right">
+          <div class="timestamp">SNAPSHOT · ${gen} · aggregate only</div>
+        </div>
+      </div>
+      ${modeBar()}
+      ${body}`;
+    bindModeBar(app);
+  }
+
   function render() {
     const app = document.getElementById('reports-app');
     if (!app) return;
+    if (currentMode !== 'meta') { renderInvestor(); return; }
     const filtered = filterData(allData, currentFilter);
     const comparison = getComparisonData(filtered, currentFilter, allData);
     const totalLeads = sum(filtered, 'leads');
@@ -5669,6 +5711,7 @@ function renderProjects(radarProjects) {
           <div class="timestamp">${timestampLabel} · ${timestampStr}${sourceNote}</div>
         </div>
       </div>
+      ${modeBar()}
       <div class="filter-bar fade-in delay-1">
         <div class="filter-tabs">
           <button class="filter-tab ${currentFilter === 'all' ? 'active' : ''}" data-f="all">ALL TIME</button>
@@ -5787,9 +5830,10 @@ function renderProjects(radarProjects) {
         </div>
       </div>
     `;
-    app.querySelectorAll('.filter-tab').forEach(btn => {
+    app.querySelectorAll('.filter-tab[data-f]').forEach(btn => {
       btn.addEventListener('click', () => { currentFilter = btn.dataset.f; render(); });
     });
+    bindModeBar(app);
   }
 
   async function init() {
@@ -5814,7 +5858,17 @@ function renderProjects(radarProjects) {
       }
       return null;
     })();
-    const [data, snapshot] = await Promise.all([csvPromise, snapshotPromise]);
+    const investorPromise = (async () => {
+      try {
+        const resp = await fetch('./investor_data.json', { cache: 'no-store' });
+        if (resp.ok) return await resp.json();
+      } catch (e) {
+        console.log('[reports] investor_data fetch failed:', e.message);
+      }
+      return null;
+    })();
+    const [data, snapshot, investor] = await Promise.all([csvPromise, snapshotPromise, investorPromise]);
+    investorData = investor;
     if (data && data.length > 0) {
       allData = data;
       usingFallback = false;

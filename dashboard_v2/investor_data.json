@@ -1,0 +1,217 @@
+{
+  "meta": {
+    "generated_at": "2026-09-04",
+    "note": "AGGREGATE ONLY — zero PII. Numbers for the investor / B2B-pilot panel. Provenance per block in investor_data.README.md. Every figure is system-recorded unless it sits in `reported` (Liam-supplied) or `phase2_demo` (illustrative).",
+    "fx": {
+      "thb_per_usd": 32.79,
+      "note": "฿1,000,000 = $30,500 — rate locked by Liam 2026-08-21"
+    }
+  },
+  "media": {
+    "source": "Meta Ads Manager, ad account 820757680962871, pulled 2026-09-04",
+    "lifetime": {
+      "window": "2026-01-02 → 2026-09-04",
+      "spend_usd": 8811.56,
+      "impressions": 1564745,
+      "clicks": 54547,
+      "reach": 449726,
+      "conversations_started": 945,
+      "note": "conversations_started = Meta 'Messaging conversations started (7d)' summed across 11 CTWA campaigns. Two link-click campaigns ($670.37, 14,393 link clicks to a wa.me link) are not attributed by Meta and are excluded from this count."
+    },
+    "aligned": {
+      "window": "2026-03-01 → 2026-09-04",
+      "spend_usd": 8246.59,
+      "impressions": 1416760,
+      "clicks": 51614,
+      "reach": 396016,
+      "conversations_started": 860,
+      "note": "Same account, windowed to when the CRM pipeline went live (2026-03-01). Use this spend for every cost-per ratio so the numerator and denominator cover the same leads."
+    },
+    "campaigns": [
+      {
+        "code": "KP-ZEN-012",
+        "label": "Maduwan Zennith — 1BR pool villas",
+        "spend_usd": 2942.99,
+        "conversations": 310,
+        "note": "CTWA v3 + TripleBoost + Nomad EN"
+      },
+      {
+        "code": "KP-LND-015",
+        "label": "Red Sunset — beachfront land",
+        "spend_usd": 1459.79,
+        "conversations": 170
+      },
+      {
+        "code": "KP-BCH-011",
+        "label": "Red Sunset — beachfront villas",
+        "spend_usd": 1917.94,
+        "conversations": 291
+      },
+      {
+        "code": "KP-ZEN-013",
+        "label": "Zennith — Israel source",
+        "spend_usd": 353.13,
+        "conversations": 2
+      },
+      {
+        "code": "KP-BNS-015",
+        "label": "Ban Nai Suan",
+        "spend_usd": 902.37,
+        "conversations": 87
+      }
+    ],
+    "unattributed": {
+      "label": "Maduwan waLink tests (link-click ads, no conversation attribution)",
+      "spend_usd": 670.37,
+      "link_clicks": 14393
+    },
+    "campaigns_note": "Aligned window (2026-03-01 → 2026-09-04). Rows + unattributed = $8,246.59 and 860 conversations exactly. Per-campaign leads count only records carrying a campaign_code (601 of 838), so campaign-level cost per lead is a ceiling."
+  },
+  "funnel": {
+    "source": "Firebase /Leads (created ≥ 2026-01-01, n=866; media-origin subset n=838) joined to Postgres inbound messages by contact_id, pulled 2026-09-04",
+    "leads_in_crm": 866,
+    "leads_media_origin": 838,
+    "leads_non_media_imports": 28,
+    "leads_campaign_attributed": 601,
+    "engaged_1plus": 780,
+    "engaged_2plus": 442,
+    "engaged_5plus": 204,
+    "hot_warm": 101,
+    "on_island_or_arriving": 46,
+    "no_contact_id_excluded_from_join": 41,
+    "definitions": {
+      "leads_in_crm": "Every /Leads record created in 2026 (866).",
+      "leads_media_origin": "leads_in_crm minus 28 non-media imports created in 2026 (dormant re-activation, manual, reminder-bot backlog). 65 leads recovered from a persistence leak ARE media-origin and stay in. Every engagement figure below is computed on this 838-lead set.",
+      "engaged_1plus": "Media-origin lead whose contact sent ≥1 inbound WhatsApp message (Postgres join, not Firebase status). 41 media-origin leads have no contact_id and count as not engaged.",
+      "engaged_2plus": "≥2 inbound messages — replied more than once.",
+      "engaged_5plus": "≥5 inbound messages — in a real conversation.",
+      "hot_warm": "Firebase tier HOT or WARM (bot-scored).",
+      "on_island_or_arriving": "arrival_status ON_ISLAND or ARRIVING_SOON."
+    },
+    "by_campaign": [
+      {
+        "code": "KP-ZEN-012",
+        "label": "Maduwan Zennith",
+        "leads": 252,
+        "engaged_1plus": 239,
+        "engaged_2plus": 120,
+        "engaged_5plus": 55,
+        "hot_warm": 37,
+        "on_island": 16
+      },
+      {
+        "code": "KP-LND-015",
+        "label": "Red Sunset Land",
+        "leads": 155,
+        "engaged_1plus": 143,
+        "engaged_2plus": 75,
+        "engaged_5plus": 31,
+        "hot_warm": 11,
+        "on_island": 3
+      },
+      {
+        "code": "KP-BCH-011",
+        "label": "Red Sunset Villas",
+        "leads": 128,
+        "engaged_1plus": 116,
+        "engaged_2plus": 58,
+        "engaged_5plus": 21,
+        "hot_warm": 19,
+        "on_island": 8
+      },
+      {
+        "code": "KP-ZEN-013",
+        "label": "Zennith (IL)",
+        "leads": 59,
+        "engaged_1plus": 58,
+        "engaged_2plus": 33,
+        "engaged_5plus": 16,
+        "hot_warm": 10,
+        "on_island": 6
+      }
+    ]
+  },
+  "engine": {
+    "source": "Postgres /api/messages/all stats + Firebase /Follow_Ups, pulled 2026-09-04",
+    "ai_outbound_messages": 6584,
+    "team_outbound_messages": 8583,
+    "customer_inbound_messages": 6139,
+    "followups_sent": 1001,
+    "followups_by_trigger": {
+      "CUSTOM": 466,
+      "NO_RESPONSE_24H": 269,
+      "NO_RESPONSE_72H": 239,
+      "ARRIVING_SOON": 21,
+      "ON_ISLAND": 3,
+      "OTHER": 3
+    },
+    "best_week_reply_rate": {
+      "rate": 26.7,
+      "replies": 16,
+      "delivered": 60,
+      "window": "week of 2026-08-17",
+      "note": "re-engagement waves to cold leads; WARM tier replied at 83% off the same copy"
+    }
+  },
+  "reported": {
+    "note": "NOT in any system of record. Liam supplies. Rendered as 'awaiting confirmation' while null; cost-per-meeting / cost-per-closing compute only when filled.",
+    "phone_calls": null,
+    "meetings_held": null,
+    "contracts_signed": null,
+    "closings": null,
+    "pre_2026_media_spend_usd": null
+  },
+  "track_record": {
+    "source": "Deals ledger (pipeline_data.json), 2023-11 → 2026-02. Gross figures only.",
+    "closed_won": 17,
+    "sales_thb": 234500000,
+    "gross_commission_thb": 16188000,
+    "show_commission": false,
+    "campaign_sourced_deals": 10,
+    "campaign_sourced_sales_thb": 96500000,
+    "campaign_share_by_count_pct": 59,
+    "campaign_share_by_commission_pct": 54,
+    "avg_cycle_days": 126,
+    "by_year": [
+      {
+        "year": "2023",
+        "deals": 1,
+        "sales_thb": 12850000
+      },
+      {
+        "year": "2024",
+        "deals": 3,
+        "sales_thb": 43050000
+      },
+      {
+        "year": "2025",
+        "deals": 10,
+        "sales_thb": 98500000
+      },
+      {
+        "year": "2026",
+        "deals": 3,
+        "sales_thb": 80100000
+      }
+    ],
+    "note": "All 17 first-contacts predate the 2026 media pilot; none is attributable to pilot spend. This block proves closing ability, not pilot ROI."
+  },
+  "pipeline": {
+    "open_deals": 3,
+    "note": "Contract-stage and hot leads. Speculative — never counted as sales."
+  },
+  "phase2_demo": {
+    "note": "ILLUSTRATIVE. A worked example of what the closed-loop report looks like once calls, meetings and closings are logged inside the system. Not real data.",
+    "spend_usd": 25000,
+    "conversations": 2600,
+    "leads": 2400,
+    "engaged": 2100,
+    "multi_reply": 1250,
+    "calls": 380,
+    "meetings": 140,
+    "contracts": 22,
+    "closings": 14,
+    "avg_deal_usd": 310000,
+    "commission_pct": 3
+  }
+}
