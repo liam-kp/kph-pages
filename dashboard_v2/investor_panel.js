@@ -64,10 +64,10 @@
   const I18N = {
     en: {
       spend:'Media spend', convs:'WhatsApp conversations', leads:'Leads in CRM', engaged:'Engaged (≥1 message)', multi:'Replied to the AI (≥2)', deep:'Real conversation (≥5)',
-      hot:'HOT / WARM', island:'On island / arriving', calls:'Phone calls', meetings:'Meetings held', contracts:'Contracts', closings:'Closings',
-      sales:'Total sales', comm:'Total commissions', cpl:'cost / lead', cpe:'cost / engaged', cpm:'cost / meeting', cpc:'cost / closing', cpconv:'cost / conversation', cph:'cost / hot-warm',
+      hot:'HOT / WARM', island:'On island / arriving', calls:'Phone calls', meetings:'Meetings held', contracts:'Contracts', closings:'Closings (in signing)',
+      sales:'Total sales', comm:'Total commissions', cpl:'cost / lead', cpe:'cost / engaged', cpm:'cost / meeting', cpc:'cost / closing', cpconv:'cost / conversation', cph:'cost / hot-warm', cpcall:'cost / call',
       await:'awaiting', awaitSub:'not yet in the system — Liam to confirm', none:'none attributable',
-      lay1:'System-recorded · 2026 pilot', lay2:'Liam-reported · 2026 pilot', lay3:'Track record · all-time ledger', demo:'ILLUSTRATIVE · not real data',
+      lay1:'System-recorded · 2026 pilot', lay2:'Reconstructed · backup + reminder bot', lay3:'Track record · all-time ledger', demo:'ILLUSTRATIVE · not real data',
       ofPrev:'of previous', fromSpend:'of media spend',
       tr_won:'Closed deals', tr_sales:'Sales volume', tr_camp:'Campaign-sourced', tr_cycle:'Avg. sales cycle', tr_days:'days', tr_comm:'Gross commission', tr_commHidden:'on request',
       byCamp:'By campaign', campNote:'Aligned window. Rows + unattributed link-click tests reconcile to the spend and conversations above. Per-campaign leads count only records carrying a campaign tag ({tagged} of {all}), so campaign-level cost per lead is a ceiling, not the blended figure.', unattr:'Unattributed', camp:'Campaign', spendc:'Spend', convc:'Conversations', leadsc:'CRM leads', eng:'Engaged', multic:'>1 reply', hotc:'Hot/Warm', cplc:'$ / lead',
@@ -79,16 +79,16 @@
             ['Meeting booked','Meeting date written to the record. Reminder fires. No-show → automatic re-book follow-up.'],
             ['Outcome tracked','Contract / closing / lost logged once. Commission attached to the originating campaign.'],
             ['Cost recomputes','Cost per call, meeting and closing update live, per campaign and per source. Media budget follows what converts.']],
-      p1note:'<b>Three layers, three denominators — deliberately not blended.</b> Green tiles are system-recorded from Meta Ads + the CRM + the WhatsApp message store. Gold tiles are stages the pilot ran but never logged into the system; they are filled from Liam\'s records and marked as such. The all-time ledger proves closing ability, not pilot ROI — all 17 first-contacts predate the 2026 media spend.',
+      p1note:'<b>Three layers, three denominators — deliberately not blended.</b> Green tiles are system-recorded from Meta Ads + the CRM + the WhatsApp message store. Gold tiles are stages the pilot ran but never logged into the system; calls and meetings were reconstructed from the phone\'s WhatsApp call log, lead chats and the reminder bot, closings are Liam-reported — each tile says which. The all-time ledger proves closing ability, not pilot ROI — all 17 first-contacts predate the 2026 media spend.',
       alignedNote:'Cost ratios use the spend from {win} ({spend}) so numerator and denominator cover the same leads; lifetime spend since {lwin} is {lspend}.',
       nonMedia:'The CRM holds {c} leads created in 2026; {n} are non-media imports (dormant re-activation, manual, reminder-bot backlog) and are excluded, so every stage above is computed on the {m} media-origin leads.',
     },
     he: {
       spend:'הוצאת מדיה', convs:'שיחות וואטסאפ', leads:'לידים ב-CRM', engaged:'Engaged (≥1 הודעה)', multi:'ענו ל-AI (≥2)', deep:'שיחה אמיתית (≥5)',
-      hot:'HOT / WARM', island:'באי / מגיעים', calls:'שיחות טלפון', meetings:'פגישות', contracts:'חוזים', closings:'סגירות',
-      sales:'סך מכירות', comm:'סך עמלות', cpl:'עלות / ליד', cpe:'עלות / engaged', cpm:'עלות / פגישה', cpc:'עלות / סגירה', cpconv:'עלות / שיחה', cph:'עלות / ליד חם',
+      hot:'HOT / WARM', island:'באי / מגיעים', calls:'שיחות טלפון', meetings:'פגישות', contracts:'חוזים', closings:'סגירות (בחתימה)',
+      sales:'סך מכירות', comm:'סך עמלות', cpl:'עלות / ליד', cpe:'עלות / engaged', cpm:'עלות / פגישה', cpc:'עלות / סגירה', cpconv:'עלות / שיחה', cph:'עלות / ליד חם', cpcall:'עלות / שיחת טלפון',
       await:'ממתין', awaitSub:'לא במערכת — ליאם משלים', none:'אין ייחוס',
-      lay1:'נרשם במערכת · פיילוט 2026', lay2:'דיווח ליאם · פיילוט 2026', lay3:'טרק-רקורד · כל הזמנים', demo:'המחשה · לא נתונים אמיתיים',
+      lay1:'נרשם במערכת · פיילוט 2026', lay2:'שוחזר · גיבוי + בוטי', lay3:'טרק-רקורד · כל הזמנים', demo:'המחשה · לא נתונים אמיתיים',
       ofPrev:'מהשלב הקודם', fromSpend:'מהוצאת המדיה',
       tr_won:'עסקאות סגורות', tr_sales:'היקף מכירות', tr_camp:'מקור קמפיין', tr_cycle:'מחזור מכירה ממוצע', tr_days:'ימים', tr_comm:'עמלה ברוטו', tr_commHidden:'מוסתר',
       byCamp:'לפי קמפיין', campNote:'חלון מיושר. השורות + בדיקות link-click לא-מיוחסות מסתכמות בדיוק להוצאה ולשיחות שלמעלה. לידים לפי קמפיין סופרים רק רשומות עם תג קמפיין ({tagged} מתוך {all}), ולכן עלות-לליד ברמת קמפיין היא תקרה, לא הממוצע המשוקלל.', unattr:'לא מיוחס', camp:'קמפיין', spendc:'הוצאה', convc:'שיחות', leadsc:'לידים', eng:'Engaged', multic:'>1 תשובה', hotc:'חם/פושר', cplc:'$ / ליד',
@@ -100,7 +100,7 @@
             ['פגישה נקבעת','תאריך הפגישה נכתב לרשומה. תזכורת יוצאת. לא הגיע → פולואפ אוטומטי לקביעה מחדש.'],
             ['תוצאה נרשמת','חוזה / סגירה / אבוד נרשם פעם אחת. העמלה מוצמדת לקמפיין המקור.'],
             ['העלות מתעדכנת','עלות לשיחה, לפגישה ולסגירה מתעדכנות חי, לפי קמפיין ולפי מקור. תקציב המדיה הולך אחרי מה שממיר.']],
-      p1note:'<b>שלוש שכבות, שלושה מכנים — בכוונה לא מעורבבים.</b> אריחים ירוקים נרשמו במערכת (Meta Ads + CRM + מאגר ההודעות). אריחי זהב הם שלבים שהפיילוט ביצע אבל לא נרשמו — מולאו מהרשומות של ליאם ומסומנים ככאלה. הטרק-רקורד מוכיח יכולת סגירה, לא ROI של הפיילוט — כל 17 העסקאות נוצרו לפני הוצאת המדיה של 2026.',
+      p1note:'<b>שלוש שכבות, שלושה מכנים — בכוונה לא מעורבבים.</b> אריחים ירוקים נרשמו במערכת (Meta Ads + CRM + מאגר ההודעות). אריחי זהב הם שלבים שהפיילוט ביצע אבל לא נרשמו — שיחות ופגישות שוחזרו מיומן השיחות של וואטסאפ בטלפון, משיחות הלידים ומהבוטי; סגירות מדווחות על ידי ליאם — כל אריח אומר מאיפה. הטרק-רקורד מוכיח יכולת סגירה, לא ROI של הפיילוט — כל 17 העסקאות נוצרו לפני הוצאת המדיה של 2026.',
       alignedNote:'יחסי העלות משתמשים בהוצאה של {win} ({spend}) כדי שהמונה והמכנה יכסו את אותם לידים; הוצאה מצטברת מ-{lwin}: {lspend}.',
       nonMedia:'ב-CRM יש {c} לידים שנוצרו ב-2026; {n} הם ייבואים שלא ממדיה (הפעלה מחדש, ידני, בקלוג בוטי) והוצאו, כך שכל השלבים למעלה מחושבים על {m} לידים ממקור מדיה.',
     }
@@ -123,7 +123,7 @@
     return `<div class="inv-step ${kind}">
       <div class="l">${label}</div>
       <div class="v ${cls}">${value == null ? `<span class="m">${t.await}</span>` : (typeof value === 'number' ? fmt.num(value) : value)}</div>
-      ${p ? `<div class="p">${p} ${t.ofPrev}</div>` : (sub ? `<div class="p">${sub}</div>` : '<div class="p">&nbsp;</div>')}
+      ${p ? `<div class="p">${p} ${t.ofPrev}</div>` : ''}${sub ? `<div class="p" style="font-size:8.5px;color:var(--i-t3);line-height:1.35">${sub}</div>` : (p ? '' : '<div class="p">&nbsp;</div>')}
       ${cost ? `<div class="c">${cost}</div>` : ''}
       <div class="bar"><i style="width:${barW}%"></i></div>
     </div>`;
@@ -136,6 +136,7 @@
     const spend = a.spend_usd;
     const cp = (n) => n ? fmt.usd(spend / n, 2) : null;
     const rep = (v) => v == null ? null : v;
+    const rnote = (k) => r[k + '_note' + (lang === 'he' ? '_he' : '')] || r[k + '_note'] || t.awaitSub;
 
     const funnel = `
       <div class="inv-funnel">
@@ -146,9 +147,9 @@
         ${step(t.multi, f.engaged_2plus, { t, prev: f.engaged_1plus })}
         ${step(t.deep, f.engaged_5plus, { t, prev: f.engaged_2plus })}
         ${step(t.hot, f.hot_warm, { t, prev: f.engaged_1plus, cost: cp(f.hot_warm) + ' ' + t.cph })}
-        ${step(t.calls, rep(r.phone_calls), { t, kind: 'rep', cls: 'y', prev: r.phone_calls != null ? f.engaged_1plus : null, sub: t.awaitSub })}
-        ${step(t.meetings, rep(r.meetings_held), { t, kind: 'rep', cls: 'y', prev: r.meetings_held != null && r.phone_calls != null ? r.phone_calls : null, cost: r.meetings_held ? cp(r.meetings_held) + ' ' + t.cpm : null, sub: t.awaitSub })}
-        ${step(t.closings, rep(r.closings), { t, kind: 'rep', cls: 'y', prev: r.closings != null && r.meetings_held != null ? r.meetings_held : null, cost: r.closings ? cp(r.closings) + ' ' + t.cpc : null, sub: t.awaitSub })}
+        ${step(t.calls, rep(r.phone_calls), { t, kind: 'rep', cls: 'y', prev: r.phone_calls != null ? f.engaged_1plus : null, cost: r.phone_calls ? cp(r.phone_calls) + ' ' + t.cpcall : null, sub: rnote('phone_calls') })}
+        ${step(t.meetings, rep(r.meetings_held), { t, kind: 'rep', cls: 'y', prev: r.meetings_held != null && r.phone_calls != null ? r.phone_calls : null, cost: r.meetings_held ? cp(r.meetings_held) + ' ' + t.cpm : null, sub: rnote('meetings') })}
+        ${step(t.closings, rep(r.closings), { t, kind: 'rep', cls: 'y', prev: r.closings != null && r.meetings_held != null ? r.meetings_held : null, cost: r.closings ? cp(r.closings) + ' ' + t.cpc : null, sub: rnote('closings') })}
       </div>`;
 
     const rows = f.by_campaign.map(c => {
@@ -166,6 +167,7 @@
         ${funnel}
         <div class="inv-note">${t.p1note}<br>${tpl(t.alignedNote, { win: a.window, spend: fmt.usd(spend, 2), lwin: L.window.split(' ')[0], lspend: fmt.usd(L.spend_usd, 2) })}
           ${tpl(t.nonMedia, { c: fmt.num(f.leads_in_crm), n: f.leads_non_media_imports, m: fmt.num(f.leads_media_origin) })}</div>
+        ${r.method ? `<div class="inv-note rep"><b>${lang === 'he' ? 'שחזור אריחי הזהב.' : 'Reconstruction of the gold tiles.'}</b> ${esc(lang === 'he' && r.method_he ? r.method_he : r.method)}${r.phone_calls_floor_note ? ' ' + esc(r.phone_calls_floor_note) : ''}</div>` : ''}
       </div>
       <div class="inv-sec">
         <div class="inv-sec-title"><span class="g">▸</span> ${t.byCamp}<span class="inv-tag live">${t.lay1}</span></div>
@@ -201,7 +203,7 @@
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:12px;align-items:start">
         <table class="inv-table"><thead><tr><th>Year</th><th>${t.tr_won}</th><th>${t.tr_sales}</th></tr></thead><tbody>${yrs}</tbody></table>
-        <div class="inv-note" style="margin-top:0">${esc(tr.note)}${data.pipeline ? `<br><b>${lang === 'he' ? 'צנרת פתוחה' : 'Open pipeline'}:</b> ${data.pipeline.open_deals} ${lang === 'he' ? 'עסקאות בשלב חוזה/חם — לא נספרות כמכירות.' : 'deals at contract / hot stage — never counted as sales.'}` : ''}</div>
+        <div class="inv-note" style="margin-top:0">${esc(tr.note)}${data.pipeline && data.pipeline.signing_2026 ? `<br><b>${lang === 'he' ? 'בחתימה כעת (2026)' : 'In signing now (2026)'}:</b> ${data.pipeline.signing_2026.deals} ${lang === 'he' ? 'עסקאות' : 'deals'} · ${fmt.thbM(data.pipeline.signing_2026.sales_thb)} · ${lang === 'he' ? 'עמלה' : 'commission'} ${fmt.thbM(data.pipeline.signing_2026.commission_thb)}${data.pipeline.signing_2026.paid ? '' : (lang === 'he' ? ' · טרם שולם' : ' · not yet paid')}. ${lang === 'he' ? 'לא נספרות כמכירות עד ההשלמה.' : 'Not counted as sales until completed.'}` : ''}</div>
       </div>
     </div></div>`;
   }

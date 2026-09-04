@@ -154,12 +154,32 @@
     }
   },
   "reported": {
-    "note": "NOT in any system of record. Liam supplies. Rendered as 'awaiting confirmation' while null; cost-per-meeting / cost-per-closing compute only when filled.",
-    "phone_calls": null,
-    "meetings_held": null,
-    "contracts_signed": null,
-    "closings": null,
-    "pre_2026_media_spend_usd": null
+    "note": "Calls and meetings are RECONSTRUCTED from the iPhone WhatsApp backup (2026-08-23) and Liam's reminder-bot export (2026-09-03) — not from any system of record. Closings are Liam-reported.",
+    "window": "2026-03-01 → 2026-08-18 (backup call log ends 08-18)",
+    "phone_calls": 94,
+    "phone_calls_distinct_leads": 50,
+    "phone_calls_outbound": 44,
+    "phone_calls_connected": 63,
+    "phone_calls_note": "WhatsApp calls with a CRM lead · 50 leads · 44 outbound · 63 connected · from the phone's call log",
+    "phone_calls_note_he": "שיחות וואטסאפ עם ליד ב-CRM · 50 לידים · 44 יוצאות · 63 נענו · מיומן השיחות של הטלפון",
+    "phone_calls_floor_note": "Floor, not ceiling: cellular calls are not in the backup, and 45 further chats carry 'we spoke' language.",
+    "meetings_held": 40,
+    "meetings_range": [
+      31,
+      49
+    ],
+    "meetings_note": "estimate · range 31–49 · 31 chats with confirmed-meeting language ∪ 29 reminder-bot meeting entries (11 overlap)",
+    "meetings_note_he": "אומדן · טווח 31–49 · 31 שיחות עם שפת פגישה מאושרת ∪ 29 תזכורות פגישה בבוטי (11 חופפים)",
+    "meeting_intent_contacts": 102,
+    "closings": 2,
+    "closings_sales_thb": 20500000,
+    "closings_commission_thb": 1500000,
+    "closings_paid": false,
+    "closings_note": "2 deals in signing · ฿20.5M · commission ฿1.5M, not yet paid",
+    "closings_note_he": "2 עסקאות בחתימה · ฿20.5M · עמלה ฿1.5M, טרם שולם",
+    "pre_2026_media_spend_usd": null,
+    "method": "CALLS: the iPhone backup carries WhatsApp's call log (CallHistory.sqlite, business number) with direction, duration and the other party's number; 122 calls since 2026-03-01, of which 94 involve a CRM lead. Cellular calls are not in the backup, so this is a floor. MEETINGS: no system logged them, so two independent sources were merged — lead chats whose text confirms a meeting (\"see you at\", \"thanks for the meeting\", \"נפגשנו\", 31 chats, marketing broadcasts excluded) and the reminder-bot export (29 contacts with a meeting reminder, 70 more flagged on-island or arriving). Union of confirmed sources 31–49; 102 contacts carried meeting intent. CLOSINGS: Thai regulatory changes in 2026 delayed completions; two deals are in signing.",
+    "method_he": "שיחות: גיבוי האייפון מכיל את יומן השיחות של וואטסאפ (CallHistory.sqlite, המספר העסקי) עם כיוון, משך ומספר הצד השני; 122 שיחות מאז 2026-03-01, מהן 94 עם ליד ב-CRM. שיחות סלולריות אינן בגיבוי, ולכן זו רצפה. פגישות: שום מערכת לא רשמה אותן, ולכן מוזגו שני מקורות בלתי-תלויים — שיחות לידים שהטקסט בהן מאשר פגישה (\"נתראה ב\", \"תודה על הפגישה\", \"נפגשנו\", 31 שיחות, בלי תפוצות שיווקיות) וייצוא הבוטי (29 אנשי קשר עם תזכורת פגישה, ועוד 70 שסומנו באי/מגיעים). איחוד המקורות המאושרים 31–49; ל-102 אנשי קשר הייתה כוונת פגישה. סגירות: שינויי רגולציה בתאילנד ב-2026 עיכבו השלמות; שתי עסקאות בחתימה."
   },
   "track_record": {
     "source": "Deals ledger (pipeline_data.json), 2023-11 → 2026-02. Gross figures only.",
@@ -198,7 +218,13 @@
   },
   "pipeline": {
     "open_deals": 3,
-    "note": "Contract-stage and hot leads. Speculative — never counted as sales."
+    "signing_2026": {
+      "deals": 2,
+      "sales_thb": 20500000,
+      "commission_thb": 1500000,
+      "paid": false
+    },
+    "note": "Two 2026 deals are in signing (฿17M + ฿3.5M, commission ฿1M + ฿0.5M, unpaid); three older deals sit at contract / hot stage. Never counted as sales until completed."
   },
   "phase2_demo": {
     "note": "ILLUSTRATIVE. A worked example of what the closed-loop report looks like once calls, meetings and closings are logged inside the system. Not real data.",

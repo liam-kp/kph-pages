@@ -54,11 +54,28 @@ first-contacts predate 2026-01-02, the earliest campaign in the account.
 - `best_week_reply_rate` = week review 2026-08-17→24 (16 genuine replies / 60
   content-verified deliveries).
 
-### `reported` — Liam fills these
+### `reported` — reconstructed, not system-recorded
 Nothing here is in any system: `meeting_status` is null on every lead,
-`pipeline_data.meetings` is empty, `next_action = MEETING` on 1 record. Until a
-value is set the tile renders **awaiting**; cost per meeting / per closing only
-compute once `meetings_held` / `closings` are numbers.
+`pipeline_data.meetings` is empty, `next_action = MEETING` on 1 record.
+
+- **`phone_calls` = 94** — the iPhone backup (2026-08-23, WhatsAppSMB domain)
+  carries WhatsApp's own call log, `CallHistory.sqlite`. `ZWACDCALLEVENT` →
+  `ZWAAGGREGATECALLEVENT` (via `Z1CALLEVENTS`) gives direction (`ZINCOMING`)
+  and duration; `ZWACDCALLEVENTPARTICIPANT` (via `Z1PARTICIPANTS` = aggregate
+  PK) gives the other party's JID, matched to `/Leads.phone_number` on the last
+  9 digits. 122 calls since 2026-03-01; 94 with a CRM lead (50 distinct, 44
+  outbound, 63 connected, avg ≈ 6.5 min). Cellular calls are not in an
+  unencrypted backup — floor, not ceiling. Log ends 2026-08-18.
+- **`meetings_held` = 40** (range 31–49) — union of two independent sources:
+  lead chats in `ChatStorage.sqlite` whose non-broadcast text confirms a meeting
+  (31 chats) and reminder-bot entries with a meeting (29 contacts; 11 overlap by
+  phone). 70 more reminder-bot contacts were flagged on-island / arriving;
+  102 contacts carried meeting intent. Regex + manual sample review, so a range.
+- **`closings` = 2** — Liam-reported 2026 deals in signing (฿17M + ฿3.5M,
+  commission ฿1M + ฿0.5M, unpaid). Thai regulatory changes delayed completions
+  in 2026. Mirrored in `pipeline.signing_2026`.
+
+Scripts are throwaway; the numbers above are what they produced on 2026-09-04.
 
 ### `track_record`
 - `pipeline_data.json → deals`, `status: Closed Won` (17). Gross `deal_price`
