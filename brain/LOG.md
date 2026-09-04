@@ -9,6 +9,27 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-09-05 04:25 TH · [PROJECT: Marketing Brain] · [kpr-355-miami-demo-video-toolchain]
+
+- WHAT: Reconciled the video-content tickets in Linear and opened the Miami demo video ticket as a sub-issue of the existing epic; installed and smoke-tested the HyperFrames toolchain. **No Firebase write, no campaign, no prompt write, nothing published, no video rendered yet.**
+- CHANGED:
+  - **Linear:** created **KPR-355** — 🎬 Miami demo video, 90s three-panel product demo (HyperFrames) — High, assigned Liam, labels `growth` + `content-pipeline` (both labels newly created on the team; neither existed despite the epic body listing them since May), parent **KPR-166**, related **KPR-169** + **KPR-170**. GET-verified after save: title, parent, priority, assignee, both labels, both relations landed.
+  - **Toolchain:** `@hyperframes/cli` 0.8.27 (npm latest) scaffolded `Campaigns/_VIDEO/miami-demo` (`--example blank`, 1920×1080, 10s starter). Nine HyperFrames core skills installed globally (`hyperframes`, `-core`, `-cli`, `-animation`, `-audio`, `-keyframes`, `-creative`, `-registry`, `media-use`) — `hyperframes init` copied them, then `npx skills add` registered the same nine under the `skills` CLI for updates. `ffmpeg` 8.0.1 and `node` 24.10.0 already present; `remotion` not installed anywhere (not on PATH, no package.json, no global).
+  - **Preview:** `hyperframes preview --background --no-open` on :3002 → HTTP 200, Studio loaded the project in the browser (timeline, blank `main` clip, inspector). Stopped cleanly, port confirmed closed.
+- FINDINGS:
+  - **The May-2026 video epic exists and was never lost — KPR-166 (KPR-VIDEO-001)**, Backlog since 2026-05-23 with three sub-issues: KPR-167 (Descript + MCP), KPR-168 (Agent Opus), KPR-169 (HyperFrames + Claude Code). None had moved in 105 days. "KPR-VIDEO-002..004" exist only as the A1/A2/A3 children, not as separate IDs.
+  - **"KPR-169b Campaign Studio" is not a ticket ID.** The Campaign Studio work is **KPR-170**, titled "KPR-169c — Marketing Brain Project Kickoff (Campaign Studio + …)", Todo. The May-31 custom-instructions doc calls Phase 1.5 "KPR-169b"; the tracker never had that number. Recorded on KPR-355 so the next reader does not search for it again.
+  - **KPR-169 is adjacent, not a duplicate.** Same toolchain, different deliverable (data-driven price/ROI motion graphics from Firebase). KPR-355 is the first real HyperFrames build and de-risks it; cross-linked rather than merged.
+  - **repo-forensics ran before install, per the global CLAUDE.md rule.** Skill-scan on a fresh clone of `heygen-com/hyperframes` at `62d3304`: 2,050 raw findings, 110 critical. **Every critical sits in CI workflow files (85), test files, Dockerfiles, docs or a regex false positive** ("Update available" flagged as SQL UPDATE); zero in runtime package code, zero in the skill files. No npm lifecycle hooks on the CLI package. The nine installed skill directories were diffed against the scanned clone: **0 differing files**, so the verdict covers exactly what landed on disk. Noted for later: the CLI pulls `puppeteer-core`, `onnxruntime-node` and `sharp`; the Studio's `0.0.0.0` bind is opt-in via env var only; telemetry is on by default (`hyperframes telemetry disable`).
+  - **Non-interactive scaffolding needs `--example` explicitly** — `init --non-interactive` without it exits with a usage error and creates nothing. Worth knowing before scripting it.
+- OPEN:
+  - **Branch rename not done — there is no branch to rename.** `~/Business/01_Real-Estate-Leads` is not a git repository, `hyperframes init` does not create one, and this repo's only branch is the `gh-pages` deploy trunk (renaming it would break Pages). If the demo project should be versioned, that is a new repo, not a rename. Owner: Liam.
+  - Video build itself: VO script, scene data file, both aspect ratios — all unstarted. Owner: Liam / Claude Code under KPR-355.
+  - KPR-166's own body lists five labels that were never created; only the two needed here now exist. The epic and its three children still carry no labels. Owner: Liam.
+- REF: Linear **KPR-355** (new) · **KPR-166 / 169 / 170** (read, cross-linked, not edited) · local `Campaigns/_VIDEO/miami-demo/` · forensics output in the session scratchpad only (not committed). Zero PII, zero lead identifiers, no worked examples.
+
+---
+
 ## 2026-08-30 12:19 TH · [PROJECT: Marketing Brain] · [projects-public-critical-redaction]
 
 - WHAT: Executed the content redaction of every CRITICAL finding from this morning's collection-wide exposure audit — **7 records, 15 fields** — moving the sensitive text out of the database and into local files, leaving stub pointers behind. This is the defence-in-depth half; **the code fix that actually protects future records is still with Adam.**
