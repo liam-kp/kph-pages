@@ -1344,3 +1344,11 @@ FU-KPLND015-2704e8f2 | -OwxX43vCF9XV8TvAf0X | 201348217847887  [C]
 - WRITES: exactly two — `general_notes` merge-PUT on the two excluded leads (PWRC: GET → merge → PUT → GET-verify; field byte-identical, key counts intact, no other field changed). No `/Follow_Ups` record written; HOLD verified live (0 PENDING for the picks, 0 records created today).
 - PLAN ON RESUME: order C → A → A → B, 60s apart from the TH start time Liam gives; C alone first (KPR-303 gate: Liam confirms delivered == armed on Business WhatsApp), then the other three re-based to confirmation +60/120/180s; after all four fire, audit every delivered text against the armed SHA (WAVE7 lesson: canary gate alone missed 3/4 flips).
 - REF: local `_marketing_brain/reports/` (picks + thread evidence, contains PII — not published) · KPR-355.
+
+## 2026-09-05 TH · [PROJECT: KPR-355 filmed follow-up burst] · [session: KPR-355 ARM + fire]
+- WHAT: KPR-355 burst armed and fired — 4/4 delivered, 4/4 byte-identical to the armed copy (SHA-audited against the outgoing message store, not just the canary).
+- SEQUENCE: Liam ARMed live at 17:32 TH. Variant C written alone (KPR-303 gate) for 17:35; fired at the scheduler's 17:40 tick; Liam confirmed the received text on Business WhatsApp verbatim; A, A, B then written at 17:43 for 17:47/48/49 and all fired at the 17:50 tick (17:50:06 / :13 / :22).
+- WRITES: 4 `/Follow_Ups` records (wave_id KPR355-20260905, trigger CUSTOM, language en, PENDING → SENT) + 4 `/Leads` merge-patches (`next_followup_date`, `language`). Every write PWRC'd: pre-GET 404 → PUT → GET-verify PASS, lead key counts intact, no other field changed.
+- FINDING: the follow-up scheduler fires only on 10-minute ticks (:00/:10/:20…+5–20s) — 8/8 SENT rows today land there. A 60-second stagger between records therefore collapses into one tick; real spacing needs one record per tick. `scheduled_date` 2–7 min ahead is enough lead time.
+- OPEN: watch the four threads for replies (filmed-burst material); one excluded broker lead still needs Liam's human call; one excluded lead still needs a human reply with ZEN-012 photos.
+- REF: KPR-355 · prior entry (prepare/HOLD) above.
