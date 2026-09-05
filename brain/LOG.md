@@ -9,6 +9,18 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-09-05 12:24 TH · [PROJECT: Marketing Brain] · [kpr-355-miami-demo-v1.1-pre-vo-fix]
+
+- WHAT: **v1.1-pre** of the Miami demo — VO line 6 changed to "Site visit, tomorrow at two. Confirmed. Logged." (matches the 14:00 site visit shown on screen), only that VO segment regenerated (ElevenLabs `eleven_v3`, Sarah, `/with-timestamps`), captions re-timed from its alignment, both ratios re-rendered. **Firebase READ-ONLY; no sends; Linear: one evidence comment on KPR-303 (title "Live example — EN lead, Hebrew reply (KPR-355 footage)"), nothing else touched.**
+- CHANGED (local, `Campaigns/_VIDEO/miami-demo/`):
+  - `vo/seg_5.mp3` (3.36 s, was 3.82 s; v1 copy kept as `vo/_v1_seg_5.mp3`), `vo/segments.json[5]`, `vo/script.txt` line 6. `vo/maya_vo.mp3` is still the v1 full read (line 6 says "at ten" there) — the render uses the per-scene segments, not this file.
+  - `out/miami_demo_v1_1_16x9.mp4` (16.64 MB) + `out/miami_demo_v1_1_9x16.mp4` (16.12 MB), 92.0 s each, H.264 + AAC. v1 files left in place.
+  - `qa/compare_renders.sh` now takes two files + windows and diffs decoded video frames only (`-map 0:v`), with a separate audio line.
+- QA: v1 → v1.1 frame diff (decoded video, framemd5 per 2 s window, both ratios): identical at 12 / 36 / 46 / 65 / 75 / 89 s; different only at 57 / 59 s — the MEETING scene, where the caption cues follow the new alignment. New VO segment onset measured at 56.41 s (planned 56.35), ends 59.68 s. Audio stream differs bit-wise everywhere (AAC re-encode of the changed mix); video does not. Lint clean on both projects (0 errors). Sizes under the 25 MB cap. Also re-confirmed the earlier v1 determinism claim: the two same-content v1 renders are identical at 12 / 36 / 60 s including audio.
+- FINDINGS: the KPR-303 evidence had to be corrected once — the Hebrew reply itself is **not** in the demo footage; what the Business WhatsApp recording shows at that slot is "You deleted this message" (Liam deleted it for everyone; TEAM `protocolMessage` 21:42 UTC). Postgres has the Hebrew row with `status: PENDING` (KPR-331 class). Comment edited in place within a minute of posting. Gotcha for the QA script: `ffmpeg -f framemd5` without `-map 0:v` hashes the audio packets too, so a legitimately re-mixed AAC track reads as "frames differ" — first diff run looked like a determinism failure and was not.
+- OPEN (unchanged from v1): burst / chat-list clip for the CENTER slot; REPORT numbers are DEMO placeholders; blur sign-off on `qa/blur_*.png`; Sarah vs Matilda voice choice. Owner: Liam.
+- REF: Linear **KPR-303** (one comment, edited once) · **KPR-355** (not edited this pass) · local `Campaigns/_VIDEO/miami-demo/{out,vo,qa}` · Zero PII in this entry.
+
 ## 2026-09-05 09:32 TH · [PROJECT: Marketing Brain] · [kpr-355-miami-demo-video-v1-build]
 
 - WHAT: Built and rendered **Miami demo video v1** in both ratios from one HyperFrames timeline — `out/miami_demo_v1_16x9.mp4` and `out/miami_demo_v1_9x16.mp4` (92 s, 30 fps, H.264 + AAC, 16.65 MB / 16.14 MB), plus VO, captions, transcripts and a QA contact sheet. **Firebase READ-ONLY (GETs on /Leads, /Meetings, /Projects_Public, /Project_Images, Postgres conversations); no Linear changes except one comment on KPR-355; nothing published, nothing sent.**
