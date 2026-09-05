@@ -9,6 +9,28 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-09-05 09:32 TH · [PROJECT: Marketing Brain] · [kpr-355-miami-demo-video-v1-build]
+
+- WHAT: Built and rendered **Miami demo video v1** in both ratios from one HyperFrames timeline — `out/miami_demo_v1_16x9.mp4` and `out/miami_demo_v1_9x16.mp4` (92 s, 30 fps, H.264 + AAC, 16.65 MB / 16.14 MB), plus VO, captions, transcripts and a QA contact sheet. **Firebase READ-ONLY (GETs on /Leads, /Meetings, /Projects_Public, /Project_Images, Postgres conversations); no Linear changes except one comment on KPR-355; nothing published, nothing sent.**
+- CHANGED (all local, under `Campaigns/_VIDEO/miami-demo/`):
+  - `build.py` → `index.html` (1920×1080) + `portrait/index.html` (1080×1920) + `scene_data.json`; `npx hyperframes check` passes on both (0 errors, 0 warnings; 1 informational overlap during the hook crossfade). CLI pin bumped **0.8.27 → 0.8.28** via `upgrade --project .`, verified by both checks.
+  - `clips/prep.sh` → 9 normalized clips (1080×1920, 30 fps, no audio) cut from the three thread recordings + the Business-WhatsApp screen recording; header avatars box-blurred at source coords; `qa/blur_*.png` six-frame sheets per clip for Liam's blur sign-off.
+  - `vo/` → ElevenLabs `eleven_v3`, voice Sarah (default first candidate), two first-line samples in `vo/samples/`, full VO 62.2 s with character-level alignment (`/with-timestamps`) → 29 sentence-level captions; VO split into 9 per-scene segments placed at scene start + 0.35 s (sync by construction, verified on the render by silencedetect).
+  - `transcripts/` → three thread transcripts (Postgres `/api/messages/:id`, speaker labels LEAD/MAYA/LIAM, six event marks each) + three redacted record snapshots (no phone, no surname, no ids).
+- FINDINGS:
+  - **No chat-list footage exists in `raw/`.** The screen recording is a thread + brochure + Maps capture, with a Claude permission banner at ~30 s. The CENTER slot uses two segments of that recording (Ping 1 landing; the Aug follow-up + reactivation ping) plus a programmatic inbox mock in the other scenes. Burst/chat-list clip still pending.
+  - **`/Meetings` is empty** for all three demo leads; the MEETING card is labelled on-card as reconstructed from the thread. **VO says "tomorrow at ten"; the shown meeting is the 14:00 site visit** (the 10:00 one was agreed but postponed by that lead) — open copy/visual mismatch for v2.
+  - One lead's `/Leads` record is stored under a WhatsApp business-page display name, so a first-name search misses it; matched via `contact_id`. Another thread shows Maya answering an explicit "real person" request **in Hebrew** on an `en` lead (2026-08-31) — KPR-303-class flip, observed, not fixed.
+  - Dashboard addendum: kept the programmatic REPORT panel. `dashboard_v2` pages are RTL Hebrew (Today/Pipeline/Closings/Reports carry `direction:rtl`), Pipeline exposes a Commission column and real lead names, and Reports is the Meta Ads view — not clean for a Miami English audience without a redaction pass.
+  - Timeline is 92 s, not 90: the END paragraph runs 5.35 s and would have been cut at 90.
+  - `~/.elevenlabs_key` lacks the `speech_to_text` scope (Scribe 401); word timings came from the TTS alignment instead — better, no ASR error.
+- QA: both renders 92.0 s / 30 fps / H.264 + AAC 48 kHz; 16.65 MB (16:9) and 16.14 MB (9:16), cap 25 MB. VO onsets on the render within −78…+212 ms of plan (≤ 300 ms). OCR on 22 sampled frames: only digit run ≥ 9 is the end-card WhatsApp number; no 'beachfront', no business-page name, no commission, no lead email; the only % hits are '49% / 51%' inside footage (Maya's Thai-ownership explanation, not a fee). Blur is a fixed header region (avatar covered for each clip's whole duration); 1 fps sheets of all four source recordings reviewed for text. Re-render frame-identical on unchanged windows (framemd5). All three REPORT KPIs carry a 'demo' label.
+- OPEN:
+  - Liam: confirm blur on `qa/blur_*.png` (avatars blurred; "Nam" in one header treated as a first name and left visible — override if wanted); listen to `vo/samples/sarah_line1.mp3` vs `matilda_line1.mp3` (v1 uses Sarah).
+  - v2: film the chat-list / burst clip for the CENTER slot; fix the "at ten" vs 14:00 mismatch (swap to the 10:00 thread's clip or re-record one VO line); REPORT numbers are DEMO placeholders, labelled on screen.
+  - The Hebrew reply on an EN lead → add to KPR-303 evidence (Adam), not done here.
+- REF: Linear **KPR-355** (one comment) · `Campaigns/_VIDEO/miami-demo/{out,qa,vo,transcripts,clips,build.py,scene_data.json}` (local; transcripts contain lead first names — not published) · Zero PII in this entry, no worked examples.
+
 ## 2026-09-05 04:25 TH · [PROJECT: Marketing Brain] · [kpr-355-miami-demo-video-toolchain]
 
 - WHAT: Reconciled the video-content tickets in Linear and opened the Miami demo video ticket as a sub-issue of the existing epic; installed and smoke-tested the HyperFrames toolchain. **No Firebase write, no campaign, no prompt write, nothing published, no video rendered yet.**
