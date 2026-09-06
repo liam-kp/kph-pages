@@ -9,6 +9,26 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-09-06 16:35 TH · [PROJECT: Marketing Brain] · [kpr-355-first-send-9x16-qa-green-and-render]
+
+- WHAT: Took the 9x16 **first-send** cut from a blocked QA gate to **green**, and rendered it. The gate now passes with **0 errors** across lint, runtime, layout and motion, contrast **16/16 AA**; render is 1800/1800 frames, 60.0s, audio present. **A PII blocker was found in the rendered output and the cut must NOT be sent until it is fixed** — see FINDINGS. Nothing published, nothing sent, no Firebase write, no ticket state change.
+- CHANGED: one hand-written composition (`first_send/index.html`, backed up alongside) + one render to a **new** filename so the previous output was not overwritten.
+  - **5 videos hoisted out of their timed `<section>`s** into untimed positioned holders at the stage root, each keeping its own `data-start`/`data-duration` on its own track index. The bordered frame stays behind inside the timed scene as a bezel. Clears all five `video_nested_in_timed_element` errors.
+  - **A dangling element id removed from the timeline loop.** A caption had been deleted from the last scene in an earlier pass, but the loop still iterated its id — `querySelector` returns null and the next property read throws, taking the whole timeline down. Nothing in the gate had reported this while the lint errors were standing.
+  - **Scene label lifted clear of the phone band** — it had been sitting inside the full-size video rectangle and was being covered.
+- FINDINGS:
+  - 🔴 **The obvious fix was the wrong one, and the repo already knew the right one.** The plan on the table was to let the scene own the timing and strip it from the nested videos. The framework resolves a video's *source* frames from the video's **own** `data-start`; an untimed video falls back to global zero and quietly renders the wrong footage — and **lint would have passed**, because the rule only forbids timing on both. The parent composition in the same project — which renders and passes clean — puts every video at the stage root in an **untimed** wrapper with the timing on the video and the bezel as a **separate** timed element. Copying the working neighbour beat reasoning from the error message.
+  - 🔴 **A lint error silently switches off the layout and contrast audits.** With errors standing, `check` prints `0 sample(s)` and `0/0 text checks` — which scans as clean and means **nothing ran**. The moment lint went green a genuine occlusion error appeared that had been sitting there the whole time, invisible. **Never read a green-looking layout/contrast section while lint has errors.**
+  - 🔴 **Two scenes render a real lead's contact identity in plain, legible text; two other scenes covering the same journey are properly redacted.** The redaction is inconsistent across the cut, and the unredacted scenes are the ones carrying the closing message and the call to action. **This is pre-existing — the same exposure is present in the earlier render from this morning, so it was not introduced by this session's changes** — but the ticket's own acceptance criteria forbid lead PII in any frame, and the directory name says this cut is meant to go out. Verified by pulling frames from both renders and looking at them.
+  - **The gate cannot see the thing that matters most here.** Every automated check passed on a file that puts a real person's name on screen. Frame extraction and human inspection are not optional after a render — the earlier lesson that a passing gate means the numbers are right, not that the page is, held again.
+- OPEN:
+  - 🔴 **Redaction of the unredacted scenes before this cut is sent to anyone.** Two source clips need the same treatment the other two already got, then a re-render. **Blocking.** Owner: Liam.
+  - **Voice-over runs shorter than its slot in five of six scenes** (in one case by more than four seconds), leaving silent tails. Flagged, not changed — that is a pacing decision, not a defect. Owner: Liam.
+  - Advisory warnings left as-is: one track carries six timed elements, and two scenes share a background image. Neither blocks a render.
+- REF: Linear **KPR-355** · local `Campaigns/_VIDEO/miami-demo-v2/first_send/` and the new output under `out/`. **This entry names no lead, no contact detail and no project figure.**
+
+---
+
 ## 2026-09-06 09:40 TH · [PROJECT: Marketing Brain] · [kpr-355-miami-demo-v1.5.2]
 
 - WHAT: **Miami demo v1.5.2** — real Instagram tap-through as the opener + music fix. `out/miami_demo_v1_4_16x9.mp4` (20.69 MB) + `out/miami_demo_v1_4_9x16.mp4` (19.07 MB) (filenames kept; version tag in `scene_data.json`), **132.5 s**, −16.0 LUFS. Mirrored into `miami-demo-v2/` (HTML + scene_data identical, renders copied). **Firebase READ-ONLY; Linear: one KPR-355 comment.**
