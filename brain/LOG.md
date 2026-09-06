@@ -9,6 +9,30 @@ Append-only. Newest entry FIRST. Every Claude Code session appends one entry as 
 
 ---
 
+## 2026-09-06 17:20 TH · [PROJECT: Marketing Brain] · [kpr-355-first-send-9x16-music-and-size]
+
+- WHAT: Closed out the 9x16 **first-send** cut. The 16:35 entry today took it to a green gate and rendered it; what it did not do was **measure the audio or the size**. Measured, that render was **not deliverable**. Fixed both and closed the ticket comment that entry left undone. Deliverable: `out/miami_demo_v1_5_2_first_send_9x16.mp4`, 60.0 s, **9.13 MB**, **-16.0 LUFS**. Nothing published, nothing sent, no Firebase write, no ticket state change.
+- CORRECTION to the 16:35 entry: its structural diagnosis was right and the fix it describes is exactly what is on disk - videos hoisted out of the timed sections, gate green, 1800/1800 frames. But it records the render as done with **"audio present"** and stops there. That phrase was never measured. The 16:31 render (**36.09 MB**) carried **no music bed** - VO-gap RMS -53.6 / -117.9 / -144.5 / -inf dBFS - and sat at **-13.1 LUFS with true peak -1.0 dBFS** against the project standard of -16 LUFS / -1.5 TP. It was also **over the 25 MB project cap**, which matters more on this cut than anywhere else in the ticket, because this is the one meant to be sent.
+- CHANGED: two new files in `miami-demo-v2/` only. `out/_render_first_send_v152.sh` (fresh CRF 26 render to a **new** filename) and `qa/postmix_first_send.sh` (the project's standard bed + ducking mix, written with explicit VO windows because this composition carries no `scene_data.json`). The composition itself was **not edited**. The 16:31 render is untouched on disk.
+- VERIFIED:
+  - **Master isolation holds.** `miami-demo/` re-checked against the baseline: **3010 files, 0 changed.**
+  - **The re-keyframed lead clips came from the blurred sources, not the raw footage.** Frame-matched all three derived clips against their blurred originals at the moment the chat header is on screen - avatar blur uniform and identical, no new exposure. Worth checking: the derived files are ~23 MB each against 4-7 MB sources, which reads at a glance like a re-encode from raw.
+  - Mix: bed **-30.9 dBFS** in the VO gap, **-39.0** under VO, **duck depth 8.1 dB**, video stream byte-identical to the raw render.
+  - VO onsets **+67 to +127 ms** against their six slot starts, inside the 300 ms spec.
+  - OCR on 18 frames: **no digit run of 8 or more** (this cut carries no phone number on screen, unlike the parent demo's end card), no banned term, no email, no commission. The dashes OCR finds sit inside real footage; the composition itself has zero.
+- FINDINGS:
+  - **"Audio present" is not a measurement, and it read like one.** A file with a voice track and no music bed satisfies that phrase completely. Every other pass on this ticket has closed with bed levels in the VO gaps and an integrated-loudness figure; this one closed with a word. The gap between the two is a 36 MB file at the wrong level that looked finished.
+  - **The silent tails flagged at 16:35 are real and now covered.** Measured on the VO-only render: 6.0 s, 4.3 s, 2.6 s, 1.5 s and 0.8 s of silence at the end of five of six scenes. Those were dead air before; the bed now fills them. The pacing question underneath is unchanged and still Liam's.
+  - **A handoff can be older than the disk.** The status report this session picked up still described the gate as blocked and nothing rendered. Both had been resolved minutes earlier. Acting on it would have meant restructuring a composition that already passed. Read the disk before the handoff.
+- OPEN:
+  - **The last scene's voice-over plays with no caption**, while all five others are captioned. A deliberate choice in the prior session, not a defect; flagged so it can be reversed. Owner: Liam.
+  - **Blur sign-off still open** - unchanged from this morning, and it governs whether this cut goes anywhere.
+  - One display name in the footage is two words, both first names, per the judgement call recorded and left visible in the v1 pass. Unchanged here.
+  - The brief for this cut was never in this session's context, so any constraint specific to it is unverified.
+- REF: Linear **KPR-355** · `Campaigns/_VIDEO/miami-demo-v2/`. **This entry names no lead, no contact detail and no project figure.**
+
+---
+
 ## 2026-09-06 16:35 TH · [PROJECT: Marketing Brain] · [kpr-355-first-send-9x16-qa-green-and-render]
 
 - WHAT: Took the 9x16 **first-send** cut from a blocked QA gate to **green**, and rendered it. The gate now passes with **0 errors** across lint, runtime, layout and motion, contrast **16/16 AA**; render is 1800/1800 frames, 60.0s, audio present. **A PII blocker was found in the rendered output and the cut must NOT be sent until it is fixed** — see FINDINGS. Nothing published, nothing sent, no Firebase write, no ticket state change.
