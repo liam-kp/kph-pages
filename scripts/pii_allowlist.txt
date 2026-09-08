@@ -1,0 +1,7 @@
+# Non-personal numeric identifiers that check_pii.sh may ignore.
+# ONLY platform/object ids that identify no person. Never a phone, never a lid.
+# One token per line. Adding a line is a reviewable act — justify it here.
+120247752436020056   # Meta ad id, LES-019 (an advertisement, not a person)
+921122811084299      # Meta page/post id, LES-019
+122132937825183586   # Meta post id, LES-019
+66967907754          # KPH WhatsApp Business number — published deliberately in wa.me CTAs
