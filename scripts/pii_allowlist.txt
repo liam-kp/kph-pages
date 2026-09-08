@@ -5,3 +5,8 @@
 921122811084299      # Meta page/post id, LES-019
 122132937825183586   # Meta post id, LES-019
 66967907754          # KPH WhatsApp Business number — published deliberately in wa.me CTAs
+120000000            # THB 120,000,000 — a deal price in dashboard_v2/pipeline_data.json.
+                     # Deliberately NOT narrowing the digit rule to skip bare JSON numbers:
+                     # a regression test showed an unquoted bare phone value is caught today, and
+                     # exempting all unquoted numerics would let a bare-number phone through.
+                     # An explicit, reviewable literal is the safer trade.
