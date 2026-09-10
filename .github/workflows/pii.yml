@@ -1,0 +1,27 @@
+# KPR-364 Phase 6 — make the PII guard mechanical.
+#
+# scripts/check_pii.sh has always existed, but it only ever ran two ways:
+#   - as a local pre-commit hook, which .git/hooks is not versioned, so every
+#     fresh clone has to remember to run scripts/bootstrap.sh, and
+#   - on STAGED files only, so the standing tree was never scanned.
+# That is how 23 files came to be failing the check while it was "passing".
+#
+# This runs it over every tracked file on every push. CI does not forget.
+name: PII check
+
+on:
+  push:
+    branches: [gh-pages]
+  pull_request:
+    branches: [gh-pages]
+  workflow_dispatch:
+
+jobs:
+  pii:
+    name: Scan every tracked file
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: check_pii.sh over the whole tree
+        run: bash scripts/check_pii.sh $(git ls-files)
