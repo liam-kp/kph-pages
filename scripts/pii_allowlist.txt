@@ -10,3 +10,12 @@
                      # a regression test showed an unquoted bare phone value is caught today, and
                      # exempting all unquoted numerics would let a bare-number phone through.
                      # An explicit, reviewable literal is the safer trade.
+72208023071289       # NOT a phone — GPS latitude fragment from the Google Maps link in
+                     # villa-nai-wok-he-v3-gallery.html:907 (9.72208023071289 / lat 9.722...).
+                     # The scanner strips separators, so the decimal tail reads as a 14-digit
+                     # run. Coordinates identify a plot of land, not a person.
+9819564819336        # NOT a phone — GPS longitude fragment from the same link
+                     # (99.9819564819336 / lon 99.981...). Same reasoning.
+                     # Narrowing the digit rule to skip decimals was rejected: a bare
+                     # decimal-formatted phone would then pass. Two explicit, reviewable
+                     # literals are the safer trade — same precedent as the deal-price entry above.
