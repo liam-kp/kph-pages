@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Red Sunset - Beachfront Land, Koh Phangan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@300;400;500;600;700&display=swap">
+<style>
+:root{--bg:#f6f2ea;--paper:#fffdf8;--ink:#1a1d21;--muted:#66625a;--line:#e3dccd;--gold:#b08d57;--gold-d:#8a6a3a;--gold-l:#ecdcb8;--night:#12181d;
+--display:"Cormorant Garamond",Georgia,serif;--body:Inter,system-ui,-apple-system,"Segoe UI",Arial,sans-serif}
+@media (prefers-color-scheme:dark){:root{--bg:#111417;--paper:#191d21;--ink:#efece6;--muted:#a9a397;--line:#2c3136;--gold:#d2b07a;--gold-d:#e2c590;--gold-l:#3a3123}}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16.5px/1.7 var(--body);font-weight:400}
+img,svg{display:block;max-width:100%;height:auto}
+a{color:inherit}
+.wrap{max-width:900px;margin:0 auto;padding:0 16px}
+h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.12;margin:0;text-wrap:balance}
+h1{font-size:clamp(38px,7.4vw,64px)}
+h2{font-size:clamp(30px,5.4vw,44px);margin-bottom:14px}
+h3{font-size:26px}
+p{margin:0 0 14px}
+.eyebrow{font-size:11.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);font-weight:600;display:block;margin-bottom:10px}
+.muted{color:var(--muted)} .small{font-size:13px}
+section{padding:56px 0;border-top:1px solid var(--line)}
+.lead{font-size:19px;font-weight:300}
+/* hero */
+.hero{background:var(--night);color:#fff}
+.hero .ph{position:relative}
+.hero .ph img{width:100%;height:min(66vh,620px);object-fit:cover;object-position:62% 50%}
+.hero .tag{position:absolute;left:14px;bottom:14px;background:rgba(0,0,0,.55);font-size:12.5px;padding:5px 12px;border-radius:999px;letter-spacing:.02em}
+.hero .cap{padding:34px 0 40px}
+.hero .eyebrow{color:#d9bd8a}
+.hero .sub{color:#e8e2d6;font-size:19px;font-weight:300;margin:14px 0 24px;max-width:60ch}
+.btns{display:flex;flex-wrap:wrap;gap:10px}
+.btn{display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-weight:600;font-size:15px;padding:13px 22px;border-radius:999px;border:1px solid transparent}
+.btn.gold{background:var(--gold);color:#fff} .btn.gold:hover{background:var(--gold-d)}
+.btn.ghost{border-color:rgba(255,255,255,.45);color:#fff}
+.btn.wa{background:#1f8f55;color:#fff}
+/* letter */
+.letter{background:var(--paper);border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:6px;padding:22px 24px;font-size:17px}
+.letter .sig{font-family:var(--display);font-size:26px;margin:4px 0 0}
+/* facts */
+.facts{list-style:none;margin:20px 0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.facts li{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:14px;font-size:13.5px;color:var(--muted);line-height:1.45}
+.facts b{display:block;font-family:var(--display);font-size:28px;font-weight:600;color:var(--ink);line-height:1.15;margin-bottom:4px}
+.fig{margin:22px 0 0} .fig img{width:100%;border-radius:6px}
+figcaption{font-size:13.5px;color:var(--muted);padding-top:8px;line-height:1.45}
+.gal{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:22px 0 0}
+.gal figure{margin:0} .gal img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:6px}
+/* deed */
+.deed{display:grid;grid-template-columns:1fr 1fr 1.1fr;gap:14px;margin-top:18px;align-items:start}
+.deed figure{margin:0} .deed img{border-radius:4px;border:1px solid var(--line);background:#fff}
+.deed dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:14.5px;background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:16px}
+.deed dt{color:var(--muted)} .deed dd{margin:0;font-weight:500}
+/* plans + carousels */
+.plan{margin-top:34px;padding:26px 0 0;border-top:1px dashed var(--line)}
+.plan .tag{display:inline-block;font-size:11.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-d);background:var(--gold-l);padding:5px 12px;border-radius:999px;margin-bottom:12px}
+.car{margin-top:16px}
+.track{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:10px;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+.slide{flex:0 0 82%;scroll-snap-align:start;margin:0}
+.slide.tall{flex-basis:46%}
+.slide img{width:100%;aspect-ratio:1600/990;object-fit:cover;border-radius:6px;background:#ddd}
+.slide.tall img{aspect-ratio:2/3;object-fit:cover;object-position:top}
+.car.plans .slide img{object-fit:contain;background:#fff;border:1px solid var(--line)}
+.hint{font-size:12.5px;color:var(--muted);margin-top:2px}
+.frame{position:relative}
+.nav{position:absolute;top:calc(50% - 26px);z-index:2;width:46px;height:46px;border-radius:50%;border:1px solid rgba(255,255,255,.6);background:rgba(18,24,29,.72);color:#ecd5a6;font:400 34px/40px Georgia,serif;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0 0 4px;box-shadow:0 2px 10px rgba(0,0,0,.25);transition:opacity .2s}
+.nav:hover{background:rgba(18,24,29,.92)}
+.nav.prev{left:8px} .nav.next{right:8px}
+.nav[disabled]{opacity:0;pointer-events:none}
+.files{display:flex;align-items:center;justify-content:space-between;gap:16px;background:var(--night);color:#fff;border-radius:8px;padding:18px 20px;margin-top:22px}
+.files b{display:block;font-family:var(--display);font-size:24px;color:#ecd5a6}
+.files span{font-size:14px;color:#d8d2c6}
+.maps{display:grid;grid-template-columns:1.17fr 1fr;gap:12px;margin-top:22px;align-items:start}
+.maps .fig{margin:0}
+.sizes{list-style:none;padding:0;margin:14px 0 0;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.sizes li{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:12px;font-size:13.5px;color:var(--muted);text-align:center}
+.sizes b{display:block;font-family:var(--display);font-size:26px;color:var(--ink)}
+.villas{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px}
+.vcard{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:18px}
+.vcard .s{font-size:13px;color:var(--muted);margin:2px 0 12px}
+.vf{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;text-align:center}
+.vf div{border:1px solid var(--line);border-radius:5px;padding:8px 2px;font-size:11.5px;color:var(--muted)}
+.vf b{display:block;font-family:var(--display);font-size:22px;color:var(--ink)}
+.cost{margin-top:12px;background:var(--night);color:#fff;border-radius:6px;padding:14px 16px}
+.cost b{font-family:var(--display);font-size:30px;font-weight:600;display:block;color:#ecd5a6}
+.cost span{font-size:13px;color:#d8d2c6}
+.cost .est{background:#ecd5a6;color:#12181d}
+.est{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.08em;color:var(--gold-d);background:var(--gold-l);padding:3px 9px;border-radius:999px;margin-top:8px}
+/* options */
+.opts{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:22px 0 10px}
+.opt{margin:0}
+.opt svg{width:100%;aspect-ratio:3/4;border-radius:6px;background:#222}
+.opt figcaption{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:8px 6px;margin-top:6px;text-align:center;font-weight:600;font-size:14px;color:var(--ink);line-height:1.3}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:13.5px;margin:6px 0 14px}
+.legend i{display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:-2px;margin-right:6px}
+.plist{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:8px}
+.plist li{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:12px 14px;font-size:15px}
+.plist b{font-family:var(--display);font-size:22px;margin-right:6px}
+/* price */
+.pkgs{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:22px 0 10px}
+.pkg{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:20px 18px;display:flex;flex-direction:column;gap:6px}
+.pkg h3{font-size:25px}
+.pkg .what{font-size:14.5px;color:var(--muted)}
+.pkg .price{white-space:nowrap;font-family:var(--display);font-size:34px;font-weight:700;line-height:1.05;margin-top:8px;font-variant-numeric:lining-nums tabular-nums}
+.pkg .price small{display:block;font:600 11px/1.4 var(--body);letter-spacing:.16em;color:var(--muted)}
+.pkg .fx{font-size:13px;color:var(--muted)}
+.pkg .add{font-size:13.5px;color:var(--gold-d);font-weight:600;margin-top:auto;padding-top:12px;border-top:1px solid var(--line)}
+.pkg.full{background:var(--night);border-color:var(--night);color:#fff}
+.pkg.full .what,.pkg.full .fx,.pkg.full .price small{color:#cfc8ba} .pkg.full .price{color:#ecd5a6} .pkg.full .add{color:#ecd5a6;border-color:rgba(255,255,255,.18)}
+.dots{display:flex;gap:6px}
+.dot{width:24px;height:24px;border-radius:50%;background:#3b3f44;color:rgba(255,255,255,.75);font:700 12px/24px var(--body);text-align:center;font-style:normal}
+.dot.on{background:var(--gold);color:#fff}
+.taxline{font-weight:600;margin-top:16px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px}
+.case{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:18px}
+.case h3{font-size:22px;margin-bottom:6px}
+.case p{font-size:15px;margin:0}
+.cta{text-align:center} .cta .btns{justify-content:center}
+.disc{font-size:14px;color:var(--muted);margin-top:26px}
+footer{border-top:1px solid var(--line);padding:24px 0 44px;font-size:12.5px;color:var(--muted)}
+@media (max-width:720px){
+ .facts{grid-template-columns:1fr 1fr}
+ .gal{grid-template-columns:1fr} .gal img{aspect-ratio:4/5}
+ .deed{grid-template-columns:1fr 1fr} .deed dl{grid-column:1/-1}
+ .villas,.pkgs,.two,.maps{grid-template-columns:1fr}
+ .files{flex-direction:column;align-items:flex-start}
+ .nav{width:40px;height:40px;font-size:30px;line-height:34px}
+ .sizes{grid-template-columns:1fr 1fr 1fr}
+ .opts{gap:6px} .opt figcaption{font-size:12px;padding:6px 2px}
+ .slide{flex-basis:88%} .slide.tall{flex-basis:70%}
+ .hero .ph img{height:48vh}
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="ph">
+    <img src="img2/hero.jpg" width="1600" height="619" alt="Aerial photo of the bay at Hin Kong with the plot boundary marked in red">
+    <span class="tag">The land today - boundary in red</span>
+  </div>
+  <div class="cap"><div class="wrap">
+    <span class="eyebrow">Red Sunset - Hin Kong / Srithanu - Koh Phangan</span>
+    <h1>Beachfront land on the sunset side of Koh Phangan</h1>
+    <p class="sub">1,308 sqm with a Chanote title, from the road to the sea. Three ways in: Plot 1 on the beach, Plots 1+2, or the whole land.</p>
+    <div class="btns">
+      <a class="btn gold" href="https://maps.app.goo.gl/wukt9KP7e4JA348t8" target="_blank" rel="noopener"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>View the location on Google Maps</a>
+    </div>
+  </div></div>
+</header>
+
+<main class="wrap">
+
+<section>
+  <div class="letter">
+    <p>Hi,</p>
+    <p>Here is the offer for our beachfront land on Koh Phangan. You can take Plot 1 on the beach, Plots 1+2, or the whole land - the land, the plans and the three prices are all below.</p>
+    <p>You're welcome to look through it - I'm here for any question.</p>
+    <p class="sig">Liran</p>
+  </div>
+</section>
+
+<section id="land">
+  <span class="eyebrow">The land</span>
+  <h2>1,308 sqm, from the road to the beach</h2>
+  <p class="lead">One plot on the west coast of Koh Phangan, between Hin Kong and Srithanu - the sunset side. It slopes about 100 m from the upper road down to the sea, with open sea views and direct beach access at the lower end.</p>
+  <ul class="facts">
+    <li><b>1,308 sqm</b>Chanote no. 2259</li>
+    <li><b>~100 m</b>from the road to the beach</li>
+    <li><b>14.98 m</b>sea frontage (survey Feb 2025)</li>
+    <li><b>11.63 m</b>upper frontage (survey Feb 2025)</li>
+  </ul>
+  <p>No mortgage and no bank lien on the holding company.</p>
+  <div class="gal">
+    <figure><img src="img2/land_sea.jpg" width="1000" height="1342" loading="lazy" alt="Cleared land opening to the sea and the islands"><figcaption>On the land, looking out to the sea.</figcaption></figure>
+    <figure><img src="img2/land_road.jpg" width="1000" height="1326" loading="lazy" alt="Dirt track rising toward the upper road"><figcaption>Looking up the slope toward the road.</figcaption></figure>
+    <figure><img src="img2/land_beach.jpg" width="888" height="1504" loading="lazy" alt="Rocks and sand at the lower edge of the land"><figcaption>The lower edge, where the land meets the beach.</figcaption></figure>
+  </div>
+  <div class="maps">
+    <figure class="fig"><a href="img2/map_location.jpg" target="_blank" rel="noopener"><img src="img2/map_location.jpg" width="1948" height="1840" loading="lazy" alt="Satellite map: the main road, the public access road and the land in gold down to the beach"></a><figcaption>From the main road to the beach: the public access road (dashed) and the land (gold).</figcaption></figure>
+    <figure class="fig"><a href="img2/map_closeup.jpg" target="_blank" rel="noopener"><img src="img2/map_closeup.jpg" width="1244" height="1660" loading="lazy" alt="Close-up satellite view of the land outlined in gold, with the public access at the top"></a><figcaption>Close-up: the land in gold, public access at the top. Boundaries indicative - not survey lines.</figcaption></figure>
+  </div>
+
+  <h3 style="margin-top:40px">The title deed - both sides</h3>
+  <div class="deed">
+    <figure><a href="img2/chanote_front.jpg" target="_blank" rel="noopener"><img src="img2/chanote_front.jpg" width="1100" height="1557" loading="lazy" alt="Chanote 2259, front side, personal details blurred"></a><figcaption>Front side - personal details blurred.</figcaption></figure>
+    <figure><a href="img2/chanote_back.jpg" target="_blank" rel="noopener"><img src="img2/chanote_back.jpg" width="1100" height="1557" loading="lazy" alt="Chanote 2259, registration page, names blurred"></a><figcaption>Registration page - names blurred.</figcaption></figure>
+    <dl>
+      <dt>Title</dt><dd>Chanote (full title deed)</dd>
+      <dt>Deed no.</dt><dd>2259</dd>
+      <dt>Land no.</dt><dd>92</dd>
+      <dt>Area</dt><dd>0 rai 3 ngan 27 sq wah = 1,308 sqm</dd>
+      <dt>Location</dt><dd>Koh Phangan, Surat Thani</dd>
+      <dt>Encumbrance</dt><dd>No mortgage, no bank lien</dd>
+    </dl>
+  </div>
+</section>
+
+<section id="build">
+  <span class="eyebrow">What could be built - option only</span>
+  <h2>Two building plans</h2>
+  <p>Two architect concepts for the land. Plans are not final and not approved. All renders are concept renders, and all figures are estimates until a contractor quote. Build costs are not part of the land price.</p>
+
+  <div class="plan">
+    <span class="tag">Plan A - 3 villas</span>
+    <h3>Three villas stepping down to the sea</h3>
+    <p style="margin-top:8px">One villa on each level of the slope. Relevant if you take the whole land.</p>
+    <ul class="sizes">
+      <li><b>304 sqm</b>Villa 1 - beach</li>
+      <li><b>212 sqm</b>Villa 2 - middle</li>
+      <li><b>313 sqm</b>Villa 3 - upper</li>
+    </ul>
+    <div class="car "><div class="frame"><button class="nav prev" type="button" aria-label="Previous image">&#8249;</button><div class="track"><figure class="slide "><a href="img2/a01.jpg" target="_blank" rel="noopener"><img src="img2/a01.jpg" width="1600" height="990" loading="lazy" alt="All three villas, seen from the beach. Concept render."></a><figcaption>All three villas, seen from the beach. Concept render.</figcaption></figure><figure class="slide "><a href="img2/a02.jpg" target="_blank" rel="noopener"><img src="img2/a02.jpg" width="1600" height="990" loading="lazy" alt="From above: three villas stepping down the slope. Concept render."></a><figcaption>From above: three villas stepping down the slope. Concept render.</figcaption></figure><figure class="slide "><a href="img2/a_positions.jpg" target="_blank" rel="noopener"><img src="img2/a_positions.jpg" width="1500" height="861" loading="lazy" alt="Villa positions on a real drone photo of the land. Concept."></a><figcaption>Villa positions on a real drone photo of the land. Concept.</figcaption></figure><figure class="slide "><a href="img2/a04.jpg" target="_blank" rel="noopener"><img src="img2/a04.jpg" width="1600" height="990" loading="lazy" alt="From the water. Concept render."></a><figcaption>From the water. Concept render.</figcaption></figure><figure class="slide "><a href="img2/a05.jpg" target="_blank" rel="noopener"><img src="img2/a05.jpg" width="1600" height="992" loading="lazy" alt="Side view along the slope. Concept render."></a><figcaption>Side view along the slope. Concept render.</figcaption></figure><figure class="slide "><a href="img2/a03.jpg" target="_blank" rel="noopener"><img src="img2/a03.jpg" width="1600" height="990" loading="lazy" alt="Bird's-eye view. Concept render."></a><figcaption>Bird's-eye view. Concept render.</figcaption></figure><figure class="slide "><a href="img2/a06.jpg" target="_blank" rel="noopener"><img src="img2/a06.jpg" width="1600" height="990" loading="lazy" alt="Villa 2, front. Concept render."></a><figcaption>Villa 2, front. Concept render.</figcaption></figure><figure class="slide "><a href="img2/a07.jpg" target="_blank" rel="noopener"><img src="img2/a07.jpg" width="1600" height="990" loading="lazy" alt="Villa 3, facade. Concept render."></a><figcaption>Villa 3, facade. Concept render.</figcaption></figure><figure class="slide "><a href="img2/a08.jpg" target="_blank" rel="noopener"><img src="img2/a08.jpg" width="1440" height="892" loading="lazy" alt="Villa 3 at dusk. Concept render."></a><figcaption>Villa 3 at dusk. Concept render.</figcaption></figure><figure class="slide "><a href="img2/a09.jpg" target="_blank" rel="noopener"><img src="img2/a09.jpg" width="1600" height="990" loading="lazy" alt="Villa 1, pool. Concept render."></a><figcaption>Villa 1, pool. Concept render.</figcaption></figure><figure class="slide "><a href="img2/a10.jpg" target="_blank" rel="noopener"><img src="img2/a10.jpg" width="1600" height="990" loading="lazy" alt="Villa 1, terrace. Concept render."></a><figcaption>Villa 1, terrace. Concept render.</figcaption></figure><figure class="slide "><a href="img2/a11.jpg" target="_blank" rel="noopener"><img src="img2/a11.jpg" width="1600" height="990" loading="lazy" alt="Villa 1, outdoor living. Concept render."></a><figcaption>Villa 1, outdoor living. Concept render.</figcaption></figure><figure class="slide "><a href="img2/a12.jpg" target="_blank" rel="noopener"><img src="img2/a12.jpg" width="1600" height="990" loading="lazy" alt="Villa 1, the view from inside. Concept render."></a><figcaption>Villa 1, the view from inside. Concept render.</figcaption></figure><figure class="slide "><a href="img2/a13.jpg" target="_blank" rel="noopener"><img src="img2/a13.jpg" width="1600" height="920" loading="lazy" alt="Entrance from the upper road. Concept render."></a><figcaption>Entrance from the upper road. Concept render.</figcaption></figure><figure class="slide "><a href="img2/a_elevation.jpg" target="_blank" rel="noopener"><img src="img2/a_elevation.jpg" width="1600" height="990" loading="lazy" alt="Elevation of all three villas. Concept."></a><figcaption>Elevation of all three villas. Concept.</figcaption></figure></div><button class="nav next" type="button" aria-label="Next image">&#8250;</button></div><div class="hint">15 images - use the arrows or swipe. Tap an image to open it full size.</div></div>
+    <h3 style="margin-top:26px;font-size:22px">Floor plans</h3>
+    <div class="car plans"><div class="frame"><button class="nav prev" type="button" aria-label="Previous image">&#8249;</button><div class="track"><figure class="slide tall"><a href="img2/fp1.jpg" target="_blank" rel="noopener"><img src="img2/fp1.jpg" width="1043" height="1600" loading="lazy" alt="Villa 1 - floor plan"></a><figcaption>Villa 1 - floor plan</figcaption></figure><figure class="slide tall"><a href="img2/fp2.jpg" target="_blank" rel="noopener"><img src="img2/fp2.jpg" width="1098" height="1600" loading="lazy" alt="Villa 2 - floor plan"></a><figcaption>Villa 2 - floor plan</figcaption></figure><figure class="slide tall"><a href="img2/fp3a.jpg" target="_blank" rel="noopener"><img src="img2/fp3a.jpg" width="1084" height="1600" loading="lazy" alt="Villa 3 - ground floor"></a><figcaption>Villa 3 - ground floor</figcaption></figure><figure class="slide tall"><a href="img2/fp3b.jpg" target="_blank" rel="noopener"><img src="img2/fp3b.jpg" width="1038" height="1133" loading="lazy" alt="Villa 3 - upper floor"></a><figcaption>Villa 3 - upper floor</figcaption></figure></div><button class="nav next" type="button" aria-label="Next image">&#8250;</button></div><div class="hint">4 images - use the arrows or swipe. Tap an image to open it full size.</div></div>
+  </div>
+
+  <div class="plan">
+    <span class="tag">Plan B - 2 villas</span>
+    <h3>Two villas with a shared garden between them</h3>
+    <p style="margin-top:8px">Villa 1 on the beach, Villa 3 up the slope, and a garden with a pergola in the middle. This plan matches the proposed split into Plots 1, 2 and 3.</p>
+    <div class="car "><div class="frame"><button class="nav prev" type="button" aria-label="Previous image">&#8249;</button><div class="track"><figure class="slide tall"><a href="img2/b_layout.jpg" target="_blank" rel="noopener"><img src="img2/b_layout.jpg" width="900" height="1350" loading="lazy" alt="Layout from above: Villa 3 at the top, shared garden, Villa 1 with terrace, pool and front garden. Concept - subject to survey."></a><figcaption>Layout from above: Villa 3 at the top, shared garden, Villa 1 with terrace, pool and front garden. Concept - subject to survey.</figcaption></figure><figure class="slide tall"><a href="img2/b_shoreline.jpg" target="_blank" rel="noopener"><img src="img2/b_shoreline.jpg" width="900" height="1350" loading="lazy" alt="Alternative: pool at the shoreline, parking on two levels. Concept render."></a><figcaption>Alternative: pool at the shoreline, parking on two levels. Concept render.</figcaption></figure><figure class="slide "><a href="img2/b01.jpg" target="_blank" rel="noopener"><img src="img2/b01.jpg" width="1600" height="990" loading="lazy" alt="From over the sea. Concept render."></a><figcaption>From over the sea. Concept render.</figcaption></figure><figure class="slide "><a href="img2/b02.jpg" target="_blank" rel="noopener"><img src="img2/b02.jpg" width="1600" height="990" loading="lazy" alt="Villa 3 (top), garden and pergola (middle), Villa 1 (bottom). Concept render."></a><figcaption>Villa 3 (top), garden and pergola (middle), Villa 1 (bottom). Concept render.</figcaption></figure><figure class="slide "><a href="img2/b03.jpg" target="_blank" rel="noopener"><img src="img2/b03.jpg" width="1600" height="990" loading="lazy" alt="From above. Concept render."></a><figcaption>From above. Concept render.</figcaption></figure><figure class="slide "><a href="img2/b04.jpg" target="_blank" rel="noopener"><img src="img2/b04.jpg" width="1600" height="990" loading="lazy" alt="Villa 1 on the beach. Concept render."></a><figcaption>Villa 1 on the beach. Concept render.</figcaption></figure><figure class="slide "><a href="img2/b05.jpg" target="_blank" rel="noopener"><img src="img2/b05.jpg" width="1600" height="990" loading="lazy" alt="The shared garden and pergola. Concept render."></a><figcaption>The shared garden and pergola. Concept render.</figcaption></figure><figure class="slide "><a href="img2/b06.jpg" target="_blank" rel="noopener"><img src="img2/b06.jpg" width="1600" height="990" loading="lazy" alt="Villa 3, two storeys with pool. Concept render."></a><figcaption>Villa 3, two storeys with pool. Concept render.</figcaption></figure></div><button class="nav next" type="button" aria-label="Next image">&#8250;</button></div><div class="hint">8 images - use the arrows or swipe. Tap an image to open it full size.</div></div>
+    <div class="villas">
+      <div class="vcard">
+        <h3>Villa 1 - on the beach</h3>
+        <div class="s">Plot 1 - single storey</div>
+        <div class="vf"><div><b>150</b>sqm built</div><div><b>123</b>sqm terraces</div><div><b>31</b>sqm pool</div><div><b>304</b>sqm total</div></div>
+        <div class="cost"><b>THB 15,850,000</b><span>Incl. furniture, solar and plot infrastructure (road, power, water, retaining wall) - $469K / EUR 419K</span><br><span class="est">ESTIMATE UNTIL CONTRACTOR QUOTE</span></div>
+      </div>
+      <div class="vcard">
+        <h3>Villa 3 - up the slope</h3>
+        <div class="s">Plot 3 - two storeys</div>
+        <div class="vf"><div><b>185</b>sqm built</div><div><b>106</b>sqm terraces</div><div><b>22</b>sqm pool</div><div><b>313</b>sqm total</div></div>
+        <div class="cost"><b>THB 9,400,000</b><span>Incl. furniture and solar - $278K / EUR 248K</span><br><span class="est">ESTIMATE UNTIL CONTRACTOR QUOTE</span></div>
+      </div>
+    </div>
+    <p class="muted small" style="margin-top:12px">Sizes per the current plan - indication only.</p>
+  </div>
+</section>
+
+<section id="options">
+  <span class="eyebrow">Your 3 options</span>
+  <h2>Plot 1, Plots 1+2, or the whole land</h2>
+  <p>The land is planned in three plots. The plots in gold are the ones included in each option.</p>
+  <div class="opts">
+    <figure class="opt"><svg viewBox="0 0 883 1194" role="img" aria-label="Option 1: Plot 1 in gold" preserveAspectRatio="xMidYMid slice"><image href="img2/satellite.jpg" width="883" height="1194"/><polygon points="390,95 553,95 553,148 390,148" fill="rgba(235,235,235,.82)" stroke="#fff" stroke-width="4" stroke-dasharray="14 8"/><text x="471" y="133" text-anchor="middle" font-size="30" font-weight="800" letter-spacing="2" fill="#333" font-family="system-ui,Arial,sans-serif">PUBLIC</text><polygon points="553,95 685,95 725,430 585,430 553,148" fill="rgba(16,20,24,.58)" stroke="rgba(255,255,255,.55)" stroke-width="5" stroke-linejoin="round"/><circle cx="612" cy="270" r="46" fill="rgba(0,0,0,.35)" stroke="#fff" stroke-width="5"/><text x="612" y="292" text-anchor="middle" font-size="60" font-weight="700" fill="#fff" font-family="Georgia,serif">3</text><polygon points="585,430 725,430 767,780 625,780" fill="rgba(16,20,24,.58)" stroke="rgba(255,255,255,.55)" stroke-width="5" stroke-linejoin="round"/><circle cx="655" cy="610" r="46" fill="rgba(0,0,0,.35)" stroke="#fff" stroke-width="5"/><text x="655" y="632" text-anchor="middle" font-size="60" font-weight="700" fill="#fff" font-family="Georgia,serif">2</text><polygon points="625,780 767,780 810,1145 660,1088" fill="rgba(196,154,84,.66)" stroke="#f6e7c4" stroke-width="5" stroke-linejoin="round"/><circle cx="730" cy="960" r="46" fill="#c49a54" stroke="#fff" stroke-width="5"/><text x="730" y="982" text-anchor="middle" font-size="60" font-weight="700" fill="#fff" font-family="Georgia,serif">1</text></svg><figcaption>Option 1<br>Plot 1</figcaption></figure>
+    <figure class="opt"><svg viewBox="0 0 883 1194" role="img" aria-label="Option 2: Plots 1 and 2 in gold" preserveAspectRatio="xMidYMid slice"><image href="img2/satellite.jpg" width="883" height="1194"/><polygon points="390,95 553,95 553,148 390,148" fill="rgba(235,235,235,.82)" stroke="#fff" stroke-width="4" stroke-dasharray="14 8"/><text x="471" y="133" text-anchor="middle" font-size="30" font-weight="800" letter-spacing="2" fill="#333" font-family="system-ui,Arial,sans-serif">PUBLIC</text><polygon points="553,95 685,95 725,430 585,430 553,148" fill="rgba(16,20,24,.58)" stroke="rgba(255,255,255,.55)" stroke-width="5" stroke-linejoin="round"/><circle cx="612" cy="270" r="46" fill="rgba(0,0,0,.35)" stroke="#fff" stroke-width="5"/><text x="612" y="292" text-anchor="middle" font-size="60" font-weight="700" fill="#fff" font-family="Georgia,serif">3</text><polygon points="585,430 725,430 767,780 625,780" fill="rgba(196,154,84,.66)" stroke="#f6e7c4" stroke-width="5" stroke-linejoin="round"/><circle cx="655" cy="610" r="46" fill="#c49a54" stroke="#fff" stroke-width="5"/><text x="655" y="632" text-anchor="middle" font-size="60" font-weight="700" fill="#fff" font-family="Georgia,serif">2</text><polygon points="625,780 767,780 810,1145 660,1088" fill="rgba(196,154,84,.66)" stroke="#f6e7c4" stroke-width="5" stroke-linejoin="round"/><circle cx="730" cy="960" r="46" fill="#c49a54" stroke="#fff" stroke-width="5"/><text x="730" y="982" text-anchor="middle" font-size="60" font-weight="700" fill="#fff" font-family="Georgia,serif">1</text></svg><figcaption>Option 2<br>Plots 1+2</figcaption></figure>
+    <figure class="opt"><svg viewBox="0 0 883 1194" role="img" aria-label="Option 3: whole land in gold" preserveAspectRatio="xMidYMid slice"><image href="img2/satellite.jpg" width="883" height="1194"/><polygon points="390,95 553,95 553,148 390,148" fill="rgba(235,235,235,.82)" stroke="#fff" stroke-width="4" stroke-dasharray="14 8"/><text x="471" y="133" text-anchor="middle" font-size="30" font-weight="800" letter-spacing="2" fill="#333" font-family="system-ui,Arial,sans-serif">PUBLIC</text><polygon points="553,95 685,95 725,430 585,430 553,148" fill="rgba(196,154,84,.66)" stroke="#f6e7c4" stroke-width="5" stroke-linejoin="round"/><circle cx="612" cy="270" r="46" fill="#c49a54" stroke="#fff" stroke-width="5"/><text x="612" y="292" text-anchor="middle" font-size="60" font-weight="700" fill="#fff" font-family="Georgia,serif">3</text><polygon points="585,430 725,430 767,780 625,780" fill="rgba(196,154,84,.66)" stroke="#f6e7c4" stroke-width="5" stroke-linejoin="round"/><circle cx="655" cy="610" r="46" fill="#c49a54" stroke="#fff" stroke-width="5"/><text x="655" y="632" text-anchor="middle" font-size="60" font-weight="700" fill="#fff" font-family="Georgia,serif">2</text><polygon points="625,780 767,780 810,1145 660,1088" fill="rgba(196,154,84,.66)" stroke="#f6e7c4" stroke-width="5" stroke-linejoin="round"/><circle cx="730" cy="960" r="46" fill="#c49a54" stroke="#fff" stroke-width="5"/><text x="730" y="982" text-anchor="middle" font-size="60" font-weight="700" fill="#fff" font-family="Georgia,serif">1</text></svg><figcaption>Option 3<br>Whole land</figcaption></figure>
+  </div>
+  <div class="legend"><span><i style="background:#c49a54"></i>Included</span><span><i style="background:#2a2e33"></i>Not included</span><span><i style="background:#e6e6e6;border:1px dashed #999"></i>Public access road - not part of any plot</span></div>
+  <p class="muted small">Proposed split - not registered yet. Plot lines are indicative, drawn on a satellite photo.</p>
+  <ul class="plist">
+    <li><b>Plot 1</b>On the beach. The spot for Villa 1, first line to the sea.</li>
+    <li><b>Plot 2</b>The middle: shared garden, pergola and the driveway down to the beach.</li>
+    <li><b>Plot 3</b>Up the slope, toward the road. The spot for Villa 3.</li>
+  </ul>
+</section>
+
+<section id="price">
+  <span class="eyebrow">Price</span>
+  <h2>Three prices</h2>
+  <div class="pkgs">
+    <div class="pkg">
+      <div class="dots"><i class="dot on">1</i><i class="dot ">2</i><i class="dot ">3</i></div>
+      <h3>Plot 1</h3>
+      <div class="what">On the beach - the spot for Villa 1.</div>
+      <div class="price"><small>THB</small>23,000,000</div>
+      <div class="fx">$681K / EUR 607K</div>
+      <div class="add">The entry point: first line to the sea</div>
+    </div>
+    <div class="pkg">
+      <div class="dots"><i class="dot on">1</i><i class="dot on">2</i><i class="dot ">3</i></div>
+      <h3>Plots 1 + 2</h3>
+      <div class="what">The beach plus the shared garden, pergola and driveway.</div>
+      <div class="price"><small>THB</small>32,000,000</div>
+      <div class="fx">$948K / EUR 845K</div>
+      <div class="add">Plot 2 adds THB 9M</div>
+    </div>
+    <div class="pkg full">
+      <div class="dots"><i class="dot on">1</i><i class="dot on">2</i><i class="dot on">3</i></div>
+      <h3>The whole land</h3>
+      <div class="what">Plots 1 + 2 + 3 - all 1,308 sqm from the road to the water.</div>
+      <div class="price"><small>THB</small>40,000,000</div>
+      <div class="fx">$1.18M / EUR 1.06M</div>
+      <div class="add">Plot 3 adds THB 8M</div>
+    </div>
+  </div>
+  <p class="taxline">All land transfer taxes and fees are paid by the buyer.</p>
+  <p class="muted small">USD and EUR are indicative, at the rate of 2 Nov 2026: $1 = THB 33.76, EUR 1 = THB 37.865. Prices are in Thai baht.</p>
+</section>
+
+<section id="plot3">
+  <span class="eyebrow">Plot 3</span>
+  <h2>What happens to Plot 3</h2>
+  <div class="two">
+    <div class="case"><h3>Plot 1, or Plots 1+2</h3><p>Plot 3 stays with us, and Villa 3 is built there (Plan B). You get your plots and the shared garden and driveway.</p></div>
+    <div class="case"><h3>The whole land</h3><p>Plot 3 is yours, together with Plots 1 and 2 - the full 1,308 sqm. Build Plan A, Plan B, or your own.</p></div>
+  </div>
+</section>
+
+<section id="how">
+  <span class="eyebrow">How a foreign buyer buys</span>
+  <h2>Through your company or another structure</h2>
+  <p class="lead">A foreign buyer buys through the buyer's own company, or another structure under Thai law. We are happy to talk it through with you and your advisers.</p>
+</section>
+
+<section id="contact" class="cta">
+  <span class="eyebrow">Next step</span>
+  <h2>Questions? Write to me.</h2>
+  <p>You're welcome to look through it - I'm here for any question.<br><b>Liran</b></p>
+  <div class="btns">
+    <a class="btn wa" href="https://wa.me/66967907754?text=Hi%2C%20I%20saw%20the%20beachfront%20plot%20in%20Hin%20Kong%20-%20I%27d%20like%20details">Ask on WhatsApp</a>
+    <a class="btn gold" href="https://maps.app.goo.gl/wukt9KP7e4JA348t8" target="_blank" rel="noopener"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>Location</a>
+  </div>
+  <p class="disc">* The deal is subject to legal approval under Thai law.</p>
+</section>
+
+</main>
+<script>
+document.querySelectorAll('.car').forEach(function(c){
+  var t=c.querySelector('.track'), p=c.querySelector('.prev'), n=c.querySelector('.next');
+  function step(){ var s=t.querySelector('.slide'); return s ? s.getBoundingClientRect().width+12 : t.clientWidth*.8; }
+  function upd(){ p.disabled = t.scrollLeft < 8; n.disabled = t.scrollLeft + t.clientWidth > t.scrollWidth - 8; }
+  p.addEventListener('click', function(){ t.scrollBy({left:-step(), behavior:'smooth'}); });
+  n.addEventListener('click', function(){ t.scrollBy({left: step(), behavior:'smooth'}); });
+  t.addEventListener('scroll', upd, {passive:true}); window.addEventListener('resize', upd); upd();
+});
+</script>
+<footer><div class="wrap">Red Sunset - Koh Phangan. Renders are conceptual. Proposed split - not registered yet. Build figures are estimates until a contractor quote.</div></footer>
+</body>
+</html>
