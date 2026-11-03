@@ -11,7 +11,7 @@
 @media (prefers-color-scheme:dark){:root{--bg:#141a1c;--paper:#1c2427;--fg:#eef0ee;--muted:#a3adb1;--line:#2d383c;--sea:#4fc2cc;--sea-ink:#8ad8df;--sand:#2a2f2a;--sand-ink:#d9b56b}}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--fg);font:17px/1.65 var(--body)}
-img,svg{display:block;max-width:100%}
+img,svg{display:block;max-width:100%;height:auto}
 .wrap{max-width:760px;margin:0 auto;padding:0 16px}
 h1,h2,h3{font-family:var(--display);line-height:1.2;margin:0;text-wrap:balance}
 h1{font-size:clamp(32px,7vw,52px)}
@@ -22,7 +22,7 @@ p{margin:0 0 14px}
 .muted{color:var(--muted)} .small{font-size:13px}
 section{padding:44px 0;border-top:1px solid var(--line)}
 .hero{background:#0b2b30;color:#fff}
-.hero img{width:100%;height:min(62vh,560px);object-fit:cover;object-position:60% 50%}
+.hero img{width:100%;height:min(62vh,560px);object-fit:cover;object-position:62% 50%}
 .hero .cap{padding:26px 0 32px}
 .hero .eyebrow{color:#9fdce2}
 .hero .sub{color:#d7eef0;font-size:19px;font-weight:300;margin:12px 0 18px;max-width:58ch}
@@ -69,7 +69,20 @@ section{padding:44px 0;border-top:1px solid var(--line)}
 .cta{text-align:center} .cta h2{margin-bottom:8px}
 .disc{font-size:15px;color:var(--muted);margin-top:26px}
 footer{border-top:1px solid var(--line);padding:24px 0 40px;font-size:13px;color:var(--muted)}
+.gal{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:22px 0 0}
+.gal figure{margin:0} .gal img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:6px}
+.gal figcaption{font-size:13px;color:var(--muted);padding-top:6px;line-height:1.4}
+.plan{margin-top:34px;padding:22px 18px;background:var(--paper);border:1px solid var(--line);border-radius:8px}
+.plan .tag{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#fff;background:var(--sea);padding:4px 10px;border-radius:999px;margin-bottom:10px}
+.plan .fig{margin-top:16px}
+.sizes{list-style:none;padding:0;margin:14px 0 0;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.sizes li{border:1px solid var(--line);border-radius:6px;padding:10px;font-size:14px;color:var(--muted);text-align:center}
+.sizes b{display:block;font-family:var(--display);font-size:20px;color:var(--fg)}
+.hero .hcap{position:absolute;left:12px;bottom:12px;background:rgba(0,0,0,.55);color:#fff;font-size:13px;padding:4px 10px;border-radius:999px}
+.hero .hwrap{position:relative}
 @media (max-width:640px){
+ .gal{grid-template-columns:1fr} .gal img{aspect-ratio:4/5}
+ .sizes{grid-template-columns:1fr}
  .pkgs,.two{grid-template-columns:1fr}
  .opts{gap:6px} .opt figcaption{font-size:12px;padding:6px 3px}
  .hero img{height:46vh}
@@ -79,7 +92,10 @@ footer{border-top:1px solid var(--line);padding:24px 0 40px;font-size:13px;color
 <body>
 
 <header class="hero">
-  <img src="img/hero.jpg" width="1600" height="622" alt="Aerial view of the bay and the beachfront houses at Hin Kong, Koh Phangan, at sunset">
+  <div class="hwrap">
+    <img src="img/plot_aerial.jpg" width="1400" height="530" alt="Aerial photo of the bay at Hin Kong with the plot boundary marked in red, from the upper road to the beach">
+    <span class="hcap">The land today - boundary in red</span>
+  </div>
   <div class="cap"><div class="wrap">
     <span class="eyebrow">Red Sunset - Hin Kong / Srithanu - Koh Phangan</span>
     <h1>Beachfront land on the sunset side of Koh Phangan</h1>
@@ -90,6 +106,64 @@ footer{border-top:1px solid var(--line);padding:24px 0 40px;font-size:13px;color
 </header>
 
 <main class="wrap">
+
+<section id="land">
+  <span class="eyebrow">The land</span>
+  <h2>1,308 sqm, from the road to the beach</h2>
+  <p class="lead">One plot on the west coast of Koh Phangan, between Hin Kong and Srithanu - the sunset side. It runs about 100 m from the road down to the sea.</p>
+  <ul class="facts">
+    <li><b>1,308 sqm</b>Chanote no. 2259</li>
+    <li><b>About 100 m</b>from the road to the beach</li>
+    <li><b>About 15 m</b>sea frontage (14.98 m, survey Feb 2025)</li>
+    <li><b>About 11.6 m</b>upper frontage (11.63 m, survey Feb 2025)</li>
+  </ul>
+  <p>No mortgage and no bank lien on the holding company.</p>
+  <div class="gal">
+    <figure><img src="img/land_sea.jpg" width="1000" height="1342" loading="lazy" alt="Cleared land opening to the sea and the islands"><figcaption>On the land, looking out to the sea.</figcaption></figure>
+    <figure><img src="img/land_road.jpg" width="1000" height="1326" loading="lazy" alt="Dirt track rising from the land toward the upper road"><figcaption>Looking up the slope toward the road.</figcaption></figure>
+    <figure><img src="img/land_beach.jpg" width="888" height="1504" loading="lazy" alt="Rocks and sand at the lower edge of the land"><figcaption>The lower edge, where the land meets the beach.</figcaption></figure>
+  </div>
+  <figure class="fig"><img src="img/land_bay.jpg" width="1600" height="617" loading="lazy" alt="Drone photo of the turquoise bay at Hin Kong at sunset"><figcaption>The bay in front of the land, at sunset. Real photos - no renders in this section.</figcaption></figure>
+</section>
+
+<section id="build">
+  <span class="eyebrow">What could be built - option only</span>
+  <h2>Two building plans</h2>
+  <p>Two architect concepts for the land. Plans are not final and not approved. All renders are concept renders, and all figures are estimates until a contractor quote. Build costs are not part of the land price.</p>
+
+  <div class="plan">
+    <span class="tag">Plan A - 3 villas</span>
+    <h3>Three villas stepping down to the sea</h3>
+    <p style="margin-top:8px">One villa on each level of the slope. Relevant if you take the whole land.</p>
+    <ul class="sizes">
+      <li><b>304 sqm</b>Villa 1 - on the beach</li>
+      <li><b>212 sqm</b>Villa 2 - in the middle</li>
+      <li><b>313 sqm</b>Villa 3 - up the slope</li>
+    </ul>
+    <figure class="fig"><img src="img/v3_ondrone.jpg" width="1400" height="801" loading="lazy" alt="Concept render of three villas placed on a real drone photo of the land"><figcaption>The three villas placed on a real drone photo of the land. Concept render.</figcaption></figure>
+    <figure class="fig"><img src="img/v3_birdseye.jpg" width="1400" height="866" loading="lazy" alt="Bird's-eye concept render of three villas on the slope"><figcaption>Bird's-eye view, from the road (top left) to the beach (bottom right). Concept render.</figcaption></figure>
+    <figure class="fig"><img src="img/v3_topdown.jpg" width="1400" height="866" loading="lazy" alt="Top-down concept render of the three villas"><figcaption>From above. Concept render.</figcaption></figure>
+  </div>
+
+  <div class="plan">
+    <span class="tag">Plan B - 2 villas</span>
+    <h3>Two villas with a shared garden between them</h3>
+    <p style="margin-top:8px">Villa 1 on the beach, Villa 3 up the slope, and a garden with a pergola in the middle. This plan matches the proposed split into Plots 1, 2 and 3.</p>
+    <figure class="fig"><img src="img/v2_seadrone.jpg" width="1400" height="866" loading="lazy" alt="Concept render of the two villas seen from over the sea"><figcaption>From over the sea. Concept render.</figcaption></figure>
+    <figure class="fig"><img src="img/v2_garden_aerial.jpg" width="1400" height="866" loading="lazy" alt="Concept render of the two villas and the garden between them"><figcaption>Villa 3 (top), garden and pergola (middle), Villa 1 on the beach (bottom). Concept render.</figcaption></figure>
+    <div class="villa">
+      <h3>Villa 1 - on Plot 1, the beach</h3>
+      <figure class="fig" style="margin-top:12px"><img src="img/villa1.jpg" width="1200" height="743" loading="lazy" alt="Concept render of Villa 1 on the beach with a pool by the shoreline"><figcaption>Sea-facing, with a pool on the shoreline. Concept render.</figcaption></figure>
+      <div class="cost"><b>THB 15,850,000</b><span>Villa 1 + plot infrastructure (road, power, water, retaining wall) - $469K / EUR 419K</span><br><span class="est">ESTIMATE UNTIL CONTRACTOR QUOTE</span></div>
+    </div>
+    <div class="villa">
+      <h3>Villa 3 - on Plot 3</h3>
+      <figure class="fig" style="margin-top:12px"><img src="img/villa3.jpg" width="1200" height="743" loading="lazy" alt="Concept render of Villa 3, two storeys with a pool and terrace"><figcaption>Two storeys, pool and terrace. Concept render.</figcaption></figure>
+      <div class="cost"><b>THB 9,400,000</b><span>Villa 3 - $278K / EUR 248K</span><br><span class="est">ESTIMATE UNTIL CONTRACTOR QUOTE</span></div>
+    </div>
+    <figure class="fig" style="margin-top:26px"><img src="img/pergola.jpg" width="1400" height="866" loading="lazy" alt="Concept render of the pergola and lounge in the shared garden"><figcaption>The shared garden on Plot 2, with the pergola. Concept render.</figcaption></figure>
+  </div>
+</section>
 
 <section id="options">
   <span class="eyebrow">Your 3 options</span>
@@ -141,46 +215,14 @@ footer{border-top:1px solid var(--line);padding:24px 0 40px;font-size:13px;color
   <p class="muted small">USD and EUR are indicative, at the rate of 2 Nov 2026: $1 = THB 33.76, EUR 1 = THB 37.865. Prices are in Thai baht.</p>
 </section>
 
-<section id="land">
-  <span class="eyebrow">The land</span>
-  <h2>1,308 sqm, from the road to the beach</h2>
-  <p class="lead">One plot on the west coast of Koh Phangan, between Hin Kong and Srithanu - the sunset side. It runs about 100 m from the road down to the sea.</p>
-  <ul class="facts">
-    <li><b>1,308 sqm</b>Chanote no. 2259</li>
-    <li><b>About 100 m</b>from the road to the beach</li>
-    <li><b>About 15 m</b>sea frontage (14.98 m, survey Feb 2025)</li>
-    <li><b>About 11.6 m</b>upper frontage (11.63 m, survey Feb 2025)</li>
-  </ul>
-  <p>No mortgage and no bank lien on the holding company.</p>
-  <figure class="fig"><img src="img/plot_aerial.jpg" width="1400" height="530" loading="lazy" alt="Aerial photo of the bay with the plot boundary in red"><figcaption>The plot today. Boundary in red, from the upper road to the shoreline.</figcaption></figure>
-</section>
-
 <section id="plot3">
   <span class="eyebrow">Plot 3</span>
   <h2>What happens to Plot 3</h2>
   <div class="two">
-    <div class="case"><h3>Plot 1, or Plots 1+2</h3><p>Plot 3 stays with us, and Villa 3 is built there. You get your plots and the shared garden, pergola and access road.</p></div>
+    <div class="case"><h3>Plot 1, or Plots 1+2</h3><p>Plot 3 stays with us, and Villa 3 is built there (Plan B). You get your plots and the shared garden, pergola and access road.</p></div>
     <div class="case"><h3>Whole land</h3><p>Plot 3 is yours, together with Plots 1 and 2 - the full 1,308 sqm.</p></div>
   </div>
   <figure class="fig"><img src="img/div3d.jpg" width="1200" height="422" loading="lazy" alt="Concept render of the three plots: Villa 3, shared garden, Villa 1"><figcaption>Plot 3 (left), shared garden (middle), Plot 1 on the beach (right). Proposed split - not registered yet. Concept render.</figcaption></figure>
-</section>
-
-<section id="build">
-  <span class="eyebrow">Building concept - option only</span>
-  <h2>What could be built here</h2>
-  <p>A concept for the land, if you want to build. The plans are not final, and all figures are estimates until a contractor quote. Build costs are not part of the land price.</p>
-  <div class="villa">
-    <h3>Villa 1 - on Plot 1, the beach</h3>
-    <figure class="fig" style="margin-top:12px"><img src="img/villa1.jpg" width="1200" height="743" loading="lazy" alt="Concept render of Villa 1 on the beach with a pool by the shoreline"><figcaption>Sea-facing, with a pool on the shoreline. Concept render.</figcaption></figure>
-    <div class="cost"><b>THB 15,850,000</b><span>Villa 1 + plot infrastructure (road, power, water, retaining wall) - $469K / EUR 419K</span><br><span class="est">ESTIMATE UNTIL CONTRACTOR QUOTE</span></div>
-  </div>
-  <div class="villa">
-    <h3>Villa 3 - on Plot 3</h3>
-    <figure class="fig" style="margin-top:12px"><img src="img/villa3.jpg" width="1200" height="743" loading="lazy" alt="Concept render of Villa 3, two storeys with a pool and terrace"><figcaption>Two storeys, pool and terrace. Concept render.</figcaption></figure>
-    <div class="cost"><b>THB 9,400,000</b><span>Villa 3 - $278K / EUR 248K</span><br><span class="est">ESTIMATE UNTIL CONTRACTOR QUOTE</span></div>
-    <p class="muted small" style="margin-top:10px">In the Plot 1 and Plots 1+2 options, Villa 3 is built by us on Plot 3. In the whole-land option, this is yours to build or not.</p>
-  </div>
-  <figure class="fig" style="margin-top:30px"><img src="img/garden.jpg" width="1200" height="743" loading="lazy" alt="Concept render of the shared garden and pergola between the plots"><figcaption>The shared area on Plot 2: garden and pergola. Concept render.</figcaption></figure>
 </section>
 
 <section id="location">
