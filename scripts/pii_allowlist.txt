@@ -19,3 +19,5 @@
                      # Narrowing the digit rule to skip decimals was rejected: a bare
                      # decimal-formatted phone would then pass. Two explicit, reviewable
                      # literals are the safer trade — same precedent as the deal-price entry above.
+972507308658         # Liran personal WhatsApp - his own number, published deliberately in the wa.me CTA of
+                     # brochures/red-sunset-land-offer (private offer page, 2026-11-03). Owner-approved.
